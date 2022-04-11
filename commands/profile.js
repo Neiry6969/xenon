@@ -45,16 +45,12 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`0\`
-                                Points: \`0\``,
+                                value: `Level: \`0\`\nExperience Points: \`0\``,
                                 inline: true,
                             },
                             {
                                 name: 'Balance',
-                                value: `Wallet: ❀ \`0\` 
-                                Bank: ❀ \`0\`
-                                Bankspace: \`1,000\`
-                                Total Balance: ❀ \`0\``,
+                                value: `Wallet: ❀ \`0\`\nBank: ❀ \`0\`\nBankspace: \`1,000\`\nTotal Balance: ❀ \`0\``,
                                 inline: true,
                             },
                             {
@@ -85,16 +81,12 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`${target_profileData.level.toLocaleString()}\`
-                                Experience Points: \`${target_profileData.experiencepoints.toLocaleString()}\``,
+                                value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience Points: \`${target_profileData.experiencepoints.toLocaleString()}\``,
                                 inline: true,
                             },
                             {
                                 name: 'Balance',
-                                value: `Wallet: ❀ \`${target_profileData.coins.toLocaleString()}\` 
-                                Bank: ❀ \`${target_profileData.bank.toLocaleString()}\`
-                                Bankspace: \`${bankspace.toLocaleString()}\`
-                                Total Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                                value: `Wallet: ❀ \`${target_profileData.coins.toLocaleString()}\`\nBank: ❀ \`${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
                                 inline: true,
                             },
                             {
@@ -127,17 +119,12 @@ module.exports = {
                 fields: [
                     {
                         name: 'Level',
-                        value: `Level: \`${profileData.level.toLocaleString()}\`
-                        Experience Points: 
-                        \`${profileData.experiencepoints.toLocaleString()}\``,
+                        value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience Points: \`${profileData.experiencepoints.toLocaleString()}\``,
                         inline: true,
                     },
                     {
                         name: 'Balance',
-                        value: `Wallet: ❀ \`${profileData.coins.toLocaleString()}\` 
-                        Bank: ❀ \`${profileData.bank.toLocaleString()}\`
-                        Bankspace: \`${bankspace.toLocaleString()}\`
-                        Total Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                        value: `Wallet: ❀ \`${profileData.coins.toLocaleString()}\`\nBank: ❀ \`${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
                         inline: true,
                     },
                     {
@@ -155,4 +142,3 @@ module.exports = {
     },
 
 }
-

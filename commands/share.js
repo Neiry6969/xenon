@@ -34,141 +34,139 @@ module.exports = {
                         experiencepoints: 0,
                         level: 0,
                     });
+                }else if(target.id === message.author.id) {
+                    const embed = {
+                        color: '#FF0000',
+                        title: `Transaction Error`,
+                        description: `You can't share coins with yourself!\n**Expected Syntax:** \`xe share [user] [amount]\``,
+                    };
+                    message.reply({ embeds: [embed] });
+                } else {
+                    if(!get_amount) {
+                        if(get_amount === "max" || get_amount === "all") {
+                            const amount = profileData.coins;
+                            
+                            if(amount <= 0) {
+                                if (profileData.bank <= 0) {
+                                    message.reply(`You got no coins in your wallet or your bank to share, your broke :c.`);
+                                } else {
+                                    message.reply(`You got no coins in your wallet to share, maybe withdraw some?`);
+                                }
+                            } else {
+                                const target_response = await profileModel.findOneAndUpdate(
+                                    {userId: target.id},
+                                    {
+                                        $inc: {
+                                            coins: amount,
+                                        },
+                                    },
+                                    {
+                                        upsert: true,
+                                    }
+                                );
+                                const local_response = await profileModel.findOneAndUpdate(
+                                    {userId: message.author.id},
+                                    {
+                                        $inc: {
+                                            coins: -amount,
+                                        },
+                                    },
+                                    {
+                                        upsert: true,
+                                    }
+                                )
+        
+                                const embed = {
+                                    color: '#00FF00',
+                                    author: {
+                                        name: `_____________`,
+                                        icon_url: `${message.author.displayAvatarURL()}`,
+                                    },
+                                    title: `Transaction success, here is the receipt`,
+                                    description: `<@${message.author.id}> shared ❀ \`${amount}\` to <@${target.id}>`,
+                                    fields: [
+                                        {
+                                            name: `${message.author.username}`,
+                                            value: `**Wallet:** -❀ \`${amount}\`
+                                            **New Wallet:** \`${profileData.coins - amount}\``,
+                                            inline: true,
+                                        },
+                                        {
+                                            name: `${target.username}`,
+                                            value: `**Wallet:** +❀ \`${amount}\`
+                                            **New Wallet:** \`${target_profileData.coins + amount}\``,
+                                        },
+                                        
+                                    ],
+                                    timestamp: new Date(),
+                                };
+                                message.reply({ embeds: [embed] });
+                            }
+                        } else {
+                            const embed = {
+                                color: '#FF0000',
+                                title: `Transaction Error`,
+                                description: `You can only share a whole number of coins!\n**Expected Syntax:** \`xe share [user] [amount]\``,
+                            };
+                            message.reply({ embeds: [embed] });
+                        }
+                    } else if (get_amount > profileData.coins) {
+                        message.reply(`You got that much coins to give bro. Don't try to break me!`);
+                    } else {
+                        const target_response = await profileModel.findOneAndUpdate(
+                            {userId: target.id},
+                            {
+                                $inc: {
+                                    coins: get_amount,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
+                        const local_response = await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: -get_amount,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        )
+    
+                        const embed = {
+                            color: '#00FF00',
+                            author: {
+                                name: `_____________`,
+                                icon_url: `${message.author.displayAvatarURL()}`,
+                            },
+                            title: `Transaction success, here is the receipt`,
+                            description: `<@${message.author.id}> shared ❀ \`${get_amount}\` to <@${target.id}>`,
+                            fields: [
+                                {
+                                    name: `${message.author.username}`,
+                                    value: `**Wallet:** -❀ \`${get_amount}\`
+                                    **New Wallet:** \`${profileData.coins - get_amount}\``,
+                                    inline: true,
+                                },
+                                {
+                                    name: `${target.username}`,
+                                    value: `**Wallet:** +❀ \`${get_amount}\`
+                                    **New Wallet:** \`${target_profileData.coins + get_amount}\``,
+                                },
+                                
+                            ],
+                            timestamp: new Date(),
+                        };
+                        message.reply({ embeds: [embed] });
+                    }
                 }
             } catch (error) {
                 console.log(error);
             }
 
-
-            if(target.id === message.author.id) {
-                const embed = {
-                    color: '#FF0000',
-                    title: `Transaction Error`,
-                    description: `You can't share coins with yourself!\n**Expected Syntax:** \`xe share [user] [amount]\``,
-                };
-                message.reply({ embeds: [embed] });
-            } else {
-                if(!get_amount) {
-                    if(get_amount === "max" || get_amount === "all") {
-                        const amount = profileData.coins;
-                        
-                        if(amount <= 0) {
-                            if (profileData.bank <= 0) {
-                                message.reply(`You got no coins in your wallet or your bank to share, your broke :c.`);
-                            } else {
-                                message.reply(`You got no coins in your wallet to share, maybe withdraw some?`);
-                            }
-                        } else {
-                            const target_response = await profileModel.findOneAndUpdate(
-                                {userId: target.id},
-                                {
-                                    $inc: {
-                                        coins: amount,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-                            const local_response = await profileModel.findOneAndUpdate(
-                                {userId: message.author.id},
-                                {
-                                    $inc: {
-                                        coins: -amount,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            )
-    
-                            const embed = {
-                                color: '#00FF00',
-                                author: {
-                                    name: `_____________`,
-                                    icon_url: `${message.author.displayAvatarURL()}`,
-                                },
-                                title: `Transaction Success!`,
-                                description: `<@${message.author.id}> shared ❀ \`${amount}\` to <@${target.id}>`,
-                                fields: [
-                                    {
-                                        name: `${message.author.username}`,
-                                        value: `**Wallet:** -❀ \`${amount}\`
-                                        **New Wallet:** \`${profileData.coins - amount}\``,
-                                        inline: true,
-                                    },
-                                    {
-                                        name: `${target.username}`,
-                                        value: `**Wallet:** +❀ \`${amount}\`
-                                        **New Wallet:** \`${target_profileData.coins + amount}\``,
-                                    },
-                                    
-                                ],
-                                timestamp: new Date(),
-                            };
-                            message.reply({ embeds: [embed] });
-                        }
-                    } else {
-                        const embed = {
-                            color: '#FF0000',
-                            title: `Transaction Error`,
-                            description: `You can only share a whole number of coins!\n**Expected Syntax:** \`xe share [user] [amount]\``,
-                        };
-                        message.reply({ embeds: [embed] });
-                    }
-                } else if (get_amount > profileData.coins) {
-                    message.reply(`You got that much coins to give bro. Don't try to break me!`);
-                } else {
-                    const target_response = await profileModel.findOneAndUpdate(
-                        {userId: target.id},
-                        {
-                            $inc: {
-                                coins: get_amount,
-                            },
-                        },
-                        {
-                            upsert: true,
-                        }
-                    );
-                    const local_response = await profileModel.findOneAndUpdate(
-                        {userId: message.author.id},
-                        {
-                            $inc: {
-                                coins: -get_amount,
-                            },
-                        },
-                        {
-                            upsert: true,
-                        }
-                    )
-
-                    const embed = {
-                        color: '#00FF00',
-                        author: {
-                            name: `_____________`,
-                            icon_url: `${message.author.displayAvatarURL()}`,
-                        },
-                        title: `Transaction Success!`,
-                        description: `<@${message.author.id}> shared ❀ \`${get_amount}\` to <@${target.id}>`,
-                        fields: [
-                            {
-                                name: `${message.author.username}`,
-                                value: `**Wallet:** -❀ \`${get_amount}\`
-                                **New Wallet:** \`${profileData.coins - get_amount}\``,
-                                inline: true,
-                            },
-                            {
-                                name: `${target.username}`,
-                                value: `**Wallet:** +❀ \`${get_amount}\`
-                                **New Wallet:** \`${target_profileData.coins + get_amount}\``,
-                            },
-                            
-                        ],
-                        timestamp: new Date(),
-                    };
-                    message.reply({ embeds: [embed] });
-                }
-            }
         }
 
     }
