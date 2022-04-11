@@ -44,13 +44,13 @@ module.exports = {
                     };
                     return message.reply({ embeds: [embed] });
                     
-                }else if(target.id === message.author.id) {
+                } else if(target.id === message.author.id) {
                     const embed = {
                         color: '#FF0000',
                         title: `Transaction Error`,
                         description: `You can't share coins with yourself!\n**Expected Syntax:** \`xe share [user] [amount]\``,
                     };
-                    message.reply({ embeds: [embed] });
+                    return message.reply({ embeds: [embed] });
                 } else {
                     if(!get_amount) {
                         if(get_amount === "max" || get_amount === "all") {
