@@ -47,7 +47,7 @@ module.exports = {
                 );
                 
                 const embed = {
-                    color: '#00FF00',
+                    color: 'RANDOM',
                     title: `You Tried Begging`,
                     description: `Here, have this you little beggar.
                     You recieved ❀ \`${begAmount.toLocaleString()}\``,
