@@ -15,8 +15,7 @@ module.exports = {
             const embed = {
                 color: '#FF0000',
                 title: `Transaction Error`,
-                description: `Mention a user to share coins with! 
-                **Expected Syntax:** \`xe share [user] [amount]\``,
+                description: `Mention a user to share coins with!\n**Expected Syntax:** \`xe share [user] [amount]\``,
             };
             message.reply({ embeds: [embed] });
         } else {
@@ -45,8 +44,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Transaction Error`,
-                    description: `You can't share coins with yourself! 
-                    **Expected Syntax:** \`xe share [user] [amount]\``,
+                    description: `You can't share coins with yourself!\n**Expected Syntax:** \`xe share [user] [amount]\``,
                 };
                 message.reply({ embeds: [embed] });
             } else {
@@ -114,8 +112,7 @@ module.exports = {
                         const embed = {
                             color: '#FF0000',
                             title: `Transaction Error`,
-                            description: `You can only share a whole number of coins! 
-                            **Expected Syntax:** \`xe share [user] [amount]\``,
+                            description: `You can only share a whole number of coins!\n**Expected Syntax:** \`xe share [user] [amount]\``,
                         };
                         message.reply({ embeds: [embed] });
                     }
