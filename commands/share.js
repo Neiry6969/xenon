@@ -34,6 +34,16 @@ module.exports = {
                         experiencepoints: 0,
                         level: 0,
                     });
+                    profile.save();
+
+                    const embed = {
+                        color: '#0000FF',
+                        title: `Welcome to Xenon`,
+                        description: `I see a new user, your account has been created!`,
+                        timestamp: new Date(),
+                    };
+                    return message.reply({ embeds: [embed] });
+                    
                 }else if(target.id === message.author.id) {
                     const embed = {
                         color: '#FF0000',
