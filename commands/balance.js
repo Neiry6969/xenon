@@ -32,8 +32,6 @@ module.exports = {
                 
                     profile.save();
 
-                    console
-
                     const embed = {
                         color: 'RANDOM',
                         title: `${target.username}'s Balance`,
