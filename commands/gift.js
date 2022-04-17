@@ -96,7 +96,7 @@ module.exports = {
                                     } else {
                                         data.inventory[get_item] = data.inventory[get_item] + get_amount;
                                     }
-                                    await inventoryModel.findOneAndUpdate(params, data);
+                                    await inventoryModel.findOneAndUpdate(params_target, data);
                                 } else {
                                     new inventoryModel({
                                         userId: target.id,
@@ -105,9 +105,11 @@ module.exports = {
                                         }
                                     }).save();
                                 }
+
                              
                             })
-
+                            
+                                
                             const embed = {
                                 color: '#A8FE97',
                                 title: `Gift Successful`,
@@ -128,6 +130,7 @@ module.exports = {
                             };
                 
                             return message.reply({ embeds: [embed] });
+
                         }
                     }             
                 })
