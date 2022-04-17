@@ -52,7 +52,7 @@ module.exports = {
     
                 return message.reply({ embeds: [embed] });
             } else {
-                message.reply("That is not even an existing item.")
+                message.reply(`\`${getItem}\` is not even an existing item.`)
             }
 
         } else {

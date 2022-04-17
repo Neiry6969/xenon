@@ -39,6 +39,20 @@ module.exports = [
         itemName: "PC Monitor",
         icon: "<a:monitor:965097022027866172>",
         price: 10000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965038665527087114/image-removebg-preview_5.png?width=408&height=427",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965273394142674984/965097022027866172.gif",
+    },
+    {
+        item: "shinyfox",
+        itemName: "Shiny Fox",
+        icon: "<:shinyfox:965272583496953936>",
+        price: 1000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965273171278327808/pixil-frame-0_1.png"
+    },
+    {
+        item: "testerstea",
+        itemName: "Testers Tea",
+        icon: "<:testerstea:965275697855733810>",
+        price: "Not For Sale",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965275585947521104/pixil-frame-0_4.png"
     },
 ]
