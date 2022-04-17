@@ -124,12 +124,25 @@ async execute(message, args, cmd, client, Discord, profileData) {
         } else if(getAmount % 1 != 0 || getAmount < 0) {
             return message.reply("Deposit amount must be a whole number.");
         } else {
-            const newWallet = profileData.coins - getAmount;
+            const newWallet = profileData.coins - parseInt(getAmount);
             const newBank = profileData.bank - parseInt(getAmount);
             const availableBankspace = bankspace - profileData.bank;
 
-            if (getAmount > profileData.coins) {
+            if (parseInt(getAmount) > profileData.coins) {
                 return message.reply(`You don't have that amount of coins to deposit.`);
+            } else if (bankspace === profileData.bank) {
+                const embed = {
+                    color: '#FF0000',
+                    title: 'Your deposit failed',
+                    description: `Your bank can't hold anymore coins...
+                    **Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                    author: {
+                        name: `_____________`,
+                        icon_url: `${message.author.displayAvatarURL()}`,
+                    },
+                    timestamp: new Date(),
+                };
+                return message.reply({ embeds: [embed] }); 
             } else if (getAmount > bankspace) {
                 const embed = {
                     color: '#FF0000',

@@ -61,10 +61,10 @@ async execute(message, args, cmd, client, Discord, profileData) {
         } else if(getAmount % 1 != 0 || getAmount < 0) {
             return message.reply("Withdraw amount must be a whole number.");
         } else {
-            const newBank = profileData.bank - getAmount;
+            const newBank = profileData.bank - parseInt(getAmount);
             const newWallet = profileData.coins + parseInt(getAmount);
             try {
-                if (getAmount > profileData.bank) return message.reply(`You don't have that amount of coins to withdraw.`);
+                if (parseInt(getAmount) > profileData.bank) return message.reply(`You don't have that amount of coins to withdraw.`);
                 await profileModel.findOneAndUpdate(
                     {
                         userId: message.author.id,
