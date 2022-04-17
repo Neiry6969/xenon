@@ -33,18 +33,31 @@ module.exports = {
                 const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === getItem).icon;
                 const itemName = allItems.find((val) => (val.item.toLowerCase()) === getItem).itemName;
                 const imageUrl = allItems.find((val) => (val.item.toLowerCase()) === getItem).imageUrl;
+                const itemDesc = allItems.find((val) => (val.item.toLowerCase()) === getItem).description;
+                const itemRarity = allItems.find((val) => (val.item.toLowerCase()) === getItem).rarity;
 
                 const embed = {
                     color: 'RANDOM',
                     title: `${itemIcon} ${itemName}`,
-                    description: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\``,
+                    description: `> ${itemDesc}`,
                     thumbnail: {
                         url: imageUrl,
                     },
+                    description: `> ${itemDesc}`,
                     fields: [
+                        {
+                            name: '_ _',
+                            value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\``,
+                        },
                         {
                             name: 'ID',
                             value: `\`${item}\``,
+                            inline: true,
+                        },
+                        {
+                            name: 'Rarity',
+                            value: `\`${itemRarity}\``,
+                            inline: true,
                         },
                     ],
                     timestamp: new Date(),
