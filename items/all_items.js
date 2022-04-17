@@ -33,5 +33,12 @@ module.exports = [
         icon: "<:flamesword:965038139334864966>",
         price: 800000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965038665527087114/image-removebg-preview_5.png?width=408&height=427",
-    }
+    },
+    {
+        item: "monitor",
+        itemName: "PC Monitor",
+        icon: "<a:monitor:965097022027866172>",
+        price: 10000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965038665527087114/image-removebg-preview_5.png?width=408&height=427",
+    },
 ]
