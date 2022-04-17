@@ -23,7 +23,7 @@ module.exports = [
     {
         item: "bottleofcola",
         itemName: "Bottle Of Cola",
-        icon: "<:bottleofcola:965033644680953877>",
+        icon: "<:bottleofcola:965102489240211539>",
         price: 10,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965034186014621766/image-removebg-preview__4_-removebg-preview.png"
     },
