@@ -103,8 +103,7 @@ module.exports = async(Discord, client, message) => {
                 const embed = {
                     color: '#000000',
                     title: `Slow it down! Don't try to break me!`,
-                    description: `Try the command again in **${time_split(time_left)}**
-                    Command Cooldown: \`${time_split(command.cooldown)}\``,
+                    description: `Try the command again in **${time_split(time_left)}**\nCommand Cooldown: \`${time_split(command.cooldown)}\``,
                     author: {
                         name: `${client.user.username}`,
                         icon_url: `${client.user.displayAvatarURL()}`,
