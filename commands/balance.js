@@ -28,9 +28,16 @@ module.exports = {
                         expbankspace: 0,
                         experiencepoints: 0,
                         level: 0,
+                        commands: 0,
+                        dailystreak: 0,
+                        prestige: 0,
+                        commands: 0,
+                        deaths: 0,
                     });
                 
                     profile.save();
+
+                    console
 
                     const embed = {
                         color: 'RANDOM',
@@ -121,4 +128,3 @@ module.exports = {
     },
 
 }
-

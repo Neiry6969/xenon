@@ -17,7 +17,7 @@ module.exports = {
                 title: `Transaction Error`,
                 description: `Mention a user to share coins with!\n**Expected Syntax:** \`xe share [user] [amount]\``,
             };
-            message.reply({ embeds: [embed] });
+            return message.reply({ embeds: [embed] });
         } else {
             let target_profileData;
             try {   
@@ -33,6 +33,11 @@ module.exports = {
                         expbankspace: 0,
                         experiencepoints: 0,
                         level: 0,
+                        commands: 0,
+                        dailystreak: 0,
+                        prestige: 0,
+                        commands: 0,
+                        deaths: 0,
                     });
                     profile.save();
 
@@ -93,18 +98,16 @@ module.exports = {
                                         icon_url: `${message.author.displayAvatarURL()}`,
                                     },
                                     title: `Transaction success, here is the receipt`,
-                                    description: `<@${message.author.id}> shared ❀ \`${amount}\` to <@${target.id}>`,
+                                    description: `<@${message.author.id}> shared ❀ \`${amount.toLocaleString()}\` to <@${target.id}>`,
                                     fields: [
                                         {
                                             name: `${message.author.username}`,
-                                            value: `**Wallet:** -❀ \`${amount}\`
-                                            **New Wallet:** \`${profileData.coins - amount}\``,
+                                            value: `**Wallet:** -❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - amount).toLocaleString()}\``,
                                             inline: true,
                                         },
                                         {
                                             name: `${target.username}`,
-                                            value: `**Wallet:** +❀ \`${amount}\`
-                                            **New Wallet:** \`${target_profileData.coins + amount}\``,
+                                            value: `**Wallet:** +❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(target_profileData.coins + amount).toLocaleString()}\``,
                                         },
                                         
                                     ],
@@ -167,18 +170,16 @@ module.exports = {
                                     icon_url: `${message.author.displayAvatarURL()}`,
                                 },
                                 title: `Transaction success, here is the receipt`,
-                                description: `<@${message.author.id}> shared ❀ \`${get_amount}\` to <@${target.id}>`,
+                                description: `<@${message.author.id}> shared ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>`,
                                 fields: [
                                     {
                                         name: `${message.author.username}`,
-                                        value: `**Wallet:** -❀ \`${get_amount}\`
-                                        **New Wallet:** \`${profileData.coins - get_amount}\``,
+                                        value: `**Wallet:** -❀ \`${parseInt(get_amount).toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - parseInt(get_amount)).toLocaleString()}\``,
                                         inline: true,
                                     },
                                     {
                                         name: `${target.username}`,
-                                        value: `**Wallet:** +❀ \`${get_amount}\`
-                                        **New Wallet:** \`${target_profileData.coins + get_amount}\``,
+                                        value: `**Wallet:** +❀ \`${parseInt(get_amount).toLocaleString()}\`\n**New Wallet:** \`${(target_profileData.coins + parseInt(get_amount)).toLocaleString()}\``,
                                     },
                                     
                                 ],

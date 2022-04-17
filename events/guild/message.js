@@ -6,7 +6,7 @@ const cooldowns = new Map();
 
 
 module.exports = async(Discord, client, message) => {
-    if(!message.content.startsWith(prefix.toLowerCase()) || message.author.bot) return;
+    if(!message.content.startsWith(prefix) || message.author.bot) return;
 
     let profileData;
     try {   
@@ -21,6 +21,11 @@ module.exports = async(Discord, client, message) => {
                 expbankspace: 0,
                 experiencepoints: 0,
                 level: 0,
+                commands: 0,
+                dailystreak: 0,
+                prestige: 0,
+                commands: 0,
+                deaths: 0,
             });
         
             profile.save();
@@ -59,15 +64,47 @@ module.exports = async(Discord, client, message) => {
         //If time_stamps has a key with the author's id then check the expiration time to send a message to a user.
         if(time_stamps.has(message.author.id)){
             const expiration_time = time_stamps.get(message.author.id) + cooldown_amount;
+            
+            function time_split(time) {
+              if(time < 60) {
+                return `${time}s`;
+              } else if (time <= 60) {
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                return `${minutes}m ${seconds}s`;
+              } else if (time >= 3600) {
+                const hours = Math.floor(time / 3600)
+                const minutes = Math.floor((time % 3600) / 60);
+                const seconds = Math.floor(time % 3600 % 60);
+                return `${hours}h ${minutes}m ${seconds}s`;
+              } else if (time <= 86400) {
+                const days = Math.floor(time / 86400)
+                const hours = Math.floor(time % 86400 / 24)
+                const minutes = Math.floor((time % 86400) % 24 / 60);
+                const seconds = Math.floor(time % 86400 % 24 % 60 % 60);
+                return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+              } else if (time >= 604800) {
+                const weeks = Math.floor(time / 604800)
+                const days = Math.floor((time % 604800) / 24);
+                const hours = Math.floor(((time % 604800) % 24) / 60)
+                const minutes = Math.floor(((time % 604800) % 24) % 60 / 60)
+                const seconds = Math.floor(((time % 604800) % 24) % 60 % 60)
+                return `${weeks}w ${days}d ${hours}h ${minutes}m ${seconds}s`;
+              } else {
+                return `${time}s`;
+              }
+            }
+
+
     
             if(current_time < expiration_time){
-                const time_left = (expiration_time - current_time) / 1000;
+                const time_left = Math.floor((expiration_time - current_time) / 1000);
                 
                 const embed = {
                     color: '#000000',
                     title: `Slow it down! Don't try to break me!`,
-                    description: `Try the command again in **${time_left.toFixed(1)}s**
-                    Command Cooldown: \`${command.cooldown.toFixed(1)}s\``,
+                    description: `Try the command again in **${time_split(time_left)}**
+                    Command Cooldown: \`${time_split(command.cooldown)}\``,
                     author: {
                         name: `${client.user.username}`,
                         icon_url: `${client.user.displayAvatarURL()}`,

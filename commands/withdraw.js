@@ -5,7 +5,7 @@ aliases: ["with"],
 cooldown: 5,
 description: "withdraw coins into your bank.",
 async execute(message, args, cmd, client, Discord, profileData) {
-        const getAmount = args[0];
+        const getAmount = args[0].toLowerCase();
         if (getAmount === 'max' || getAmount === 'all') {
             const amount = profileData.bank;
             const newWallet = profileData.coins + amount;
@@ -85,7 +85,7 @@ async execute(message, args, cmd, client, Discord, profileData) {
                     },
                     fields: [
                         {
-                            name: 'Deposited',
+                            name: 'Withdrawn',
                             value: `❀ \`${getAmount.toLocaleString()}\``,
                         },
                         {

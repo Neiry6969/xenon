@@ -5,11 +5,11 @@ aliases: ["dep"],
 cooldown: 5,
 description: "deposit coins into your bank.",
 async execute(message, args, cmd, client, Discord, profileData) {
-        const getAmount = (args[0]);
+        const getAmount = args[0].toLowerCase();
         const bankspace = profileData.bankspace + profileData.expbankspace;
         const bank_percent_filled = ((profileData.bank / bankspace) * 100).toFixed(2);
 
-        if (getAmount === 'max' || getAmount === 'all') {
+        if(getAmount === 'max' || getAmount === 'all') {
             const amount = profileData.coins;
 
             if (bankspace === profileData.bank) {

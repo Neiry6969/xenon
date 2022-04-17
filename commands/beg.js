@@ -17,8 +17,7 @@ module.exports = {
             const embed = {
                 color: '#FF0000',
                 title: `You Tried Begging`,
-                description: `Ew! Gross you are begging again? Go away smelly peasant!
-                You recieved ❀ \`0\``,
+                description: `Ew! Gross you are begging again? Go away smelly peasant!\nYou recieved ❀ \`0\``,
                 timestamp: new Date(),
             };
             message.reply({ embeds: [embed] });
@@ -47,10 +46,9 @@ module.exports = {
                 );
                 
                 const embed = {
-                    color: 'RANDOM',
+                    color: '#A8FE97',
                     title: `You Tried Begging`,
-                    description: `Here, have this you little beggar.
-                    You recieved ❀ \`${begAmount.toLocaleString()}\``,
+                    description: `Here, have this you little beggar.\nYou recieved ❀ \`${begAmount.toLocaleString()}\``,
                     timestamp: new Date(),
                 };
                 
