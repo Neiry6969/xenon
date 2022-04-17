@@ -35,6 +35,8 @@ module.exports = {
                 const imageUrl = allItems.find((val) => (val.item.toLowerCase()) === getItem).imageUrl;
                 const itemDesc = allItems.find((val) => (val.item.toLowerCase()) === getItem).description;
                 const itemRarity = allItems.find((val) => (val.item.toLowerCase()) === getItem).rarity;
+                const itemSell = allItems.find((val) => (val.item.toLowerCase()) === getItem).sell;
+                const itemTrade = allItems.find((val) => (val.item.toLowerCase()) === getItem).trade;
 
                 const embed = {
                     color: 'RANDOM',
@@ -47,7 +49,7 @@ module.exports = {
                     fields: [
                         {
                             name: '_ _',
-                            value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\``,
+                            value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\`\n**SELL:** ❀ \`${itemSell.toLocaleString()}\`\n**TRADE:** ❀ \`${itemTrade.toLocaleString()}\``,
                         },
                         {
                             name: 'ID',
