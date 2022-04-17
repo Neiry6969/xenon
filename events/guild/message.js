@@ -6,7 +6,7 @@ const cooldowns = new Map();
 
 
 module.exports = async(Discord, client, message) => {
-    if(!message.content.startsWith(prefix) || message.author.bot) return;
+    if(!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
 
     let profileData;
     try {   
@@ -41,8 +41,9 @@ module.exports = async(Discord, client, message) => {
     } catch (error) {
         console.log(error)
     }
-   
-    const args = message.content.slice(prefix.length).split(/ +/);
+    
+    const message_content = message.content?.toLowerCase()
+    const args = message_content.toLowerCase().slice(prefix.length).split(/ +/);
     const cmd = args.shift().toLowerCase();
 
     const command = client.commands.get(cmd) || 
