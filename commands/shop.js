@@ -48,36 +48,40 @@ module.exports = {
 
                     if(!data.inventory[getItem]) {
                         itemOwned = 0
+                    } else {
+                        itemOwned = data.inventory[getItem]
+                        
+                        const embed = {
+                            color: 'RANDOM',
+                            title: `**${itemIcon} ${itemName}** (${itemOwned?.toLocaleString()} Owned)`,
+                            description: `> ${itemDesc}`,
+                            thumbnail: {
+                                url: imageUrl,
+                            },
+                            description: `> ${itemDesc}`,
+                            fields: [
+                                {
+                                    name: '_ _',
+                                    value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\`\n**SELL:** ❀ \`${itemSell.toLocaleString()}\`\n**TRADE:** ❀ \`${itemTrade.toLocaleString()}\``,
+                                },
+                                {
+                                    name: 'ID',
+                                    value: `\`${item}\``,
+                                    inline: true,
+                                },
+                                {
+                                    name: 'Rarity',
+                                    value: `\`${itemRarity}\``,
+                                    inline: true,
+                                },
+                            ],
+                            timestamp: new Date(),
+                        };
+            
+                        return message.reply({ embeds: [embed] });
                     }
 
-                    const embed = {
-                        color: 'RANDOM',
-                        title: `**${itemIcon} ${itemName}** (${itemOwned?.toLocaleString()} Owned)`,
-                        description: `> ${itemDesc}`,
-                        thumbnail: {
-                            url: imageUrl,
-                        },
-                        description: `> ${itemDesc}`,
-                        fields: [
-                            {
-                                name: '_ _',
-                                value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\`\n**SELL:** ❀ \`${itemSell.toLocaleString()}\`\n**TRADE:** ❀ \`${itemTrade.toLocaleString()}\``,
-                            },
-                            {
-                                name: 'ID',
-                                value: `\`${item}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Rarity',
-                                value: `\`${itemRarity}\``,
-                                inline: true,
-                            },
-                        ],
-                        timestamp: new Date(),
-                    };
-        
-                    return message.reply({ embeds: [embed] });
+                   
                 })
 
                 
