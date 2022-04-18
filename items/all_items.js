@@ -118,7 +118,7 @@ module.exports = [
         sell: "collectable",
         trade: 690000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965398982295687288/output-onlinegiftools_2.gif",
-        description: "Card from the stone age, harded into gold. Is that possible? Item for Hrishikesh c:.\nWorldwide Quantity: `6969`",
+        description: "Card from the stone age, harded into gold. Is that possible? Item for Hrishikesh c:.\n\nWorldwide Quantity: `6969`",
         rarity: "exotic",
     },
     {
