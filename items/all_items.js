@@ -118,7 +118,7 @@ module.exports = [
         sell: "collectable",
         trade: 690000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965398982295687288/output-onlinegiftools_2.gif",
-        description: "Card from the stone age, harded into gold. Is that possible? Item for Hrishikesh c:.\nWorldwide Quantity `6969`",
+        description: "Card from the stone age, harded into gold. Is that possible? Item for Hrishikesh c:.\nWorldwide Quantity: `6969`",
         rarity: "exotic",
     },
     {
@@ -129,7 +129,7 @@ module.exports = [
         sell: "collectable",
         trade: 100000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965411161333964811/image-removebg-preview_8.png?width=404&height=427",
-        description: "Fiona actually doesn't have a kitten aw so sad but this kitten virtually will totally do... Am I right?\n\nWorldwide Quantity `1313`",
+        description: "Fiona actually doesn't have a kitten aw so sad but this kitten virtually will totally do... Am I right?\n\nWorldwide Quantity: `1313`",
         rarity: "exotic",
     },
 ]
