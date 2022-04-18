@@ -26,7 +26,7 @@ module.exports = {
                             return;
                         } else {
                             const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === key).icon;
-                            return `${itemIcon} ${key} \`${data.inventory[key].toLocaleString()}\``;
+                            return `${itemIcon} ${key} ── \`${data.inventory[key].toLocaleString()}\``;
                         }
                     }
                     )
@@ -62,7 +62,7 @@ module.exports = {
                             return;
                         } else {
                             const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === key).icon;
-                            return `${itemIcon} ${key} \`${data.inventory[key].toLocaleString()}\``;
+                            return `${itemIcon} ${key} ── \`${data.inventory[key].toLocaleString()}\``;
                         }
                     }
                     )

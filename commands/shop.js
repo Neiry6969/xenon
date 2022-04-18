@@ -14,7 +14,7 @@ module.exports = {
         if(!getItem) {
             const shopList = shopItems
             .map((value) => {
-                return `${value.icon} **${value.name}**    **-**   ❀ \`${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
+                return `${value.icon} **${value.name}**    **───**   ❀ \`${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
             })
             .join("\n\n")
 
@@ -121,7 +121,7 @@ module.exports = {
         } else {
             const shopList = shopItems
             .map((value) => {
-                return `${value.icon} **${value.name}**    **-**   ❀ \`${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
+                return `${value.icon} **${value.name}**    **───**   ❀ \`${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
             })
             .join("\n\n")
 
