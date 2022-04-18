@@ -85,7 +85,7 @@ module.exports = [
         sell: "collectable",
         trade: 1000000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965275585947521104/pixil-frame-0_4.png",
-        description: "Tea given to the testers for they hard work finding bugs.",
+        description: "Tea given to the testers for their hard work finding bugs.",
         rarity: "legendary",
     },
     {
