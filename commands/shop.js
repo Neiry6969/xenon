@@ -1,5 +1,6 @@
 const shopItems = require('../items/shop_items');
 const allItems = require('../items/all_items');
+const inventoryModel = require('../models/inventorySchema');
 
 module.exports = {
     name: "shop",
@@ -38,34 +39,44 @@ module.exports = {
                 const itemSell = allItems.find((val) => (val.item.toLowerCase()) === getItem).sell;
                 const itemTrade = allItems.find((val) => (val.item.toLowerCase()) === getItem).trade;
 
-                const embed = {
-                    color: 'RANDOM',
-                    title: `${itemIcon} ${itemName}`,
-                    description: `> ${itemDesc}`,
-                    thumbnail: {
-                        url: imageUrl,
-                    },
-                    description: `> ${itemDesc}`,
-                    fields: [
-                        {
-                            name: '_ _',
-                            value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\`\n**SELL:** ❀ \`${itemSell.toLocaleString()}\`\n**TRADE:** ❀ \`${itemTrade.toLocaleString()}\``,
+                const params_user = {
+                    userId: message.author.id,
+                }
+        
+                inventoryModel.findOne(params_user, async(err, data) => {
+                    const itemOwned = data.inventory[getItem];
+
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `**${itemIcon} ${itemName}** (${itemOwned?.toLocaleString()} Owned)`,
+                        description: `> ${itemDesc}`,
+                        thumbnail: {
+                            url: imageUrl,
                         },
-                        {
-                            name: 'ID',
-                            value: `\`${item}\``,
-                            inline: true,
-                        },
-                        {
-                            name: 'Rarity',
-                            value: `\`${itemRarity}\``,
-                            inline: true,
-                        },
-                    ],
-                    timestamp: new Date(),
-                };
-    
-                return message.reply({ embeds: [embed] });
+                        description: `> ${itemDesc}`,
+                        fields: [
+                            {
+                                name: '_ _',
+                                value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\`\n**SELL:** ❀ \`${itemSell.toLocaleString()}\`\n**TRADE:** ❀ \`${itemTrade.toLocaleString()}\``,
+                            },
+                            {
+                                name: 'ID',
+                                value: `\`${item}\``,
+                                inline: true,
+                            },
+                            {
+                                name: 'Rarity',
+                                value: `\`${itemRarity}\``,
+                                inline: true,
+                            },
+                        ],
+                        timestamp: new Date(),
+                    };
+        
+                    return message.reply({ embeds: [embed] });
+                })
+
+                
             } else {
                 message.reply(`\`${getItem}\` is not even an existing item.`)
             }

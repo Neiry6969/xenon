@@ -29,7 +29,7 @@ module.exports = [
         price: 10,
         sell: 1,
         trade: 5,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965034186014621766/image-removebg-preview__4_-removebg-preview.png",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965102803011899412/2900eb50-5dec-45b7-995b-db6deb38b768.png",
         description: "Well just a bottle of cola.",
         rarity: "common",
     },
