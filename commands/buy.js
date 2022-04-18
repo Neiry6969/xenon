@@ -112,7 +112,9 @@ module.exports = {
     
                 return message.reply({ embeds: [embed] });
             })
-        } else if (parseInt(itemAmount)){
+        } else if(parseInt(itemAmount) < 0) {
+            return message.reply("You can only buy a whole number of items.");
+        } else if(parseInt(itemAmount)){
             const buy_amount = parseInt(itemAmount)
             const total_price = buy_amount * itemPrice;
             
