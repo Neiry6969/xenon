@@ -22,10 +22,15 @@ module.exports = {
                 const mappedData = Object.keys(data.inventory)
                     .sort()
                     .map((key) => {
-                        const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === key).icon;
-                        return `${itemIcon} ${key} \`${data.inventory[key].toLocaleString()}\``
+                        if(data.inventory[key] === 0) {
+                            return;
+                        } else {
+                            const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === key).icon;
+                            return `${itemIcon} ${key} \`${data.inventory[key].toLocaleString()}\``;
+                        }
                     }
                     )
+                    .filter(Boolean)
                     .join("\n")
     
     
