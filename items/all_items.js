@@ -124,11 +124,11 @@ module.exports = [
     {
         item: "fionaskitten",
         itemName: "Fiona's Kitten",
-        icon: "<:fionaskitten:965411223812333588>",
+        icon: "<:fionaskitten:965415330241474571>",
         price: "not for sale",
         sell: "collectable",
         trade: 100000000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965411161333964811/image-removebg-preview_8.png?width=404&height=427",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965415201144983612/image-removebg-preview_9.png?width=390&height=390",
         description: "Fiona actually doesn't have a kitten aw so sad but this kitten virtually will totally do... Am I right?\n\nWorldwide Quantity: `1313`",
         rarity: "exotic",
     },
