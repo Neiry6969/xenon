@@ -119,6 +119,17 @@ module.exports = [
         trade: 690000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965398982295687288/output-onlinegiftools_2.gif",
         description: "Card from the stone age, harded into gold. Is that possible? Item for Hrishikesh c:.",
-        rarity: "common",
+        rarity: "exotic",
+    },
+    {
+        item: "fionaskitten",
+        itemName: "Fiona's Kitten",
+        icon: "<:fionaskitten:965411223812333588>",
+        price: "not for sale",
+        sell: "collectable",
+        trade: 100000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965411161333964811/image-removebg-preview_8.png?width=404&height=427",
+        description: "Fiona actually doesn't have a kitten aw so sad but this kitten virtually will totally do... Am I right?",
+        rarity: "exotic",
     },
 ]
