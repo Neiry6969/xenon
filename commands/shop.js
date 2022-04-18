@@ -29,15 +29,7 @@ module.exports = {
             const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem));
 
             if(validItem) {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === getItem).item;
-                const itemPrice = allItems.find((val) => (val.item.toLowerCase()) === getItem).price;
-                const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === getItem).icon;
-                const itemName = allItems.find((val) => (val.item.toLowerCase()) === getItem).itemName;
-                const imageUrl = allItems.find((val) => (val.item.toLowerCase()) === getItem).imageUrl;
-                const itemDesc = allItems.find((val) => (val.item.toLowerCase()) === getItem).description;
-                const itemRarity = allItems.find((val) => (val.item.toLowerCase()) === getItem).rarity;
-                const itemSell = allItems.find((val) => (val.item.toLowerCase()) === getItem).sell;
-                const itemTrade = allItems.find((val) => (val.item.toLowerCase()) === getItem).trade;
+                const item = allItems.find((val) => (val.item.toLowerCase()) === getItem);
 
                 const params_user = {
                     userId: message.author.id,
@@ -48,30 +40,67 @@ module.exports = {
 
                     if(!data.inventory[getItem]) {
                         itemOwned = 0
+                        
+                        const embed = {
+                            color: 'RANDOM',
+                            title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
+                            thumbnail: {
+                                url: item.imageUrl,
+                            },
+                            description: `> ${item.description}`,
+                            fields: [
+                                {
+                                    name: '_ _',
+                                    value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
+                                },
+                                {
+                                    name: 'ID',
+                                    value: `\`${item.item}\``,
+                                    inline: true,
+                                },
+                                {
+                                    name: 'Rarity',
+                                    value: `\`${item.rarity}\``,
+                                    inline: true,
+                                },
+                                {
+                                    name: 'Type',
+                                    value: `\`${item.type}\``,
+                                    inline: true,
+                                },
+                            ],
+                            timestamp: new Date(),
+                        };
+            
+                        return message.reply({ embeds: [embed] });
                     } else {
                         itemOwned = data.inventory[getItem]
                         
                         const embed = {
                             color: 'RANDOM',
-                            title: `**${itemIcon} ${itemName}** (${itemOwned?.toLocaleString()} Owned)`,
-                            description: `> ${itemDesc}`,
+                            title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
                             thumbnail: {
-                                url: imageUrl,
+                                url: item.imageUrl,
                             },
-                            description: `> ${itemDesc}`,
+                            description: `> ${item.description}`,
                             fields: [
                                 {
                                     name: '_ _',
-                                    value: `**BUY:** ❀ \`${itemPrice.toLocaleString()}\`\n**SELL:** ❀ \`${itemSell.toLocaleString()}\`\n**TRADE:** ❀ \`${itemTrade.toLocaleString()}\``,
+                                    value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
                                 },
                                 {
                                     name: 'ID',
-                                    value: `\`${item}\``,
+                                    value: `\`${item.item}\``,
                                     inline: true,
                                 },
                                 {
                                     name: 'Rarity',
-                                    value: `\`${itemRarity}\``,
+                                    value: `\`${item.rarity}\``,
+                                    inline: true,
+                                },
+                                {
+                                    name: 'Type',
+                                    value: `\`${item.type}\``,
                                     inline: true,
                                 },
                             ],
