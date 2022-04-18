@@ -10,9 +10,9 @@ module.exports = {
     description: "sell an item.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const expectedArgs = `**Expected Syntax:** \`xe sell [item] [amount]\``;
-        const getItem = args[0].toLowerCase();
+        const getItem = args[0]?.toLowerCase();
         const getAmount = parseInt(args[1]);
-        const max_amount = args[1].toLowerCase();
+        const max_amount = args[1]?.toLowerCase();
 
         if(!getItem) {
             const embed = {
