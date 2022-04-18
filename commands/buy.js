@@ -190,7 +190,7 @@ module.exports = {
                     const embed = {
                         color: '#A8FE97',
                         title: `Purchase Receipt`,
-                        description: `**Item:** ${itemIcon} \`${item}\`\n**Price:** ❀ \`${total_price.toLocaleString()}\`\n**Quantity:** \`${buy_amount}\``,
+                        description: `**Item:** ${itemIcon} \`${item}\`\n**Price:** ❀ \`${total_price.toLocaleString()}\`\n**Quantity:** \`${buy_amount.toLocaleString()}\``,
                         timestamp: new Date(),
                     };
         
