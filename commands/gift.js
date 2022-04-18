@@ -86,6 +86,7 @@ module.exports = {
                             inventoryModel.findOne(params_user, async(err, data) => {
                                 data.inventory[get_item] = data.inventory[get_item] - get_amount;
                                 await inventoryModel.findOneAndUpdate(params, data);
+
                             })
 
                             inventoryModel.findOne(params_target, async(err, data) => {

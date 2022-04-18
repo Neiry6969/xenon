@@ -44,7 +44,11 @@ module.exports = {
                 }
         
                 inventoryModel.findOne(params_user, async(err, data) => {
-                    const itemOwned = data.inventory[getItem];
+                    let itemOwned;
+
+                    if(!data.inventory[getItem]) {
+                        itemOwned = 0
+                    }
 
                     const embed = {
                         color: 'RANDOM',
