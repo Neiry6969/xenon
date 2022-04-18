@@ -56,6 +56,13 @@ module.exports = {
                         description: `You can't share coins with yourself!\n**Expected Syntax:** \`xe share [user] [amount]\``,
                     };
                     return message.reply({ embeds: [embed] });
+                } else if(parseInt(get_amount) < 0) {
+                    const embed = {
+                        color: '#FF0000',
+                        title: `Transaction Error`,
+                        description: `You can only share a whole number of coins!\n**Expected Syntax:** \`xe share [user] [amount]\``,
+                    };
+                    return message.reply({ embeds: [embed] });
                 } else {
                     if(!parseInt(get_amount)) {
                         if(get_amount === "max" || get_amount === "all") {
