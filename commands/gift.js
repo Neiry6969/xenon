@@ -94,12 +94,12 @@ module.exports = {
                                 );
                 
                             const embed = {
-                                color: '#FF0000',
+                                color: 'RANDOM',
                                 author: {
                                     name: `_____________`,
                                     icon_url: `${message.author.displayAvatarURL()}`,
                                 },
-                                title: `Transaction cancelled, timeout`,
+                                title: `Confirm transaction`,
                                 description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${itemIcon} **${get_item}** to <@${target.id}>?`,
                                 timestamp: new Date(),
                             };
