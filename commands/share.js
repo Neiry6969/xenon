@@ -5,7 +5,7 @@ const profileModel = require("../models/profileSchema");
 module.exports = {
     name: "share",
     aliases: ['give', 'shr'],
-    cooldown: 2,
+    cooldown: 15,
     minArgs: 0,
     maxArgs: 1,
     description: "share coins with other users.",

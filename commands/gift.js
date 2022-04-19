@@ -6,7 +6,7 @@ const allItems = require("../items/all_items");
 module.exports = {
     name: "gift",
     aliases: ['yeet', 'send'],
-    cooldown: 5,
+    cooldown: 15,
     minArgs: 0,
     maxArgs: 2,
     description: "gift items to other users.",
