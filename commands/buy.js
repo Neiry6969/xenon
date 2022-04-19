@@ -33,7 +33,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Purchase Error`,
-                    description: `You don't have enough coins in your bank or wallet to buy that item.\n\n**Item:** ${itemIcon} \`${item}\`\n**Item Cost:** ❀ \`${itemPrice.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
+                    description: `You don't have enough coins in your bank or wallet to buy that item.\n\n**Item:** ${itemIcon} \`${item}\`\n**Purchase Cost:** ❀ \`${itemPrice.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
                     timestamp: new Date(),
                 };
     
@@ -42,7 +42,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Purchase Error`,
-                    description: `You don't have enough coins in your wallet to buy that item, maybe withdraw some from your bank?\n\n**Item:** ${itemIcon} \`${item}\`\n**Item Cost:** ❀ \`${itemPrice.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
+                    description: `You don't have enough coins in your wallet to buy that item, maybe withdraw some from your bank?\n\n**Item:** ${itemIcon} \`${item}\`\n**Purchase Cost:** ❀ \`${itemPrice.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
                     timestamp: new Date(),
                 };
     
@@ -123,7 +123,7 @@ module.exports = {
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase Error`,
-                        description: `You don't have enough coins in your bank or wallet to buy that item.\n\n**Item:** ${itemIcon} \`${item}\`\n**Item Cost:** ❀ \`${total_price.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
+                        description: `You don't have enough coins in your bank or wallet to buy that item.\n\n**Item:** ${itemIcon} \`${item}\`\n**Purchase Cost:** ❀ \`${total_price.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
                         timestamp: new Date(),
                     };
         
@@ -132,7 +132,7 @@ module.exports = {
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase Error`,
-                        description: `You don't have enough coins in your wallet to buy that item, maybe withdraw some from your bank?\n\n**Item:** ${itemIcon} \`${item}\`\n**Item Cost:** ❀ \`${itemPrice.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
+                        description: `You don't have enough coins in your wallet to buy that item, maybe withdraw some from your bank?\n\n**Item:** ${itemIcon} \`${item}\`\n**Purchase Cost:** ❀ \`${itemPrice.toLocaleString()}\`\n**Current Net Balance:** ❀ \`${netBal.toLocaleString()}\``,
                         timestamp: new Date(),
                     };
         

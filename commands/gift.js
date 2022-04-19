@@ -1,3 +1,5 @@
+const { MessageActionRow, MessageButton } = require('discord.js')
+
 const inventoryModel = require("../models/inventorySchema");
 const allItems = require("../items/all_items");
 
@@ -75,62 +77,166 @@ module.exports = {
                             return message.reply({ embeds: [embed] });
                        
                         } else {
-                            const params_user = {
-                                userId: message.author.id,
-                            }
-                            const params_target = {
-                                userId: target.id,
-                            }
-                    
-                    
-                            inventoryModel.findOne(params_user, async(err, data) => {
-                                data.inventory[get_item] = data.inventory[get_item] - get_amount;
-                                await inventoryModel.findOneAndUpdate(params, data);
+                            let confirm = new MessageButton()
+                                .setCustomId('confirm')
+                                .setLabel('Confirm')
+                                .setStyle('PRIMARY')
 
-                            })
+                            let cancel = new MessageButton()
+                                .setCustomId('cancel')
+                                .setLabel('Cancel')
+                                .setStyle('DANGER')
 
-                            inventoryModel.findOne(params_target, async(err, data) => {
-                                if(data) {
-                                    const hasItem = Object.keys(data.inventory).includes(get_item);
-                                    if(!hasItem) {
-                                        data.inventory[get_item] = get_amount;
-                                    } else {
-                                        data.inventory[get_item] = data.inventory[get_item] + get_amount;
-                                    }
-                                    await inventoryModel.findOneAndUpdate(params_target, data);
-                                } else {
-                                    new inventoryModel({
-                                        userId: target.id,
-                                        inventory: {
-                                            [get_item]: get_amount
-                                        }
-                                    }).save();
-                                }
-
-                             
-                            })
-                            
-                                
+                            let row = new MessageActionRow()
+                                .addComponents(
+                                    confirm,
+                                    cancel
+                                );
+                
                             const embed = {
-                                color: '#A8FE97',
-                                title: `Gift Successful`,
-                                description: `<@${message.author.id}> gifted items to <@${target.id}>, here are the details:`,
-                                fields: [
-                                    {
-                                        name: 'Item',
-                                        value: `${itemIcon} \`${get_item}\``,
-                                        inline: true,
-                                    },
-                                    {
-                                        name: 'Quantity',
-                                        value: `\`${get_amount.toLocaleString()}\``,
-                                        inline: true,
-                                    },
-                                ],
+                                color: '#FF0000',
+                                author: {
+                                    name: `_____________`,
+                                    icon_url: `${message.author.displayAvatarURL()}`,
+                                },
+                                title: `Transaction cancelled, timeout`,
+                                description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${itemIcon} **${get_item}** to <@${target.id}>?`,
                                 timestamp: new Date(),
                             };
+                            const gift_msg = await message.reply({ embeds: [embed], components: [row] });
+
+                            const collector = gift_msg.createMessageComponentCollector({ time: 20 * 1000 });
+
+                            collector.on('collect', async (button) => {
+                                button.deferUpdate()
+                                if(button.user.id != message.author.id) {
+                                    return button.reply({
+                                        content: 'This is not for you.',
+                                        ephemeral: true,
+                                    })
+                                } 
+
+                                if(button.customId === "confirm") {
+                                    const params_user = {
+                                        userId: message.author.id,
+                                    }
+                                    const params_target = {
+                                        userId: target.id,
+                                    }
                             
-                            return message.reply({ embeds: [embed] });
+                            
+                                    inventoryModel.findOne(params_user, async(err, data) => {
+                                        data.inventory[get_item] = data.inventory[get_item] - get_amount;
+                                        await inventoryModel.findOneAndUpdate(params, data);
+        
+                                    })
+        
+                                    inventoryModel.findOne(params_target, async(err, data) => {
+                                        if(data) {
+                                            const hasItem = Object.keys(data.inventory).includes(get_item);
+                                            if(!hasItem) {
+                                                data.inventory[get_item] = get_amount;
+                                            } else {
+                                                data.inventory[get_item] = data.inventory[get_item] + get_amount;
+                                            }
+                                            await inventoryModel.findOneAndUpdate(params_target, data);
+                                        } else {
+                                            new inventoryModel({
+                                                userId: target.id,
+                                                inventory: {
+                                                    [get_item]: get_amount
+                                                }
+                                            }).save();
+                                        }
+        
+                                     
+                                    })
+                                    
+                                        
+                                    const embed = {
+                                        color: '#A8FE97',
+                                        title: `Gift Successful`,
+                                        description: `<@${message.author.id}> gifted items to <@${target.id}>, here are the details:`,
+                                        fields: [
+                                            {
+                                                name: 'Item',
+                                                value: `${itemIcon} \`${get_item}\``,
+                                                inline: true,
+                                            },
+                                            {
+                                                name: 'Quantity',
+                                                value: `\`${get_amount.toLocaleString()}\``,
+                                                inline: true,
+                                            },
+                                        ],
+                                        timestamp: new Date(),
+                                    };
+
+                                    confirm
+                                        .setDisabled()
+                                        .setStyle("SUCCESS")
+
+                                    cancel.setDisabled()
+
+                                    gift_msg.edit({
+                                        embeds: [embed],
+                                        components: [row]
+                                    })
+                                
+                                } else if(button.customId === "cancel") {
+                                    const embed = {
+                                        color: '#FF0000',
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        title: `Transaction cancelled`,
+                                        description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${itemIcon} **${get_item}** to <@${target.id}>?\nI guess not...`,
+                                        timestamp: new Date(),
+                                    };
+                                    
+                                    confirm.setDisabled()
+
+                                    cancel.setDisabled()
+                                    
+                                    gift_msg.edit({
+                                        embeds: [embed],
+                                        components: [row]
+                                    })
+                            
+                                }
+                                
+                            });
+
+                            collector.on('end', collected => {
+                                if(collected.size > 0) {
+
+                                } else {
+                                    const embed = {
+                                        color: '#FF0000',
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        title: `Transaction timeout`,
+                                        description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${itemIcon} **${get_item}** to <@${target.id}>?\nI guess not...`,
+                                        timestamp: new Date(),
+                                    };
+                                    
+                                    confirm
+                                        .setDisabled()
+                                        .setStyle("DANGER")
+
+                                    cancel.setDisabled()
+                                    
+                                    gift_msg.edit({
+                                        embeds: [embed],
+                                        components: [row]
+                                    })
+                                }
+                            });
+                            
+                         
 
                         }
                     }             

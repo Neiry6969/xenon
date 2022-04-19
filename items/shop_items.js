@@ -34,7 +34,7 @@ module.exports = [
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965102803011899412/2900eb50-5dec-45b7-995b-db6deb38b768.png",
         description: "Well just a bottle of cola.",
         rarity: "common",
-        type: "food",
+        type: "support",
     },
     {
         item: "flamesword",
@@ -82,7 +82,7 @@ module.exports = [
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965343089600389240/image-removebg-preview_6.png?width=427&height=427",
         description: "Fresh donut from Dunkin.",
         rarity: "common",
-        type: "food"
+        type: "support"
     },
     {
         item: "kfcchicken",
@@ -94,6 +94,6 @@ module.exports = [
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965343935142703244/image-removebg-preview_7.png?width=390&height=390",
         description: "Yum fried chicken from kfc, hope theres no rats.",
         rarity: "common",
-        type: "food"
+        type: "support"
     },
 ]

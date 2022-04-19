@@ -1,3 +1,5 @@
+const { MessageActionRow, MessageButton } = require('discord.js')
+
 const profileModel = require("../models/profileSchema");
 
 module.exports = {
@@ -9,7 +11,7 @@ module.exports = {
     description: "share coins with other users.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const target = message.mentions.users.first()
-        const get_amount = args[1]
+        const get_amount = parseInt(args[1])
 
         if(!target) {
             const embed = {
@@ -75,52 +77,155 @@ module.exports = {
                                     message.reply(`You got no coins in your wallet to share, maybe withdraw some?`);
                                 }
                             } else {
-                                const target_response = await profileModel.findOneAndUpdate(
-                                    {userId: target.id},
-                                    {
-                                        $inc: {
-                                            coins: amount,
-                                        },
-                                    },
-                                    {
-                                        upsert: true,
-                                    }
-                                );
-                                const local_response = await profileModel.findOneAndUpdate(
-                                    {userId: message.author.id},
-                                    {
-                                        $inc: {
-                                            coins: -amount,
-                                        },
-                                    },
-                                    {
-                                        upsert: true,
-                                    }
-                                )
-        
+                                let confirm = new MessageButton()
+                                    .setCustomId('confirm')
+                                    .setLabel('Confirm')
+                                    .setStyle('PRIMARY')
+
+                                let cancel = new MessageButton()
+                                    .setCustomId('cancel')
+                                    .setLabel('Cancel')
+                                    .setStyle('DANGER')
+
+                                let row = new MessageActionRow()
+                                    .addComponents(
+                                        confirm,
+                                        cancel
+                                    );
+                    
                                 const embed = {
-                                    color: '#00FF00',
+                                    color: '#FF0000',
                                     author: {
                                         name: `_____________`,
                                         icon_url: `${message.author.displayAvatarURL()}`,
                                     },
-                                    title: `Transaction success, here is the receipt`,
-                                    description: `<@${message.author.id}> shared ❀ \`${amount.toLocaleString()}\` to <@${target.id}>`,
-                                    fields: [
-                                        {
-                                            name: `${message.author.username}`,
-                                            value: `**Wallet:** -❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - amount).toLocaleString()}\``,
-                                            inline: true,
-                                        },
-                                        {
-                                            name: `${target.username}`,
-                                            value: `**Wallet:** +❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(target_profileData.coins + amount).toLocaleString()}\``,
-                                        },
-                                        
-                                    ],
+                                    title: `Transaction cancelled, timeout`,
+                                    description: `<@${message.author.id}>, do you want to share ❀ \`${amount.toLocaleString()}\` to <@${target.id}>?`,
                                     timestamp: new Date(),
                                 };
-                                message.reply({ embeds: [embed] });
+                                const share_msg = await message.reply({ embeds: [embed], components: [row] });
+
+                                const collector = share_msg.createMessageComponentCollector({ time: 20 * 1000 });
+
+                                collector.on('collect', async (button) => {
+                                    button.deferUpdate()
+                                    if(button.user.id != message.author.id) {
+                                        return button.reply({
+                                            content: 'This is not for you.',
+                                            ephemeral: true,
+                                        })
+                                    } 
+
+                                    if(button.customId === "confirm") {
+                                        const target_response = await profileModel.findOneAndUpdate(
+                                            {userId: target.id},
+                                            {
+                                                $inc: {
+                                                    coins: amount,
+                                                },
+                                            },
+                                            {
+                                                upsert: true,
+                                            }
+                                        );
+                                        const local_response = await profileModel.findOneAndUpdate(
+                                            {userId: message.author.id},
+                                            {
+                                                $inc: {
+                                                    coins: -amount,
+                                                },
+                                            },
+                                            {
+                                                upsert: true,
+                                            }
+                                        )
+                
+                                        const embed = {
+                                            color: '#00FF00',
+                                            author: {
+                                                name: `_____________`,
+                                                icon_url: `${message.author.displayAvatarURL()}`,
+                                            },
+                                            title: `Transaction success, here is the receipt`,
+                                            description: `<@${message.author.id}> shared ❀ \`${amount.toLocaleString()}\` to <@${target.id}>`,
+                                            fields: [
+                                                {
+                                                    name: `${message.author.username}`,
+                                                    value: `**Wallet:** -❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - amount).toLocaleString()}\``,
+                                                    inline: true,
+                                                },
+                                                {
+                                                    name: `${target.username}`,
+                                                    value: `**Wallet:** +❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(target_profileData.coins + amount).toLocaleString()}\``,
+                                                },
+                                                
+                                            ],
+                                            timestamp: new Date(),
+                                        };
+
+                                        confirm
+                                            .setDisabled()
+                                            .setStyle("SUCCESS")
+
+                                        cancel.setDisabled()
+
+                                        share_msg.edit({
+                                            embeds: [embed],
+                                            components: [row]
+                                        })
+                                    
+                                    } else if(button.customId === "cancel") {
+                                        const embed = {
+                                            color: '#FF0000',
+                                            author: {
+                                                name: `_____________`,
+                                                icon_url: `${message.author.displayAvatarURL()}`,
+                                            },
+                                            title: `Transaction cancelled`,
+                                            description: `<@${message.author.id}>, do you want to share ❀ \`${amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
+                                            timestamp: new Date(),
+                                        };
+                                        
+                                        confirm.setDisabled()
+
+                                        cancel.setDisabled()
+                                        
+                                        share_msg.edit({
+                                            embeds: [embed],
+                                            components: [row]
+                                        })
+                                
+                                    }
+                                    
+                                });
+
+                                collector.on('end', collected => {
+                                    if(collected.size > 0) {
+
+                                    } else {
+                                        const embed = {
+                                            color: '#FF0000',
+                                            author: {
+                                                name: `_____________`,
+                                                icon_url: `${message.author.displayAvatarURL()}`,
+                                            },
+                                            title: `Transaction timeout`,
+                                            description: `<@${message.author.id}>, do you want to share ❀ \`${amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
+                                            timestamp: new Date(),
+                                        };
+                                        
+                                        confirm
+                                            .setDisabled()
+                                            .setStyle("DANGER")
+    
+                                        cancel.setDisabled()
+                                        
+                                        share_msg.edit({
+                                            embeds: [embed],
+                                            components: [row]
+                                        })
+                                    }
+                                });
                             }
                         } else {
                             const embed = {
@@ -131,7 +236,7 @@ module.exports = {
                             message.reply({ embeds: [embed] });
                         }
                     } else {
-                        if(!parseInt(get_amount)) {
+                        if(!get_amount) {
                             const embed = {
                                 color: '#FF0000',
                                 title: `Transaction Error`,
@@ -147,52 +252,156 @@ module.exports = {
                                 message.reply(`You got no coins in your wallet to share, maybe withdraw some?`);
                             }
                         } else {
-                            const target_response = await profileModel.findOneAndUpdate(
-                                {userId: target.id},
-                                {
-                                    $inc: {
-                                        coins: get_amount,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-                            const local_response = await profileModel.findOneAndUpdate(
-                                {userId: message.author.id},
-                                {
-                                    $inc: {
-                                        coins: -get_amount,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            )
-        
+                            let confirm = new MessageButton()
+                                .setCustomId('confirm')
+                                .setLabel('Confirm')
+                                .setStyle('PRIMARY')
+
+                            let cancel = new MessageButton()
+                                .setCustomId('cancel')
+                                .setLabel('Cancel')
+                                .setStyle('DANGER')
+
+                            let row = new MessageActionRow()
+                                .addComponents(
+                                    confirm,
+                                    cancel
+                                );
+                
                             const embed = {
-                                color: '#00FF00',
+                                color: '#FF0000',
                                 author: {
                                     name: `_____________`,
                                     icon_url: `${message.author.displayAvatarURL()}`,
                                 },
-                                title: `Transaction success, here is the receipt`,
-                                description: `<@${message.author.id}> shared ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>`,
-                                fields: [
-                                    {
-                                        name: `${message.author.username}`,
-                                        value: `**Wallet:** -❀ \`${parseInt(get_amount).toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - parseInt(get_amount)).toLocaleString()}\``,
-                                        inline: true,
-                                    },
-                                    {
-                                        name: `${target.username}`,
-                                        value: `**Wallet:** +❀ \`${parseInt(get_amount).toLocaleString()}\`\n**New Wallet:** \`${(target_profileData.coins + parseInt(get_amount)).toLocaleString()}\``,
-                                    },
-                                    
-                                ],
+                                title: `Transaction cancelled, timeout`,
+                                description: `<@${message.author.id}>, do you want to share ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>?`,
                                 timestamp: new Date(),
                             };
-                            message.reply({ embeds: [embed] });
+                            const share_msg = await message.reply({ embeds: [embed], components: [row] });
+
+                            const collector = share_msg.createMessageComponentCollector({ time: 20 * 1000 });
+
+                            collector.on('collect', async (button) => {
+                                button.deferUpdate()
+                                if(button.user.id != message.author.id) {
+                                    return button.reply({
+                                        content: 'This is not for you.',
+                                        ephemeral: true,
+                                    })
+                                } 
+
+                                if(button.customId === "confirm") {
+                                    const target_response = await profileModel.findOneAndUpdate(
+                                        {userId: target.id},
+                                        {
+                                            $inc: {
+                                                coins: get_amount,
+                                            },
+                                        },
+                                        {
+                                            upsert: true,
+                                        }
+                                    );
+                                    const local_response = await profileModel.findOneAndUpdate(
+                                        {userId: message.author.id},
+                                        {
+                                            $inc: {
+                                                coins: -get_amount,
+                                            },
+                                        },
+                                        {
+                                            upsert: true,
+                                        }
+                                    )
+                
+                                    const embed = {
+                                        color: '#00FF00',
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        title: `Transaction success, here is the receipt`,
+                                        description: `<@${message.author.id}> shared ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>`,
+                                        fields: [
+                                            {
+                                                name: `${message.author.username}`,
+                                                value: `**Wallet:** -❀ \`${parseInt(get_amount).toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - parseInt(get_amount)).toLocaleString()}\``,
+                                                inline: true,
+                                            },
+                                            {
+                                                name: `${target.username}`,
+                                                value: `**Wallet:** +❀ \`${parseInt(get_amount).toLocaleString()}\`\n**New Wallet:** \`${(target_profileData.coins + parseInt(get_amount)).toLocaleString()}\``,
+                                            },
+                                            
+                                        ],
+                                        timestamp: new Date(),
+                                    };
+
+                                    confirm
+                                        .setDisabled()
+                                        .setStyle("SUCCESS")
+
+                                    cancel.setDisabled()
+
+                                    share_msg.edit({
+                                        embeds: [embed],
+                                        components: [row]
+                                    })
+                                
+                                } else if(button.customId === "cancel") {
+                                    const embed = {
+                                        color: '#FF0000',
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        title: `Transaction cancelled`,
+                                        description: `<@${message.author.id}>, do you want to share ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
+                                        timestamp: new Date(),
+                                    };
+                                    
+                                    confirm.setDisabled()
+
+                                    cancel.setDisabled()
+                                    
+                                    share_msg.edit({
+                                        embeds: [embed],
+                                        components: [row]
+                                    })
+                            
+                                }
+                                
+                            });
+
+                            collector.on('end', collected => {
+                                if(collected.size > 0) {
+
+                                } else {
+                                    const embed = {
+                                        color: '#FF0000',
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        title: `Transaction timeout`,
+                                        description: `<@${message.author.id}>, do you want to share ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
+                                        timestamp: new Date(),
+                                    };
+                                    
+                                    confirm
+                                        .setDisabled()
+                                        .setStyle("DANGER")
+
+                                    cancel.setDisabled()
+                                    
+                                    share_msg.edit({
+                                        embeds: [embed],
+                                        components: [row]
+                                    })
+                                }
+                            });
+                            
                         }
                     }
                 }
