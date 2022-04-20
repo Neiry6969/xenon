@@ -144,4 +144,16 @@ module.exports = [
         rarity: "exotic",
         type: "collectable"
     },
+    {
+        item: "sixymedal",
+        name: "Sixy Medal",
+        icon: "<:sixymedal:966144529054990407> ",
+        price: "not for sale",
+        sell: "unable to be sold",
+        trade: 50000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966144501087346788/pixil-frame-0_5.png",
+        description: "Very hot medal for 6969 people...no not sus.\n\nWorldwide Quantity: `6969`",
+        rarity: "legendary",
+        type: "collectable"
+    },
 ]
