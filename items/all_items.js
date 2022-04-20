@@ -225,7 +225,7 @@ module.exports = [
         item: "waterbottle",
         name: "Expensive Plastic Water Bottle",
         aliases: ["plastic", 'waterb', 'bottleofwater'],
-        icon: "<:waterbottle:966177327543357510",
+        icon: "<:waterbottle:966177327543357510>",
         price: "unable to be bought",
         sell: "unable to be sold",
         trade: 0,
