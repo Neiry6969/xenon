@@ -13,7 +13,7 @@ module.exports = {
     async execute(message, args, cmd, client, Discord, profileData) {
         const target = message.mentions.users.first()
         const get_amount = parseInt(args[1]);
-        const get_item = args[2];
+        const getItem = args[2];
 
         if(!target) {
             const embed = {
@@ -36,7 +36,7 @@ module.exports = {
                 description: `You can only gift a whole number of an item!\n**Expected Syntax:** \`xe gift [user] [amount] [item]\``,
             };
             return message.reply({ embeds: [embed] });
-        } else if (!get_item) {
+        } else if (!getItem) {
             const embed = {
                 color: '#FF0000',
                 title: `Gift Error`,
@@ -51,12 +51,12 @@ module.exports = {
             };
             return message.reply({ embeds: [embed] });
         } else {   
-            const validItem = !!allItems.find((val) => (val.item.toLowerCase() === get_item));
+            const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
 
             if(!validItem) {
-                return message.reply(`\`${get_item}\` is not existent or not buyable.`);
+                return message.reply(`\`${getItem}\` is not existent or not buyable.`);
             } else {
-                const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === get_item).icon;
+                const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
 
                 const params = {
                     userId: message.author.id,
@@ -66,13 +66,13 @@ module.exports = {
                     if(!data) {
                         return message.reply("You got nothing to share.");
                     } else if (data) {
-                        if(!data.inventory[get_item] || data.inventory[get_item] === 0) {
-                            return message.reply(`You have 0 \`${get_item}\`, so how are you going to gift that?`);
-                        } else if(get_amount > data.inventory[get_item]) {
+                        if(!data.inventory[item.item] || data.inventory[item.item] === 0) {
+                            return message.reply(`You have 0 \`${item.item}\`, so how are you going to gift that?`);
+                        } else if(get_amount > data.inventory[item.item]) {
                             const embed = {
                                 color: '#FF0000',
                                 title: `Gift Error`,
-                                description: `You do not have enought of that item to gift that amount!\n**Item:** ${itemIcon} ${get_item}\n**Amount Possessed:** \`${data.inventory[get_item]?.toLocaleString()}\``,
+                                description: `You do not have enought of that item to gift that amount!\n**Item:** ${item.icon} ${item.item}\n**Amount Possessed:** \`${data.inventory[item.item]?.toLocaleString()}\``,
                             };
                             return message.reply({ embeds: [embed] });
                        
@@ -100,7 +100,7 @@ module.exports = {
                                     icon_url: `${message.author.displayAvatarURL()}`,
                                 },
                                 title: `Confirm transaction`,
-                                description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${itemIcon} **${get_item}** to <@${target.id}>?`,
+                                description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?`,
                                 timestamp: new Date(),
                             };
                             const gift_msg = await message.reply({ embeds: [embed], components: [row] });
@@ -127,25 +127,25 @@ module.exports = {
                             
                             
                                     inventoryModel.findOne(params_user, async(err, data) => {
-                                        data.inventory[get_item] = data.inventory[get_item] - get_amount;
+                                        data.inventory[item.item] = data.inventory[item.item] - get_amount;
                                         await inventoryModel.findOneAndUpdate(params, data);
         
                                     })
         
                                     inventoryModel.findOne(params_target, async(err, data) => {
                                         if(data) {
-                                            const hasItem = Object.keys(data.inventory).includes(get_item);
+                                            const hasItem = Object.keys(data.inventory).includes(item.item);
                                             if(!hasItem) {
-                                                data.inventory[get_item] = get_amount;
+                                                data.inventory[item.item] = get_amount;
                                             } else {
-                                                data.inventory[get_item] = data.inventory[get_item] + get_amount;
+                                                data.inventory[item.item] = data.inventory[item.item] + get_amount;
                                             }
                                             await inventoryModel.findOneAndUpdate(params_target, data);
                                         } else {
                                             new inventoryModel({
                                                 userId: target.id,
                                                 inventory: {
-                                                    [get_item]: get_amount
+                                                    [item.item]: get_amount
                                                 }
                                             }).save();
                                         }
@@ -161,7 +161,7 @@ module.exports = {
                                         fields: [
                                             {
                                                 name: 'Item',
-                                                value: `${itemIcon} \`${get_item}\``,
+                                                value: `${item.icon} \`${item.item}\``,
                                                 inline: true,
                                             },
                                             {
@@ -192,7 +192,7 @@ module.exports = {
                                             icon_url: `${message.author.displayAvatarURL()}`,
                                         },
                                         title: `Transaction cancelled`,
-                                        description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${itemIcon} **${get_item}** to <@${target.id}>?\nI guess not...`,
+                                        description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?\nI guess not...`,
                                         timestamp: new Date(),
                                     };
                                     
@@ -220,7 +220,7 @@ module.exports = {
                                             icon_url: `${message.author.displayAvatarURL()}`,
                                         },
                                         title: `Transaction timeout`,
-                                        description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${itemIcon} **${get_item}** to <@${target.id}>?\nI guess not...`,
+                                        description: `<@${message.author.id}>, do you want to gift \`${get_amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?\nI guess not...`,
                                         timestamp: new Date(),
                                     };
                                     

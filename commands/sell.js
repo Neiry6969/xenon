@@ -23,12 +23,12 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         } else if (!getAmount) {
             if(max_amount === "max" || max_amount === "all") {
-                const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem));
+                const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
 
                 if(!validItem) {
                     return message.reply(`\`${getItem}\` is a non-existent item.`);
                 } else {
-                    const item = allItems.find((val) => (val.item.toLowerCase()) === getItem)
+                    const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
 
                     if(item.sell === "unable to be sold") {
                         const embed = {
@@ -43,14 +43,14 @@ module.exports = {
                         }
 
                         inventoryModel.findOne(params_user, async(err, data) => {
-                            const amount = data.inventory[getItem];
+                            const amount = data.inventory[item.item];
 
                             let ownedAmount;
 
                             if(!amount) {
                                 ownedAmount = 0;
                             } else {
-                                ownedAmount = data.inventory[getItem];
+                                ownedAmount = data.inventory[item.item];
                             }
 
                             if(amount <= 0 || !amount) {
@@ -63,7 +63,7 @@ module.exports = {
                             } else {
                                 const amount_gained = amount * item.sell
 
-                                data.inventory[getItem] = 0;
+                                data.inventory[item.item] = 0;
                     
                                 await inventoryModel.findOneAndUpdate(params_user, data);
 
@@ -89,12 +89,12 @@ module.exports = {
 
                 }
             } else {
-                const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem));
+                const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
 
                 if(!validItem) {
                     return message.reply(`\`${getItem}\` is a non-existent item.`);
                 } else {
-                    const item = allItems.find((val) => (val.item.toLowerCase()) === getItem)
+                    const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
 
                     if(item.sell === "unable to be sold") {
                         const embed = {
@@ -112,10 +112,10 @@ module.exports = {
                             const default_amount = 1;
                             let ownedAmount;
 
-                            if(!data.inventory[getItem]) {
+                            if(!data.inventory[item.item]) {
                                 ownedAmount = 0;
                             } else {
-                                ownedAmount = data.inventory[getItem];
+                                ownedAmount = data.inventory[item.item];
                             }
 
                             if(default_amount > ownedAmount) {
@@ -128,7 +128,7 @@ module.exports = {
                             } else {
                                 const amount_gained = default_amount * item.sell;
 
-                                data.inventory[getItem] = data.inventory[getItem] - default_amount;
+                                data.inventory[item.item] = data.inventory[item.item] - default_amount;
                     
                                 await inventoryModel.findOneAndUpdate(params_user, data);
 
@@ -155,7 +155,7 @@ module.exports = {
                 }
             }
         } else {
-            const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem));
+            const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
 
             if(!validItem) {
                 return message.reply(`\`${getItem}\` is a non-existent item.`);
@@ -169,7 +169,7 @@ module.exports = {
             } else if (getAmount === 0) {
                 return message.reply(`So you want to sell 0 amount of this item, why bother me.`)
             } else {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === getItem)
+                const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
 
                 if(item.sell === "unable to be sold") {
                     const embed = {
@@ -186,10 +186,10 @@ module.exports = {
                     inventoryModel.findOne(params_user, async(err, data) => {
                         let ownedAmount;
 
-                        if(!data.inventory[getItem]) {
+                        if(!data.inventory[item.item]) {
                             ownedAmount = 0;
                         } else {
-                            ownedAmount = data.inventory[getItem];
+                            ownedAmount = data.inventory[item.item];
                         }
 
                         if(getAmount > ownedAmount) {
@@ -202,7 +202,7 @@ module.exports = {
                         } else {
                             const amount_gained = getAmount * item.sell;
 
-                            data.inventory[getItem] = data.inventory[getItem] - getAmount;
+                            data.inventory[item.item] = data.inventory[item.item] - getAmount;
                 
                             await inventoryModel.findOneAndUpdate(params_user, data);
 

@@ -2,6 +2,7 @@ module.exports = [
     {
         item: "silvercrown",
         name: "Silver Crown",
+        aliases: ["silver"],
         icon: "<:silvercrown:963568001213403196>",
         price: 1000000,
         price: 10000000,
@@ -15,6 +16,7 @@ module.exports = [
     {
         item: "moon",
         name: "Moon",
+        aliases: ["moon"],
         icon: "<:moon:962410227104383006>",
         price: 10000000,
         sell: "unable to be sold",
@@ -27,8 +29,9 @@ module.exports = [
     {
         item: "creatorscrown",
         name: "Creators Crown",
+        aliases: ["creators", 'neriy', 'neri', 'ccrown'],
         icon: "<:creatorscrown:965024171463688323>",
-        price: "not for sale",
+        price: "unable to be bought",
         sell: "unable to be sold",
         trade: 10000000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965028338416627753/image-removebg-preview_3.png",
@@ -39,6 +42,7 @@ module.exports = [
     {
         item: "bottleofcola",
         name: "Bottle Of Cola",
+        aliases: ["colabottle", 'cola'],
         icon: "<:bottleofcola:965102489240211539>",
         price: 10,
         sell: 1,
@@ -51,10 +55,11 @@ module.exports = [
     {
         item: "flamesword",
         name: "Flame Sword",
+        aliases: ["flame"],
         icon: "<:flamesword:965038139334864966>",
-        price: 800000000,
+        price: 80000000,
         sell: "unable to be sold",
-        trade: 700000000,
+        trade: 70000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965038665527087114/image-removebg-preview_5.png?width=408&height=427",
         description: "Expensive sword forged from an acient volcano. Imagine buy this.",
         rarity: "legendary",
@@ -63,6 +68,7 @@ module.exports = [
     {
         item: "monitor",
         name: "PC Monitor",
+        aliases:[ "monit"],
         icon: "<a:monitor:965097022027866172>",
         price: 10000,
         sell: 1000,
@@ -75,6 +81,7 @@ module.exports = [
     {
         item: "shinyfox",
         name: "Shiny Fox",
+        aliases: ["fox", 'shiny'],
         icon: "<:shinyfox:965272583496953936>",
         price: 1000000,
         sell: 500000,
@@ -87,8 +94,9 @@ module.exports = [
     {
         item: "testerstea",
         name: "Testers Tea",
+        aliases: ["tea"],
         icon: "<:testerstea:965275697855733810>",
-        price: "not for sale",
+        price: "unable to be bought",
         sell: "unable to be sold",
         trade: 1000000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965275585947521104/pixil-frame-0_4.png",
@@ -99,6 +107,7 @@ module.exports = [
     {
         item: "donut",
         name: "Donut",
+        aliases: ["donu"],
         icon: "<:donut:965343121133162616>",
         price: 40,
         sell: 20,
@@ -111,6 +120,7 @@ module.exports = [
     {
         item: "kfcchicken",
         name: "KFC Chicken",
+        aliases: ["kfc", 'chicken'],
         icon: "<:kfcchicken:965344093448335440>",
         price: 69,
         sell: 9,
@@ -123,8 +133,9 @@ module.exports = [
     {
         item: "stonecard",
         name: "Stone Card",
+        aliases: ["stone", 'card'],
         icon: "<a:stonecard:965399070371897354>",
-        price: "not for sale",
+        price: "unable to be bought",
         sell: "unable to be sold",
         trade: 690000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965398982295687288/output-onlinegiftools_2.gif",
@@ -135,8 +146,9 @@ module.exports = [
     {
         item: "fionaskitten",
         name: "Fiona's Kitten",
+        aliases: ["fiona", 'kitt', 'kitten'],
         icon: "<:fionaskitten:965416467162099812>",
-        price: "not for sale",
+        price: "unable to be bought",
         sell: "unable to be sold",
         trade: 100000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965416433154687007/image-removebg-preview_9.png",
@@ -147,8 +159,9 @@ module.exports = [
     {
         item: "sixymedal",
         name: "Sixy Medal",
+        aliases: ["smedal", 'sixy', 'sexy'],
         icon: "<:sixymedal:966144529054990407> ",
-        price: "not for sale",
+        price: "unable to be bought",
         sell: "unable to be sold",
         trade: 50000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966144501087346788/pixil-frame-0_5.png",
