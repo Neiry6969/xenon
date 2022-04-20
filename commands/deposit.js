@@ -125,7 +125,7 @@ async execute(message, args, cmd, client, Discord, profileData) {
             return message.reply("Deposit amount must be a whole number.");
         } else {
             const newWallet = profileData.coins - parseInt(getAmount);
-            const newBank = profileData.bank - parseInt(getAmount);
+            const newBank = profileData.bank + parseInt(getAmount);
             const availableBankspace = bankspace - profileData.bank;
 
             if (parseInt(getAmount) > profileData.coins) {

@@ -11,7 +11,7 @@ module.exports = {
     description: "share coins with other users.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const target = message.mentions.users.first()
-        const get_amount = parseInt(args[1])
+        const get_amount = args[1]
 
         if(!target) {
             const embed = {
@@ -94,7 +94,7 @@ module.exports = {
                                     );
                     
                                 const embed = {
-                                    color: 'RADNOM',
+                                    color: 'RANDOM',
                                     author: {
                                         name: `_____________`,
                                         icon_url: `${message.author.displayAvatarURL()}`,

@@ -86,7 +86,7 @@ async execute(message, args, cmd, client, Discord, profileData) {
                     fields: [
                         {
                             name: 'Withdrawn',
-                            value: `❀ \`${getAmount.toLocaleString()}\``,
+                            value: `❀ \`${parseInt(getAmount).toLocaleString()}\``,
                         },
                         {
                             name: 'Current Bank Balance',
