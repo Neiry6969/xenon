@@ -201,7 +201,7 @@ module.exports = {
                 inventoryModel.findOne(params_user, async(err, data) => {
                     let itemOwned;
 
-                    if(!data.inventory[item]) {
+                    if(!data.inventory[item.item]) {
                         itemOwned = 0
                         
                         const embed = {
@@ -237,7 +237,7 @@ module.exports = {
             
                         return message.reply({ embeds: [embed] });
                     } else {
-                        itemOwned = data.inventory[item]
+                        itemOwned = data.inventory[item.item]
                         
                         const embed = {
                             color: 'RANDOM',
