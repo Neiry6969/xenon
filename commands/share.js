@@ -378,7 +378,7 @@ module.exports = {
 
                             collector.on('end', collected => {
                                 if(collected.size > 0) {
-
+                                    return;
                                 } else {
                                     const embed = {
                                         color: '#FF0000',

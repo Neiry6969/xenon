@@ -2,7 +2,7 @@ const { MessageActionRow, MessageButton } = require('discord.js')
 
 const profileModel = require("../models/profileSchema");
 const inventoryModel = require('../models/inventorySchema');
-const allItems = require('../items/all_items');
+const allItems = require('../data/all_items');
 
 module.exports = {
     name: 'inventory',
