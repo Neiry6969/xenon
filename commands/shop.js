@@ -96,13 +96,14 @@ module.exports = {
                 const collector = shop_msg.createMessageComponentCollector({ time: 20 * 1000 });
 
                 collector.on('collect', async (button) => {
-                    button.deferUpdate()
                     if(button.user.id != message.author.id) {
                         return button.reply({
                             content: 'This is not for you.',
                             ephemeral: true,
                         })
                     } 
+                    
+                    button.deferUpdate()
 
                     if(button.customId === "right") {
                         page = page + 1
