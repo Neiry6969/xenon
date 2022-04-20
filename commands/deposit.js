@@ -16,8 +16,7 @@ async execute(message, args, cmd, client, Discord, profileData) {
                 const embed = {
                     color: '#FF0000',
                     title: 'Your deposit failed',
-                    description: `Your bank can't hold anymore coins...
-                    **Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                    description: `Your bank can't hold anymore coins...\n**Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                     author: {
                         name: `_____________`,
                         icon_url: `${message.author.displayAvatarURL()}`,
@@ -134,8 +133,7 @@ async execute(message, args, cmd, client, Discord, profileData) {
                 const embed = {
                     color: '#FF0000',
                     title: 'Your deposit failed',
-                    description: `Your bank can't hold anymore coins...
-                    **Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                    description: `Your bank can't hold anymore coins...\n**Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                     author: {
                         name: `_____________`,
                         icon_url: `${message.author.displayAvatarURL()}`,
@@ -147,9 +145,7 @@ async execute(message, args, cmd, client, Discord, profileData) {
                 const embed = {
                     color: '#FF0000',
                     title: 'Your deposit failed',
-                    description: `Your bank can't hold anymore coins...
-                    **Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\`
-                    **Avaliable Bankspace:** ❀ \`${availableBankspace.toLocaleString()}\``,
+                    description: `Your bank can't hold anymore coins...\n**Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\`\n**Avaliable Bankspace:** ❀ \`${availableBankspace.toLocaleString()}\``,
                     author: {
                         name: `_____________`,
                         icon_url: `${message.author.displayAvatarURL()}`,

@@ -86,6 +86,8 @@ module.exports = {
             if(button.customId === displayedplaces[0].place) {
                 placesearched = displayedplaces[0].place;
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
+                const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
+                const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
@@ -94,7 +96,7 @@ module.exports = {
                             {userId: message.author.id},
                             {
                                 $inc: {
-                                    coins: placesearched_items.coins,
+                                    coins: coins,
                                 },
                             },
                             {
@@ -128,7 +130,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${placesearched_items.message}\nYou also got lucky and found \`1\` ${item.icon}`,
+                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}`,
                             timestamp: new Date(),
                         };
                         display_1.setDisabled()
@@ -144,7 +146,7 @@ module.exports = {
                             {userId: message.author.id},
                             {
                                 $inc: {
-                                    coins: placesearched_items.coins,
+                                    coins: coins,
                                 },
                             },
                             {
@@ -155,7 +157,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${placesearched_items.message}`,
+                            description: `${search_result}`,
                             timestamp: new Date(),
                         };
                         display_1.setDisabled()
@@ -172,7 +174,7 @@ module.exports = {
                         {userId: message.author.id},
                         {
                             $inc: {
-                                coins: placesearched_items.coins,
+                                coins: coins,
                             },
                         },
                         {
@@ -183,7 +185,7 @@ module.exports = {
                     const embed = {
                         color: "RANDOM",
                         title: `${message.author.username} searched ${placesearched_items.place}`,
-                        description: `${placesearched_items.message}`,
+                        description: `${search_result}`,
                         timestamp: new Date(),
                     };
                     display_1.setDisabled()
@@ -198,6 +200,8 @@ module.exports = {
             } else if(button.customId === displayedplaces[1].place) {
                 placesearched = displayedplaces[1].place;
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
+                const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
+                const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
@@ -206,7 +210,7 @@ module.exports = {
                             {userId: message.author.id},
                             {
                                 $inc: {
-                                    coins: placesearched_items.coins,
+                                    coins: coins,
                                 },
                             },
                             {
@@ -240,7 +244,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${placesearched_items.message}\nYou also got lucky and found \`1\` ${item.icon}`,
+                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}`,
                             timestamp: new Date(),
                         };
                         display_2.setDisabled()
@@ -258,7 +262,7 @@ module.exports = {
                             {userId: message.author.id},
                             {
                                 $inc: {
-                                    coins: placesearched_items.coins,
+                                    coins: coins,
                                 },
                             },
                             {
@@ -269,7 +273,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${placesearched_items.message}`,
+                            description: `${search_result}`,
                             timestamp: new Date(),
                         };
                         display_2.setDisabled()
@@ -286,7 +290,7 @@ module.exports = {
                         {userId: message.author.id},
                         {
                             $inc: {
-                                coins: placesearched_items.coins,
+                                coins: coins,
                             },
                         },
                         {
@@ -297,7 +301,7 @@ module.exports = {
                     const embed = {
                         color: "RANDOM",
                         title: `${message.author.username} searched ${placesearched_items.place}`,
-                        description: `${placesearched_items.message}`,
+                        description: `${search_result}`,
                         timestamp: new Date(),
                     };
                     display_2.setDisabled()
@@ -312,6 +316,8 @@ module.exports = {
             } else if(button.customId === displayedplaces[2].place) {
                 placesearched = displayedplaces[2].place;
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
+                const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
+                const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
@@ -320,7 +326,7 @@ module.exports = {
                             {userId: message.author.id},
                             {
                                 $inc: {
-                                    coins: placesearched_items.coins,
+                                    coins: coins,
                                 },
                             },
                             {
@@ -354,7 +360,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${placesearched_items.message}\nYou also got lucky and found \`1\` ${item.icon}`,
+                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}`,
                             timestamp: new Date(),
                         };
                         display_3.setDisabled()
@@ -370,7 +376,7 @@ module.exports = {
                             {userId: message.author.id},
                             {
                                 $inc: {
-                                    coins: placesearched_items.coins,
+                                    coins: coins,
                                 },
                             },
                             {
@@ -381,7 +387,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${placesearched_items.message}`,
+                            description: `${search_result}`,
                             timestamp: new Date(),
                         };
                         display_3.setDisabled()
@@ -398,7 +404,7 @@ module.exports = {
                         {userId: message.author.id},
                         {
                             $inc: {
-                                coins: placesearched_items.coins,
+                                coins: coins,
                             },
                         },
                         {
@@ -408,8 +414,8 @@ module.exports = {
 
                     const embed = {
                         color: "RANDOM",
-                        title: `${message.author.username} searched ${placesearched_items.place}`,
-                        description: `${placesearched_items.message}`,
+                        title: `${search_result.author.username} searched ${placesearched_items.place}`,
+                        description: `${message}`,
                         timestamp: new Date(),
                     };
                     display_3.setDisabled()
