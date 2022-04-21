@@ -82,7 +82,7 @@ module.exports = {
                             description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                             timestamp: new Date(),
                             footer: {
-                                text: `Page: ${page}`
+                                text: `Page: ${page} | ${lastpage}`
                             }
                         };
 
@@ -116,7 +116,7 @@ module.exports = {
                             description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                             timestamp: new Date(),
                             footer: {
-                                text: `Page: ${page}`
+                                text: `Page: ${page} | ${lastpage}`
                             }
                         };
                     
@@ -152,7 +152,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
@@ -171,7 +171,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
@@ -198,7 +198,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
@@ -217,7 +217,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
@@ -306,7 +306,7 @@ module.exports = {
                             description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                             timestamp: new Date(),
                             footer: {
-                                text: `Page: ${page}`
+                                text: `Page: ${page} | ${lastpage}`
                             }
                         };
 
@@ -340,7 +340,7 @@ module.exports = {
                             description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                             timestamp: new Date(),
                             footer: {
-                                text: `Page: ${page}`
+                                text: `Page: ${page} | ${lastpage}`
                             }
                         };
                     
@@ -377,7 +377,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
@@ -396,7 +396,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
@@ -421,7 +421,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
@@ -440,7 +440,7 @@ module.exports = {
                                         description: `${mappedData.slice(display_start, display_end).join("\n")}`,
                                         timestamp: new Date(),
                                         footer: {
-                                            text: `Page: ${page}`
+                                            text: `Page: ${page} | ${lastpage}`
                                         }
                                     };
                         
