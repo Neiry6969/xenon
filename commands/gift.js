@@ -72,7 +72,7 @@ module.exports = {
                             const embed = {
                                 color: '#FF0000',
                                 title: `Gift Error`,
-                                description: `You do not have enought of that item to gift that amount!\n**Item:** ${item.icon} ${item.item}\n**Amount Possessed:** \`${data.inventory[item.item]?.toLocaleString()}\``,
+                                description: `You do not have enough of that item to gift that amount!\n**Item:** ${item.icon} ${item.item}\n**Amount Possessed:** \`${data.inventory[item.item]?.toLocaleString()}\``,
                             };
                             return message.reply({ embeds: [embed] });
                        

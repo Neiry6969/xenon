@@ -91,6 +91,7 @@ module.exports = {
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
+                        const percent = (placesearched_items.itempecrent / 10000)* 100
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         await profileModel.findOneAndUpdate(
                             {userId: message.author.id},
@@ -130,7 +131,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}`,
+                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`,
                             timestamp: new Date(),
                         };
                         display_1.setDisabled()
@@ -205,6 +206,7 @@ module.exports = {
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
+                        const percent = (placesearched_items.itempecrent / 10000) * 100
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         await profileModel.findOneAndUpdate(
                             {userId: message.author.id},
@@ -244,7 +246,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}`,
+                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`,
                             timestamp: new Date(),
                         };
                         display_2.setDisabled()
@@ -320,6 +322,7 @@ module.exports = {
                 const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
 
                 if(placesearched_items.items) {
+                    const percent = (placesearched_items.itempecrent / 10000) * 100
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         await profileModel.findOneAndUpdate(
@@ -360,7 +363,7 @@ module.exports = {
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}`,
+                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`,
                             timestamp: new Date(),
                         };
                         display_3.setDisabled()
@@ -414,7 +417,7 @@ module.exports = {
 
                     const embed = {
                         color: "RANDOM",
-                        title: `${search_result.author.username} searched ${placesearched_items.place}`,
+                        title: `${message.author.username} searched ${placesearched_items.place}`,
                         description: `${message}`,
                         timestamp: new Date(),
                     };

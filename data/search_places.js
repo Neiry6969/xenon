@@ -61,4 +61,11 @@ module.exports = [
         items: 'waterbottle',
         itempecrent: 7500,
     },
+    {
+        place: 'glastonbury abbey',
+        message: `You looked around the ancient land and was blessed with ❀ \`COINS\``,
+        coins: 1000,
+        items: 'excaliburghost',
+        itempecrent: 1,
+    },
 ]

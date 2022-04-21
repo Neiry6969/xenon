@@ -5,7 +5,6 @@ module.exports = [
         aliases: ["silver"],
         icon: "<:silvercrown:963568001213403196>",
         price: 1000000,
-        price: 10000000,
         sell: "unable to be sold",
         trade: 800000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965028479882104943/963568001213403196.webp",
@@ -257,7 +256,46 @@ module.exports = [
         trade: 10000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966324355556589568/289-2897240_scythe-pixel-art-ps4-controller-clipart.png",
         description: "Where did you find this buddy...?",
+        rarity: "rare",
+        type: "collectable"
+    },
+    {
+        item: "acousticguitar",
+        name: "Acoustic Guitar",
+        aliases: ["gui", 'guit', 'tar', 'acoustic', 'acou'],
+        icon: "<:acousticguitar:966173406926094366>",
+        price: "unable to be bought",
+        sell: "unable to be sold",
+        trade: 5000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966173325384622111/image__2_-removebg-preview.png?width=427&height=427",
+        description: "Oh wow, now you can chill and make music.",
         rarity: "uncommon",
-        type: "tool"
+        type: "collectable"
+    },
+    {
+        item: "excalibur",
+        name: "Excalibur",
+        aliases: [],
+        icon: "<:excalibur:966537260034043974>",
+        price: "unable to be bought",
+        sell: "unable to be sold",
+        trade: 0,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966536673389326356/pixil-frame-0_1.png",
+        description: "The legendary sword of King Arthur, sometimes also attributed with magical powers. Wow imagine.\n\nWorldwide Quantity: `1`",
+        rarity: "godly",
+        type: "collectable"
+    },
+    {
+        item: "excaliburghost",
+        name: "Excalibur's Ghost",
+        aliases: ["excal", 'excali', 'eghost', 'burg', 'exca'],
+        icon: "<:excaliburghost:966538250296655872>",
+        price: "unable to be bought",
+        sell: "unable to be sold",
+        trade: 0,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966538055290859581/pixil-frame-0_4.png",
+        description: "The ghost of the original excalibur that has been duplicated many times.",
+        rarity: "rare",
+        type: "collectable"
     },
 ]
