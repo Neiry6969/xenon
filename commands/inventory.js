@@ -39,7 +39,7 @@ module.exports = {
                 } else {    
                     const inventory = Object.values(data.inventory).filter(Boolean);
                     const invlength = inventory.length;
-                    const itemsperpage = 8;
+                    const itemsperpage = 12;
                     
                     let lastpage;
                     if(invlength % itemsperpage > 0) {
@@ -263,7 +263,7 @@ module.exports = {
                 } else {
                     const inventory = Object.values(data.inventory).filter(Boolean);
                     const invlength = inventory.length;
-                    const itemsperpage = 8;
+                    const itemsperpage = 12;
                     
                     let lastpage;
                     if(invlength % itemsperpage > 0) {
