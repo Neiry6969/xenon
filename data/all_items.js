@@ -562,7 +562,7 @@ module.exports = [
         item: "web",
         name: "Web",
         aliases: [],
-        icon: ":web:",
+        icon: ":spider_web:",
         price: "unable to be bought",
         sell: 100000,
         trade: 0,
