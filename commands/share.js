@@ -276,7 +276,7 @@ module.exports = {
                                     icon_url: `${message.author.displayAvatarURL()}`,
                                 },
                                 title: `Confirm transaction`,
-                                description: `<@${message.author.id}>, do you want to share ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>?`,
+                                description: `<@${message.author.id}>, do you want to share ❀ \`${parseInt(get_amount).toLocaleString()}\` to <@${target.id}>?`,
                                 timestamp: new Date(),
                             };
                             const share_msg = await message.reply({ embeds: [embed], components: [row] });
@@ -324,7 +324,7 @@ module.exports = {
                                             icon_url: `${message.author.displayAvatarURL()}`,
                                         },
                                         title: `Transaction success, here is the receipt`,
-                                        description: `<@${message.author.id}> shared ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>`,
+                                        description: `<@${message.author.id}> shared ❀ \`${parseInt(get_amount).toLocaleString()}\` to <@${target.id}>`,
                                         fields: [
                                             {
                                                 name: `${message.author.username}`,
@@ -359,7 +359,7 @@ module.exports = {
                                             icon_url: `${message.author.displayAvatarURL()}`,
                                         },
                                         title: `Transaction cancelled`,
-                                        description: `<@${message.author.id}>, do you want to share ❀ \`${get_amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
+                                        description: `<@${message.author.id}>, do you want to share ❀ \`${parseInt(get_amount).toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
                                         timestamp: new Date(),
                                     };
                                     
