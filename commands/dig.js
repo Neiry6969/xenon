@@ -43,8 +43,8 @@ module.exports = {
             const lizard = allItems.find((val) => (val.item.toLowerCase()) === "lizard")
             const snail = allItems.find((val) => (val.item.toLowerCase()) === "snail")
             const scorpion = allItems.find((val) => (val.item.toLowerCase()) === "scorpion")
-            const bluecoin = allItems.find((val) => (val.item.toLowerCase()) === "worm")
-            const web = allItems.find((val) => (val.item.toLowerCase()) === "bluecoin")
+            const bluecoin = allItems.find((val) => (val.item.toLowerCase()) === "bluecoin")
+            const web = allItems.find((val) => (val.item.toLowerCase()) === "web")
             const statue = allItems.find((val) => (val.item.toLowerCase()) === "statue")
             
             const lowest_table = `${worm.icon} \`${worm.item}\`, ${rat.icon} \`${rat.item}\`, ${rock.icon} \`${rock.item}\``
