@@ -478,7 +478,7 @@ module.exports = [
         imageUrl: "",
         description: "Worm that can be for your collection or be sold.",
         rarity: "common",
-        type: "collectable"
+        type: "sellable"
     },
     {
         item: "rat",
@@ -491,7 +491,7 @@ module.exports = [
         imageUrl: "",
         description: "Smelly rat that can be for your collection or be sold. Hopefully it got no fleas that might give you a disease.",
         rarity: "common",
-        type: "collectable"
+        type: "sellable"
     },
     {
         item: "rock",
@@ -504,7 +504,7 @@ module.exports = [
         imageUrl: "",
         description: "O look its the Rock! O nevermind just an ordinary rock that can be for your rock collection or be sold.",
         rarity: "common",
-        type: "collectable"
+        type: "sellable"
     },
     {
         item: "snail",
@@ -517,7 +517,7 @@ module.exports = [
         imageUrl: "",
         description: "Is that gary you're holding? Well just to let you know that snail is just for your collection or to be sold.",
         rarity: "common",
-        type: "collectable"
+        type: "sellable"
     },
     {
         item: "lizard",
@@ -530,7 +530,7 @@ module.exports = [
         imageUrl: "",
         description: "Is that a dra-! O nevermind just a tiny lizard aw look how cute! Lizard can be for your collection or be sold.",
         rarity: "common",
-        type: "collectable"
+        type: "sellable"
     },
     {
         item: "scorpion",
@@ -543,7 +543,7 @@ module.exports = [
         imageUrl: "",
         description: "Scorpion that can be for your collection or be sold. Is it poisonous, maybe it can be made into some expensice juice?",
         rarity: "common",
-        type: "collectable"
+        type: "sellable"
     },
     {
         item: "bluecoin",
@@ -555,7 +555,7 @@ module.exports = [
         trade: 0,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/967464517904785428/image__1_-removebg-preview.png?width=408&height=427",
         description: "Wow that some coin that I haven't seen before! could it be from another civilization? Blue coin can be for your collection or be sold.",
-        rarity: "uncommon",
+        rarity: "common",
         type: "collectable"
     },
     {
@@ -568,7 +568,124 @@ module.exports = [
         trade: 0,
         imageUrl: "",
         description: "Might be spiderman's own web bro! What was it doing underground? Web can be for your collection or be sold.",
-        rarity: "uncommon",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "bread",
+        name: "Bread",
+        aliases: ['brea'],
+        icon: ":bread:",
+        price: "unable to be bought",
+        sell: 1000,
+        trade: 0,
+        imageUrl: "",
+        description: "Fresh bread that can be collected or be sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "carrot",
+        name: "Carrot",
+        aliases: [],
+        icon: ":carrot:",
+        price: "unable to be bought",
+        sell: 2000,
+        trade: 0,
+        imageUrl: "",
+        description: "Carrot that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "lettuce",
+        name: "Lettuce",
+        aliases: ['tuce'],
+        icon: ":leafy_green:",
+        price: "unable to be bought",
+        sell: 2500,
+        trade: 0,
+        imageUrl: "",
+        description: "Lettuce that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "tomato",
+        name: "Tomato",
+        aliases: ['tom', 'mato'],
+        icon: ":tomato:",
+        price: "unable to be bought",
+        sell: 3000,
+        trade: 0,
+        imageUrl: "",
+        description: "Tomato that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "corn",
+        name: "Corn",
+        aliases: [],
+        icon: ":corn:",
+        price: "unable to be bought",
+        sell: 2500,
+        trade: 0,
+        imageUrl: "",
+        description: "Corn that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "eggplant",
+        name: "Eggplant",
+        aliases: ['eggp', 'gplant', 'eplant', 'plant'],
+        icon: ":eggplant:",
+        price: "unable to be bought",
+        sell: 2500,
+        trade: 0,
+        imageUrl: "",
+        description: "Lettuce that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "potato",
+        name: "Potato",
+        aliases: ['pot', 'tato', 'otato'],
+        icon: ":potato:",
+        price: "unable to be bought",
+        sell: 5000,
+        trade: 0,
+        imageUrl: "",
+        description: "Potato that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "onion",
+        name: "Onion",
+        aliases: ['oni'],
+        icon: ":onion:",
+        price: "unable to be bought",
+        sell: 6969,
+        trade: 0,
+        imageUrl: "",
+        description: "Onion that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "bubbletea",
+        name: "Bubble Tea",
+        aliases: ['bubble', 'btea', 'bubbl'],
+        icon: ":bubble_tea:",
+        price: "unable to be bought",
+        sell: 'unable to be sold',
+        trade: 0,
+        imageUrl: "",
+        description: "Awesome popular drink! It most commonly consists of tea accompanied by chewy tapioca balls. Num!",
+        rarity: "common",
         type: "collectable"
     },
 ]
