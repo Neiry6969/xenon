@@ -418,7 +418,7 @@ module.exports = {
                     const embed = {
                         color: "RANDOM",
                         title: `${message.author.username} searched ${placesearched_items.place}`,
-                        description: `${message}`,
+                        description: `${search_result}`,
                         timestamp: new Date(),
                     };
                     display_3.setDisabled()

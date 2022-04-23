@@ -22,6 +22,8 @@ module.exports = [
         place: 'studio',
         message: `You found ❀ \`COINS\`, hopefuly this isn't stealling`,
         coins: 10000,
+        items: 'acousticguitar',
+        itempecrent: 500,
     },
     {
         place: 'beach',
