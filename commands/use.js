@@ -195,7 +195,7 @@ module.exports = {
                                 return message.reply({ embeds: [embed] });
                             }
                         } else if(item.item === 'donut' || item.item === 'kfcchicken' || item.item === 'bread' || item.item === 'tomato') {
-                            data.inventory[item] = data.inventory[item] - 1
+                            data.inventory[item.item] = data.inventory[item.item] - 1;
 
                             await inventoryModel.findOneAndUpdate(params, data);
                             return message.reply(`You eat one ${item.icon} \`${item.item}\` and it tastes good!`);
