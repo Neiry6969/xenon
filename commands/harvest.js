@@ -112,7 +112,6 @@ module.exports = {
                                 },
                                 {
                                     $inc: {
-                                        coins: begAmount,
                                         expbankspace: expbankspace_amount,
                                         experiencepoints: experiencepoints_amount,
                                     },
