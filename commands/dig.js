@@ -1,4 +1,5 @@
 const inventoryModel = require('../models/inventorySchema');
+const profileModel = require('../models/profileSchema');
 const allItems = require('../data/all_items');
 
 const lowest = ['worm', 'rat', 'rock']
