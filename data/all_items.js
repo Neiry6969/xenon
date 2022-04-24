@@ -406,7 +406,7 @@ module.exports = [
         item: "parrot",
         name: "Parrot",
         aliases: ["parr", "rrot", "par"],
-        icon: "",
+        icon: ":parrot:",
         price: "unable to be bought",
         sell: 9500,
         trade: 0,
@@ -804,5 +804,18 @@ module.exports = [
         description: "Shark that can be collected or sold.",
         rarity: "common",
         type: "sellable"
+    },
+    {
+        item: "bankmessage",
+        name: "Bank Message",
+        aliases: ['mes', 'bank', 'messa', 'bankm', 'message', 'messag'],
+        icon: "<:bankmessage:967826119594233886>",
+        price: 500000,
+        sell: 200000,
+        trade: 0,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/967827365466112010/pixil-frame-0_6.png",
+        description: "Using this message you are able to expand your bankspace from 50,000 to 250,000. This expanded bankspace doesn't reset if you prestige.",
+        rarity: "epic",
+        type: "support"
     },
 ]

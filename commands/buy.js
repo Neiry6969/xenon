@@ -14,13 +14,13 @@ module.exports = {
         const netBal = profileData.coins + profileData.bank;
 
         if(!getItem) {
-            return message.reply("Please specify a item to buy.");
+            return message.reply("Please specify an item to buy.");
         }
 
         const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)))
 
         if(!validItem) {
-            return message.reply(`\`${getItem}\` is not existent.`);
+            return message.reply(`\`${getItem}\` is not existent item.`);
         } else {
             const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
 

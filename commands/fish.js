@@ -8,7 +8,7 @@ const high = ['losttrident']
 
 function fish() {
     const number = Math.floor(Math.random() * 10000);
-    if(number <= 5000) {
+    if(number <= 6000) {
         return `You weren't able to catch anything.`
     } else if(number <= 8000 && number > 6000) {
         const result = Math.floor(Math.random() * lowest.length);
@@ -36,7 +36,7 @@ module.exports = {
     description: "fish for some food.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const iftable = args[0]?.toLowerCase()
-        if(iftable === 'table') {
+        if(iftable === 'table' || iftable === 'list') {
             const fish = allItems.find((val) => (val.item.toLowerCase()) === "fish")
             const crab = allItems.find((val) => (val.item.toLowerCase()) === "crab")
             const shrimp = allItems.find((val) => (val.item.toLowerCase()) === "shrimp")
@@ -47,7 +47,7 @@ module.exports = {
             const shark = allItems.find((val) => (val.item.toLowerCase()) === "shark")
             const losttrident = allItems.find((val) => (val.item.toLowerCase()) === "losttrident")
             
-            const lowest_table = `${fish.icon} \`${fish.item}\`, ${crab.icon} \`${crab.item}\`, ${crab.icon} \`${shrimp.item}\``
+            const lowest_table = `${fish.icon} \`${fish.item}\`, ${crab.icon} \`${crab.item}\`, ${shrimp.icon} \`${shrimp.item}\``
             const lowmid_table = `${lobster.icon} \`${lobster.item}\`, ${squid.icon} \`${squid.item}\``
             const highmid_table = `${shark.icon} \`${shark.item}\`, ${dolphin.icon} \`${dolphin.item}\`, ${whale.icon} \`${whale.item}\``
             const high_table = `${losttrident.icon} \`${losttrident.item}\``
@@ -100,7 +100,26 @@ module.exports = {
                                 data.inventory[item.item] = data.inventory[item.item] + 1;
                             }
                             await inventoryModel.findOneAndUpdate(params, data);
-    
+                            
+                            const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
+                            const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+
+                            const response = await profileModel.findOneAndUpdate(
+                                {
+                                    userId: message.author.id,
+                                },
+                                {
+                                    $inc: {
+                                        coins: begAmount,
+                                        expbankspace: expbankspace_amount,
+                                        experiencepoints: experiencepoints_amount,
+                                    },
+                                },
+                                {
+                                    upsert: true,
+                                }
+                            );
+                            
                             const embed = {
                                 color: 'RANDOM',
                                 title: `${message.author.username} went for a fish`,

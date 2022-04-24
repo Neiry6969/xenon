@@ -168,7 +168,9 @@ module.exports = {
                                             .setDisabled()
                                             .setStyle("SUCCESS")
 
-                                        cancel.setDisabled()
+                                        cancel
+                                            .setDisabled()
+                                            .setStyle("SECONDARY")
 
                                         share_msg.edit({
                                             embeds: [embed],
@@ -187,7 +189,9 @@ module.exports = {
                                             timestamp: new Date(),
                                         };
                                         
-                                        confirm.setDisabled()
+                                        confirm
+                                            .setDisabled()
+                                            .setStyle("SECONDARY")
 
                                         cancel.setDisabled()
                                         
@@ -217,9 +221,11 @@ module.exports = {
                                         
                                         confirm
                                             .setDisabled()
-                                            .setStyle("DANGER")
+                                            .setStyle("SECONDARY")
     
-                                        cancel.setDisabled()
+                                        cancel
+                                            .setDisabled()
+                                            .setStyle("SECONDARY")
                                         
                                         share_msg.edit({
                                             embeds: [embed],
@@ -344,7 +350,9 @@ module.exports = {
                                         .setDisabled()
                                         .setStyle("SUCCESS")
 
-                                    cancel.setDisabled()
+                                    cancel
+                                        .setDisabled()
+                                        .setStyle("SECONDARY")
 
                                     share_msg.edit({
                                         embeds: [embed],
@@ -363,7 +371,9 @@ module.exports = {
                                         timestamp: new Date(),
                                     };
                                     
-                                    confirm.setDisabled()
+                                    confirm
+                                        .setDisabled()
+                                        .setStyle("SECONDARY")
 
                                     cancel.setDisabled()
                                     
@@ -393,9 +403,11 @@ module.exports = {
                                     
                                     confirm
                                         .setDisabled()
-                                        .setStyle("DANGER")
+                                        .setStyle("SECONDARY")
 
-                                    cancel.setDisabled()
+                                    cancel
+                                        .setDisabled()
+                                        .setStyle("SECONDARY")
                                     
                                     share_msg.edit({
                                         embeds: [embed],

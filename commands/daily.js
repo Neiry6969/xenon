@@ -11,6 +11,9 @@ module.exports = {
         if(!profileData) {
             return;
         } else {
+            const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
+            const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+
             const response = await profileModel.findOneAndUpdate(
                 {
                     userId: message.author.id,
@@ -18,6 +21,8 @@ module.exports = {
                 {
                     $inc: {
                         coins: daily_amount,
+                        expbankspace: expbankspace_amount,
+                        experiencepoints: experiencepoints_amount,
                     },
                 },
                 {

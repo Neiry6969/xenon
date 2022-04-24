@@ -36,7 +36,7 @@ module.exports = {
     description: "hunt for some animals.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const iftable = args[0]?.toLowerCase()
-        if(iftable === 'table') {
+        if(iftable === 'table' || iftable === 'list') {
             const bird = allItems.find((val) => (val.item.toLowerCase()) === "bird")
             const chick = allItems.find((val) => (val.item.toLowerCase()) === "chick")
             const monkey = allItems.find((val) => (val.item.toLowerCase()) === "monkey")
@@ -102,7 +102,26 @@ module.exports = {
                                 data.inventory[item.item] = data.inventory[item.item] + 1;
                             }
                             await inventoryModel.findOneAndUpdate(params, data);
-    
+                            
+                            const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
+                            const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+
+                            const response = await profileModel.findOneAndUpdate(
+                                {
+                                    userId: message.author.id,
+                                },
+                                {
+                                    $inc: {
+                                        coins: begAmount,
+                                        expbankspace: expbankspace_amount,
+                                        experiencepoints: experiencepoints_amount,
+                                    },
+                                },
+                                {
+                                    upsert: true,
+                                }
+                            );
+                            
                             const embed = {
                                 color: 'RANDOM',
                                 title: `${message.author.username} went for a hunt`,
