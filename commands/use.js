@@ -109,7 +109,7 @@ module.exports = {
                                 return message.reply({ embeds: [embed] });
                             } else if(useAmount > 1) {
                                 useAmount = parseInt(useAmount)
-                                const expandedspace = Math.floor(Math.random() * (200000 * useAmount)) + 50000;
+                                const expandedspace = Math.floor(Math.random() * (200000 * useAmount)) + 50000 * useAmount;
                                 const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
 
                                 const response = await profileModel.findOneAndUpdate(
