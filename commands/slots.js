@@ -133,7 +133,7 @@ module.exports = {
             const allthree = slots1 === slots2 && slots2 === slots3;
             
             let multiplier;
-            if(slots1 === slots2 && slots2 === slots3) {
+            if(allthree === true) {
                 if(slots1 === '<:excalibur:966537260034043974>') {
                     multiplier = 30;
                 } else if(slots1 === '<:creatorscrown:965024171463688323>') {
@@ -158,7 +158,7 @@ module.exports = {
                     },
                     {
                         $inc: {
-                            coins: -winamount,
+                            coins: winamount,
                         },
                     },
                     {
@@ -193,7 +193,7 @@ module.exports = {
                     },
                     {
                         $inc: {
-                            coins: -winamount,
+                            coins: winamount,
                         },
                     },
                     {
