@@ -7,7 +7,7 @@ const icons = [
     '<:losttrident:967562834487701555>',
     '<:scythe:966324426993967174>',
     '<:moon:962410227104383006>',
-    '<:silvercrown:963568001213403196>',
+    '<:bluecoin:967464569847029840>',
     '<:fionaskitten:965416467162099812>',
     '<:donut:965343121133162616>',
 
@@ -84,7 +84,6 @@ module.exports = {
             if(slotsamount === 'max' || slotsamount === 'all') {
                 if(profileData.coins > maxslotsamount) {
                     slotsamount = maxslotsamount;
-                    console.log(slotsamount)
                 } else {
                     slotsamount = profileData.coins;
                 }
@@ -131,10 +130,10 @@ module.exports = {
             };
 
             const msg = await message.channel.send({ embeds: [embed] })
+            const allthree = slots1 === slots2 && slots2 === slots3;
             
             if(
-                slots1 === slots2 && slots2 === slots3 ||
-                slots1 === slots2 || slots1 === slots3 || slots2 === slots3
+                allthree === true || slots1 === slots2 || slots1 === slots3 || slots2 === slots3
             ) {
                 let multiplier;
                 if(slots1 === slots2 && slots2 === slots3) {
