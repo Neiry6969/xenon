@@ -678,7 +678,7 @@ module.exports = [
     {
         item: "bubbletea",
         name: "Bubble Tea",
-        aliases: ['bubble', 'btea', 'bubbl'],
+        aliases: ['bubble', 'btea', 'bubbl', 'bbt'],
         icon: ":bubble_tea:",
         price: "unable to be bought",
         sell: 'unable to be sold',
@@ -804,6 +804,19 @@ module.exports = [
         description: "Shark that can be collected or sold.",
         rarity: "common",
         type: "sellable"
+    },
+    {
+        item: "avocado",
+        name: "Avocado",
+        aliases: ['avo', 'cado', 'ado', 'avoc', 'avoca', 'avocad'],
+        icon: ":avocado:",
+        price: "unable to be bought",
+        sell: 100000,
+        trade: 0,
+        imageUrl: "",
+        description: "Avocado that is for your collection or to be sold.",
+        rarity: "uncommon",
+        type: "support"
     },
     {
         item: "bankmessage",

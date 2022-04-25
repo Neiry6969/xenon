@@ -4,7 +4,7 @@ const allItems = require('../data/all_items');
 
 const lowest = ['bread', 'carrot', 'lettuce']
 const lowmid = ['tomato', 'corn', 'eggplant']
-const highmid = ['potato', 'onion']
+const highmid = ['potato', 'onion', 'avocado']
 const high = ['bubbletea']
 
 function harvest() {
@@ -48,10 +48,11 @@ module.exports = {
             const eggplant = allItems.find((val) => (val.item.toLowerCase()) === "eggplant")
             const onion = allItems.find((val) => (val.item.toLowerCase()) === "onion")
             const bubbletea = allItems.find((val) => (val.item.toLowerCase()) === "bubbletea")
+            const avocado = allItems.find((val) => (val.item.toLowerCase()) === "avocado")
             
             const lowest_table = `${bread.icon} \`${bread.item}\`, ${carrot.icon} \`${carrot.item}\`, ${lettuce.icon} \`${lettuce.item}\``
             const lowmid_table = `${tomato.icon} \`${tomato.item}\`, ${corn.icon} \`${corn.item}\`, ${potato.icon} \`${potato.item}\``
-            const highmid_table = `${eggplant.icon} \`${eggplant.item}\`, ${onion.icon} \`${onion.item}\``
+            const highmid_table = `${eggplant.icon} \`${eggplant.item}\`, ${onion.icon} \`${onion.item}\`, ${avocado.icon} \`${avocado.item}\``
             const high_table = `${bubbletea.icon} \`${bubbletea.item}\``
 
 
