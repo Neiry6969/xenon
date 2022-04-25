@@ -86,7 +86,7 @@ module.exports = [
         sell: 500000,
         trade: 0,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965273171278327808/pixil-frame-0_1.png",
-        description: "Fox ate all of its jewelry and turned like this...",
+        description: "Fox ate all of it's jewelry and turned into this...",
         rarity: "uncommon",
         type: "collectable"
     },
