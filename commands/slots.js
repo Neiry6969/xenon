@@ -177,9 +177,9 @@ module.exports = {
 
                 msg.edit({ embeds: [embed] })
             } else if(slots1 === slots2 || slots1 === slots3 || slots2 === slots3) {
-                if(slots1 === '<:excalibur:966537260034043974>') {
+                if(slots1 === '<:excalibur:966537260034043974>' || slots2 === '<:excalibur:966537260034043974>' || slots3 === '<:excalibur:966537260034043974>') {
                     multiplier = 3;
-                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
+                } else if(slots1 === '<:creatorscrown:965024171463688323>' || slots2 === '<:creatorscrown:965024171463688323>' || slots3 === '<:creatorscrown:965024171463688323>') {
                     multiplier = 2;
                 } else {
                     multiplier = 1;
