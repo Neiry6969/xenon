@@ -8,8 +8,10 @@ async execute(message, args, cmd, client, Discord, profileData) {
         const getAmount = args[0].toLowerCase();
         const bankspace = profileData.bankspace + profileData.expbankspace;
         const bank_percent_filled = ((profileData.bank / bankspace) * 100).toFixed(2);
+        const availableBankspace = bankspace - profileData.bank;
 
         if(getAmount === 'max' || getAmount === 'all') {
+
             const amount = profileData.coins;
 
             if (bankspace === profileData.bank) {
@@ -24,7 +26,7 @@ async execute(message, args, cmd, client, Discord, profileData) {
                     timestamp: new Date(),
                 };
                 return message.reply({ embeds: [embed] });
-            } else if(amount > bankspace) {
+            } else if(amount > availableBankspace) {
                 const new_amount = bankspace - profileData.bank;
                 const new_bank = profileData.bank + new_amount;
                 const new_wallet = profileData.coins - new_amount;
@@ -141,11 +143,11 @@ async execute(message, args, cmd, client, Discord, profileData) {
                     timestamp: new Date(),
                 };
                 return message.reply({ embeds: [embed] }); 
-            } else if (getAmount > bankspace) {
+            } else if (getAmount > availableBankspace) {
                 const embed = {
                     color: '#FF0000',
                     title: 'Your deposit failed',
-                    description: `Your bank can't hold anymore coins...\n**Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\`\n**Avaliable Bankspace:** ❀ \`${availableBankspace.toLocaleString()}\``,
+                    description: `That many more coins...\n**Current Bank Status:** ❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\`\n**Avaliable Bankspace:** ❀ \`${availableBankspace.toLocaleString()}\``,
                     author: {
                         name: `_____________`,
                         icon_url: `${message.author.displayAvatarURL()}`,
