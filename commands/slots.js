@@ -134,7 +134,6 @@ module.exports = {
             const twocase1 = slots1 === slots2;
             const twocase2 = slots2 === slots3;
             const twocase3 = slots1 === slots3;
-            console.log(twocase1, twocase2, twocase3)
             
             let multiplier;
             if(allthree === true) {
