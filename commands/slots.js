@@ -114,8 +114,8 @@ module.exports = {
             const slot1_num = Math.floor(Math.random() * 100);
             const slot2_num = Math.floor(Math.random() * 100);
             const slot3_num = Math.floor(Math.random() * 100);
-            const slots1 = slot(slot1_num);
-            const slots2 = slot(slot2_num);
+            const slots1 = '<:losttrident:967562834487701555>';
+            const slots2 = '<:losttrident:967562834487701555>';
             const slots3 = slot(slot3_num);
             const resultslots = [slots1, slots2, slots3];
 
@@ -131,6 +131,10 @@ module.exports = {
 
             const msg = await message.channel.send({ embeds: [embed] })
             const allthree = slots1 === slots2 && slots2 === slots3;
+            const twocase1 = slots1 === slots2;
+            const twocase2 = slots2 === slots3;
+            const twocase3 = slots1 === slots3;
+            console.log(twocase1, twocase2, twocase3)
             
             let multiplier;
             if(allthree === true) {
@@ -146,9 +150,7 @@ module.exports = {
                     multiplier = 5;
                 } else if(slots1 === '<:moon:962410227104383006>') {
                     multiplier = 4;
-                } else {
-                    multiplier = 1;
-                }
+                } 
                 const winamount = multiplier * slotsamount;
                 const wallet = profileData.coins + winamount;
 
@@ -176,10 +178,10 @@ module.exports = {
                 };
 
                 msg.edit({ embeds: [embed] })
-            } else if(slots1 === slots2 || slots1 === slots3 || slots2 === slots3) {
-                if(slots1 === '<:excalibur:966537260034043974>') {
+            } else if(twocase1 === true || twocase2 === true || twocase3 === true) {
+                if(slots1 === '<:excalibur:966537260034043974>' || slots2 === '<:excalibur:966537260034043974>' || slots3 === '<:excalibur:966537260034043974>') {
                     multiplier = 3;
-                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
+                } else if(slots1 === '<:creatorscrown:965024171463688323>' || slots2 === '<:creatorscrown:965024171463688323>' || slots3 === '<:creatorscrown:965024171463688323>') {
                     multiplier = 2;
                 } else {
                     multiplier = 1;
