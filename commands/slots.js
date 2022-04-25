@@ -132,34 +132,23 @@ module.exports = {
             const msg = await message.channel.send({ embeds: [embed] })
             const allthree = slots1 === slots2 && slots2 === slots3;
             
-            if(
-                allthree === true || slots1 === slots2 || slots1 === slots3 || slots2 === slots3
-            ) {
-                let multiplier;
-                if(slots1 === slots2 && slots2 === slots3) {
-                    if(slots1 === '<:excalibur:966537260034043974>') {
-                        multiplier = 30;
-                    } else if(slots1 === '<:creatorscrown:965024171463688323>') {
-                        multiplier = 15;
-                    } else if(slots1 === '<:flamesword:965038139334864966>') {
-                        multiplier = 10;
-                    } else if(slots1 === '<:losttrident:967562834487701555>') {
-                        multiplier = 6;
-                    } else if(slots1 === '<:scythe:966324426993967174>') {
-                        multiplier = 5;
-                    } else if(slots1 === '<:moon:962410227104383006>') {
-                        multiplier = 4;
-                    }
-                } else if(slots1 === slots2 || slots1 === slots3 || slots2 === slots3) {
-                    if(slots1 === '<:excalibur:966537260034043974>') {
-                        multiplier = 3;
-                    } else if(slots1 === '<:creatorscrown:965024171463688323>') {
-                        multiplier = 2;
-                    } else {
-                        multiplier = 1;
-                    }
+            let multiplier;
+            if(slots1 === slots2 && slots2 === slots3) {
+                if(slots1 === '<:excalibur:966537260034043974>') {
+                    multiplier = 30;
+                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
+                    multiplier = 15;
+                } else if(slots1 === '<:flamesword:965038139334864966>') {
+                    multiplier = 10;
+                } else if(slots1 === '<:losttrident:967562834487701555>') {
+                    multiplier = 6;
+                } else if(slots1 === '<:scythe:966324426993967174>') {
+                    multiplier = 5;
+                } else if(slots1 === '<:moon:962410227104383006>') {
+                    multiplier = 4;
+                } else {
+                    multiplier = 1;
                 }
-
                 const winamount = multiplier * slotsamount;
                 const wallet = profileData.coins + winamount;
 
@@ -187,7 +176,41 @@ module.exports = {
                 };
 
                 msg.edit({ embeds: [embed] })
-                
+            } else if(slots1 === slots2 || slots1 === slots3 || slots2 === slots3) {
+                if(slots1 === '<:excalibur:966537260034043974>') {
+                    multiplier = 3;
+                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
+                    multiplier = 2;
+                } else {
+                    multiplier = 1;
+                }
+                const winamount = multiplier * slotsamount;
+                const wallet = profileData.coins + winamount;
+
+                const response = await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            coins: -winamount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+
+                const embed = {
+                    color: '#b7ffa1',
+                    title: `${message.author.username}'s winning slots machine`,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    footer: {
+                        text: 'Xenon Slots'
+                    }
+                };
+
+                msg.edit({ embeds: [embed] })
             } else {
                 const response = await profileModel.findOneAndUpdate(
                     {
