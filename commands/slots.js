@@ -131,6 +131,9 @@ module.exports = {
 
             const msg = await message.channel.send({ embeds: [embed] })
             const allthree = slots1 === slots2 && slots2 === slots3;
+            const twocase1 = slots1 === slots2;
+            const twocase2 = slots2 === slots3;
+            const twocase3 = slots1 === slots3;
             
             let multiplier;
             if(allthree === true) {
@@ -146,9 +149,7 @@ module.exports = {
                     multiplier = 5;
                 } else if(slots1 === '<:moon:962410227104383006>') {
                     multiplier = 4;
-                } else {
-                    multiplier = 1;
-                }
+                } 
                 const winamount = multiplier * slotsamount;
                 const wallet = profileData.coins + winamount;
 
