@@ -114,8 +114,8 @@ module.exports = {
             const slot1_num = Math.floor(Math.random() * 100);
             const slot2_num = Math.floor(Math.random() * 100);
             const slot3_num = Math.floor(Math.random() * 100);
-            const slots1 = '<:losttrident:967562834487701555>';
-            const slots2 = '<:losttrident:967562834487701555>';
+            const slots1 = slot(slot1_num);
+            const slots2 = slot(slot2_num);
             const slots3 = slot(slot3_num);
             const resultslots = [slots1, slots2, slots3];
 
