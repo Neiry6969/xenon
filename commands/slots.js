@@ -1,38 +1,114 @@
 const profileModel = require("../models/profileSchema");
 
-const icons = [
+const winningicons = [
     '<:excalibur:966537260034043974>',
     '<:creatorscrown:965024171463688323>',
     '<:flamesword:965038139334864966>',
     '<:losttrident:967562834487701555>',
     '<:scythe:966324426993967174>',
     '<:moon:962410227104383006>',
-
 ]
 
-const iconsother = [
-    '<:flamesword:965038139334864966>',
-    '<:losttrident:967562834487701555>',
-    '<:scythe:966324426993967174>',
-    '<:moon:962410227104383006>',
+const multiplieramount_2 = [
+    {
+        icon: '<:moon:962410227104383006>',
+        multi: 1
+    },
+    {
+        icon: '<:scythe:966324426993967174>',
+        multi: 1
+    },  
+    {
+        icon: '<:losttrident:967562834487701555>',
+        multi: 1
+    },
+    {
+        icon: '<:flamesword:965038139334864966>',
+        multi: 1
+    },
+    {
+        icon: '<:creatorscrown:965024171463688323>',
+        multi: 2
+    },
+    {
+        icon: '<:excalibur:966537260034043974>',
+        multi: 3
+    },
 ]
 
+const multiplieramount_3 = [
+    {
+        icon: '<:moon:962410227104383006>',
+        multi: 4
+    },
+    {
+        icon: '<:scythe:966324426993967174>',
+        multi: 5
+    },
+    {
+        icon: '<:losttrident:967562834487701555>',
+        multi: 6
+    },
+    {
+        icon: '<:flamesword:965038139334864966>',
+        multi: 10
+    },
+    {
+        icon: '<:creatorscrown:965024171463688323>',
+        multi: 15
+    },
+    {
+        icon: '<:excalibur:966537260034043974>',
+        multi: 69
+    },
+]
+
+function majorityElement (arr = []) {
+    const threshold = Math.floor(arr.length / 2);
+    const map = {};
+    for (let i = 0; i < arr.length; i++) {
+       const value = arr[i];
+       map[value] = map[value] + 1 || 1;
+       if (map[value] > threshold)
+          return value
+    };
+    return false;
+};
+function countElements(num, arr) {
+    const counts = {};
+
+    for (num of arr) {
+    counts[num] = counts[num] ? counts[num] + 1 : 1;
+    }
+
+    return counts;
+}
 
 function slot(num) {
-    if(num <= 10) {
+    const leftovericons = [
+        '<:flamesword:965038139334864966>',
+        '<:losttrident:967562834487701555>',
+        '<:scythe:966324426993967174>',
+        '<:moon:962410227104383006>',
+        '<:fionaskitten:965416467162099812>',
+        '<:donut:965343121133162616>',
+        '<:silvercrown:963568001213403196>',
+        '<:testerstea:965275697855733810>',
+    ]
+    if(num <= 69) {
         return '<:excalibur:966537260034043974>';
-    } else if(num <= 30) {
+    } else if(num <= 169) {
         return '<:creatorscrown:965024171463688323>';
     } else {
-        const result = Math.floor(Math.random() * iconsother.length)
-        return iconsother[result];
+        const result = Math.floor(Math.random() * leftovericons.length);
+        return leftovericons[result];
     }
 }
 
 module.exports = {
     name: "slots",
     aliases: ['slot'],
-    cooldown: 10,
+    cooldown: 0,
     minArgs: 0,
     maxArgs: 0,
     description: "slots you money away.",
@@ -40,6 +116,19 @@ module.exports = {
         const iftable = args[0]?.toLowerCase();
 
         if(iftable === 'table' || iftable === 'list') {
+            const multifor2_icons = multiplieramount_2.map((value) => {
+                return `${value.icon}${value.icon}`;
+            }).join("\n")
+            const multifor3_icons = multiplieramount_3.map((value) => {
+                return `${value.icon}${value.icon}${value.icon}`;
+            }).join("\n")
+            const multifor2_multi =  multiplieramount_2.map((value) => {
+                return `\`x${value.multi}\``;
+            }).join("\n")
+            const multifor3_multi =  multiplieramount_3.map((value) => {
+                return `\`x${value.multi}\``;
+            }).join("\n")
+
             const embed = {
                 color: 'RANDOM',
                 title: `Slots Table`,
@@ -47,12 +136,12 @@ module.exports = {
                 fields: [
                     {
                         name: '**ICON**',
-                        value: '<:moon:962410227104383006><:moon:962410227104383006>\n<:scythe:966324426993967174><:scythe:966324426993967174>\n<:losttrident:967562834487701555><:losttrident:967562834487701555>\n<:flamesword:965038139334864966><:flamesword:965038139334864966>\n<:creatorscrown:965024171463688323><:creatorscrown:965024171463688323>\n<:excalibur:966537260034043974><:excalibur:966537260034043974>\n<:moon:962410227104383006><:moon:962410227104383006><:moon:962410227104383006>\n<:scythe:966324426993967174><:scythe:966324426993967174><:scythe:966324426993967174>\n<:losttrident:967562834487701555><:losttrident:967562834487701555><:losttrident:967562834487701555>\n<:flamesword:965038139334864966><:flamesword:965038139334864966><:flamesword:965038139334864966>\n<:creatorscrown:965024171463688323><:creatorscrown:965024171463688323><:creatorscrown:965024171463688323>\n<:excalibur:966537260034043974><:excalibur:966537260034043974><:excalibur:966537260034043974>',
+                        value: `${multifor2_icons}\n${multifor3_icons}`,
                         inline: true,
                     },
                     {
                         name: '**MULTIPLIER**',
-                        value: 'x1\nx1\nx1\nx1\nx2\nx3\nx4\nx5\nx6\nx10\nx15\nx30', 
+                        value: `${multifor2_multi}\n${multifor3_multi}`, 
                         inline: true,
                     },
                 ],
@@ -103,9 +192,10 @@ module.exports = {
 
                 return message.reply({ embeds: [embed] });
             } 
-            const slot1_num = Math.floor(Math.random() * 100);
-            const slot2_num = Math.floor(Math.random() * 100);
-            const slot3_num = Math.floor(Math.random() * 100);
+
+            const slot1_num = Math.floor(Math.random() * 100 * 100);
+            const slot2_num = Math.floor(Math.random() * 100 * 100);
+            const slot3_num = Math.floor(Math.random() * 100 * 100);
             const slots1 = slot(slot1_num);
             const slots2 = slot(slot2_num);
             const slots3 = slot(slot3_num);
@@ -122,156 +212,12 @@ module.exports = {
             };
 
             const msg = await message.channel.send({ embeds: [embed] })
-            const allthree = slots1 === slots2 && slots2 === slots3;
 
             let multiplier;
-            if(allthree === true) {
-                if(slots1 === '<:excalibur:966537260034043974>') {
-                    multiplier = 30;
-                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
-                    multiplier = 15;
-                } else if(slots1 === '<:flamesword:965038139334864966>') {
-                    multiplier = 10;
-                } else if(slots1 === '<:losttrident:967562834487701555>') {
-                    multiplier = 6;
-                } else if(slots1 === '<:scythe:966324426993967174>') {
-                    multiplier = 5;
-                } else if(slots1 === '<:moon:962410227104383006>') {
-                    multiplier = 4;
-                } 
-                const winamount = multiplier * slotsamount;
-                const wallet = profileData.coins + winamount;
+            const majorityelement = majorityElement(resultslots)
+            const majorityelementcount = countElements(majorityElement, resultslots)
 
-                const response = await profileModel.findOneAndUpdate(
-                    {
-                        userId: message.author.id,
-                    },
-                    {
-                        $inc: {
-                            coins: winamount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                );
-
-                const embed = {
-                    color: '#b7ffa1',
-                    title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
-                    footer: {
-                        text: 'Xenon Slots'
-                    }
-                };
-
-                msg.edit({ embeds: [embed] })
-            } else if(slots1 === slots2) {
-                if(slots1 === '<:excalibur:966537260034043974>') {
-                    multiplier = 3;
-                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
-                    multiplier = 2;
-                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:moon:962410227104383006>') {
-                    multiplier = 1;
-                }
-                const winamount = multiplier * slotsamount;
-                const wallet = profileData.coins + winamount;
-
-                const response = await profileModel.findOneAndUpdate(
-                    {
-                        userId: message.author.id,
-                    },
-                    {
-                        $inc: {
-                            coins: winamount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                );
-
-                const embed = {
-                    color: '#b7ffa1',
-                    title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
-                    footer: {
-                        text: 'Xenon Slots'
-                    }
-                };
-
-                msg.edit({ embeds: [embed] })
-            } else if(slots1 === slots3) {
-                if(slots1 === '<:excalibur:966537260034043974>') {
-                    multiplier = 3;
-                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
-                    multiplier = 2;
-                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:moon:962410227104383006>') {
-                    multiplier = 1;
-                }
-                const winamount = multiplier * slotsamount;
-                const wallet = profileData.coins + winamount;
-
-                const response = await profileModel.findOneAndUpdate(
-                    {
-                        userId: message.author.id,
-                    },
-                    {
-                        $inc: {
-                            coins: winamount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                );
-
-                const embed = {
-                    color: '#b7ffa1',
-                    title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
-                    footer: {
-                        text: 'Xenon Slots'
-                    }
-                };
-
-                msg.edit({ embeds: [embed] })
-            } else if(slots3 === slots2) {
-                if(slots3 === '<:excalibur:966537260034043974>') {
-                    multiplier = 3;
-                } else if(slots3 === '<:creatorscrown:965024171463688323>') {
-                    multiplier = 2;
-                } else if(slots3 === '<:flamesword:965038139334864966>' || slots3 === '<:scythe:966324426993967174>' || slots3 === '<:losttrident:967562834487701555>' || slots3 === '<:flamesword:965038139334864966>' || slots3 === '<:moon:962410227104383006>') {
-                    multiplier = 1;
-                }
-                const winamount = multiplier * slotsamount;
-                const wallet = profileData.coins + winamount;
-
-                const response = await profileModel.findOneAndUpdate(
-                    {
-                        userId: message.author.id,
-                    },
-                    {
-                        $inc: {
-                            coins: winamount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                );
-
-                const embed = {
-                    color: '#b7ffa1',
-                    title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
-                    footer: {
-                        text: 'Xenon Slots'
-                    }
-                };
-
-                msg.edit({ embeds: [embed] })
-            } else {
+            if(majorityelement === false) {
                 const response = await profileModel.findOneAndUpdate(
                     {
                         userId: message.author.id,
@@ -298,8 +244,71 @@ module.exports = {
                 };
 
                 msg.edit({ embeds: [embed] })
-            }
+            } else if (!winningicons.includes(majorityelement)) {
+                const response = await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            coins: -slotsamount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
 
+                const lostamount = profileData.coins - slotsamount;
+
+                const embed = {
+                    color: '#ff4c4c',
+                    title: `${message.author.username}'s losing slots machine`,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** \`${slotsamount.toLocaleString()}\`\n**Wallet:** \`${lostamount.toLocaleString()}\``,
+                    footer: {
+                        text: 'Xenon Slots'
+                    }
+                };
+
+                msg.edit({ embeds: [embed] })
+            } else {
+                let multiplier;
+                if(majorityelementcount[majorityelement] === 3) {
+                    multiplier = multiplieramount_3.find((val) => (val.icon.toLowerCase()) === majorityelement).multi;
+                } else if(majorityelementcount[majorityelement] === 2) {
+                    multiplier = multiplieramount_2.find((val) => (val.icon.toLowerCase()) === majorityelement).multi;
+                } else {
+                    multiplier = multiplieramount_2.find((val) => (val.icon.toLowerCase()) === majorityelement).multi;
+                }
+
+                const winamount = multiplier * slotsamount;
+                const wallet = profileData.coins + winamount;
+
+                const response = await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            coins: winamount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+
+                const embed = {
+                    color: '#b7ffa1',
+                    title: `${message.author.username}'s winning slots machine`,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    footer: {
+                        text: 'Xenon Slots'
+                    }
+                };
+
+                msg.edit({ embeds: [embed] })
+            }
         }
     }
 }
