@@ -159,7 +159,7 @@ module.exports = {
                 const embed = {
                     color: '#b7ffa1',
                     title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
@@ -194,7 +194,7 @@ module.exports = {
                 const embed = {
                     color: '#b7ffa1',
                     title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
@@ -229,7 +229,7 @@ module.exports = {
                 const embed = {
                     color: '#b7ffa1',
                     title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
@@ -264,7 +264,7 @@ module.exports = {
                 const embed = {
                     color: '#b7ffa1',
                     title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
