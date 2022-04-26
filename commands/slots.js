@@ -123,10 +123,10 @@ module.exports = {
                 return `${value.icon}${value.icon}${value.icon}`;
             }).join("\n")
             const multifor2_multi =  multiplieramount_2.map((value) => {
-                return `\`x${value.multi}\``;
+                return `**x${value.multi}**`;
             }).join("\n")
             const multifor3_multi =  multiplieramount_3.map((value) => {
-                return `\`x${value.multi}\``;
+                return `**x${value.multi}**`;
             }).join("\n")
 
             const embed = {
