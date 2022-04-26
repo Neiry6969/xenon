@@ -13,34 +13,33 @@ const icons = [
 
 ]
 
-function getRandom(arr, n) {
-    var result = new Array(n),
-        len = arr.length,
-        taken = new Array(len);
-    if (n > len)
-        throw new RangeError("getRandom: more elements taken than available");
-    while (n--) {
-        var x = Math.floor(Math.random() * len);
-        result[n] = arr[x in taken ? taken[x] : x];
-        taken[x] = --len in taken ? taken[len] : len;
-    }
-    return result;
-}
+const iconsother = [
+    '<:flamesword:965038139334864966>',
+    '<:losttrident:967562834487701555>',
+    '<:scythe:966324426993967174>',
+    '<:moon:962410227104383006>',
+    '<:bluecoin:967464569847029840>',
+    '<:fionaskitten:965416467162099812>',
+    '<:donut:965343121133162616>',
+
+]
+
 
 function slot(num) {
     if(num <= 10) {
-        return icons[0];
+        return '<:excalibur:966537260034043974>';
     } else if(num <= 30) {
-        return icons[2];
+        return '<:creatorscrown:965024171463688323>';
     } else {
-        return getRandom(icons.slice(3, 10), 1);
+        const result = Math.floor(Math.random() * iconsother.length)
+        return iconsother[result];
     }
 }
 
 module.exports = {
     name: "slots",
     aliases: ['slot'],
-    cooldown: 10,
+    cooldown: 0,
     minArgs: 0,
     maxArgs: 0,
     description: "slots you money away.",
@@ -131,10 +130,7 @@ module.exports = {
 
             const msg = await message.channel.send({ embeds: [embed] })
             const allthree = slots1 === slots2 && slots2 === slots3;
-            const twocase1 = slots1 === slots2;
-            const twocase2 = slots2 === slots3;
-            const twocase3 = slots1 === slots3;
-            
+
             let multiplier;
             if(allthree === true) {
                 if(slots1 === '<:excalibur:966537260034043974>') {
@@ -177,12 +173,82 @@ module.exports = {
                 };
 
                 msg.edit({ embeds: [embed] })
-            } else if(twocase1 === true || twocase2 === true || twocase3 === true) {
-                if(slots1 === '<:excalibur:966537260034043974>' || slots2 === '<:excalibur:966537260034043974>' || slots3 === '<:excalibur:966537260034043974>') {
+            } else if(slots1 === slots2) {
+                if(slots1 === '<:excalibur:966537260034043974>') {
                     multiplier = 3;
-                } else if(slots1 === '<:creatorscrown:965024171463688323>' || slots2 === '<:creatorscrown:965024171463688323>' || slots3 === '<:creatorscrown:965024171463688323>') {
+                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
                     multiplier = 2;
-                } else {
+                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>') {
+                    multiplier = 1;
+                }
+                const winamount = multiplier * slotsamount;
+                const wallet = profileData.coins + winamount;
+
+                const response = await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            coins: winamount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+
+                const embed = {
+                    color: '#b7ffa1',
+                    title: `${message.author.username}'s winning slots machine`,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    footer: {
+                        text: 'Xenon Slots'
+                    }
+                };
+
+                msg.edit({ embeds: [embed] })
+            } else if(slots1 === slots3) {
+                if(slots1 === '<:excalibur:966537260034043974>') {
+                    multiplier = 3;
+                } else if(slots1 === '<:creatorscrown:965024171463688323>') {
+                    multiplier = 2;
+                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>') {
+                    multiplier = 1;
+                }
+                const winamount = multiplier * slotsamount;
+                const wallet = profileData.coins + winamount;
+
+                const response = await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            coins: winamount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+
+                const embed = {
+                    color: '#b7ffa1',
+                    title: `${message.author.username}'s winning slots machine`,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    footer: {
+                        text: 'Xenon Slots'
+                    }
+                };
+
+                msg.edit({ embeds: [embed] })
+            } else if(slots3 === slots2) {
+                if(slots3 === '<:excalibur:966537260034043974>') {
+                    multiplier = 3;
+                } else if(slots3 === '<:creatorscrown:965024171463688323>') {
+                    multiplier = 2;
+                } else if(slots3 === '<:flamesword:965038139334864966>' || slots3 === '<:scythe:966324426993967174>' || slots3 === '<:losttrident:967562834487701555>' || slots3 === '<:flamesword:965038139334864966>') {
                     multiplier = 1;
                 }
                 const winamount = multiplier * slotsamount;
