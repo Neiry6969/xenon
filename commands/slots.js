@@ -32,7 +32,7 @@ function slot(num) {
 module.exports = {
     name: "slots",
     aliases: ['slot'],
-    cooldown: 0,
+    cooldown: 10,
     minArgs: 0,
     maxArgs: 0,
     description: "slots you money away.",
@@ -171,7 +171,7 @@ module.exports = {
                     multiplier = 3;
                 } else if(slots1 === '<:creatorscrown:965024171463688323>') {
                     multiplier = 2;
-                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>') {
+                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:moon:962410227104383006>') {
                     multiplier = 1;
                 }
                 const winamount = multiplier * slotsamount;
@@ -206,7 +206,7 @@ module.exports = {
                     multiplier = 3;
                 } else if(slots1 === '<:creatorscrown:965024171463688323>') {
                     multiplier = 2;
-                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>') {
+                } else if(slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:scythe:966324426993967174>' || slots1 === '<:losttrident:967562834487701555>' || slots1 === '<:flamesword:965038139334864966>' || slots1 === '<:moon:962410227104383006>') {
                     multiplier = 1;
                 }
                 const winamount = multiplier * slotsamount;
@@ -241,7 +241,7 @@ module.exports = {
                     multiplier = 3;
                 } else if(slots3 === '<:creatorscrown:965024171463688323>') {
                     multiplier = 2;
-                } else if(slots3 === '<:flamesword:965038139334864966>' || slots3 === '<:scythe:966324426993967174>' || slots3 === '<:losttrident:967562834487701555>' || slots3 === '<:flamesword:965038139334864966>') {
+                } else if(slots3 === '<:flamesword:965038139334864966>' || slots3 === '<:scythe:966324426993967174>' || slots3 === '<:losttrident:967562834487701555>' || slots3 === '<:flamesword:965038139334864966>' || slots3 === '<:moon:962410227104383006>') {
                     multiplier = 1;
                 }
                 const winamount = multiplier * slotsamount;
