@@ -93,7 +93,6 @@ function slot(num) {
         '<:fionaskitten:965416467162099812>',
         '<:donut:965343121133162616>',
         '<:silvercrown:963568001213403196>',
-        '<:testerstea:965275697855733810>',
     ]
     if(num <= 69) {
         return '<:excalibur:966537260034043974>';
@@ -108,7 +107,7 @@ function slot(num) {
 module.exports = {
     name: "slots",
     aliases: ['slot'],
-    cooldown: 0,
+    cooldown: 10,
     minArgs: 0,
     maxArgs: 0,
     description: "slots you money away.",
