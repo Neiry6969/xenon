@@ -20,11 +20,11 @@ const multiplieramount_2 = [
     },  
     {
         icon: '<a:finetrophy:968660247977803787>',
-        multi: 1
+        multi: 1.2
     },
     {
         icon: '<a:finecrown:968688780615766047>',
-        multi: 1
+        multi: 1.5
     },
     {
         icon: '<:creatorscrown:965024171463688323>',
@@ -115,35 +115,17 @@ module.exports = {
         const iftable = args[0]?.toLowerCase();
 
         if(iftable === 'table' || iftable === 'list') {
-            const multifor2_icons = multiplieramount_2.map((value) => {
-                return `${value.icon}${value.icon}`;
+            const multifor2 = multiplieramount_2.map((value) => {
+                return `${value.icon}${value.icon}<:blankemojispace:968955340517433414><:blankemojispace:968955340517433414> **x${value.multi}**`;
             }).join("\n")
-            const multifor3_icons = multiplieramount_3.map((value) => {
-                return `${value.icon}${value.icon}${value.icon}`;
-            }).join("\n")
-            const multifor2_multi =  multiplieramount_2.map((value) => {
-                return `**x${value.multi}**`;
-            }).join("\n")
-            const multifor3_multi =  multiplieramount_3.map((value) => {
-                return `**x${value.multi}**`;
+            const multifor3 = multiplieramount_3.map((value) => {
+                return `${value.icon}${value.icon}${value.icon}<:blankemojispace:968955340517433414> **x${value.multi}**`;
             }).join("\n")
 
             const embed = {
                 color: 'RANDOM',
                 title: `Slots Table`,
-                description: `Here is the slots table.`,
-                fields: [
-                    {
-                        name: '**ICON**',
-                        value: `${multifor2_icons}\n${multifor3_icons}`,
-                        inline: true,
-                    },
-                    {
-                        name: '**MULTIPLIER**',
-                        value: `${multifor2_multi}\n${multifor3_multi}`, 
-                        inline: true,
-                    },
-                ],
+                description: `Here is the slots table.\n\n**ICON**<:blankemojispace:968955340517433414>**MULTIPLIER**\n${multifor2}\n${multifor3}`,
                 timestamp: new Date(),
             };
     
