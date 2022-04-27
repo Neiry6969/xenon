@@ -36,7 +36,7 @@ module.exports = {
     maxArgs: 0,
     description: "bet your money away.",
     async execute(message, args, cmd, client, Discord, profileData) {
-        const maxwinningmulti = 2.5;
+        const maxwinningmulti = 2.0;
         const minwinningmulti = 0.5;
         const iftable = args[0]?.toLowerCase();
 
