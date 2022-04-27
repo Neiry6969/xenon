@@ -3,27 +3,27 @@ const profileModel = require("../models/profileSchema");
 const winningicons = [
     '<:excalibur:966537260034043974>',
     '<:creatorscrown:965024171463688323>',
-    '<:flamesword:965038139334864966>',
-    '<:losttrident:967562834487701555>',
-    '<:scythe:966324426993967174>',
-    '<:moon:962410227104383006>',
+    '<a:finecrown:968688780615766047>',
+    '<a:finetrophy:968660247977803787>',
+    '<a:finemedal:968654431484796979>',
+    '<a:finecoin:968650301546586193>',
 ]
 
 const multiplieramount_2 = [
     {
-        icon: '<:moon:962410227104383006>',
+        icon: '<a:finecoin:968650301546586193>',
         multi: 1
     },
     {
-        icon: '<:scythe:966324426993967174>',
+        icon: '<a:finemedal:968654431484796979>',
         multi: 1
     },  
     {
-        icon: '<:losttrident:967562834487701555>',
+        icon: '<a:finetrophy:968660247977803787>',
         multi: 1
     },
     {
-        icon: '<:flamesword:965038139334864966>',
+        icon: '<a:finecrown:968688780615766047>',
         multi: 1
     },
     {
@@ -38,28 +38,28 @@ const multiplieramount_2 = [
 
 const multiplieramount_3 = [
     {
-        icon: '<:moon:962410227104383006>',
+        icon: '<a:finecoin:968650301546586193>',
         multi: 4
     },
     {
-        icon: '<:scythe:966324426993967174>',
-        multi: 5
+        icon: '<a:finemedal:968654431484796979>',
+        multi: 8
     },
     {
-        icon: '<:losttrident:967562834487701555>',
-        multi: 6
+        icon: '<a:finetrophy:968660247977803787>',
+        multi: 12
     },
     {
-        icon: '<:flamesword:965038139334864966>',
-        multi: 10
-    },
-    {
-        icon: '<:creatorscrown:965024171463688323>',
+        icon: '<a:finecrown:968688780615766047>',
         multi: 15
     },
     {
+        icon: '<:creatorscrown:965024171463688323>',
+        multi: 75
+    },
+    {
         icon: '<:excalibur:966537260034043974>',
-        multi: 69
+        multi: 250
     },
 ]
 
@@ -86,17 +86,17 @@ function countElements(num, arr) {
 
 function slot(num) {
     const leftovericons = [
-        '<:flamesword:965038139334864966>',
-        '<:losttrident:967562834487701555>',
-        '<:scythe:966324426993967174>',
-        '<:moon:962410227104383006>',
+        '<a:finecrown:968688780615766047>',
+        '<a:finetrophy:968660247977803787>',
+        '<a:finemedal:968654431484796979>',
+        '<a:finecoin:968650301546586193>',
         '<:fionaskitten:965416467162099812>',
         '<:donut:965343121133162616>',
-        '<:silvercrown:963568001213403196>',
+        '<a:finecoin:968650301546586193>',
     ]
-    if(num <= 69) {
+    if(num <= 690) {
         return '<:excalibur:966537260034043974>';
-    } else if(num <= 169) {
+    } else if(num <= 2690) {
         return '<:creatorscrown:965024171463688323>';
     } else {
         const result = Math.floor(Math.random() * leftovericons.length);
