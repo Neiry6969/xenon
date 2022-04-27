@@ -110,7 +110,7 @@ module.exports = {
     cooldown: 10,
     minArgs: 0,
     maxArgs: 0,
-    description: "slots you money away.",
+    description: "slots your money away.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const iftable = args[0]?.toLowerCase();
 
@@ -218,7 +218,7 @@ module.exports = {
                 const embed = {
                     color: '#ff4c4c',
                     title: `${message.author.username}'s losing slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** \`${slotsamount.toLocaleString()}\`\n**Wallet:** \`${lostamount.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** ❀ \`${slotsamount.toLocaleString()}\`\n**Wallet:** ❀ \`${lostamount.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
@@ -245,7 +245,7 @@ module.exports = {
                 const embed = {
                     color: '#ff4c4c',
                     title: `${message.author.username}'s losing slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** \`${slotsamount.toLocaleString()}\`\n**Wallet:** \`${lostamount.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** ❀ \`${slotsamount.toLocaleString()}\`\n**Wallet:** ❀ \`${lostamount.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
@@ -282,7 +282,7 @@ module.exports = {
                 const embed = {
                     color: '#b7ffa1',
                     title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`${winamount.toLocaleString()}\`\n**Wallet:** \`${wallet.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** ❀ \`${winamount.toLocaleString()}\`\n**Wallet:** ❀ \`${wallet.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
