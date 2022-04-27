@@ -847,7 +847,7 @@ module.exports = [
     {
         item: "finecoin",
         name: "Fine Coin",
-        aliases: ['ecoin', 'finec', 'fineco', 'finecoi', 'finecoi'],
+        aliases: ['ecoin', 'finec', 'fineco', 'finecoi', 'finecoi', 'coin'],
         icon: "<a:finecoin:968650301546586193>",
         price: 696969,
         sell: "unable to be sold",
@@ -860,7 +860,7 @@ module.exports = [
     {
         item: "finemedal",
         name: "Fine Medal",
-        aliases: ['emedal', 'finem', 'fineme', 'finemed', 'finemeda'],
+        aliases: ['emedal', 'finem', 'fineme', 'finemed', 'finemeda', 'medal'],
         icon: "<a:finemedal:968654431484796979>",
         price: 1690000,
         sell: "unable to be sold",
@@ -872,8 +872,8 @@ module.exports = [
     },
     {
         item: "finetrophy",
-        name: "Fine Coin",
-        aliases: ['etrophy', 'finet', 'finetr', 'finetro', 'finetrop', 'finettoph'],
+        name: "Fine Trophy",
+        aliases: ['etrophy', 'finet', 'finetr', 'finetro', 'finetrop', 'finettoph', 'trophy'],
         icon: "<a:finetrophy:968660247977803787>",
         price: 69000000,
         sell: "unable to be sold",
@@ -886,8 +886,8 @@ module.exports = [
     {
         item: "finecrown",
         name: "Fine Crown",
-        aliases: ['ecrown', 'finecrow', 'finecro', 'finecro', 'finecr'],
-        icon: "<a:finecrown:968664563820134420>",
+        aliases: ['ecrown', 'finecrow', 'finecro', 'finecro', 'finecr', 'crown'],
+        icon: "<a:finecrown:968688780615766047>",
         price: 690000000,
         sell: "unable to be sold",
         trade: 0,
