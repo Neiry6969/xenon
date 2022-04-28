@@ -1,4 +1,5 @@
 const profileModel = require("../models/profileSchema");
+const letternumbers = require('../reference/letternumber');
 
 const winningicons = [
     '<:excalibur:966537260034043974>',
@@ -148,6 +149,14 @@ module.exports = {
                     slotsamount = maxslotsamount;
                 } else {
                     slotsamount = profileData.coins;
+                }
+            } else if(letternumbers.find((val) => val.letter === slotsamount.slice(-1))) {
+                if(parseInt(slotsamount.slice(0, -1))) {
+                    const number = parseFloat(slotsamount.slice(0, -1));
+                    const numbermulti = letternumbers.find((val) => val.letter === slotsamount.slice(-1)).number;
+                    slotsamount = number * numbermulti;
+                } else {
+                    slotsamount = null;
                 }
             } else {
                 slotsamount = parseInt(slotsamount)

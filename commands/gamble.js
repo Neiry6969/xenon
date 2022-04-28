@@ -1,4 +1,5 @@
 const profileModel = require("../models/profileSchema");
+const letternumbers = require('../reference/letternumber');
 
 const dice = [
     {
@@ -67,6 +68,14 @@ module.exports = {
                     betamount = maxbetamount;
                 } else {
                     betamount = profileData.coins;
+                }
+            } else if(letternumbers.find((val) => val.letter === betamount.slice(-1))) {
+                if(parseInt(betamount.slice(0, -1))) {
+                    const number = parseFloat(betamount.slice(0, -1));
+                    const numbermulti = letternumbers.find((val) => val.letter === betamount.slice(-1)).number;
+                    betamount = number * numbermulti;
+                } else {
+                    betamount = null;
                 }
             } else {
                 betamount = parseInt(betamount)
