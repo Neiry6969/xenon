@@ -220,7 +220,7 @@ module.exports = {
                 const embed = {
                     color: '#00FF00',
                     title: `${message.author.username}'s betting game`,
-                    description: `You Won!\n\n**You Won:** ❀ \`${winningamount.toLocaleString()}\`\n**Multiplier:** \`x${multiplier}\` \`${multiplier * 100}%\`\n**Wallet:** ❀ \`${wallet.toLocaleString()}\``,
+                    description: `You Won!\n\n**You Won:** ❀ \`${winningamount.toLocaleString()}\`\n**Multiplier:** \`x${multiplier}\` \`${parseInt(multiplier * 100)}%\`\n**Wallet:** ❀ \`${wallet.toLocaleString()}\``,
                     fields: [
                         {
                             name: `${message.author.username}`,
