@@ -19,11 +19,11 @@ function fish() {
         const result = Math.floor(Math.random() * lowmid.length);
 
         return lowmid[result];
-    } else if(number <= 9995 && number > 9500) {
+    } else if(number <= 9999 && number > 9500) {
         const result = Math.floor(Math.random() * highmid.length);
 
         return highmid[result];
-    } else if(number > 9995) {
+    } else if(number > 9999) {
         const result = Math.floor(Math.random() * high.length);
 
         return high[result];
@@ -57,7 +57,7 @@ module.exports = {
             const embed = {
                 color: 'RANDOM',
                 title: `Fish Table`,
-                description: `**Fail** ──── \`60%\`\n\n**Lowest** ──── \`20%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.95%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.05%\`\nitems: ${high_table}`,
+                description: `**Fail** ──── \`60%\`\n\n**Lowest** ──── \`20%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.99%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.01%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
             };
     
