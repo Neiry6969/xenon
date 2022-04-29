@@ -137,7 +137,7 @@ module.exports = {
                                 title: `Xenon Shop`,
                                 description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 footer: {
-                                    text: `Page: ${page}  | ${lastpage} xe shop [item]`
+                                    text: `Page: ${page}  | ${lastpage} | xe shop [item]`
                                 }
                             };
                 

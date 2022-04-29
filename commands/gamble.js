@@ -45,7 +45,7 @@ module.exports = {
             const embed = {
                 color: 'RANDOM',
                 title: `Gamble Table`,
-                description: `MAX WINNING MULTIPLIER: **x${maxwinningmulti}** \`${maxwinningmulti * 100}%\` (-0.1 x dice difference)\nMIN WINNING MULTIPLIER: **x${minwinningmulti}** \`${minwinningmulti * 100}%\``,
+                description: `MAX WINNING MULTIPLIER: **x${maxwinningmulti + minwinningmulti}** \`${(maxwinningmulti + minwinningmulti) * 100}%\` (-0.1 x dice difference)\nMIN WINNING MULTIPLIER: **x${minwinningmulti}** \`${minwinningmulti * 100}%\``,
                 timestamp: new Date(),
             };
     
@@ -181,7 +181,7 @@ module.exports = {
                 const embed = {
                     color: '#FFFF00',
                     title: `${message.author.username}'s betting game`,
-                    description: `You Tied! Nothing has channed.\n\n**You Won:** ❀ \`0\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                    description: `You Tied! Nothing has changed.\n\n**You Won:** ❀ \`0\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
                     fields: [
                         {
                             name: `${message.author.username}`,
