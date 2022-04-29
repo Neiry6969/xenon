@@ -37,7 +37,7 @@ module.exports = {
     maxArgs: 0,
     description: "bet your money away.",
     async execute(message, args, cmd, client, Discord, profileData) {
-        const maxwinningmulti = 2.0;
+        const maxwinningmulti = 2;
         const minwinningmulti = 0.5;
         const iftable = args[0]?.toLowerCase();
 
@@ -177,7 +177,6 @@ module.exports = {
 
                 msg.edit({ embeds: [embed] })
             } else if(userdice_total === xenondice_total) {
-                const lostamount = profileData.coins - betamount;
 
                 const embed = {
                     color: '#FFFF00',
