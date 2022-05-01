@@ -44,19 +44,7 @@ module.exports = {
             return message.reply("Withdraw amount must be a whole number.");
         } else if(amount > profileData.bank) {
             return message.reply(`You don't have that amount of coins to withdraw.`);
-        } else if(amount > availableWalletspace) {
-            const embed = {
-                color: '#FF0000',
-                title: 'Your withdraw failed',
-                description: `Your wallet can't hold ❀ \`${amount.toLocaleString()}\` more coins. You need to find a way to increase wallet cap?\n**Current Wallet Status:** ❀ \`${profileData.coins.toLocaleString()}\` | \`${maxwallet.toLocaleString()}\` \`${wallet_percent_filled}%\`\n**Avaliable Bankspace:** ❀ \`${availableWalletspace.toLocaleString()}\``,
-                author: {
-                    name: `_____________`,
-                    icon_url: `${message.author.displayAvatarURL()}`,
-                },
-                timestamp: new Date(),
-            };
-            return message.reply({ embeds: [embed] });
-        }
+        } 
         
         const newWallet = profileData.coins + amount;
         const newBank = profileData.bank - amount;
