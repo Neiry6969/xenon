@@ -6,19 +6,15 @@ module.exports = {
     name: "balance",
     aliases: ['bal', 'bl'],
     cooldown: 2,
+    minArgs: 0,
+    maxArgs: 1,
     description: "check the user balance.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const bankspace = profileData.bankspace + profileData.expbankspace;
-        const targetnoping = args[0]
 
-        if(message.mentions.users.first() || targetnoping) {
-            let target;
-            let target_id;
-
-            if(message.mentions.users.first()) {
-                target = message.mentions.users.first();
-                target_id = target.id;
-            } 
+        if(message.mentions.users.first()) {
+            const target = message.mentions.users.first()
+            const target_id = target.id
 
             let target_profileData;
             try {   
