@@ -89,7 +89,6 @@ module.exports = {
                                         const item = allItems.find((val) => (val.item.toLowerCase()) === key);
         
                                         itemsworth = itemsworth + (item.value * data.inventory[key]);
-                                        console.log(itemsworth, item.value, data.inventory[key])
                                     }
         
                                 })
@@ -124,6 +123,36 @@ module.exports = {
                                 };
                                 return message.channel.send({ embeds: [embed] });
                             }
+                            const networth = target_profileData.coins + target_profileData.bank + itemsworth;
+                                
+                            const embed = {
+                                color: 'RANDOM',
+                                title: `${target.username}'s Balance`,
+                                author: {
+                                    name: `_____________`,
+                                    icon_url: `${target.displayAvatarURL()}`,
+                                },
+                                thumbnail: {
+                                    url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                                },
+                                fields: [
+                                    {
+                                        name: 'Wallet',
+                                        value: `❀ \`${target_profileData.coins.toLocaleString()}\``,
+                                    },
+                                    {
+                                        name: 'Bank',
+                                        value: `❀ \`${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                                    },
+                                    {
+                                        name: 'Net Worth',
+                                        value: `❀ \`${networth.toLocaleString()}\``
+                                    }
+                                    
+                                ],
+                                timestamp: new Date(),
+                            };
+                            return message.channel.send({ embeds: [embed] });
                         }
                     )
                 }
@@ -181,8 +210,38 @@ module.exports = {
                             ],
                             timestamp: new Date(),
                         };
-                        message.channel.send({ embeds: [embed] });
+                        return message.channel.send({ embeds: [embed] });
                     }
+                    const networth = profileData.coins + profileData.bank + itemsworth;
+
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${message.author.username}'s Balance`,
+                        author: {
+                            name: `_____________`,
+                            icon_url: `${message.author.displayAvatarURL()}`,
+                        },
+                        thumbnail: {
+                            url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                        },
+                        fields: [
+                            {
+                                name: 'Wallet',
+                                value: `❀ \`${profileData.coins.toLocaleString()}\``,
+                            },
+                            {
+                                name: 'Bank',
+                                value: `❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                            },
+                            {
+                                name: 'Net Worth',
+                                value: `❀ \`${networth.toLocaleString()}\``
+                            }
+                            
+                        ],
+                        timestamp: new Date(),
+                    };
+                    return message.channel.send({ embeds: [embed] });
                 }
             )
         }

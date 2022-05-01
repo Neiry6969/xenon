@@ -132,8 +132,42 @@ module.exports = {
                                     ],
                                     timestamp: new Date(),
                                 };
-                                message.channel.send({ embeds: [embed] });
+                                return message.channel.send({ embeds: [embed] });
                             }
+                            const total_balance = target_profileData.coins + target_profileData.bank;
+                            const bankspace = target_profileData.bankspace + target_profileData.expbankspace;
+
+
+                            const embed = {
+                                color: 'RANDOM',
+                                title: `${target.username}'s Profile`,
+                                author: {
+                                    name: `_____________`,
+                                    icon_url: `${target.displayAvatarURL()}`,
+                                },
+                                thumbnail: {
+                                    url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                                },
+                                fields: [
+                                    {
+                                        name: 'Level',
+                                        value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience Points: \`${target_profileData.experiencepoints.toLocaleString()}\``,
+                                        inline: true,
+                                    },
+                                    {
+                                        name: 'Balance',
+                                        value: `Wallet: ❀ \`${target_profileData.coins.toLocaleString()}\`\nBank: ❀ \`${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                                        inline: true,
+                                    },
+                                    {
+                                        name: 'Inv',
+                                        value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                                    },
+                                    
+                                ],
+                                timestamp: new Date(),
+                            };
+                            return message.channel.send({ embeds: [embed] });
                         }
                     )
                 }
@@ -203,6 +237,38 @@ module.exports = {
                         };
                         message.channel.send({ embeds: [embed] });
                     }
+                    const total_balance = profileData.coins + profileData.bank;
+
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${message.author.username}'s Profile`,
+                        author: {
+                            name: `_____________`,
+                            icon_url: `${message.author.displayAvatarURL()}`,
+                        },
+                        thumbnail: {
+                            url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                        },
+                        fields: [
+                            {
+                                name: 'Level',
+                                value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience Points: \`${profileData.experiencepoints.toLocaleString()}\``,
+                                inline: true,
+                            },
+                            {
+                                name: 'Balance',
+                                value: `Wallet: ❀ \`${profileData.coins.toLocaleString()}\`\nBank: ❀ \`${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                                inline: true,
+                            },
+                            {
+                                name: 'Inventory',
+                                value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                            },
+                            
+                        ],
+                        timestamp: new Date(),
+                    };
+                    message.channel.send({ embeds: [embed] });
                 }
             )
     
