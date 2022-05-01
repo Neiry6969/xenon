@@ -61,6 +61,10 @@ module.exports = {
                     return message.reply(`You need at least ❀ \`5,000\` to use the bet machine.`)
                 }
             }
+
+            if(!betamount) {
+                return message.reply(`Specify the amount you want to gamble.`)
+            }
             
 
             if(betamount === 'max' || betamount === 'all') {

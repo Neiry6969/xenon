@@ -142,7 +142,10 @@ module.exports = {
                     return message.reply(`You need at least ❀ \`5,000\` to use the slots machine.`)
                 }
             }
-            
+
+            if(!slotsamount) {
+                return message.reply(`Specify the amount you want to slots.`)
+            }
 
             if(slotsamount === 'max' || slotsamount === 'all') {
                 if(profileData.coins > maxslotsamount) {

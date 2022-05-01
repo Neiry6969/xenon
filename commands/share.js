@@ -232,9 +232,7 @@ module.exports = {
         });
 
         collector.on('end', collected => {
-            if(collected.size > 0) {
-
-            } else {
+            if(collected.size < 0) {
                 const embed = {
                     color: '#FF0000',
                     author: {

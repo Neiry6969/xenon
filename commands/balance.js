@@ -89,10 +89,11 @@ module.exports = {
                                         const item = allItems.find((val) => (val.item.toLowerCase()) === key);
         
                                         itemsworth = itemsworth + (item.value * data.inventory[key]);
+                                        console.log(itemsworth, item.value, data.inventory[key])
                                     }
         
                                 })
-                                const networth = profileData.coins + profileData.bank + itemsworth;
+                                const networth = target_profileData.coins + target_profileData.bank + itemsworth;
                                 
                                 const embed = {
                                     color: 'RANDOM',
@@ -114,7 +115,7 @@ module.exports = {
                                             value: `❀ \`${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                                         },
                                         {
-                                            name: 'New Worth',
+                                            name: 'Net Worth',
                                             value: `❀ \`${networth.toLocaleString()}\``
                                         }
                                         
@@ -173,7 +174,7 @@ module.exports = {
                                     value: `❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                                 },
                                 {
-                                    name: 'New Worth',
+                                    name: 'Net Worth',
                                     value: `❀ \`${networth.toLocaleString()}\``
                                 }
                                 
