@@ -116,7 +116,7 @@ module.exports = {
         const iftable = args[0]?.toLowerCase();
         const maxwallet = 25000000;
 
-        if(profileData.coins > maxwallet) {
+        if(profileData.coins >= maxwallet) {
             const embed = {
                 color: '#FF0000',
                 title: `Slots Error`,

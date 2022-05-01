@@ -12,7 +12,9 @@ module.exports = {
         const wallet_percent_filled = ((profileData.coins / maxwallet) * 100).toFixed(2);
         let amount = args[0]?.toLowerCase();
 
-        if(amount === 'max' || amount === 'all') {
+        if(parseInt(amount)) {
+            amount = parseInt(amount)
+        } else if(amount === 'max' || amount === 'all') {
             amount = profileData.bank;
         } else if(amount === 'half') {
             amount = Math.floor(profileData.bank / 2)
