@@ -28,7 +28,22 @@ const profileSchema = new mongoose.Schema({
     },
     level: {
         type: Number,
+    }, 
+    commands: {
+        type: Number,
     },
+    dailystreak: {
+        type: Number,
+    },
+    prestige: {
+        type: Number,
+    },
+    deaths: {
+        type: Number,
+    },
+    prenium: {
+        type: Number,
+    }
 })
 
 

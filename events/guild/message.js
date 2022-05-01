@@ -4,6 +4,16 @@ const { Collection } = require('discord.js')
 
 const cooldowns = new Map();
 
+function preniumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 60) {
+        return defaultcooldown - 5
+    }
+}
+
 
 module.exports = async(Discord, client, message) => {
     if(!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
@@ -21,11 +31,11 @@ module.exports = async(Discord, client, message) => {
                 expbankspace: 0,
                 experiencepoints: 0,
                 level: 0,
-                commands: 0,
                 dailystreak: 0,
                 prestige: 0,
                 commands: 0,
                 deaths: 0,
+                prenium: 0,
             });
         
             profile.save();
@@ -60,11 +70,23 @@ module.exports = async(Discord, client, message) => {
     
         const current_time = Date.now();
         const time_stamps = cooldowns.get(command.name);
-        const cooldown_amount = (command.cooldown) * 1000;
+        let cooldown_amount = (command.cooldown) * 1000;
+        
+        if(message.guild.id === '852261411136733195' || profileData.prenium >= 1) {
+            if(command.cooldown <= 5 && command.cooldown > 2) {
+                cooldown_amount = (command.cooldown - 2) * 1000
+            } else if(command.cooldown <= 15) {
+                cooldown_amount = (command.cooldown - 5) * 1000
+            } else if(command.cooldown <= 60) {
+                cooldown_amount = (command.cooldown - 10) * 1000
+            }
+        }
+
     
         //If time_stamps has a key with the author's id then check the expiration time to send a message to a user.
         if(time_stamps.has(message.author.id)){
             const expiration_time = time_stamps.get(message.author.id) + cooldown_amount;
+
             
             function time_split(time) {
               if(time < 60) {
@@ -96,23 +118,38 @@ module.exports = async(Discord, client, message) => {
               }
             }
 
-
-    
             if(current_time < expiration_time){
                 const time_left = Math.floor((expiration_time - current_time) / 1000);
+
+                if(message.guild.id === '852261411136733195' || profileData.prenium >= 1) {
+                    const embed = {
+                        color: '#FFC000',
+                        title: `Slow it down! Don't try to break me!`,
+                        description: `You have **PRENIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPrenium Cooldown: \`${time_split(preniumcooldowncalc(command.cooldown))}\``,
+                        author: {
+                            name: `${client.user.username}`,
+                            icon_url: `${client.user.displayAvatarURL()}`,
+                        },
+                        timestamp: new Date(),
+                    };
+        
+                    return message.reply({ embeds: [embed] });
+                } else {
+                    const embed = {
+                        color: '#000000',
+                        title: `Slow it down! Don't try to break me!`,
+                        description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\nPrenium Cooldown: \`${time_split(preniumcooldowncalc(command.cooldown))}\``,
+                        author: {
+                            name: `${client.user.username}`,
+                            icon_url: `${client.user.displayAvatarURL()}`,
+                        },
+                        timestamp: new Date(),
+                    };
+        
+                    return message.reply({ embeds: [embed] });
+                }
                 
-                const embed = {
-                    color: '#000000',
-                    title: `Slow it down! Don't try to break me!`,
-                    description: `Try the command again in **${time_split(time_left)}**\nCommand Cooldown: \`${time_split(command.cooldown)}\``,
-                    author: {
-                        name: `${client.user.username}`,
-                        icon_url: `${client.user.displayAvatarURL()}`,
-                    },
-                    timestamp: new Date(),
-                };
-    
-                return message.reply({ embeds: [embed] });
+                
             }
         }
     
