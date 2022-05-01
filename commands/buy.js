@@ -81,7 +81,7 @@ module.exports = {
             const embed = {
                 color: '#FF0000',
                 title: `Purchase Error`,
-                description: `You don't have enough coins in your wallet to buy that many of item.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Purchase Cost:** ❀ \`${totalprice.toLocaleString()}\`\n**Current Wallet:** ❀ \`${profileData.coins.toLocaleString()}\`\n**Current Bank:** ❀ \`${profileData.bank.toLocaleString()}\``,
+                description: `You don't have enough coins in your wallet to buy that many of item.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Purchase Cost:** ❀ \`${totalprice.toLocaleString()}\`\n**Current Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
                 timestamp: new Date(),
             };
 

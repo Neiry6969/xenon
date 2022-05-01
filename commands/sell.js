@@ -82,7 +82,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Sell Error`,
-                    description: `You don't have enough of that item to sell that much.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${data.inventory[item.item].toLocaleString()}\``,
+                    description: `You don't have enough of that item to sell that much.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity Owned:** \`${data.inventory[item.item].toLocaleString()}\``,
                     timestamp: new Date(),
                 };
     
