@@ -235,7 +235,7 @@ module.exports = {
                             ],
                             timestamp: new Date(),
                         };
-                        message.channel.send({ embeds: [embed] });
+                        return message.channel.send({ embeds: [embed] });
                     }
                     const total_balance = profileData.coins + profileData.bank;
 
@@ -268,7 +268,7 @@ module.exports = {
                         ],
                         timestamp: new Date(),
                     };
-                    message.channel.send({ embeds: [embed] });
+                    return message.channel.send({ embeds: [embed] });
                 }
             )
     
