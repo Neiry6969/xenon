@@ -1,6 +1,9 @@
+const { MessageActionRow, MessageButton } = require('discord.js')
+
 const profileModel = require("../models/profileSchema");
 const inventoryModel = require('../models/inventorySchema');
 const allItems = require('../data/all_items');
+const letternumbers = require('../reference/letternumber');
 
 module.exports = {
     name: "sell",
@@ -10,225 +13,225 @@ module.exports = {
     description: "sell an item.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const expectedArgs = `**Expected Syntax:** \`xe sell [item] [amount]\``;
-        const getItem = args[0]?.toLowerCase();
-        const getAmount = parseInt(args[1]);
-        const max_amount = args[1]?.toLowerCase();
+        const getitem = args[0]?.toLowerCase();
+        let sellamount = args[1]?.toLowerCase();
 
-        if(!getItem) {
+        if(!getitem) {
             const embed = {
                 color: '#FF0000',
                 title: `Sell Error`,
                 description: `Specify the item to sell.\n${expectedArgs}`,
             };
+
             return message.reply({ embeds: [embed] });
-        } else if (!getAmount) {
-            if(max_amount === "max" || max_amount === "all") {
-                const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
+        }
 
-                if(!validItem) {
-                    return message.reply(`\`${getItem}\` is a non-existent item.`);
+        const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getitem ||  val.aliases.includes(getitem)))
+
+        if(!validItem) {
+            const embed = {
+                color: '#FF0000',
+                title: `Sell Error`,
+                description: `\`${getitem}\` is not existent item.\n${expectedArgs}`,
+            };
+
+            return message.reply({ embeds: [embed] });
+        }
+
+        const item = allItems.find((val) => (val.item.toLowerCase()) === getitem || val.aliases.includes(getitem));
+
+        if(item.sell === "unable to be sold") {
+            const embed = {
+                color: '#FF0000',
+                title: `Sell Error`,
+                description: `This item is unable to be sold since it is a collectable.\n**Item:** ${item.icon} \`${item.item}\`\n**Item Type:** \`${item.type}\``,
+            };
+            return message.reply({ embeds: [embed] });
+        } 
+
+        const params_user = {
+            userId: message.author.id
+        }
+
+        inventoryModel.findOne(params_user, async(err, data) => {  
+            if(sellamount === 'max' || sellamount === 'all') {
+                if(data.inventory[item.item] < item.value || !data.inventory[item.item]) {
+                    return message.reply(`You don't own any of this item, how are you going to sell it?`);
                 } else {
-                    const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
-
-                    if(item.sell === "unable to be sold") {
-                        const embed = {
-                            color: '#FF0000',
-                            title: `Sell Error`,
-                            description: `This item is unable to be sold since it is a collectable.\n**Item:** ${item.icon} \`${item.item}\`\n**Item Type:** \`${item.type}\``,
-                        };
-                        return message.reply({ embeds: [embed] });
-                    } else {
-                        const params_user = {
-                            userId: message.author.id
-                        }
-
-                        inventoryModel.findOne(params_user, async(err, data) => {
-                            const amount = data.inventory[item.item];
-
-                            let ownedAmount;
-
-                            if(!amount) {
-                                ownedAmount = 0;
-                            } else {
-                                ownedAmount = data.inventory[item.item];
-                            }
-
-                            if(amount <= 0 || !amount) {
-                                const embed = {
-                                    color: '#FF0000',
-                                    title: `Sell Error`,
-                                    description: `You don't have any of this item to sell.\n**Item:** ${item.icon} \`${item.item}\`\n**Owned amount:** \`${ownedAmount.toLocaleString()}\``,
-                                };
-                                return message.reply({ embeds: [embed] });
-                            } else {
-                                const amount_gained = amount * item.sell
-
-                                data.inventory[item.item] = 0;
-                    
-                                await inventoryModel.findOneAndUpdate(params_user, data);
-
-                                const response = await profileModel.findOneAndUpdate(params_user,
-                                    {
-                                        $inc: {
-                                            coins: amount_gained,
-                                        },
-                                    },
-                                    {
-                                        upsert: true,
-                                    }
-                                );
-                                const embed = {
-                                    color: '#00FF00',
-                                    title: `Sell Receipt`,
-                                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${ownedAmount.toLocaleString()}\`\n**Sold For:** ❀ \`${amount_gained.toLocaleString()}\`\n**Each Sold For:** ❀ \`${item.sell.toLocaleString()}\``,
-                                };
-                                return message.reply({ embeds: [embed] });
-                            }
-                        })
-                    }
-
+                    sellamount = data.inventory[item.item];
+                }
+            } else if(!sellamount) {
+                sellamount = 1
+            } else if(letternumbers.find((val) => val.letter === sellamount.slice(-1))) {
+                if(parseInt(sellamount.slice(0, -1))) {
+                    const number = parseFloat(sellamount.slice(0, -1));
+                    const numbermulti = letternumbers.find((val) => val.letter === sellamount.slice(-1)).number;
+                    sellamount = number * numbermulti;
+                } else {
+                    sellamount = null;
                 }
             } else {
-                const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
+                sellamount = parseInt(sellamount)
+            }   
 
-                if(!validItem) {
-                    return message.reply(`\`${getItem}\` is a non-existent item.`);
-                } else {
-                    const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
-
-                    if(item.sell === "unable to be sold") {
-                        const embed = {
-                            color: '#FF0000',
-                            title: `Sell Error`,
-                            description: `This item is unable to be sold since it is a collectable.\n**Item:** ${item.icon} \`${item.item}\`\n**Item Type:** \`${item.type}\``,
-                        };
-                        return message.reply({ embeds: [embed] });
-                    } else {
-                        const params_user = {
-                            userId: message.author.id
-                        }
-
-                        inventoryModel.findOne(params_user, async(err, data) => {
-                            const default_amount = 1;
-                            let ownedAmount;
-
-                            if(!data.inventory[item.item]) {
-                                ownedAmount = 0;
-                            } else {
-                                ownedAmount = data.inventory[item.item];
-                            }
-
-                            if(default_amount > ownedAmount) {
-                                const embed = {
-                                    color: '#FF0000',
-                                    title: `Sell Error`,
-                                    description: `You don't have \`${default_amount.toLocaleString()}\` of this item to sell.\n**Item:** ${item.icon} \`${item.item}\`\n**Owned amount:** \`${ownedAmount.toLocaleString()}\``,
-                                };
-                                return message.reply({ embeds: [embed] });
-                            } else {
-                                const amount_gained = default_amount * item.sell;
-
-                                data.inventory[item.item] = data.inventory[item.item] - default_amount;
-                    
-                                await inventoryModel.findOneAndUpdate(params_user, data);
-
-                                const response = await profileModel.findOneAndUpdate(params_user,
-                                    {
-                                        $inc: {
-                                            coins: amount_gained,
-                                        },
-                                    },
-                                    {
-                                        upsert: true,
-                                    }
-                                );
-                                const embed = {
-                                    color: '#00FF00',
-                                    title: `Sell Receipt`,
-                                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${default_amount.toLocaleString()}\`\n**Sold For:** ❀ \`${amount_gained.toLocaleString()}\`\n**Each Sold For:** ❀ \`${item.sell.toLocaleString()}\``,
-                                };
-                                return message.reply({ embeds: [embed] });
-                            }
-                        })
-                    }
-
-                }
-            }
-        } else {
-            const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
-
-            if(!validItem) {
-                return message.reply(`\`${getItem}\` is a non-existent item.`);
-            } else if (getAmount < 0) {
+            if(!sellamount || sellamount < 0) {
+                return message.reply("You can only sell a whole number of items.");
+            } else if (sellamount === 0) {
+                return message.reply("So you want to sell nothing, why bother?");
+            } else if (data.inventory[item.item] < sellamount) {
                 const embed = {
                     color: '#FF0000',
                     title: `Sell Error`,
-                    description: `You can only sell a whole number of an item.\n${expectedArgs}`,
+                    description: `You don't have enough of that item to sell that much.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${data.inventory[item.item].toLocaleString()}\``,
+                    timestamp: new Date(),
                 };
+    
                 return message.reply({ embeds: [embed] });
-            } else if (getAmount === 0) {
-                return message.reply(`So you want to sell 0 amount of this item, why bother me.`)
-            } else {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
-
-                if(item.sell === "unable to be sold") {
-                    const embed = {
-                        color: '#FF0000',
-                        title: `Sell Error`,
-                        description: `This item is unable to be sold since it is a collectable.\n**Item:** ${item.icon} \`${item.item}\`\n**Item Type:** \`${item.type}\``,
-                    };
-                    return message.reply({ embeds: [embed] });
-                } else {
-                    const params_user = {
-                        userId: message.author.id
-                    }
-
-                    inventoryModel.findOne(params_user, async(err, data) => {
-                        let ownedAmount;
-
-                        if(!data.inventory[item.item]) {
-                            ownedAmount = 0;
-                        } else {
-                            ownedAmount = data.inventory[item.item];
-                        }
-
-                        if(getAmount > ownedAmount) {
-                            const embed = {
-                                color: '#FF0000',
-                                title: `Sell Error`,
-                                description: `You don't have \`${getAmount.toLocaleString()}\` of this item to sell.\n**Item:** ${item.icon} \`${item.item}\`\n**Owned amount:** \`${ownedAmount.toLocaleString()}\``,
-                            };
-                            return message.reply({ embeds: [embed] });
-                        } else {
-                            const amount_gained = getAmount * item.sell;
-
-                            data.inventory[item.item] = data.inventory[item.item] - getAmount;
-                
-                            await inventoryModel.findOneAndUpdate(params_user, data);
-
-                            const response = await profileModel.findOneAndUpdate(params_user,
-                                {
-                                    $inc: {
-                                        coins: amount_gained,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-                            const embed = {
-                                color: '#00FF00',
-                                title: `Sell Receipt`,
-                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${getAmount.toLocaleString()}\`\n**Sold For:** ❀ \`${amount_gained.toLocaleString()}\`\n**Each Sold For:** ❀ \`${item.sell.toLocaleString()}\``,
-                            };
-                            return message.reply({ embeds: [embed] });
-                        }
-                    })
-                }
-
             }
 
-        }
+            const saleprice = sellamount * item.sell
+
+            if(saleprice >= 1000000) {
+                let confirm = new MessageButton()
+                    .setCustomId('confirm')
+                    .setLabel('Confirm')
+                    .setStyle('PRIMARY')
+
+                let cancel = new MessageButton()
+                    .setCustomId('cancel')
+                    .setLabel('Cancel')
+                    .setStyle('DANGER')
+
+                let row = new MessageActionRow()
+                    .addComponents(
+                        confirm,
+                        cancel
+                    );
+
+                const embed = {
+                    color: 'RANDOM',
+                    title: `Confirm transaction`,
+                    description: `<@${message.author.id}>, are you sure you want to sell ${item.icon} \`${item.item}\` x\`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell}\` for each)`,
+                    timestamp: new Date(),
+                };
+                const buy_msg = await message.reply({ embeds: [embed], components: [row] });
+                const collector = buy_msg.createMessageComponentCollector({ time: 20 * 1000 });
+
+                collector.on('collect', async (button) => {
+                    if(button.user.id != message.author.id) {
+                        return button.reply({
+                            content: 'This is not for you.',
+                            ephemeral: true,
+                        })
+                    } 
+
+                    button.deferUpdate()
+
+                    if(button.customId === "confirm") {
+                        data.inventory[item.item] = data.inventory[item.item] - sellamount;
+            
+                        await inventoryModel.findOneAndUpdate(params_user, data);
+
+                        const response = await profileModel.findOneAndUpdate(params_user,
+                            {
+                                $inc: {
+                                    coins: saleprice,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
+                        const embed = {
+                            color: '#00FF00',
+                            title: `Sell Receipt`,
+                            description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sold For:** ❀ \`${saleprice.toLocaleString()}\`\n**Each Sold For:** ❀ \`${item.sell.toLocaleString()}\`\n**Now You Have:** \`${data.inventory[item.item].toLocaleString()}\``,
+                        };
+
+                        confirm
+                            .setDisabled()
+                            .setStyle("SUCCESS")
+
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+
+                        return buy_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    
+                    } else if(button.customId === "cancel") {
+                        const embed = {
+                            color: '#FF0000',
+                            title: `Sell cancelled`,
+                            description: `<@${message.author.id}>, confirm that want to sell the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell}\` for each)\nI guess not. Come back later if you change your mind.`,
+                            timestamp: new Date(),
+                        };
+                        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+
+                        cancel.setDisabled()
+                        
+                        return buy_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                
+                    }
+                    
+                });
+
+                collector.on('end', collected => {
+                    if(collected.size < 0) {
+                        const embed = {
+                            color: '#FF0000',
+                            title: `Sell timeout`,
+                            description: `<@${message.author.id}>, confirm that want to sell the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell}\` for each)\nI guess not. Come back later if you change your mind.`,
+                            timestamp: new Date(),
+                        };
+                        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+                        
+                        return buy_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    }
+                });
+            } else {
+                data.inventory[item.item] = data.inventory[item.item] - sellamount;
+    
+                await inventoryModel.findOneAndUpdate(params_user, data);
+
+                const response = await profileModel.findOneAndUpdate(params_user,
+                    {
+                        $inc: {
+                            coins: saleprice,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+                const embed = {
+                    color: '#00FF00',
+                    title: `Sell Receipt`,
+                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sold For:** ❀ \`${saleprice.toLocaleString()}\`\n**Each Sold For:** ❀ \`${item.sell.toLocaleString()}\`\n**Now You Have:** \`${data.inventory[item.item].toLocaleString()}\``,
+                };
+                return message.reply({ embeds: [embed] });
+            }
+
+        })
+
     }
 
 }

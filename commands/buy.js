@@ -8,22 +8,36 @@ const letternumbers = require('../reference/letternumber');
 
 module.exports = {
     name: 'buy',
+    aliases: ['purchase'],
     cooldown: 5,
     description: "buy items.",
     minArgs: 0,
     maxArgs: 1,
     async execute(message, args, cmd, client, Discord, profileData) {
+        const expectedArgs = `**Expected Syntax:** \`xe buy [item] [amount]\``;
         let buyamount = args[1]?.toLowerCase();
         const getitem = args[0]?.toLowerCase();
 
         if(!getitem) {
-            return message.reply("Please specify an item to buy.");
+            const embed = {
+                color: '#FF0000',
+                title: `Purchase Error`,
+                description: `Specify the item to buy.\n${expectedArgs}`,
+            };
+
+            return message.reply({ embeds: [embed] });
         }
 
         const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getitem ||  val.aliases.includes(getitem)))
 
         if(!validItem) {
-            return message.reply(`\`${getitem}\` is not existent item.`);
+            const embed = {
+                color: '#FF0000',
+                title: `Purchase Error`,
+                description: `\`${getitem}\` is not existent item.\n${expectedArgs}`,
+            };
+
+            return message.reply({ embeds: [embed] });
         }
 
         const item = allItems.find((val) => (val.item.toLowerCase()) === getitem || val.aliases.includes(getitem));
@@ -31,7 +45,7 @@ module.exports = {
         if(item.price === 'unable to be bought') {
             const embed = {
                 color: '#FF0000',
-                title: `Buy Error`,
+                title: `Purchase Error`,
                 description: `This item is unable to be bought since it is not in the Xenon shop.\n**Item:** ${item.icon} \`${item.item}\`\n**Item Type:** \`${item.type}\``,
             };
             return message.reply({ embeds: [embed] });
@@ -92,145 +106,141 @@ module.exports = {
                 );
 
             const embed = {
-                    color: 'RANDOM',
-                    title: `Confirm transaction`,
-                    description: `<@${message.author.id}>, are you sure you want to buy ${item.icon} \`${item.item}\` x\`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\``,
-                    timestamp: new Date(),
-                };
+                color: 'RANDOM',
+                title: `Confirm purchase`,
+                description: `<@${message.author.id}>, are you sure you want to buy ${item.icon} \`${item.item}\` x\`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\` (❀ \`${item.price.toLocaleString()}\` for each)`,
+                timestamp: new Date(),
+            };
             const buy_msg = await message.reply({ embeds: [embed], components: [row] });
             const collector = buy_msg.createMessageComponentCollector({ time: 20 * 1000 });
 
-        collector.on('collect', async (button) => {
-            if(button.user.id != message.author.id) {
-                return button.reply({
-                    content: 'This is not for you.',
-                    ephemeral: true,
-                })
-            } 
+            collector.on('collect', async (button) => {
+                if(button.user.id != message.author.id) {
+                    return button.reply({
+                        content: 'This is not for you.',
+                        ephemeral: true,
+                    })
+                } 
 
-            button.deferUpdate()
+                button.deferUpdate()
 
-            if(button.customId === "confirm") {
-                const params = {
-                    userId: message.author.id,
-                }
-        
-                inventoryModel.findOne(params, async(err, data) => {
-                    if(data) {
-                        const hasItem = Object.keys(data.inventory).includes(item.item);
-                        if(!hasItem) {
-                            data.inventory[item.item] = buyamount;
-                        } else {
-                            data.inventory[item.item] = data.inventory[item.item] + buyamount;
-                        }
-                        await inventoryModel.findOneAndUpdate(params, data);
-        
-                        const response = await profileModel.findOneAndUpdate(
-                            {
-                                userId: message.author.id,
-                            },
-                            {
-                                $inc: {
-                                    coins: -totalprice,
-                                },
-                            },
-                            {
-                                upsert: true,
-                            }
-                        );
-                    } else {
-                        new inventoryModel({
-                            userId: message.author.id,
-                            inventory: {
-                                [item.item]: buyamount
-                            }
-                        }).save();
-        
-                        const response = await profileModel.findOneAndUpdate(
-                            {
-                                userId: message.author.id,
-                            },
-                            {
-                                $inc: {
-                                    coins: -totalprice,
-                                },
-                            },
-                            {
-                                upsert: true,
-                            }
-                        );
+                if(button.customId === "confirm") {
+                    const params = {
+                        userId: message.author.id,
                     }
+            
+                    inventoryModel.findOne(params, async(err, data) => {
+                        if(data) {
+                            const hasItem = Object.keys(data.inventory).includes(item.item);
+                            if(!hasItem) {
+                                data.inventory[item.item] = buyamount;
+                            } else {
+                                data.inventory[item.item] = data.inventory[item.item] + buyamount;
+                            }
+                            await inventoryModel.findOneAndUpdate(params, data);
+            
+                            const response = await profileModel.findOneAndUpdate(
+                                {
+                                    userId: message.author.id,
+                                },
+                                {
+                                    $inc: {
+                                        coins: -totalprice,
+                                    },
+                                },
+                                {
+                                    upsert: true,
+                                }
+                            );
+                        } else {
+                            new inventoryModel({
+                                userId: message.author.id,
+                                inventory: {
+                                    [item.item]: buyamount
+                                }
+                            }).save();
+            
+                            const response = await profileModel.findOneAndUpdate(
+                                {
+                                    userId: message.author.id,
+                                },
+                                {
+                                    $inc: {
+                                        coins: -totalprice,
+                                    },
+                                },
+                                {
+                                    upsert: true,
+                                }
+                            );
+                        }
+                        const embed = {
+                            color: '#A8FE97',
+                            title: `Purchase Receipt`,
+                            description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** ❀ \`${totalprice.toLocaleString()}\`\n**Each Bought For:** ❀ \`${item.price.toLocaleString()}\`\n**Now You Have** \`${data.inventory[item.item].toLocaleString()}\``,
+                            timestamp: new Date(),
+                        };
+
+                        confirm
+                            .setDisabled()
+                            .setStyle("SUCCESS")
+
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+
+                        return buy_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    })
+                
+                } else if(button.customId === "cancel") {
                     const embed = {
-                        color: '#A8FE97',
-                        title: `Purchase Receipt`,
-                        description: `**Item:** ${item.icon} \`${item.item}\`\n**Price:** ❀ \`${totalprice.toLocaleString()}\`\n**Quantity:** \`${buyamount.toLocaleString()}\``,
+                        color: '#FF0000',
+                        title: `Purchase cancelled`,
+                        description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\` (❀ \`${item.price.toLocaleString()}\` for each)\nI guess not. Come back later if you change your mind.`,
                         timestamp: new Date(),
                     };
-
+                    
                     confirm
-                        .setDisabled()
-                        .setStyle("SUCCESS")
-
-                    cancel
                         .setDisabled()
                         .setStyle("SECONDARY")
 
+                    cancel.setDisabled()
+                    
                     return buy_msg.edit({
                         embeds: [embed],
                         components: [row]
                     })
-                })
             
-            } else if(button.customId === "cancel") {
-                const embed = {
-                    color: '#FF0000',
-                    title: `Transaction cancelled`,
-                    description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\`\nI guess not. Come back later if you change your mind.`,
-                    timestamp: new Date(),
-                };
+                }
                 
-                confirm
-                    .setDisabled()
-                    .setStyle("SECONDARY")
+            });
 
-                cancel.setDisabled()
-                
-                return buy_msg.edit({
-                    embeds: [embed],
-                    components: [row]
-                })
-        
-            }
-            
-        });
+            collector.on('end', collected => {
+                if(collected.size < 0) {
+                    const embed = {
+                        color: '#FF0000',
+                        title: `Purchase timeout`,
+                        description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\` \nI guess not. Come back later if you change your mind.`,
+                        timestamp: new Date(),
+                    };
+                    
+                    confirm
+                        .setDisabled()
+                        .setStyle("SECONDARY")
 
-        collector.on('end', collected => {
-            if(collected.size < 0) {
-                const embed = {
-                    color: '#FF0000',
-                    author: {
-                        name: `_____________`,
-                        icon_url: `${message.author.displayAvatarURL()}`,
-                    },
-                    title: `Transaction timeout`,
-                    description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\`\nI guess not. Come back later if you change your mind.`,
-                    timestamp: new Date(),
-                };
-                
-                confirm
-                    .setDisabled()
-                    .setStyle("SECONDARY")
-
-                cancel
-                    .setDisabled()
-                    .setStyle("SECONDARY")
-                
-                return buy_msg.edit({
-                    embeds: [embed],
-                    components: [row]
-                })
-            }
-        });
+                    cancel
+                        .setDisabled()
+                        .setStyle("SECONDARY")
+                    
+                    return buy_msg.edit({
+                        embeds: [embed],
+                        components: [row]
+                    })
+                }
+            });
             
         } else {
             const params = {
@@ -282,13 +292,14 @@ module.exports = {
                         }
                     );
                 }
+
                 const embed = {
                     color: '#A8FE97',
                     title: `Purchase Receipt`,
-                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Price:** ❀ \`${totalprice.toLocaleString()}\`\n**Quantity:** \`${buyamount.toLocaleString()}\``,
+                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** ❀ \`${totalprice.toLocaleString()}\`\n**Each Bought For:** ❀ \`${item.price.toLocaleString()}\`\n**Now You Have:** \`${data.inventory[item.item].toLocaleString()}\``,
                     timestamp: new Date(),
                 };
-    
+
                 return message.reply({ embeds: [embed] });
             })    
         }
