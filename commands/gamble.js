@@ -41,6 +41,18 @@ module.exports = {
         const minwinningmulti = 0.5;
         const iftable = args[0]?.toLowerCase();
 
+        const maxwallet = 5000000000;
+
+        if(profileData.coins > maxwallet) {
+            const embed = {
+                color: '#FF0000',
+                title: `Slots Error`,
+                description: `You are too rich to use the slots table.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+            };
+
+            return message.reply({ embeds: [embed] });
+        }
+
         if(iftable === 'table' || iftable === 'list') {
             const embed = {
                 color: 'RANDOM',

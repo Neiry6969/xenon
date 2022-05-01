@@ -10,22 +10,7 @@ module.exports = {
         const maxwallet = 1 * 1000 * 1000 * 1000 * 1000
         const bankspace = profileData.bankspace + profileData.expbankspace;
         const wallet_percent_filled = ((profileData.coins / maxwallet) * 100).toFixed(2);
-        const availableWalletspace = maxwallet - profileData.coins;
         let amount = args[0]?.toLowerCase();
-
-        if(availableWalletspace <= 0) {
-            const embed = {
-                color: '#FF0000',
-                title: 'Your withdraw failed',
-                description: `Your wallet can't hold anymore coins, the wallet cap is at ❀ \`${maxwallet.toLocaleString()}\`\n**Current Wallet Status:** ❀ \`${profileData.coins.toLocaleString()}\` | \`${maxwallet.toLocaleString()}\` \`${wallet_percent_filled}%\``,
-                author: {
-                    name: `_____________`,
-                    icon_url: `${message.author.displayAvatarURL()}`,
-                },
-                timestamp: new Date(),
-            };
-            return message.reply({ embeds: [embed] });
-        }
 
         if(amount === 'max' || amount === 'all') {
             amount = profileData.bank;
