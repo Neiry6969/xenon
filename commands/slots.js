@@ -114,13 +114,13 @@ module.exports = {
     description: "slots your money away.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const iftable = args[0]?.toLowerCase();
-        const maxwallet = 5000000000;
+        const maxwallet = 25000000;
 
         if(profileData.coins > maxwallet) {
             const embed = {
                 color: '#FF0000',
                 title: `Slots Error`,
-                description: `You are too rich to use the slots table.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                description: `You are too rich to use the slots machine.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
             };
 
             return message.reply({ embeds: [embed] });
