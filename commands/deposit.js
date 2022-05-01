@@ -28,9 +28,7 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         }
 
-        if(parseInt(amount)) {
-            amount = parseInt(amount)
-        } else if(amount === 'max' || amount === 'all') {
+        if(amount === 'max' || amount === 'all') {
             amount = profileData.coins;
             if(amount > availableBankspace) {
                 amount = availableBankspace

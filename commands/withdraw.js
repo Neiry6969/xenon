@@ -12,13 +12,13 @@ module.exports = {
         const wallet_percent_filled = ((profileData.coins / maxwallet) * 100).toFixed(2);
         let amount = args[0]?.toLowerCase();
 
-        if(parseInt(amount)) {
-            amount = parseInt(amount)
-        } else if(amount === 'max' || amount === 'all') {
+        const ifletternum = !!letternumbers.find((val) => val.letter === amount?.slice(-1))
+
+        if(amount === 'max' || amount === 'all') {
             amount = profileData.bank;
         } else if(amount === 'half') {
             amount = Math.floor(profileData.bank / 2)
-        } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
+        } else if(ifletternum === true) {
             if(parseInt(amount.slice(0, -1))) {
                 const number = parseFloat(amount.slice(0, -1));
                 const numbermulti = letternumbers.find((val) => val.letter === amount.slice(-1)).number;
