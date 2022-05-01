@@ -199,7 +199,16 @@ module.exports = {
 
                             await inventoryModel.findOneAndUpdate(params, data);
                             return message.reply(`You eat one ${item.icon} \`${item.item}\` and it tastes good!`);
-                        }else {
+                        } else if(item.item = 'preniumcard') {
+                            if(profileData.prenium >= 1) {
+                                return message.reply(`You can't use a ${item.icon} \`${item.item}\`, since you are already a prenium.`);
+                            } else {
+                                data.inventory[item.item] = data.inventory[item.item] - 1;
+
+                                await inventoryModel.findOneAndUpdate(params, data);
+                                return message.reply(`You used a ${item.icon} \`${item.item}\` and became a prenium forever!`);
+                            }
+                        } else {
                             const embed = {
                                 color: '#FF0000',
                                 title: `Use Error`,
