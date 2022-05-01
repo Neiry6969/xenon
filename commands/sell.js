@@ -114,8 +114,8 @@ module.exports = {
                     description: `<@${message.author.id}>, are you sure you want to sell ${item.icon} \`${item.item}\` x\`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell}\` for each)`,
                     timestamp: new Date(),
                 };
-                const buy_msg = await message.reply({ embeds: [embed], components: [row] });
-                const collector = buy_msg.createMessageComponentCollector({ time: 20 * 1000 });
+                const sell_msg = await message.reply({ embeds: [embed], components: [row] });
+                const collector = sell_msg.createMessageComponentCollector({ time: 20 * 1000 });
 
                 collector.on('collect', async (button) => {
                     if(button.user.id != message.author.id) {
@@ -156,7 +156,7 @@ module.exports = {
                             .setDisabled()
                             .setStyle("SECONDARY")
 
-                        return buy_msg.edit({
+                        return sell_msg.edit({
                             embeds: [embed],
                             components: [row]
                         })
@@ -175,7 +175,7 @@ module.exports = {
 
                         cancel.setDisabled()
                         
-                        return buy_msg.edit({
+                        return sell_msg.edit({
                             embeds: [embed],
                             components: [row]
                         })
@@ -201,7 +201,7 @@ module.exports = {
                             .setDisabled()
                             .setStyle("SECONDARY")
                         
-                        return buy_msg.edit({
+                        return sell_msg.edit({
                             embeds: [embed],
                             components: [row]
                         })
