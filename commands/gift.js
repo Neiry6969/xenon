@@ -6,7 +6,7 @@ const allItems = require("../data/all_items");
 module.exports = {
     name: "gift",
     aliases: ['yeet', 'send'],
-    cooldown: 15,
+    cooldown: 10,
     minArgs: 0,
     maxArgs: 2,
     description: "gift items to other users.",
@@ -76,7 +76,16 @@ module.exports = {
                             };
                             return message.reply({ embeds: [embed] });
                        
-                        } else {
+                        } else {                               
+                            const params_user = {
+                                userId: message.author.id,
+                            }
+                            inventoryModel.findOne(params_user, async(err, data) => {
+                                data.inventory[item.item] = data.inventory[item.item] - get_amount;
+                                await inventoryModel.findOneAndUpdate(params, data);
+
+                            })
+
                             let confirm = new MessageButton()
                                 .setCustomId('confirm')
                                 .setLabel('Confirm')
@@ -118,19 +127,11 @@ module.exports = {
                                 button.deferUpdate()
 
                                 if(button.customId === "confirm") {
-                                    const params_user = {
-                                        userId: message.author.id,
-                                    }
+
                                     const params_target = {
                                         userId: target.id,
                                     }
-                            
-                            
-                                    inventoryModel.findOne(params_user, async(err, data) => {
-                                        data.inventory[item.item] = data.inventory[item.item] - get_amount;
-                                        await inventoryModel.findOneAndUpdate(params, data);
-        
-                                    })
+
         
                                     inventoryModel.findOne(params_target, async(err, data) => {
                                         if(data) {
@@ -187,6 +188,16 @@ module.exports = {
                                     })
                                 
                                 } else if(button.customId === "cancel") {
+                                                                
+                                    const params_user = {
+                                        userId: message.author.id,
+                                    }
+                                    inventoryModel.findOne(params_user, async(err, data) => {
+                                        data.inventory[item.item] = data.inventory[item.item] + get_amount;
+                                        await inventoryModel.findOneAndUpdate(params, data);
+        
+                                    })
+
                                     const embed = {
                                         color: '#FF0000',
                                         author: {
@@ -217,6 +228,15 @@ module.exports = {
                                 if(collected.size > 0) {
 
                                 } else {
+                                    const params_user = {
+                                        userId: message.author.id,
+                                    }
+                                    inventoryModel.findOne(params_user, async(err, data) => {
+                                        data.inventory[item.item] = data.inventory[item.item] + get_amount;
+                                        await inventoryModel.findOneAndUpdate(params, data);
+        
+                                    })
+
                                     const embed = {
                                         color: '#FF0000',
                                         author: {

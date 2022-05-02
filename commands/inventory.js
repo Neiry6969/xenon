@@ -182,8 +182,6 @@ module.exports = {
                                 display_start = (page - 1) * itemsperpage;
                                 display_end = page * itemsperpage;
 
-                                console.log(page === lastpage)
-
                                 if(page === 1) {
                                     leftbutton.setDisabled();
                                     rightbutton.setDisabled(false);

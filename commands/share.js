@@ -26,9 +26,6 @@ module.exports = {
 
         if(amount === 'max' || amount === 'all') {
             amount = profileData.bank;
-            if(amount > availableWalletspace) {
-                amount = availableWalletspace
-            } 
         } else if(amount === 'half') {
             amount = Math.floor(profileData.bank / 2)
         } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
@@ -74,6 +71,19 @@ module.exports = {
             }
         } 
 
+        const local_response = await profileModel.findOneAndUpdate(
+            {userId: message.author.id},
+            {
+                $inc: {
+                    coins: -amount,
+                },
+            },
+            {
+                upsert: true,
+            }
+        )
+  
+
         let confirm = new MessageButton()
             .setCustomId('confirm')
             .setLabel('Confirm')
@@ -111,9 +121,8 @@ module.exports = {
                     ephemeral: true,
                 })
             } 
-
+            
             button.deferUpdate()
-
             if(button.customId === "confirm") {
                 const target_profileData = await profileModel.findOne({ userId: target.id });
     
@@ -156,17 +165,6 @@ module.exports = {
                     target_profileData_coins = target_profileData.coins + amount
                 }
                 
-                const local_response = await profileModel.findOneAndUpdate(
-                    {userId: message.author.id},
-                    {
-                        $inc: {
-                            coins: -amount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                )
 
                 const embed = {
                     color: '#00FF00',
@@ -205,6 +203,17 @@ module.exports = {
                 })
             
             } else if(button.customId === "cancel") {
+                const local_response = await profileModel.findOneAndUpdate(
+                    {userId: message.author.id},
+                    {
+                        $inc: {
+                            coins: amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                )
                 const embed = {
                     color: '#FF0000',
                     author: {
@@ -231,10 +240,21 @@ module.exports = {
             
         });
 
-        collector.on('end', collected => {
+        collector.on('end', async collected => {
             if(collected.size > 0) {
 
             } else {
+                const local_response = await profileModel.findOneAndUpdate(
+                    {userId: message.author.id},
+                    {
+                        $inc: {
+                            coins: amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                )
                 const embed = {
                     color: '#FF0000',
                     author: {

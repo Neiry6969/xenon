@@ -89,6 +89,20 @@ module.exports = {
         }
 
         if(totalprice >= 1000000) {
+            const response = await profileModel.findOneAndUpdate(
+                {
+                    userId: message.author.id,
+                },
+                {
+                    $inc: {
+                        coins: -totalprice,
+                    },
+                },
+                {
+                    upsert: true,
+                }
+            );
+
             let confirm = new MessageButton()
                 .setCustomId('confirm')
                 .setLabel('Confirm')
@@ -139,19 +153,7 @@ module.exports = {
                             }
                             await inventoryModel.findOneAndUpdate(params, data);
             
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        coins: -totalprice,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
+                            
                         } else {
                             new inventoryModel({
                                 userId: message.author.id,
@@ -160,19 +162,6 @@ module.exports = {
                                 }
                             }).save();
             
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        coins: -totalprice,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
                         }
                         const embed = {
                             color: '#A8FE97',
@@ -196,6 +185,19 @@ module.exports = {
                     })
                 
                 } else if(button.customId === "cancel") {
+                    const response = await profileModel.findOneAndUpdate(
+                        {
+                            userId: message.author.id,
+                        },
+                        {
+                            $inc: {
+                                coins: totalprice,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase cancelled`,
@@ -218,10 +220,23 @@ module.exports = {
                 
             });
 
-            collector.on('end', collected => {
+            collector.on('end', async collected => {
                 if(collected.size > 0) {
 
                 } else {
+                    const response = await profileModel.findOneAndUpdate(
+                        {
+                            userId: message.author.id,
+                        },
+                        {
+                            $inc: {
+                                coins: totalprice,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase timeout`,

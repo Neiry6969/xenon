@@ -92,6 +92,9 @@ module.exports = {
             const saleprice = sellamount * item.sell
 
             if(saleprice >= 1000000) {
+                data.inventory[item.item] = data.inventory[item.item] - sellamount;
+                await inventoryModel.findOneAndUpdate(params_user, data);
+
                 let confirm = new MessageButton()
                     .setCustomId('confirm')
                     .setLabel('Confirm')
@@ -128,9 +131,6 @@ module.exports = {
                     button.deferUpdate()
 
                     if(button.customId === "confirm") {
-                        data.inventory[item.item] = data.inventory[item.item] - sellamount;
-            
-                        await inventoryModel.findOneAndUpdate(params_user, data);
 
                         const response = await profileModel.findOneAndUpdate(params_user,
                             {
@@ -162,6 +162,8 @@ module.exports = {
                         })
                     
                     } else if(button.customId === "cancel") {
+                        data.inventory[item.item] = data.inventory[item.item] + sellamount;
+                        await inventoryModel.findOneAndUpdate(params_user, data);
                         const embed = {
                             color: '#FF0000',
                             title: `Sell cancelled`,
@@ -184,10 +186,13 @@ module.exports = {
                     
                 });
 
-                collector.on('end', collected => {
+                collector.on('end', async collected => {
                     if(collected.size > 0) {
 
                     } else {
+                        data.inventory[item.item] = data.inventory[item.item] + sellamount;
+                        await inventoryModel.findOneAndUpdate(params_user, data);
+
                         const embed = {
                             color: '#FF0000',
                             title: `Sell timeout`,

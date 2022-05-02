@@ -208,7 +208,6 @@ module.exports = {
 
                         })
                         const total_balance = profileData.coins + profileData.bank;
-                        console.log(profileData.premium > 0)
                         const embed = {
                             color: 'RANDOM',
                             title: `${message.author.username}'s Profile`,
