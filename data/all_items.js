@@ -72,7 +72,7 @@ module.exports = [
     {
         item: "monitor",
         name: "PC Monitor",
-        aliases:[ "monit"],
+        aliases: ["monit"],
         icon: "<a:monitor:965097022027866172>",
         price: 10000,
         sell: 1000,
@@ -967,7 +967,7 @@ module.exports = [
     },
     {
         item: "premiumcard",
-        name: "premium Card",
+        name: "Premium Card",
         aliases: ['premiumcard', 'premiumc', 'premium', 'iumcard', 'miumcard', 'premiumcar', 'emiumcard', 'premi'],
         icon: "<:premiumcard:970469344154910760>",
         price: "unable to be bought",
