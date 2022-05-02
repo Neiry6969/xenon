@@ -52,11 +52,11 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Wallet',
-                                value: `❀ \`0\``,
+                                value: `❀ \`${profile.coins.toLocaleString()}\``,
                             },
                             {
                                 name: 'Bank',
-                                value: `❀ \`0\` | \`1,000\` \`0.00%\``,
+                                value: `❀ \`${profile.bank.toLocaleString()}\` | \`${profile.bankspace.toLocaleString()}\` \`0.00%\``,
                             },
                             {
                                 name: 'Net Worth',
