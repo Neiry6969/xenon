@@ -42,15 +42,6 @@ module.exports = {
         const iftable = args[0]?.toLowerCase();
         const maxwallet = 25000000;
 
-        if(profileData.coins >= maxwallet) {
-            const embed = {
-                color: '#FF0000',
-                title: `Slots Error`,
-                description: `You are too rich to gamble.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
-            };
-
-            return message.reply({ embeds: [embed] });
-        }
 
         if(iftable === 'table' || iftable === 'list') {
             const embed = {
@@ -64,6 +55,17 @@ module.exports = {
         } else {
             let betamount = args[0]
             const maxbetamount = 500000;
+
+            
+            if(profileData.coins >= maxwallet) {
+                const embed = {
+                    color: '#FF0000',
+                    title: `Slots Error`,
+                    description: `You are too rich to gamble.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                };
+
+                return message.reply({ embeds: [embed] });
+            }
 
             if(profileData.coins < 5000) {
                 if(profileData.bank >= 5000) {

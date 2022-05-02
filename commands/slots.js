@@ -116,15 +116,6 @@ module.exports = {
         const iftable = args[0]?.toLowerCase();
         const maxwallet = 25000000;
 
-        if(profileData.coins >= maxwallet) {
-            const embed = {
-                color: '#FF0000',
-                title: `Slots Error`,
-                description: `You are too rich to use the slots machine.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
-            };
-
-            return message.reply({ embeds: [embed] });
-        }
 
         if(iftable === 'table' || iftable === 'list') {
             const multifor2 = multiplieramount_2.map((value) => {
@@ -145,6 +136,17 @@ module.exports = {
         } else {
             let slotsamount = args[0]
             const maxslotsamount = 300000;
+
+            
+            if(profileData.coins >= maxwallet) {
+                const embed = {
+                    color: '#FF0000',
+                    title: `Slots Error`,
+                    description: `You are too rich to use the slots machine.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                };
+
+                return message.reply({ embeds: [embed] });
+            }
 
             if(profileData.coins < 5000) {
                 if(profileData.bank >= 5000) {
