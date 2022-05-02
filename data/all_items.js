@@ -304,7 +304,7 @@ module.exports = [
         value: 0,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966536673389326356/pixil-frame-0_1.png",
         description: "The legendary sword of King Arthur, sometimes also attributed with magical powers. Wow imagine.\n\nWorldwide Quantity: `1`",
-        rarity: "godly",
+        rarity: "mythical",
         type: "collectable"
     },
     {
