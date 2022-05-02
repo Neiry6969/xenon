@@ -55,7 +55,7 @@ module.exports = {
 
         inventoryModel.findOne(params_user, async(err, data) => {  
             if(sellamount === 'max' || sellamount === 'all') {
-                if(data.inventory[item.item] < item.value || !data.inventory[item.item]) {
+                if(data.inventory[item.item] === 0 || !data.inventory[item.item]) {
                     return message.reply(`You don't own any of this item, how are you going to sell it?`);
                 } else {
                     sellamount = data.inventory[item.item];
