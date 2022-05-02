@@ -968,7 +968,7 @@ module.exports = [
     {
         item: "premiumcard",
         name: "premium Card",
-        aliases: ['premiumcard', 'premiumc', 'premium', 'iumcard', 'niumcard', 'premiumcar', 'card', 'preni'],
+        aliases: ['premiumcard', 'premiumc', 'premium', 'iumcard', 'miumcard', 'premiumcar', 'emiumcard', 'premi'],
         icon: "<:premiumcard:970469344154910760>",
         price: "unable to be bought",
         sell: "unable to be sold",
