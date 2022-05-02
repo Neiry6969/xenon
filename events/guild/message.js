@@ -125,7 +125,7 @@ module.exports = async(Discord, client, message) => {
                     const embed = {
                         color: '#FFC000',
                         title: `Slow it down! Don't try to break me!`,
-                        description: `You have **premium** cooldown\nTry the command again in **${time_split(time_left)}**\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
+                        description: `You have **PREMIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
                         author: {
                             name: `${client.user.username}`,
                             icon_url: `${client.user.displayAvatarURL()}`,
