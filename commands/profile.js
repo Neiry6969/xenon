@@ -49,7 +49,7 @@ module.exports = {
                         thumbnail: {
                             url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                         },
-                        description: `${profileData.premium > 0 ? `**Prenium:** <:preniumcard:970469344154910760> \`rank ${profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
+                        description: `**Badges:**\n**Prestige:** \`${profile.prestige.toLocaleString()}\``,
                         fields: [
                             {
                                 name: 'Level',
@@ -63,7 +63,7 @@ module.exports = {
                             },
                             {
                                 name: 'Inv',
-                                value: `Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: ❀ \`0\`\``,
+                                value: `Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: ❀ \`0\``,
                             },
                             
                         ],
@@ -114,7 +114,7 @@ module.exports = {
                                     thumbnail: {
                                         url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                                     },
-                                    description: `${profileData.premium > 0 ? `**Prenium:** <:preniumcard:970469344154910760> \`rank ${profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
+                                    description: `${target_profileData.premium > 0 ? `**Prenium:** <:preniumcard:970469344154910760> \`rank ${profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
                                     fields: [
                                         {
                                             name: 'Level',
@@ -150,7 +150,7 @@ module.exports = {
                                 thumbnail: {
                                     url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                                 },
-                                description: `${profileData.premium > 0 ? `**Prenium:** <:preniumcard:970469344154910760> \`rank ${profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
+                                description: `${target_profileData.premium > 0 ? `**Prenium:** <:preniumcard:970469344154910760> \`rank ${profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
                                 fields: [
                                     {
                                         name: 'Level',
@@ -208,7 +208,7 @@ module.exports = {
 
                         })
                         const total_balance = profileData.coins + profileData.bank;
-
+                        console.log(profileData.premium > 0)
                         const embed = {
                             color: 'RANDOM',
                             title: `${message.author.username}'s Profile`,
