@@ -205,6 +205,20 @@ module.exports = {
                             } else {
                                 data.inventory[item.item] = data.inventory[item.item] - 1;
 
+                                const response = await profileModel.findOneAndUpdate(
+                                    {
+                                        userId: message.author.id,
+                                    },
+                                    {
+                                        $inc: {
+                                            prenium: 1,
+                                        },
+                                    },
+                                    {
+                                        upsert: true,
+                                    }
+                                );
+
                                 await inventoryModel.findOneAndUpdate(params, data);
                                 return message.reply(`You used a ${item.icon} \`${item.item}\` and became a prenium forever!`);
                             }
