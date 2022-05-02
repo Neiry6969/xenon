@@ -41,7 +41,7 @@ const profileSchema = new mongoose.Schema({
     deaths: {
         type: Number,
     },
-    prenium: {
+    premium: {
         type: Number,
     }
 })

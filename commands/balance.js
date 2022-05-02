@@ -34,7 +34,7 @@ module.exports = {
                         prestige: 0,
                         commands: 0,
                         deaths: 0,
-                        prenium: 0,
+                        premium: 0,
                     });
                 
                     profile.save();

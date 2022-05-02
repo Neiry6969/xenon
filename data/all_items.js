@@ -966,16 +966,16 @@ module.exports = [
         type: "collectable"
     },
     {
-        item: "preniumcard",
-        name: "Prenium Card",
-        aliases: ['preniumcard', 'preniumc', 'prenium', 'iumcard', 'niumcard', 'preniumcar', 'card', 'preni'],
-        icon: "<:preniumcard:970469344154910760>",
+        item: "premiumcard",
+        name: "premium Card",
+        aliases: ['premiumcard', 'premiumc', 'premium', 'iumcard', 'niumcard', 'premiumcar', 'card', 'preni'],
+        icon: "<:premiumcard:970469344154910760>",
         price: "unable to be bought",
         sell: "unable to be sold",
         trade: 69000000000,
         value: 69000000000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970469436999991366/PRENIUM__1_-removebg-preview.png?width=427&height=427",
-        description: "Use this card to get prenium forever bro!",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970469436999991366/premium__1_-removebg-preview.png?width=427&height=427",
+        description: "Use this card to get premium forever bro!",
         rarity: "goldly",
         type: "support"
     },

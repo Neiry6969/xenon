@@ -4,7 +4,7 @@ const { Collection } = require('discord.js')
 
 const cooldowns = new Map();
 
-function preniumcooldowncalc(defaultcooldown) {
+function premiumcooldowncalc(defaultcooldown) {
     if(defaultcooldown <= 5 && defaultcooldown > 2) {
         return defaultcooldown - 2
     } else if(defaultcooldown <= 15) {
@@ -35,7 +35,7 @@ module.exports = async(Discord, client, message) => {
                 prestige: 0,
                 commands: 0,
                 deaths: 0,
-                prenium: 0,
+                premium: 0,
             });
         
             profile.save();
@@ -72,7 +72,7 @@ module.exports = async(Discord, client, message) => {
         const time_stamps = cooldowns.get(command.name);
         let cooldown_amount = (command.cooldown) * 1000;
         
-        if(message.guild.id === '852261411136733195' || profileData.prenium >= 1) {
+        if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
             if(command.cooldown <= 5 && command.cooldown > 2) {
                 cooldown_amount = (command.cooldown - 2) * 1000
             } else if(command.cooldown <= 15) {
@@ -121,11 +121,11 @@ module.exports = async(Discord, client, message) => {
             if(current_time < expiration_time){
                 const time_left = Math.floor((expiration_time - current_time) / 1000);
 
-                if(message.guild.id === '852261411136733195' || profileData.prenium >= 1) {
+                if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
                     const embed = {
                         color: '#FFC000',
                         title: `Slow it down! Don't try to break me!`,
-                        description: `You have **PRENIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPrenium Cooldown: \`${time_split(preniumcooldowncalc(command.cooldown))}\``,
+                        description: `You have **premium** cooldown\nTry the command again in **${time_split(time_left)}**\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
                         author: {
                             name: `${client.user.username}`,
                             icon_url: `${client.user.displayAvatarURL()}`,
@@ -138,7 +138,7 @@ module.exports = async(Discord, client, message) => {
                     const embed = {
                         color: '#000000',
                         title: `Slow it down! Don't try to break me!`,
-                        description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\nPrenium Cooldown: \`${time_split(preniumcooldowncalc(command.cooldown))}\``,
+                        description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
                         author: {
                             name: `${client.user.username}`,
                             icon_url: `${client.user.displayAvatarURL()}`,

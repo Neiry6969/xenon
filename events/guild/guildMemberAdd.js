@@ -14,7 +14,7 @@ module.exports = async(client, discord, member) => {
         prestige: 0,
         commands: 0,
         deaths: 0,
-        prenium: 0,
+        premium: 0,
     });
 
     profile.save();

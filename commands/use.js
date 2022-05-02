@@ -199,9 +199,9 @@ module.exports = {
 
                             await inventoryModel.findOneAndUpdate(params, data);
                             return message.reply(`You eat one ${item.icon} \`${item.item}\` and it tastes good!`);
-                        } else if(item.item = 'preniumcard') {
-                            if(profileData.prenium >= 1) {
-                                return message.reply(`You can't use a ${item.icon} \`${item.item}\`, since you are already a prenium.`);
+                        } else if(item.item = 'premiumcard') {
+                            if(profileData.premium >= 1) {
+                                return message.reply(`You can't use a ${item.icon} \`${item.item}\`, since you are already a premium.`);
                             } else {
                                 data.inventory[item.item] = data.inventory[item.item] - 1;
 
@@ -211,7 +211,7 @@ module.exports = {
                                     },
                                     {
                                         $inc: {
-                                            prenium: 1,
+                                            premium: 1,
                                         },
                                     },
                                     {
@@ -220,7 +220,7 @@ module.exports = {
                                 );
 
                                 await inventoryModel.findOneAndUpdate(params, data);
-                                return message.reply(`You used a ${item.icon} \`${item.item}\` and became a prenium forever!`);
+                                return message.reply(`You used a ${item.icon} \`${item.item}\` and became a premium forever!`);
                             }
                         } else {
                             const embed = {
