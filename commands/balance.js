@@ -23,7 +23,7 @@ module.exports = {
                 if(!target_profileData) {
                     let profile = await profileModel.create({
                         userId: message.author.id,
-                        serverId: message.guild.id,
+                        serverId: target.id,
                         coins: 0,
                         bank: 0,
                         bankspace: 1000,
