@@ -67,7 +67,7 @@ module.exports = {
                         return message.reply("You got nothing to share.");
                     } else if (data) {
                         if(!data.inventory[item.item] || data.inventory[item.item] === 0) {
-                            return message.reply(`You have 0 \`${item.item}\`, so how are you going to gift that?`);
+                            return message.reply(`You have 0 ${item.icon} \`${item.item}\`, so how are you going to gift that?`);
                         } else if(get_amount > data.inventory[item.item]) {
                             const embed = {
                                 color: '#FF0000',

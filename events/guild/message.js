@@ -40,14 +40,9 @@ module.exports = async(Discord, client, message) => {
         
             profile.save();
 
-            const embed = {
-                color: '#0000FF',
-                title: `Welcome to Xenon`,
-                description: `I see a new user, your account has been created!`,
-                timestamp: new Date(),
-            };
-            return message.reply({ embeds: [embed] });
+            profileData = profile;
         }
+
     } catch (error) {
         console.log(error)
     }

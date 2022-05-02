@@ -71,10 +71,11 @@ module.exports = {
             }
     
             inventoryModel.findOne(params, async(err, data) => {
+                const hoe = allItems.find((val) => (val.item.toLowerCase()) === "hoe")
+
                 if(data) {
-                    const hoe = allItems.find((val) => (val.item.toLowerCase()) === "hoe")
                     if(
-                        !data.inventory[hoe.item] || data.inventory[hoe.item] === 0
+                        !data.inventory[hoe.item] || data.inventory[hoe.item] === 0 || !data
                     ) {
                         const embed = {
                             color: 'RANDOM',

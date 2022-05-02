@@ -69,10 +69,11 @@ module.exports = {
             }
     
             inventoryModel.findOne(params, async(err, data) => {
+                const fishingrod = allItems.find((val) => (val.item.toLowerCase()) === "fishingrod")
+
                 if(data) {
-                    const fishingrod = allItems.find((val) => (val.item.toLowerCase()) === "fishingrod")
                     if(
-                        !data.inventory[fishingrod.item] || data.inventory[fishingrod.item] === 0
+                        !data.inventory[fishingrod.item] || data.inventory[fishingrod.item] === 0 || !data
                     ) {
                         const embed = {
                             color: 'RANDOM',

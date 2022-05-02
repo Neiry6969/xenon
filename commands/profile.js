@@ -49,26 +49,27 @@ module.exports = {
                         thumbnail: {
                             url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                         },
+                        description: `**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
                         fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`0\`\nExperience Points: \`0\``,
+                                value: `Level: \`${profile.level.toLocaleString()}\`\nExperience Points: \`${profile.experiencepoints.toLocaleString()}\``,
                                 inline: true,
                             },
                             {
                                 name: 'Balance',
-                                value: `Wallet: ❀ \`0\`\nBank: ❀ \`0\`\nBankspace: \`1,000\`\nTotal Balance: ❀ \`0\``,
+                                value: `Wallet: ❀ \`0\`\nBank: ❀ \`${profile.bank.toLocaleString()}\`\nBankspace: \`${profile.bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`0\``,
                                 inline: true,
                             },
                             {
                                 name: 'Inv',
-                                value: `\`Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: ❀ \`0\`\``,
+                                value: `Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: ❀ \`0\`\``,
                             },
                             
                         ],
                         timestamp: new Date(),
                     };
-                    message.channel.send({ embeds: [embed] });
+                    return message.channel.send({ embeds: [embed] });
                 } else {
                     let itemsworth = 0;
                     let items = 0;
@@ -113,6 +114,7 @@ module.exports = {
                                     thumbnail: {
                                         url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                                     },
+                                    description: `**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
                                     fields: [
                                         {
                                             name: 'Level',
@@ -148,6 +150,7 @@ module.exports = {
                                 thumbnail: {
                                     url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                                 },
+                                description: `**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
                                 fields: [
                                     {
                                         name: 'Level',
@@ -213,6 +216,7 @@ module.exports = {
                                 name: `_____________`,
                                 icon_url: `${message.author.displayAvatarURL()}`,
                             },
+                            description: `**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
                             thumbnail: {
                                 url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                             },
@@ -249,6 +253,7 @@ module.exports = {
                         thumbnail: {
                             url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                         },
+                        description: `**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
                         fields: [
                             {
                                 name: 'Level',

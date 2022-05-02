@@ -219,7 +219,9 @@ module.exports = {
             });
 
             collector.on('end', collected => {
-                if(collected.size < 0) {
+                if(collected.size > 0) {
+
+                } else {
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase timeout`,

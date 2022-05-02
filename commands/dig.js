@@ -69,10 +69,11 @@ module.exports = {
             }
 
             inventoryModel.findOne(params, async(err, data) => {
+                const shovel = allItems.find((val) => (val.item.toLowerCase()) === "shovel")
+
                 if(data) {
-                    const shovel = allItems.find((val) => (val.item.toLowerCase()) === "shovel")
                     if(
-                        !data.inventory[shovel.item] || data.inventory[shovel.item] === 0
+                        !data.inventory[shovel.item] || data.inventory[shovel.item] === 0 || !data
                     ) {
                         const embed = {
                             color: 'RANDOM',
