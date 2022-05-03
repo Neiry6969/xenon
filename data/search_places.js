@@ -70,4 +70,25 @@ module.exports = [
         items: 'excaliburghost',
         itempecrent: 1,
     },
+    {
+        place: 'spring festival',
+        message: `You went to the beautiful festival and was given ❀ \`COINS\``,
+        coins: 9000,
+        items: 'purpleblossom',
+        itempecrent: 9800,
+    },
+    {
+        place: 'tree',
+        message: `You looked at a tree hoping it will give you money and it rained ❀ \`COINS\``,
+        coins: 15000,
+        items: 'goldenblossom',
+        itempecrent: 80,
+    },
+    {
+        place: 'grass',
+        message: `You touched some grass add got ❀ \`COINS\`, sheesh!`,
+        coins: 70,
+        items: 'blueblossom',
+        itempecrent: 1000,
+    },
 ]
