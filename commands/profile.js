@@ -5,7 +5,7 @@ const allItems = require('../data/all_items');
 module.exports = {
     name: "profile",
     aliases: ['exp', 'level', 'lvl'],
-    cooldown: 2,
+    cooldown: 5,
     minArgs: 0,
     maxArgs: 1,
     description: "check the user profile.",

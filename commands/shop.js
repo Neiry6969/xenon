@@ -11,7 +11,7 @@ module.exports = {
     maxArgs: 0,
     description: 'see what is in the item shop.',
     async execute(message, args, cmd, client, Discord, profileData) {
-        const getItem = args[0];
+        const getItem = args[0]?.toLocaleString();
 
         if(!getItem) {
             const shopList = allItems

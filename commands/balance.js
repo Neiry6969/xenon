@@ -5,7 +5,7 @@ const allItems = require('../data/all_items');
 module.exports = {
     name: "balance",
     aliases: ['bal', 'bl'],
-    cooldown: 2,
+    cooldown: 3,
     minArgs: 0,
     maxArgs: 1,
     description: "check the user balance.",
