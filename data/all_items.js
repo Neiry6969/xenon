@@ -1000,7 +1000,7 @@ module.exports = [
         icon: "<:purpleblossom:970837493865934899>",
         price: "unable to be bought",
         sell: "unable to be sold",
-        trade: 2500000,
+        trade: 2000,
         value: 2500000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970837725957722172/image_5.png?width=390&height=390",
         description: "Cute blossom.",
