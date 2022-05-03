@@ -974,7 +974,7 @@ module.exports = [
         sell: "unable to be sold",
         trade: 69000000000,
         value: 69000000000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970469436999991366/premium__1_-removebg-preview.png?width=427&height=427",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970469436999991366/PRENIUM__1_-removebg-preview.png?width=427&height=427",
         description: "Use this card to get premium forever bro!",
         rarity: "goldly",
         type: "support"
