@@ -13,10 +13,11 @@ module.exports = {
         if(!getcommand) {
             const helpList = allhelp
             .map((value) => {
-                return `**${value.name}**\n${value.aliases ? `Aliases: \`${value.aliases.join("\` \`")}\`\n` : ""}<:subtopic:971147593998532628>${value.description}`;
+                return `**${value.command}**\n${value.aliases ? `Aliases: \`${value.aliases.join("\` \`")}\`\n` : ""}<:subtopic:971147593998532628>${value.description}`;
             })
-            .filter(Boolean)
             .sort()
+            .filter(Boolean)
+
 
             const help = Object.values(helpList).filter(Boolean);
             const helplength = help.length;

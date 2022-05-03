@@ -16,7 +16,7 @@ module.exports = [
         shortdesc: 'Check your profile.',
     },
     {
-        name: "beg",
+        command: "beg",
 
         cooldown: 25,
         category: 'income',
@@ -24,7 +24,7 @@ module.exports = [
         shortdesc: 'Beg for coins.',
     },
     {
-        name: 'buy',
+        command: 'buy',
         aliases: ['purchase'],
         cooldown: 5,
         category: 'item interaction',
@@ -32,7 +32,7 @@ module.exports = [
         shortdesc: "Buy items.",
     },
     {
-        name: 'dig',
+        command: 'dig',
 
         cooldown: 20,
         description: "Dig for some treasures.",
@@ -40,7 +40,7 @@ module.exports = [
         shortdesc: "Dig for some treasures.",
     },
     {
-        name: 'daily',
+        command: 'daily',
         aliases: ['dai'],
         cooldown: 86400,
         description: "Collect your daily rewards.",
@@ -48,7 +48,7 @@ module.exports = [
         category: 'income',
     },
     {
-        name: "deposit",
+        command: "deposit",
         aliases: ["dep"],
         cooldown: 5,
         description: "Deposit coins into your bank.",
@@ -56,7 +56,7 @@ module.exports = [
         category: 'currency',
     },
     {
-        name: 'fish',
+        command: 'fish',
         cooldown: 20,
 
         description: "Fish for some fish.",
@@ -64,7 +64,7 @@ module.exports = [
         category: 'income',
     },
     {
-        name: 'harvest',
+        command: 'harvest',
         aliases: ['harv'],
         cooldown: 20,
         description: "Harvest for some food.",
@@ -72,7 +72,7 @@ module.exports = [
         category: 'income',
     },
     {
-        name: 'hunt',
+        command: 'hunt',
 
         cooldown: 20,
         description: "Hunt for some animals.",
@@ -80,7 +80,7 @@ module.exports = [
         category: 'income',
     },
     {
-        name: "gamble",
+        command: "gamble",
         aliases: ['bet'],
         cooldown: 10,
         description: "Bet your money away.",
@@ -88,7 +88,7 @@ module.exports = [
         category: 'gamble',
     },
     {
-        name: "gift",
+        command: "gift",
         aliases: ['yeet', 'send'],
         cooldown: 10,
         description: "Gift items to other users.",
@@ -96,7 +96,7 @@ module.exports = [
         category: 'interaction',
     },
     {
-        name: 'inventory',
+        command: 'inventory',
         aliases: ['inv'],
         cooldown: 3,
         description: "Check a inventory.",
@@ -104,7 +104,7 @@ module.exports = [
         category: 'currency',
     },
     {
-        name: 'invite',
+        command: 'invite',
         aliases: ['inv'],
         cooldown: 5,
         description: "Invite the bot to your server.",
@@ -112,7 +112,7 @@ module.exports = [
         category: 'bot',
     },
     {
-        name: 'ping',
+        command: 'ping',
         aliases: ['latency'],
         cooldown: 10,
         description: "Check the bot's latency status.",
@@ -120,7 +120,7 @@ module.exports = [
         category: 'bot',
     },
     {
-        name: "search",
+        command: "search",
         aliases: ["scout"],
         cooldown: 20,
         description: "Search for coins or items.",
@@ -128,7 +128,7 @@ module.exports = [
         category: 'income',
     },
     {
-        name: "sell",
+        command: "sell",
 
         cooldown: 10,
         description: "Sell an item.",
@@ -136,7 +136,7 @@ module.exports = [
         category: 'item interaction',
     },
     {
-        name: "share",
+        command: "share",
         aliases: ['give', 'shr'],
         cooldown: 10,
         description: "Share coins with other users.",
@@ -144,7 +144,7 @@ module.exports = [
         category: 'interaction',
     },
     {
-        name: "shop",
+        command: "shop",
         aliases: ["store", "item"],
         cooldown: 5,
         description: 'See what is in the item shop or check the stats of an item.',
@@ -152,7 +152,7 @@ module.exports = [
         category: 'item interaction',
     },
     {
-        name: "slots",
+        command: "slots",
         aliases: ['slot'],
         cooldown: 10,
         description: "Slots your money away.",
@@ -160,7 +160,7 @@ module.exports = [
         category: 'gamble',
     },
     {
-        name: "use",
+        command: "use",
 
         cooldown: 5,
         description: "Use useable items.",
@@ -168,7 +168,7 @@ module.exports = [
         category: 'item interaction',
     },
     {
-        name: "withdraw",
+        command: "withdraw",
         aliases: ["with"],
         cooldown: 5,
         description: "Withdraw coins into your bank.",
