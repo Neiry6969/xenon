@@ -114,7 +114,7 @@ module.exports = {
                 const embed = {
                     color: 'RANDOM',
                     title: `Confirm transaction`,
-                    description: `<@${message.author.id}>, are you sure you want to sell ${item.icon} \`${item.item}\` x\`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell}\` for each)`,
+                    description: `<@${message.author.id}>, are you sure you want to sell ${item.icon} \`${item.item}\` x\`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell.toLocaleString()}\` for each)`,
                     timestamp: new Date(),
                 };
                 const sell_msg = await message.reply({ embeds: [embed], components: [row] });
@@ -167,7 +167,7 @@ module.exports = {
                         const embed = {
                             color: '#FF0000',
                             title: `Sell cancelled`,
-                            description: `<@${message.author.id}>, confirm that want to sell the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell}\` for each)\nI guess not. Come back later if you change your mind.`,
+                            description: `<@${message.author.id}>, confirm that want to sell the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell.toLocaleString()}\` for each)\nI guess not. Come back later if you change your mind.`,
                             timestamp: new Date(),
                         };
                         
@@ -196,7 +196,7 @@ module.exports = {
                         const embed = {
                             color: '#FF0000',
                             title: `Sell timeout`,
-                            description: `<@${message.author.id}>, confirm that want to sell the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell}\` for each)\nI guess not. Come back later if you change your mind.`,
+                            description: `<@${message.author.id}>, confirm that want to sell the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** ❀ \`${saleprice.toLocaleString()}\` (❀ \`${item.sell.toLocaleString()}\` for each)\nI guess not. Come back later if you change your mind.`,
                             timestamp: new Date(),
                         };
                         
