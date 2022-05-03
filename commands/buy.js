@@ -144,6 +144,7 @@ module.exports = {
                     }
             
                     inventoryModel.findOne(params, async(err, data) => {
+                        let amountowned;
                         if(data) {
                             const hasItem = Object.keys(data.inventory).includes(item.item);
                             if(!hasItem) {
@@ -152,7 +153,7 @@ module.exports = {
                                 data.inventory[item.item] = data.inventory[item.item] + buyamount;
                             }
                             await inventoryModel.findOneAndUpdate(params, data);
-            
+                            amountowned = data.inventory[item.item];
                             
                         } else {
                             new inventoryModel({
@@ -161,12 +162,13 @@ module.exports = {
                                     [item.item]: buyamount
                                 }
                             }).save();
+                            amountowned = buyamount
             
                         }
                         const embed = {
                             color: '#A8FE97',
                             title: `Purchase Receipt`,
-                            description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** ❀ \`${totalprice.toLocaleString()}\`\n**Each Bought For:** ❀ \`${item.price.toLocaleString()}\`\n**Now You Have** \`${data.inventory[item.item].toLocaleString()}\``,
+                            description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** ❀ \`${totalprice.toLocaleString()}\`\n**Each Bought For:** ❀ \`${item.price.toLocaleString()}\`\n**Now You Have** \`${amountowned.toLocaleString()}\``,
                             timestamp: new Date(),
                         };
 

@@ -25,7 +25,7 @@ module.exports = {
         }
 
         if(amount === 'max' || amount === 'all') {
-            amount = profileData.bank;
+            amount = profileData.coins;
         } else if(amount === 'half') {
             amount = Math.floor(profileData.bank / 2)
         } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
