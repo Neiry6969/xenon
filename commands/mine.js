@@ -79,7 +79,7 @@ module.exports = {
             const lowestMap = lowest
             .map((value) => {
                 const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
-                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+                return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()
             .join('\n')
@@ -87,7 +87,7 @@ module.exports = {
             const lowmidtMap = lowmid
             .map((value) => {
                 const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
-                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+                return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()
             .join('\n')
@@ -95,7 +95,7 @@ module.exports = {
             const highmidMap = highmid
             .map((value) => {
                 const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
-                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+                return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()
             .join('\n')
@@ -103,7 +103,7 @@ module.exports = {
             const highMap = high
             .map((value) => {
                 const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
-                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString().toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+                return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString().toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()
             .join('\n')
