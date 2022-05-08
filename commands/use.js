@@ -63,7 +63,7 @@ module.exports = {
 
                             return message.reply({ embeds: [embed] });
                         }
-
+                        console.log(item.item = 'premiumcard')
                         if(item.item === 'bankmessage') {
                             if(parseInt(useAmount) === 1) {
                                 useAmount = parseInt(useAmount)
@@ -199,7 +199,7 @@ module.exports = {
 
                             await inventoryModel.findOneAndUpdate(params, data);
                             return message.reply(`You eat one ${item.icon} \`${item.item}\` and it tastes good!`);
-                        } else if(item.item = 'premiumcard') {
+                        } else if(item.item === 'premiumcard') {
                             if(profileData.premium >= 1) {
                                 return message.reply(`You can't use a ${item.icon} \`${item.item}\`, since you are already a premium.`);
                             } else {
