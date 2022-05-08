@@ -105,7 +105,7 @@ module.exports = [
     },
     {
         command: 'invite',
-        aliases: ['inv'],
+        
         cooldown: 5,
         description: "Invite the bot to your server.",
         shortdesc: "Invite the bot to your server.",
