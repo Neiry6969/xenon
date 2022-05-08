@@ -339,12 +339,12 @@ module.exports = [
         item: "bird",
         name: "Birdie",
         aliases: ["bir", "ird", "birdie"],
-        icon: ":bird:",
+        icon: "<:birdie:972976823157792800>",
         price: "unable to be bought",
         sell: 1000,
         trade: 0,
         value: 1000,
-        imageUrl: "https://hotemoji.com/images/dl/u/bird-emoji-by-twitter.png",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/972976883736121344/pxArt_1.png",
         description: "Just an ordinary birdie that can be for your collection or be sold.",
         rarity: "common",
         type: "sellable"
@@ -1146,5 +1146,19 @@ module.exports = [
         description: "Shard of steel for something...",
         rarity: "common",
         type: "material"
-    },
+    }, 
+    {
+        item: 'skateboard',
+        name: 'Skateboard',
+        aliases: ['sk8board', 'sk8', 'sk8b', 'skateb', 'skatebo', 'skateboa', 'skateboar', 'skate'],
+        icon: '<:skateboard:972978015048957953>',
+        price: 'unable to be bought',
+        sell: 'uanble to be sold',
+        trade: 10000000,
+        value: 10000000,
+        imageUrl: 'https://media.discordapp.net/attachments/965028200390475858/972978900789493761/New_Project__13_-removebg-preview.png?width=390&height=390',
+        description: "Woah it's a skateboard! Can you do some tricks?",
+        rarity: "rare",
+        type: "tool"
+    }
 ]

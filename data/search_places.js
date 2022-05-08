@@ -91,4 +91,11 @@ module.exports = [
         items: 'blueblossom',
         itempecrent: 1000,
     },
+    {
+        place: 'skatepark',
+        message: `Random, nice stranger came and give you ❀ \`COINS\`, everyone is so nice these days!`,
+        coins: 10000,
+        items: 'skateboard',
+        itempecrent: 6900,
+    },
 ]
