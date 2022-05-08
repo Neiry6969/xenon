@@ -65,6 +65,10 @@ module.exports = {
                                 name: 'Inv',
                                 value: `Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: ❀ \`0\``,
                             },
+                            { 
+                                name: 'Other (MISC)',
+                                value: `Daily Streak: <a:Lssl:806961744885973062>\`0\`\nCommands Issued: \`0\`\nDeaths: ❀ \`0\``,
+                            },
                             
                         ],
                         timestamp: new Date(),
@@ -130,6 +134,10 @@ module.exports = {
                                             name: 'Inv',
                                             value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
                                         },
+                                        { 
+                                            name: 'Other (MISC)',
+                                            value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\``,
+                                        },
                                         
                                     ],
                                     timestamp: new Date(),
@@ -165,6 +173,10 @@ module.exports = {
                                     {
                                         name: 'Inv',
                                         value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                                    },
+                                    { 
+                                        name: 'Other (MISC)',
+                                        value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\``,
                                     },
                                     
                                 ],
@@ -234,6 +246,10 @@ module.exports = {
                                     name: 'Inventory',
                                     value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
                                 },
+                                { 
+                                    name: 'Other (MISC)',
+                                    value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\``,
+                                },
                                 
                             ],
                             timestamp: new Date(),
@@ -267,6 +283,10 @@ module.exports = {
                             {
                                 name: 'Inventory',
                                 value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                            },
+                            { 
+                                name: 'Other (MISC)',
+                                value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\``,
                             },
                             
                         ],

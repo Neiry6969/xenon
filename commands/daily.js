@@ -20,6 +20,7 @@ module.exports = {
                 },
                 {
                     $inc: {
+                        dailystreak: 1,
                         coins: daily_amount,
                         expbankspace: expbankspace_amount,
                         experiencepoints: experiencepoints_amount,

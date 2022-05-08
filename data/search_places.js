@@ -96,6 +96,6 @@ module.exports = [
         message: `Random, nice stranger came and give you ❀ \`COINS\`, everyone is so nice these days!`,
         coins: 10000,
         items: 'skateboard',
-        itempecrent: 6900,
+        itempecrent: 1000,
     },
 ]

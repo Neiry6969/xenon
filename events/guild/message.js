@@ -35,7 +35,7 @@ module.exports = async(Discord, client, message) => {
                 level: 0,
                 dailystreak: 0,
                 prestige: 0,
-                commands: 0,
+                commands: 1,
                 deaths: 0,
                 premium: 0,
             });
@@ -58,7 +58,21 @@ module.exports = async(Discord, client, message) => {
 
     if(!client.commands.find(a => a.aliases && a.aliases.includes(cmd)) && !client.commands.get(cmd)) {
         return;
-    } 
+    } else {
+        response = await profileModel.findOneAndUpdate(
+            {
+                userId: message.author.id,
+            },
+            {
+                $inc: {
+                    commands: 1,
+                },
+            },
+            {
+                upsert: true,
+            }
+        );
+    }
     
     function executecmd() {
         try {
