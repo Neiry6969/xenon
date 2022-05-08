@@ -63,7 +63,7 @@ module.exports = {
 
                             return message.reply({ embeds: [embed] });
                         }
-                        console.log(item.item = 'premiumcard')
+
                         if(item.item === 'bankmessage') {
                             if(parseInt(useAmount) === 1) {
                                 useAmount = parseInt(useAmount)
