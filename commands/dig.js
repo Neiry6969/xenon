@@ -32,7 +32,7 @@ function dig() {
 
 module.exports = {
     name: 'dig',
-    cooldown: 20,
+    cooldown: 35,
     maxArgs: 0,
     description: "dig for some treasures.",
     async execute(message, args, cmd, client, Discord, profileData) {

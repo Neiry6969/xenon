@@ -32,7 +32,7 @@ function fish() {
 
 module.exports = {
     name: 'fish',
-    cooldown: 20,
+    cooldown: 35,
     maxArgs: 0,
     description: "fish for some food.",
     async execute(message, args, cmd, client, Discord, profileData) {

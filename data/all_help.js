@@ -34,7 +34,7 @@ module.exports = [
     {
         command: 'dig',
 
-        cooldown: 20,
+        cooldown: 35,
         description: "Dig for some treasures.",
         category: 'income',
         shortdesc: "Dig for some treasures.",
@@ -57,7 +57,7 @@ module.exports = [
     },
     {
         command: 'fish',
-        cooldown: 20,
+        cooldown: 35,
 
         description: "Fish for some fish.",
         shortdesc: "Fish for some fish.",
@@ -66,7 +66,7 @@ module.exports = [
     {
         command: 'harvest',
         aliases: ['harv'],
-        cooldown: 20,
+        cooldown: 35,
         description: "Harvest for some food.",
         shortdesc: "Harvest for some food.",
         category: 'income',
@@ -74,7 +74,7 @@ module.exports = [
     {
         command: 'hunt',
 
-        cooldown: 20,
+        cooldown: 35,
         description: "Hunt for some animals.",
         shortdesc: "Hunt for some animals.",
         category: 'income',

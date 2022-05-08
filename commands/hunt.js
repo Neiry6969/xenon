@@ -32,7 +32,7 @@ function hunt() {
 
 module.exports = {
     name: 'hunt',
-    cooldown: 20,
+    cooldown: 35,
     maxArgs: 0,
     description: "hunt for some animals.",
     async execute(message, args, cmd, client, Discord, profileData) {

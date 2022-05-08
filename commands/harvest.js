@@ -33,7 +33,7 @@ function harvest() {
 module.exports = {
     name: 'harvest',
     aliases: ['harv'],
-    cooldown: 20,
+    cooldown: 35,
     maxArgs: 0,
     description: "harvest for some food.",
     async execute(message, args, cmd, client, Discord, profileData) {
