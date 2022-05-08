@@ -89,35 +89,34 @@ module.exports = async(Discord, client, message) => {
 
             
             function time_split(time) {
-              if(time < 60) {
-                return `${time}s`;
-              } else if (time <= 60) {
-                const minutes = Math.floor(time / 60);
-                const seconds = time % 60;
-                return `${minutes}m ${seconds}s`;
-              } else if (time >= 3600) {
-                const hours = Math.floor(time / 3600)
-                const minutes = Math.floor((time % 3600) / 60);
-                const seconds = Math.floor(time % 3600 % 60);
-                return `${hours}h ${minutes}m ${seconds}s`;
-              } else if (time <= 86400) {
-                const days = Math.floor(time / 86400)
-                const hours = Math.floor(time % 86400 / 24)
-                const minutes = Math.floor((time % 86400) % 24 / 60);
-                const seconds = Math.floor(time % 86400 % 24 % 60 % 60);
-                return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-              } else if (time >= 604800) {
-                const weeks = Math.floor(time / 604800)
-                const days = Math.floor((time % 604800) / 24);
-                const hours = Math.floor(((time % 604800) % 24) / 60)
-                const minutes = Math.floor(((time % 604800) % 24) % 60 / 60)
-                const seconds = Math.floor(((time % 604800) % 24) % 60 % 60)
-                return `${weeks}w ${days}d ${hours}h ${minutes}m ${seconds}s`;
-              } else {
-                return `${time}s`;
-              }
-            } 
-
+                if (time < 60) {
+                    return `${time}s`;
+                } else if (time >= 60 && time < 3600) {
+                    const minutes = Math.floor(time / 60);
+                    const seconds = time % 60;
+                    return `${minutes}m ${seconds}s`;
+                } else if (time >= 3600 && time < 86400) {
+                    const hours = Math.floor(time / 3600);
+                    const minutes = Math.floor((time % 3600) / 60);
+                    const seconds = Math.floor((time % 3600) % 60);
+                    return `${hours}h ${minutes}m ${seconds}s`;
+                } else if (time >= 86400 && time < 604800) {
+                    const days = Math.floor(time / 86400);
+                    const hours = Math.floor((time % 86400) / 24);
+                    const minutes = Math.floor(((time % 86400) % 24) / 60);
+                    const seconds = Math.floor((((time % 86400) % 24) % 60) % 60);
+                    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                } else if (time >= 604800) {
+                    const weeks = Math.floor(time / 604800);
+                    const days = Math.floor((time % 604800) / 24);
+                    const hours = Math.floor(((time % 604800) % 24) / 60);
+                    const minutes = Math.floor((((time % 604800) % 24) % 60) / 60);
+                    const seconds = Math.floor((((time % 604800) % 24) % 60) % 60);
+                    return `${weeks}w ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    return `${time}s`;
+                }
+            }
 
             if(current_time < expiration_time){
                 const time_left = Math.floor((expiration_time - current_time) / 1000);
