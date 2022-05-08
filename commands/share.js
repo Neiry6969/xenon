@@ -16,6 +16,22 @@ module.exports = {
 
         const expectedsyntax = `**Expected Syntax:** \`xe share [user] [amount]\``
 
+        if(!target) {
+            const embed = {
+                color: '#FF0000',
+                title: `Transaction Error`,
+                description: `Mention a user to share coins with!\n${expectedsyntax}`,
+            };
+            return message.reply({ embeds: [embed] });
+        } else if(target.id === message.author.id) {
+            const embed = {
+                color: '#FF0000',
+                title: `Transaction Error`,
+                description: `You can't share coins with yourself!\n${expectedsyntax}`,
+            };
+            return message.reply({ embeds: [embed] });
+        } 
+
         if(profileData.coins <= 0) {
             if (profileData.bank <= 0) {
                 message.reply(`You got no coins in your wallet or your bank to share, your broke :c.`);
@@ -40,21 +56,7 @@ module.exports = {
             amount = parseInt(amount)
         }
         
-        if(!target) {
-            const embed = {
-                color: '#FF0000',
-                title: `Transaction Error`,
-                description: `Mention a user to share coins with!\n${expectedsyntax}`,
-            };
-            return message.reply({ embeds: [embed] });
-        } else if(target.id === message.author.id) {
-            const embed = {
-                color: '#FF0000',
-                title: `Transaction Error`,
-                description: `You can't share coins with yourself!\n${expectedsyntax}`,
-            };
-            return message.reply({ embeds: [embed] });
-        } 
+        
         if(amount === 0) {
             return message.reply("So you want to share nothing, pretend you did that in your mind");
         } else if(!amount) {
