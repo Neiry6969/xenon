@@ -91,7 +91,7 @@ module.exports = {
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
-                        const percent = (placesearched_items.itempecrent / 10000)* 100
+                        const percent = ((placesearched_items.itempecrent / 10000) * 100).toFixed[2]
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         await profileModel.findOneAndUpdate(
                             {userId: message.author.id},
