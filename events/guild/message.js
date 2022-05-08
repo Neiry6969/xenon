@@ -59,16 +59,8 @@ module.exports = async(Discord, client, message) => {
     if(!client.commands.find(a => a.aliases && a.aliases.includes(cmd)) && !client.commands.get(cmd)) {
         return;
     } 
-
-    if(args[0]?.toLowerCase() === 'table' || args[0]?.toLowerCase() === 'list') {
-        try {
-            command.execute(message, args, cmd, client, Discord, profileData);
-        } catch (error) {
-            message.reply("There was an error running this command.");
-            console.log(error);
-            return;
-        }
-    } else {
+    
+    function executecmd() {
         try {
             if(!cooldowns.has(command.name)){
                 cooldowns.set(command.name, new Collection());
@@ -180,5 +172,31 @@ module.exports = async(Discord, client, message) => {
             return;
         }
     }
+
+
+    if(args[0]?.toLowerCase() === 'table' || args[0]?.toLowerCase() === 'list') {
+        if(
+            command.name === 'mine' ||
+            command.name === 'hunt' ||
+            command.name === 'fish' ||
+            command.name === 'harvest' ||
+            command.name === 'slots' ||
+            command.name === 'gamble'
+        ) {
+            try {
+                command.execute(message, args, cmd, client, Discord, profileData);
+            } catch (error) {
+                message.reply("There was an error running this command.");
+                console.log(error);
+                return;
+            }
+        } else {
+            return executecmd()
+        }
+    } else {
+        return executecmd()
+    }
+
+    
 
 }
