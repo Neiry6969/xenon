@@ -7,6 +7,7 @@ module.exports = {
     cooldown: 5,
     description: "withdraw coins into your bank.",
     async execute(message, args, cmd, client, Discord, profileData) {
+        const expectedsyntax = `**Expected Syntax:** \`xe with [amount]\``;
         let amount = args[0]?.toLowerCase();
 
         const ifletternum = !!letternumbers.find((val) => val.letter === amount?.slice(-1))

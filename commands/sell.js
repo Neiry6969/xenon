@@ -12,7 +12,7 @@ module.exports = {
     maxArgs: 1,
     description: "sell an item.",
     async execute(message, args, cmd, client, Discord, profileData) {
-        const expectedArgs = `**Expected Syntax:** \`xe sell [item] [amount]\``;
+        const expectedsyntax = `**Expected Syntax:** \`xe sell [item] [amount]\``;
         const getitem = args[0]?.toLowerCase();
         let sellamount = args[1]?.toLowerCase();
 
@@ -20,7 +20,7 @@ module.exports = {
             const embed = {
                 color: '#FF0000',
                 title: `Sell Error`,
-                description: `Specify the item to sell.\n${expectedArgs}`,
+                description: `Specify the item to sell.\n${expectedsyntax}`,
             };
 
             return message.reply({ embeds: [embed] });
@@ -32,7 +32,7 @@ module.exports = {
             const embed = {
                 color: '#FF0000',
                 title: `Sell Error`,
-                description: `\`${getitem}\` is not existent item.\n${expectedArgs}`,
+                description: `\`${getitem}\` is not existent item.\n${expectedsyntax}`,
             };
 
             return message.reply({ embeds: [embed] });
