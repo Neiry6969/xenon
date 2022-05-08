@@ -1,151 +1,203 @@
-// const inventoryModel = require('../models/inventorySchema');
-// const profileModel = require('../models/profileSchema');
-// const allItems = require('../data/all_items');
+const inventoryModel = require('../models/inventorySchema');
+const profileModel = require('../models/profileSchema');
+const allItems = require('../data/all_items');
 
-// const lowest = ['bird', 'chick', 'monkey']
-// const lowmid = ['koala', 'pig', 'sheep']
-// const highmid = ['panda', 'elephant', 'parrot']
-// const high = ['dragon', 'unicorn']
+let amount;
 
-// function hunt() {
-//     const number = Math.floor(Math.random() * 10000);
-//     if(number <= 5000) {
-//         return `You weren't able to hunt any animals, welp I guess you should sharpen your aim.`
-//     } else if(number <= 8000 && number > 5000) {
-//         const result = Math.floor(Math.random() * lowest.length);
+const lowest = [
+    {
+        item: 'rock',
+        maxamount: 25
+    }, 
+    {
+        item: 'shardofsteel',
+        maxamount: 20
+    },
+]
+const lowmid = [
+    {
+        item: 'shardofsteel',
+        maxamount: 30
+    },
+    {
+        item: 'shardofuranium',
+        maxamount: 15
+    },
+]
+const highmid = [
+    {
+        item: 'shardofaluminum',
+        maxamount: 10
+    },
+    {
+        item: 'shardofgold',
+        maxamount: 5
+    }
+]
+const high = [
+    {
+        item: 'shardofdiamond',
+        maxamount: 3
+    }
+]
 
-//         return lowest[result];
-//     } else if(number <= 9500 && number > 8000) {
-//         const result = Math.floor(Math.random() * lowmid.length);
+function mine() {
+    const number = Math.floor(Math.random() * 10000);
+    if(number <= 5000) {
+        return `You weren't able to mine anything, unlucky.`
+    } else if(number <= 8300 && number > 5000) {
+        const result = Math.floor(Math.random() * lowest.length);
+        amount = Math.floor(Math.random() * lowest[result].maxamount) + 1;
 
-//         return lowmid[result];
-//     } else if(number <= 9950 && number > 9500) {
-//         const result = Math.floor(Math.random() * highmid.length);
+        return lowest[result].item;
+    } else if(number <= 9800 && number > 8300) {
+        const result = Math.floor(Math.random() * lowmid.length);
+        amount = Math.floor(Math.random() * lowmid[result].maxamount) + 1;
 
-//         return highmid[result];
-//     } else if(number > 9950) {
-//         const result = Math.floor(Math.random() * high.length);
+        return lowmid[result].item;
+    } else if(number <= 9999 && number > 9800) {
+        const result = Math.floor(Math.random() * highmid.length);
+        amount = Math.floor(Math.random() * highmid[result].maxamount) + 1;
 
-//         return high[result];
-//     }
-// }
+        return highmid[result].item;
+    } else if(number > 9999) {
+        const result = Math.floor(Math.random() * high.length);
+        amount = Math.floor(Math.random() * high[result].maxamount) + 1;
 
-// module.exports = {
-//     name: 'hunt',
-//     cooldown: 20,
-//     maxArgs: 0,
-//     description: "hunt for some animals.",
-//     async execute(message, args, cmd, client, Discord, profileData) {
-//         const iftable = args[0]?.toLowerCase()
-//         if(iftable === 'table' || iftable === 'list') {
-//             const bird = allItems.find((val) => (val.item.toLowerCase()) === "bird")
-//             const chick = allItems.find((val) => (val.item.toLowerCase()) === "chick")
-//             const monkey = allItems.find((val) => (val.item.toLowerCase()) === "monkey")
-//             const koala = allItems.find((val) => (val.item.toLowerCase()) === "koala")
-//             const pig = allItems.find((val) => (val.item.toLowerCase()) === "pig")
-//             const sheep = allItems.find((val) => (val.item.toLowerCase()) === "sheep")
-//             const panda = allItems.find((val) => (val.item.toLowerCase()) === "panda")
-//             const elephant = allItems.find((val) => (val.item.toLowerCase()) === "elephant")
-//             const parrot = allItems.find((val) => (val.item.toLowerCase()) === "parrot")
-//             const dragon = allItems.find((val) => (val.item.toLowerCase()) === "dragon")
-//             const unicorn = allItems.find((val) => (val.item.toLowerCase()) === "unicorn")
+        return high[result].item;
+    }
+}
+
+module.exports = {
+    name: 'mine',
+    cooldown: 120,
+    maxArgs: 0,
+    description: "Mine for some materials.",
+    async execute(message, args, cmd, client, Discord, profileData) {
+        const iftable = args[0]?.toLowerCase()
+        if(iftable === 'table' || iftable === 'list') {
+            const lowestMap = lowest
+            .map((value) => {
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+            })
+            .sort()
+            .join('\n')
+
+            const lowmidtMap = lowmid
+            .map((value) => {
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+            })
+            .sort()
+            .join('\n')
+
+            const highmidMap = highmid
+            .map((value) => {
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+            })
+            .sort()
+            .join('\n')
+
+            const highMap = high
+            .map((value) => {
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                return `${item.icon} \`${item.name}\` [\`max: ${value.maxamount.toLocaleString().toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
+            })
+            .sort()
+            .join('\n')
             
-//             const lowest_table = `${bird.icon} \`${bird.item}\`, ${chick.icon} \`${chick.item}\`, ${monkey.icon} \`${monkey.item}\``
-//             const lowmid_table = `${koala.icon} \`${koala.item}\`, ${pig.icon} \`${pig.item}\`, ${sheep.icon} \`${sheep.item}\``
-//             const highmid_table = `${panda.icon} \`${panda.item}\`, ${elephant.icon} \`${elephant.item}\`, ${parrot.icon} \`${parrot.item}\``
-//             const high_table = `${dragon.icon} \`${dragon.item}\`, ${unicorn.icon} \`${unicorn.item}\``
-
-
-//             const embed = {
-//                 color: 'RANDOM',
-//                 title: `Hunt Table`,
-//                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.5%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.5%\`\nitems: ${high_table}`,
-//                 timestamp: new Date(),
-//             };
+            const embed = {
+                color: 'RANDOM',
+                title: `Mine Table`,
+                description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`33%\`\n${lowestMap}\n\n**Low Mid** ──── \`15%\`\n${lowmidtMap}\n\n**High Mid** ──── \`1.99%\`\n${highmidMap}\n\n**High** ──── \`0.01%\`\n${highMap}`,
+                timestamp: new Date(),
+            };
     
-//             return message.reply({ embeds: [embed] });
-//         } else {
-//             const result = hunt()
-//             const params = {
-//                 userId: message.author.id,
-//             }
+            return message.reply({ embeds: [embed] });
+        } else {
+            const result = mine()
+            const params = {
+                userId: message.author.id,
+            }
     
-//             inventoryModel.findOne(params, async(err, data) => {
-//                 const rifle = allItems.find((val) => (val.item.toLowerCase()) === "rifle")
+            inventoryModel.findOne(params, async(err, data) => {
+                const pickaxe = allItems.find((val) => (val.item.toLowerCase()) === "pickaxe")
 
-//                 if(data) {
-//                     if(
-//                         !data.inventory[rifle.item] || data.inventory[rifle.item] === 0 || !data
-//                     ) {
-//                         const embed = {
-//                             color: 'RANDOM',
-//                             title: `Hunt Error`,
-//                             description: `You need atleast \`1\` ${rifle.item} ${rifle.icon} to go hunting. Use this command again when you have one.`,
-//                             timestamp: new Date(),
-//                         };
+                if(data) {
+                    if(
+                        !data.inventory[pickaxe.item] || data.inventory[pickaxe.item] === 0 || !data
+                    ) {
+                        const embed = {
+                            color: 'RANDOM',
+                            title: `Mine Error`,
+                            description: `You need atleast \`1\` ${pickaxe.item} ${pickaxe.icon} to go minning. Use this command again when you have one.`,
+                            timestamp: new Date(),
+                        };
                 
-//                         return message.reply({ embeds: [embed] });
-//                     } else {
-//                         if(result === `You weren't able to hunt any animals, welp I guess you should sharpen your aim.`) {
-//                             const embed = {
-//                                 color: 'RANDOM',
-//                                 title: `${message.author.username} went for a hunt`,
-//                                 description: result,
-//                                 timestamp: new Date(),
-//                             };
+                        return message.reply({ embeds: [embed] });
+                    } else {
+                        if(result === `You weren't able to mine anything, unlucky.`) {
+                            const embed = {
+                                color: 'RANDOM',
+                                title: `${message.author.username} went for a mine`,
+                                description: result,
+                                timestamp: new Date(),
+                            };
                     
-//                             return message.reply({ embeds: [embed] });
-//                         } else {
-//                             const item = allItems.find((val) => (val.item.toLowerCase()) === result)
-//                             const hasItem = Object.keys(data.inventory).includes(item.item);
-//                             if(!hasItem) {
-//                                 data.inventory[item.item] = 1;
-//                             } else {
-//                                 data.inventory[item.item] = data.inventory[item.item] + 1;
-//                             }
-//                             await inventoryModel.findOneAndUpdate(params, data);
+                            return message.reply({ embeds: [embed] });
+                        } else {
+                            const item = allItems.find((val) => (val.item.toLowerCase()) === result)
+                            const hasItem = Object.keys(data.inventory).includes(item.item);
+                            if(!hasItem) {
+                                data.inventory[item.item] = amount;
+                            } else {
+                                data.inventory[item.item] = data.inventory[item.item] + amount;
+                            }
+                            await inventoryModel.findOneAndUpdate(params, data);
                             
-//                             const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
-//                             const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+                            const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
+                            const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
 
-//                             const response = await profileModel.findOneAndUpdate(
-//                                 {
-//                                     userId: message.author.id,
-//                                 },
-//                                 {
-//                                     $inc: {
-//                                         expbankspace: expbankspace_amount,
-//                                         experiencepoints: experiencepoints_amount,
-//                                     },
-//                                 },
-//                                 {
-//                                     upsert: true,
-//                                 }
-//                             );
+                            const response = await profileModel.findOneAndUpdate(
+                                {
+                                    userId: message.author.id,
+                                },
+                                {
+                                    $inc: {
+                                        expbankspace: expbankspace_amount,
+                                        experiencepoints: experiencepoints_amount,
+                                    },
+                                },
+                                {
+                                    upsert: true,
+                                }
+                            );
                             
-//                             const embed = {
-//                                 color: 'RANDOM',
-//                                 title: `${message.author.username} went for a hunt`,
-//                                 description: `Wow nice shot! You got a \`${item.item}\` ${item.icon}`,
-//                                 timestamp: new Date(),
-//                             };
+                            const embed = {
+                                color: 'RANDOM',
+                                title: `${message.author.username} went for a mine`,
+                                description: `Nice find! You got [\`${amount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug) \`${item.item}\` ${item.icon}`,
+                                timestamp: new Date(),
+                            };
                     
-//                             return message.reply({ embeds: [embed] });
-//                         }
+                            return message.reply({ embeds: [embed] });
+                        }
                         
-//                     }
-//                 } else {
-//                     const embed = {
-//                         color: '#FF0000',
-//                         title: `Hunt Error`,
-//                         description: `You need atleast \`1\` ${rifle.icon} \`${rifle.item}\` to go hunting. Use this command again when you have one.`,
-//                         timestamp: new Date(),
-//                     };
+                    }
+                } else {
+                    const embed = {
+                        color: '#FF0000',
+                        title: `Mine Error`,
+                        description: `You need atleast \`1\` ${pickaxe.icon} \`${pickaxe.item}\` to go minning. Use this command again when you have one.`,
+                        timestamp: new Date(),
+                    };
             
-//                    return message.reply({ embeds: [embed] });
-//                 }
-//             })
-//         }
+                   return message.reply({ embeds: [embed] });
+                }
+            })
+        }
         
-//     }
-// }
+    }
+}

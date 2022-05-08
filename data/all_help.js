@@ -175,4 +175,12 @@ module.exports = [
         shortdesc: "Withdraw coins into your bank.",
         category: 'currency',
     },
+    {
+        command: "mine",
+
+        cooldown: 120,
+        description: "Mine for some materials.",
+        shortdesc: "Mine for some materials.",
+        category: 'currency',
+    },
 ]

@@ -9,8 +9,10 @@ function premiumcooldowncalc(defaultcooldown) {
         return defaultcooldown - 2
     } else if(defaultcooldown <= 15) {
         return defaultcooldown - 5
-    } else if(defaultcooldown <= 60) {
-        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
     }
 }
 
@@ -72,10 +74,13 @@ module.exports = async(Discord, client, message) => {
                 cooldown_amount = (command.cooldown - 2) * 1000
             } else if(command.cooldown <= 15) {
                 cooldown_amount = (command.cooldown - 5) * 1000
-            } else if(command.cooldown <= 60) {
+            } else if(command.cooldown <= 120) {
                 cooldown_amount = (command.cooldown - 10) * 1000
+            } else {
+                cooldown_amount = command.cooldown * 1000
             }
         }
+
 
     
         //If time_stamps has a key with the author's id then check the expiration time to send a message to a user.
@@ -111,7 +116,8 @@ module.exports = async(Discord, client, message) => {
               } else {
                 return `${time}s`;
               }
-            }
+            } 
+
 
             if(current_time < expiration_time){
                 const time_left = Math.floor((expiration_time - current_time) / 1000);
