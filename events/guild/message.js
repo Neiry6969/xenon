@@ -2,7 +2,7 @@ const { prefix } = require('../../config.json');
 const profileModel = require('../../models/profileSchema');
 const { Collection } = require('discord.js')
 
-const cooldowns = require('../cooldowns.json')
+// const cooldowns = require('../cooldowns.json')
 
 const cooldowns = new Map();
 
