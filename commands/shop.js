@@ -190,97 +190,106 @@ module.exports = {
             }
 
         } else if(getItem) {
-            const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getItem ||  val.aliases.includes(getItem)));
-          
-            if(validItem) {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === getItem || val.aliases.includes(getItem));
+            if(getItem.length < 3) {
+                return message.reply(`\`${getItem}\` is not even an existing item.`);
+            } else if (getItem.length > 250) {
+                return message.reply(`Couldn't find that item because you typed passed the limit of 250 characters.`);
+            }
+            const itemssearch = allItems.filter((value) => {
+                return (
+                  value.item.includes(getItem)
+                )
+            })
 
-                const params_user = {
-                    userId: message.author.id,
-                }
+            const item = itemssearch[0]
+
+            
+            if(item === undefined) {
+                return message.reply(`\`${getItem}\` is not even an existing item.`);
+            }
+
+            const params_user = {
+                userId: message.author.id,
+            }
+    
+            inventoryModel.findOne(params_user, async(err, data) => {
+                let itemOwned;
+
+                if(!data.inventory[item.item]) {
+                    itemOwned = 0
+                    
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
+                        thumbnail: {
+                            url: item.imageUrl,
+                        },
+                        description: `> ${item.description}`,
+                        fields: [
+                            {
+                                name: '_ _',
+                                value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
+                            },
+                            {
+                                name: 'ID',
+                                value: `\`${item.item}\``,
+                                inline: true,
+                            },
+                            {
+                                name: 'Rarity',
+                                value: `\`${item.rarity}\``,
+                                inline: true,
+                            },
+                            {
+                                name: 'Type',
+                                value: `\`${item.type}\``,
+                                inline: true,
+                            },
+                        ],
+                        timestamp: new Date(),
+                    };
         
-                inventoryModel.findOne(params_user, async(err, data) => {
-                    let itemOwned;
-
-                    if(!data.inventory[item.item]) {
-                        itemOwned = 0
-                        
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
-                            thumbnail: {
-                                url: item.imageUrl,
+                    return message.reply({ embeds: [embed] });
+                } else {
+                    itemOwned = data.inventory[item.item]
+                    
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
+                        thumbnail: {
+                            url: item.imageUrl,
+                        },
+                        description: `> ${item.description}`,
+                        fields: [
+                            {
+                                name: '_ _',
+                                value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
                             },
-                            description: `> ${item.description}`,
-                            fields: [
-                                {
-                                    name: '_ _',
-                                    value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
-                                },
-                                {
-                                    name: 'ID',
-                                    value: `\`${item.item}\``,
-                                    inline: true,
-                                },
-                                {
-                                    name: 'Rarity',
-                                    value: `\`${item.rarity}\``,
-                                    inline: true,
-                                },
-                                {
-                                    name: 'Type',
-                                    value: `\`${item.type}\``,
-                                    inline: true,
-                                },
-                            ],
-                            timestamp: new Date(),
-                        };
-            
-                        return message.reply({ embeds: [embed] });
-                    } else {
-                        itemOwned = data.inventory[item.item]
-                        
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
-                            thumbnail: {
-                                url: item.imageUrl,
+                            {
+                                name: 'ID',
+                                value: `\`${item.item}\``,
+                                inline: true,
                             },
-                            description: `> ${item.description}`,
-                            fields: [
-                                {
-                                    name: '_ _',
-                                    value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
-                                },
-                                {
-                                    name: 'ID',
-                                    value: `\`${item.item}\``,
-                                    inline: true,
-                                },
-                                {
-                                    name: 'Rarity',
-                                    value: `\`${item.rarity}\``,
-                                    inline: true,
-                                },
-                                {
-                                    name: 'Type',
-                                    value: `\`${item.type}\``,
-                                    inline: true,
-                                },
-                            ],
-                            timestamp: new Date(),
-                        };
-            
-                        return message.reply({ embeds: [embed] });
-                    }
-
-                   
-                })
+                            {
+                                name: 'Rarity',
+                                value: `\`${item.rarity}\``,
+                                inline: true,
+                            },
+                            {
+                                name: 'Type',
+                                value: `\`${item.type}\``,
+                                inline: true,
+                            },
+                        ],
+                        timestamp: new Date(),
+                    };
+        
+                    return message.reply({ embeds: [embed] });
+                }
 
                 
-            } else {
-                message.reply(`\`${getItem}\` is not even an existing item.`)
-            }
+            })
+
 
         } else {
             const shopList = allItems

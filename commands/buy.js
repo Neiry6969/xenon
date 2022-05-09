@@ -28,9 +28,21 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         }
 
-        const validItem = !!allItems.find((val) => (val.item.toLowerCase() === getitem ||  val.aliases.includes(getitem)))
+        if(getitem.length < 3) {
+            return message.reply(`\`${getitem}\` is not even an existing item.`);
+        } else if (getitem.length > 250) {
+            return message.reply(`Couldn't find that item because you typed passed the limit of 250 characters.`);
+        }
+        const itemssearch = allItems.filter((value) => {
+            return (
+                value.item.includes(getitem)
+            )
+        })
 
-        if(!validItem) {
+        const item = itemssearch[0]
+
+        
+        if(item === undefined) {
             const embed = {
                 color: '#FF0000',
                 title: `Purchase Error`,
@@ -39,8 +51,6 @@ module.exports = {
 
             return message.reply({ embeds: [embed] });
         }
-
-        const item = allItems.find((val) => (val.item.toLowerCase()) === getitem || val.aliases.includes(getitem));
 
         if(item.price === 'unable to be bought') {
             const embed = {
