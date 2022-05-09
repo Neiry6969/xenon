@@ -364,20 +364,6 @@ module.exports = [
         type: "sellable"
     },
     {
-        item: "unicorn",
-        name: "Unicorn",
-        aliases: ["cor", "uni", "icorn", "unic", "unico"],
-        icon: ":unicorn:",
-        price: "unable to be bought",
-        sell: 250000,
-        trade: 0,
-        value: 250000,
-        imageUrl: "",
-        description: "Magical unicorn that can be for your collection or be sold.",
-        rarity: "uncommon",
-        type: "sellable"
-    },
-    {
         item: "statue",
         name: "Statue",
         aliases: ["stat", "sta", "tat", "tue", "atu"],
@@ -557,6 +543,20 @@ module.exports = [
         imageUrl: "",
         description: "Corn that can be collected or sold.",
         rarity: "common",
+        type: "sellable"
+    },
+    {
+        item: "unicorn",
+        name: "Unicorn",
+        aliases: ["cor", "uni", "icorn", "unic", "unico"],
+        icon: ":unicorn:",
+        price: "unable to be bought",
+        sell: 250000,
+        trade: 0,
+        value: 250000,
+        imageUrl: "",
+        description: "Magical unicorn that can be for your collection or be sold.",
+        rarity: "uncommon",
         type: "sellable"
     },
     {

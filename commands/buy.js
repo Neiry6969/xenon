@@ -98,7 +98,7 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         }
 
-        if(totalprice >= 1000000) {
+        if(totalprice >= 100000) {
             const response = await profileModel.findOneAndUpdate(
                 {
                     userId: message.author.id,

@@ -101,7 +101,7 @@ module.exports = {
 
             const saleprice = sellamount * item.sell
 
-            if(saleprice >= 1000000) {
+            if(saleprice >= 10000) {
                 data.inventory[item.item] = data.inventory[item.item] - sellamount;
                 await inventoryModel.findOneAndUpdate(params_user, data);
 

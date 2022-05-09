@@ -135,7 +135,7 @@ module.exports = {
             message.reply({ embeds: [embed] })
         } else {
             let slotsamount = args[0]
-            const maxslotsamount = 300000;
+            const maxslotsamount = 500000;
 
             
             if(profileData.coins >= maxwallet) {
