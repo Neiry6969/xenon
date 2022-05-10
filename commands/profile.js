@@ -136,7 +136,7 @@ module.exports = {
                                         },
                                         { 
                                             name: 'Other (MISC)',
-                                            value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\``,
+                                            value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
                                         },
                                         
                                     ],
@@ -176,7 +176,7 @@ module.exports = {
                                     },
                                     { 
                                         name: 'Other (MISC)',
-                                        value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\``,
+                                        value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
                                     },
                                     
                                 ],
@@ -248,7 +248,7 @@ module.exports = {
                                 },
                                 { 
                                     name: 'Other (MISC)',
-                                    value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\``,
+                                    value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
                                 },
                                 
                             ],
@@ -286,7 +286,7 @@ module.exports = {
                             },
                             { 
                                 name: 'Other (MISC)',
-                                value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\``,
+                                value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
                             },
                             
                         ],

@@ -43,7 +43,12 @@ const profileSchema = new mongoose.Schema({
     },
     premium: {
         type: Number,
-    }
+    },
+    createdAt: { 
+        required: true,
+        type: Date, 
+        default: Date.now 
+    },
 })
 
 
