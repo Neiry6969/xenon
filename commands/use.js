@@ -1,6 +1,7 @@
 const profileModel = require("../models/profileSchema");
 const allItems = require("../data/all_items");
 const inventoryModel = require('../models/inventorySchema');
+const letternumbers = require('../reference/letternumber');
 
 module.exports = {
     name: "use",
@@ -10,8 +11,8 @@ module.exports = {
     maxArgs: 1,
     description: "use useable items.",
     async execute(message, args, cmd, client, Discord, profileData) {
-        const getItem = args[0].toLowerCase()
-        let useAmount = args[1]
+        const getItem = args[0]?.toLowerCase()
+        let useamount = args[1]?.toLowerCase();
 
         if(getItem.length < 3) {
             return message.reply(`\`${getItem}\` is not even an existing item.`);
@@ -56,15 +57,44 @@ module.exports = {
         
                     return message.reply({ embeds: [embed] });
                 } else {
-                    if(useAmount === 'max' || useAmount === 'all'){
-                        useAmount = data.inventory[item.item];
-                    }
-                    if(useAmount > data.inventory[item.item]) {
-                        useAmount = parseInt(useAmount)
+                    if(useamount === 'max' || useamount === 'all') {
+                        if(data.inventory[item.item] <= 0) {
+                            const embed = {
+                                color: '#FF0000',
+                                title: `Use Error`,
+                                description: `You don't have \`${useamount.toLocaleString()}\` of this item to use.\n**Item:** ${item.icon} \`${item.item}\`\n**Amount Owned:** \`${data.inventory[item.item]?.toLocaleString()}\``,
+                                timestamp: new Date(),
+                            };
+    
+                            return message.reply({ embeds: [embed] });
+                        } else {
+                            useamount = parseInt(useamount)
+                        }
+                    } else if(!useamount || !parseInt(useamount)) {
+                        useamount = 1
+                    } else if(letternumbers.find((val) => val.letter === useamount.slice(-1))) {
+                        if(parseInt(useamount.slice(0, -1))) {
+                            const number = parseFloat(useamount.slice(0, -1));
+                            const numbermulti = letternumbers.find((val) => val.letter === useamount.slice(-1)).number;
+                            useamount = number * numbermulti;
+                        } else {
+                            useamount = null;
+                        }
+                    } else {
+                        useamount = parseInt(useamount)
+                    }   
+            
+                    const totalprice = item.value * useamount;
+            
+                    if(!useamount || useamount < 0) {
+                        return message.reply("You can only use a whole number of items.");
+                    } else if (useamount === 0) {
+                        return message.reply("You used none of that item, you are joking right?");
+                    } else if (puseamount = data.inventory[item.item] < useamount) {
                         const embed = {
                             color: '#FF0000',
                             title: `Use Error`,
-                            description: `You don't have \`${useAmount.toLocaleString()}\` of this item to use.\n**Item:** ${item.icon} \`${item.item}\`\n**Amount Owned:** \`${data.inventory[item.item]?.toLocaleString()}\``,
+                            description: `You don't have \`${useamount.toLocaleString()}\` of this item to use.\n**Item:** ${item.icon} \`${item.item}\`\n**Amount Owned:** \`${data.inventory[item.item]?.toLocaleString()}\``,
                             timestamp: new Date(),
                         };
 
@@ -72,9 +102,9 @@ module.exports = {
                     }
 
                     if(item.item === 'bankmessage') {
-                        if(parseInt(useAmount) === 1) {
-                            useAmount = parseInt(useAmount)
-                            const expandedspace = Math.floor(Math.random() * (200000 * useAmount)) + 50000;
+                        if(parseInt(useamount) === 1) {
+                            useamount = parseInt(useamount)
+                            const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000;
                             const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
 
                             const response = await profileModel.findOneAndUpdate(
@@ -97,7 +127,7 @@ module.exports = {
                             const embed = {
                                 color: 'RANDOM',
                                 title: `You expanded your bankspace`,
-                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useAmount.toLocaleString()}\``,
+                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
                                 fields: [
                                     {
                                         name: 'Expanded Bankspace',
@@ -114,9 +144,9 @@ module.exports = {
                             };
 
                             return message.reply({ embeds: [embed] });
-                        } else if(useAmount > 1) {
-                            useAmount = parseInt(useAmount)
-                            const expandedspace = Math.floor(Math.random() * (200000 * useAmount)) + 50000 * useAmount;
+                        } else if(useamount > 1) {
+                            useamount = parseInt(useamount)
+                            const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000 * useamount;
                             const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
 
                             const response = await profileModel.findOneAndUpdate(
@@ -133,14 +163,14 @@ module.exports = {
                                 }
                             );
 
-                            data.inventory[item.item] = data.inventory[item.item] - useAmount;
+                            data.inventory[item.item] = data.inventory[item.item] - useamount;
                             await inventoryModel.findOneAndUpdate(params, data);
 
 
                             const embed = {
                                 color: 'RANDOM',
                                 title: `You expanded your bankspace`,
-                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useAmount.toLocaleString()}\``,
+                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
                                 fields: [
                                     {
                                         name: 'Expanded Bankspace',
@@ -158,8 +188,8 @@ module.exports = {
 
                             return message.reply({ embeds: [embed] });
                         } else {
-                            useAmount = 1;
-                            const expandedspace = Math.floor(Math.random() * (200000 * useAmount)) + 50000;
+                            useamount = 1;
+                            const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000;
                             const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
 
                             const response = await profileModel.findOneAndUpdate(
@@ -183,7 +213,7 @@ module.exports = {
                             const embed = {
                                 color: 'RANDOM',
                                 title: `You expanded your bankspace`,
-                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useAmount.toLocaleString()}\``,
+                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
                                 fields: [
                                     {
                                         name: 'Expanded Bankspace',
