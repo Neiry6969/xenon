@@ -850,7 +850,7 @@ module.exports = [
         value: 69000000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970846327472807956/PRENIUM__2_-removebg-preview.png?width=390&height=390",
         description: "Use this card to get premium forever bro!",
-        rarity: "goldly",
+        rarity: "godly",
         type: "support"
     },
     {
@@ -910,6 +910,20 @@ module.exports = [
         type: "collectable"
     },
     {
+        item: 'shardofgold',
+        name: 'Shard of Gold',
+        aliases: ['gold', 'gshard', 'gol', 'shardofg', 'shardofgo', 'shardofgol', 'golshard'],
+        icon: '<:shardofgold:972670005688819743>',
+        price: 'unable to be bought',
+        sell: 200000,
+        trade: 210000,
+        value: 240000,
+        imageUrl: 'https://media.discordapp.net/attachments/965028200390475858/972672190250102784/New_Project__10_-removebg-preview.png?width=427&height=427',
+        description: "Shard of gold for something...",
+        rarity: "epic",
+        type: "material"
+    },
+    {
         item: "goldenblossom",
         name: "Golden Blossom",
         aliases: ['goldenb', 'goldenblo', 'goldenblos', 'goldenbloss', 'goldenblosso', 'golden', 'goldb'],
@@ -949,20 +963,6 @@ module.exports = [
         imageUrl: 'https://media.discordapp.net/attachments/965028200390475858/972672189650325544/New_Project__12_-removebg-preview.png?width=427&height=427',
         description: "Shard of diamond for something...",
         rarity: "legendary",
-        type: "material"
-    },
-    {
-        item: 'shardofgold',
-        name: 'Shard of Gold',
-        aliases: ['gold', 'gshard', 'gol', 'shardofg', 'shardofgo', 'shardofgol', 'golshard'],
-        icon: '<:shardofgold:972670005688819743>',
-        price: 'unable to be bought',
-        sell: 200000,
-        trade: 210000,
-        value: 240000,
-        imageUrl: 'https://media.discordapp.net/attachments/965028200390475858/972672190250102784/New_Project__10_-removebg-preview.png?width=427&height=427',
-        description: "Shard of gold for something...",
-        rarity: "epic",
         type: "material"
     },
     {
