@@ -32,13 +32,15 @@ module.exports = {
         )
 
         const data = collection.sort((a, b) => b.netbalance - a.netbalance).first(10)
+
+        const leaderboard = data.map((v, i) => {
+            return `${i + 1 === 1 ? '<:creatorscrown:965024171463688323>' : '<:silvercrown:963568001213403196>'} \`${v.netbalance?.toLocaleString()}\` ${client.users.cache.get(v.id).tag}`
+        }).join('\n')
         
         embed = {
             color: 'RANDOM',
             title: `${message.guild.name} Net Balance Leaderboard`,
-            description: `${data.map((v, i) => {
-                return `${i + 1 === 1 ? '<:creatorscrown:965024171463688323>' : '<:silvercrown:963568001213403196>'} \`${v.netbalance?.toLocaleString()}\` ${client.users.cache.get(v.id).tag}`
-            }).join('\n')}`,
+            description: `${leaderboard ? leaderboard : 'There is no rich people in this server rip. This can also be because members have not been cached.'}`,
             timestamp: new Date(),
         };
 
