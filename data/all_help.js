@@ -182,5 +182,13 @@ module.exports = [
         description: "Mine for some materials.",
         shortdesc: "Mine for some materials.",
         category: 'currency',
+    }, 
+    {
+        command: 'leaderboard',
+        aliases: ['leaderb', 'lb', 'rich'],
+        cooldown: 15,
+        category: 'currency',
+        description: 'Check the leaderboard.',
+        shortdesc: 'Check the leaderboard.',
     },
 ]
