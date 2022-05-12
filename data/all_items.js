@@ -939,7 +939,7 @@ module.exports = [
     },
     {
         item: 'shardofdiamond',
-        name: 'Shard Of Diamond',
+        name: 'Shard of Diamond',
         aliases: ['diamond', 'dshard', 'diamon', 'diamo', 'diam', 'dia', 'shardofd', 'shardofdi', 'shardofdia', 'shardofdiam', 'shardofdiam', 'shardofdiamo', 'shardofdiamon', 'diamonshard', 'diamshardo', 'diamshard', 'diashard', 'diamondshard'],
         icon: '<:shardofdiamond:972671500761055282>',
         price: 'unable to be bought',
@@ -953,7 +953,7 @@ module.exports = [
     },
     {
         item: 'shardofgold',
-        name: 'Shard Of Gold',
+        name: 'Shard of Gold',
         aliases: ['gold', 'gshard', 'gol', 'shardofg', 'shardofgo', 'shardofgol', 'golshard'],
         icon: '<:shardofgold:972670005688819743>',
         price: 'unable to be bought',
@@ -967,7 +967,7 @@ module.exports = [
     },
     {
         item: 'shardofuranium',
-        name: 'Shard Of Uranium',
+        name: 'Shard of Uranium',
         aliases: ['uranium', 'ushard', 'ura', 'uraniu', 'urani', 'uran', 'shardofu', 'shardofur', 'shardofura', 'shardofuran', 'shardofurani', 'shardofuraniu', 'urshard', 'urashard', 'uraniushard', 'uranishard', 'uranshard'],
         icon: '<:shardofuranium:972671023185010769>',
         price: 'unable to be bought',
@@ -981,7 +981,7 @@ module.exports = [
     },
     {
         item: 'shardofaluminum',
-        name: 'Shard Of Aluminum',
+        name: 'Shard of Aluminum',
         aliases: ['shardofal', 'shardofalu', 'shardofalum', 'shardofalumi', 'shardofalumiu', 'aluminum', 'alshard', 'ashard'],
         icon: '<:shardofaluminum:972670599786799134>',
         price: 'unable to be bought',
@@ -995,7 +995,7 @@ module.exports = [
     },
     {
         item: 'shardofsteel',
-        name: 'Shard Of Steel',
+        name: 'Shard of Steel',
         aliases: ['stee', 'shards', 'shardste', 'shardstee', 'shardsteel', 'steelshard', 'sshard', 'ste', 'steel'],
         icon: '<:shardofsteel:972669462874566726>',
         price: 'unable to be bought',
@@ -1065,7 +1065,7 @@ module.exports = [
     },
     {
         item: "bottleofcola",
-        name: "Bottle Of Cola",
+        name: "Bottle of Cola",
         aliases: ["colabottle", 'cola'],
         icon: "<:bottleofcola:965102489240211539>",
         price: 10,
@@ -1161,4 +1161,17 @@ module.exports = [
         rarity: "common",
         type: "collectable"
     },
+    {
+        item: "shardofcopper",
+        name: "Shard of Copper",
+        icon: "<:shardofcopper:974139630872055817>",
+        price: "unable to be bought",
+        sell: 2000,
+        trade: 3000,
+        value: 5000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/974139802091913256/kisspng-pixel-art-video-games-pixelation-heart-pixilart-copper-ore-by-dwastelander-5d3d4951f39132.9497885915642975539977-removebg-preview.png?width=390&height=390",
+        description: "Some copper.",
+        rarity: "common",
+        type: "material"
+    }
 ]

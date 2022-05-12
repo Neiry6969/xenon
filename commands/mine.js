@@ -21,7 +21,11 @@ const lowmid = [
     },
     {
         item: 'shardofuranium',
-        maxamount: 15
+        maxamount: 12
+    },
+    {
+        item: 'shardofcopper',
+        maxamount: 18
     },
 ]
 const highmid = [
