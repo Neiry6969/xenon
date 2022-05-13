@@ -57,9 +57,13 @@ module.exports = {
                     console.log(error)
                 }
 
-                const netbalance = user?.coins + user?.bank
+                let netbalance = user?.coins + user?.bank
 
-                return netbalance !== 0 && id !== '847528987831304192' && netbalance !== null ? collection.set(id, {
+                if(netbalance === NaN) {
+                    netbalance = null
+                }
+
+                return netbalance > 10000 && id !== '847528987831304192' && netbalance !== null ? collection.set(id, {
                     id,
                     netbalance
                 })
