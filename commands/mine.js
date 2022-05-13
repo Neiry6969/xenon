@@ -82,7 +82,7 @@ module.exports = {
         if(iftable === 'table' || iftable === 'list') {
             const lowestMap = lowest
             .map((value) => {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item);
                 return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()
@@ -90,7 +90,7 @@ module.exports = {
 
             const lowmidtMap = lowmid
             .map((value) => {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item);
                 return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()
@@ -98,7 +98,7 @@ module.exports = {
 
             const highmidMap = highmid
             .map((value) => {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item);
                 return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()
@@ -106,7 +106,7 @@ module.exports = {
 
             const highMap = high
             .map((value) => {
-                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item || val.aliases.includes(value.item));
+                const item = allItems.find((val) => (val.item.toLowerCase()) === value.item);
                 return `${item.icon} \`${item.item}\` [\`max: ${value.maxamount.toLocaleString().toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug)`
             })
             .sort()

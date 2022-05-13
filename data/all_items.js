@@ -924,6 +924,47 @@ module.exports = [
         type: "material"
     },
     {
+        item: "goldencrown",
+        name: "Golden Crown",
+        aliases: ["silver"],
+        icon: "<:goldencrown:974761077269233664>",
+        price: "unable to be bought",
+        sell: "unable to be sold",
+        trade: 450000000,
+        value: 450000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/974761797099868261/image_8.png?width=390&height=390",
+        description: "Pure gold crown crafted by the shiniest gold.",
+        rarity: "exotic",
+        type: "collectable",
+    },
+    {
+        item: "silvercrown",
+        name: "Silver Crown",
+        aliases: ["silver"],
+        icon: "<:silvercrown:974760964702490634>",
+        price: "unable to be bought",
+        sell: "unable to be sold",
+        trade: 250000000,
+        value: 250000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/974760548912754739/image_7.png?width=390&height=390",
+        description: "Silver crown that was forged with pure silver. The first item in xenon.",
+        rarity: "epic",
+        type: "collectable",
+    },
+    {
+        item: "bronzecrown",
+        name: "Bronze Crown",
+        price: "unable to be bought",
+        icon: "<:bronzecrown:974755534345490443>",
+        sell: "unable to be sold",
+        trade: 100000000,
+        value: 100000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/974755759176953896/New_Project__14_-removebg-preview.png?width=390&height=390",
+        description: "Crown of the kings in the bronze age.",
+        rarity: "legendary",
+        type: "material"
+    },
+    {
         item: "goldenblossom",
         name: "Golden Blossom",
         aliases: ['goldenb', 'goldenblo', 'goldenblos', 'goldenbloss', 'goldenblosso', 'golden', 'goldb'],
@@ -1020,20 +1061,6 @@ module.exports = [
         description: "Woah it's a skateboard! Can you do some tricks?",
         rarity: "rare",
         type: "tool"
-    },
-    {
-        item: "silvercrown",
-        name: "Silver Crown",
-        aliases: ["silver"],
-        icon: "<:silvercrown:963568001213403196>",
-        price: "unable to be bought",
-        sell: "unable to be sold",
-        trade: 800000,
-        value: 800000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965028479882104943/963568001213403196.webp",
-        description: "Silver crown that was forged with pure silver. The first item in xenon.",
-        rarity: "rare",
-        type: "collectable",
     },
     {
         item: "moon",
@@ -1173,5 +1200,6 @@ module.exports = [
         description: "Some copper.",
         rarity: "common",
         type: "material"
-    }
+    }, 
+    
 ]

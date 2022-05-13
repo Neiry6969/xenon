@@ -1,5 +1,5 @@
 const { mongodb_srv, discord_token } = require('./config.json');
-const {Discord, Collection, Intents, Client, MessageEmbed } = require('discord.js');
+const { Discord, Collection, Intents, Client, MessageEmbed } = require('discord.js');
 
 const client = new Client({
     intents: [
@@ -18,6 +18,7 @@ client.events = new Collection();
 ['command_handler', 'event_handler'].forEach(handler => {
     require(`./handlers/${handler}`)(client, Discord);
 });
+
 
 mongoose
     .connect(mongodb_srv, {

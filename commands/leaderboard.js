@@ -4,6 +4,18 @@ const profileModel = require("../models/profileSchema");
 const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
+function rankingicons(rank) {
+    if(rank === 1) {
+        return '<:goldencrown:974761077269233664>'
+    } else if(rank === 2) {
+        return '<:silvercrown:974760964702490634>'
+    } else if(rank === 3) {
+        return '<:bronzecrown:974755534345490443>'
+    } else {
+        return '<a:finetrophy:968660247977803787>'
+    }
+}
+
 module.exports = {
     name: 'rich',
     aliases: ['leaderb', 'lb', 'leaderboard'],
@@ -20,13 +32,34 @@ module.exports = {
                 let user;
                 try {   
                     user = await profileModel.findOne({ userId: id });
+                    if(!user) {
+                        let profile = await profileModel.create({
+                            userId: message.author.id,
+                            serverId: message.guild.id,
+                            coins: 0,
+                            bank: 0,
+                            bankspace: 1000,
+                            expbankspace: 0,
+                            experiencepoints: 0,
+                            level: 0,
+                            dailystreak: 0,
+                            prestige: 0,
+                            commands: 1,
+                            deaths: 0,
+                            premium: 0,
+                        });
+                    
+                        profile.save();
+            
+                        user = profile;
+                    }
                 } catch (error) {
                     console.log(error)
                 }
 
                 const netbalance = user?.coins + user?.bank
 
-                return netbalance !== 0 && id !== '847528987831304192' && netbalance !== NaN ? collection.set(id, {
+                return netbalance !== 0 && id !== '847528987831304192' && netbalance !== null ? collection.set(id, {
                     id,
                     netbalance
                 })
@@ -38,7 +71,7 @@ module.exports = {
         let data = collection.sort((a, b) => b.netbalance - a.netbalance).first(10)
 
         let leaderboard = data.map((v, i) => {
-            return `${i + 1 === 1 ? '<:creatorscrown:965024171463688323>' : '<:silvercrown:963568001213403196>'} \`${v.netbalance?.toLocaleString()}\` ${client.users.cache.get(v.id).tag}`
+            return `${rankingicons(i + 1)} ❀ \`${v.netbalance?.toLocaleString()}\` ${client.users.cache.get(v.id).tag}`
         }).join('\n')
 
         let leaderboardmenu = new MessageSelectMenu()

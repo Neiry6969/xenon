@@ -5,7 +5,7 @@ const allItems = require('../data/all_items');
 const lowest = ['worm', 'rat', 'rock']
 const lowmid = ['snail', 'lizard']
 const highmid = ['scorpion', 'web', 'bluecoin']
-const high = ['statue']
+const high = ['statue', 'bronzecrown']
 
 function dig() {
     const number = Math.floor(Math.random() * 10000);
@@ -47,11 +47,12 @@ module.exports = {
             const bluecoin = allItems.find((val) => (val.item.toLowerCase()) === "bluecoin")
             const web = allItems.find((val) => (val.item.toLowerCase()) === "web")
             const statue = allItems.find((val) => (val.item.toLowerCase()) === "statue")
+            const bronzecrown = allItems.find((val) => (val.item.toLowerCase()) === "bronzecrown")
             
             const lowest_table = `${worm.icon} \`${worm.item}\`, ${rat.icon} \`${rat.item}\`, ${rock.icon} \`${rock.item}\``
             const lowmid_table = `${lizard.icon} \`${lizard.item}\`, ${snail.icon} \`${snail.item}\``
             const highmid_table = `${scorpion.icon} \`${scorpion.item}\`, ${bluecoin.icon} \`${bluecoin.item}\`, ${web.icon} \`${web.item}\``
-            const high_table = `${statue.icon} \`${statue.item}\``
+            const high_table = `${statue.icon} \`${statue.item}\`, ${bronzecrown.icon} \`${bronzecrown.item}\``
 
 
             const embed = {

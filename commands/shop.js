@@ -11,7 +11,20 @@ module.exports = {
     maxArgs: 0,
     description: 'see what is in the item shop.',
     async execute(message, args, cmd, client, Discord, profileData) {
-        const getItem = args[0]?.toLocaleString();
+        const getItem = args[0]?.toLowerCase();
+        const ifcondition = args[0]?.toLowerCase();
+
+        if(ifcondition === 'rarity') {
+            embed = 
+             embed = {
+                color: '#AF97FE',
+                title: `Xenon Item Rarity Chart`,
+                description: `**Ranking from highest to lowest:**\n\n\`mythical\`\n\`godly\`\n\`legendary\`\`exotic\`\n\`epic\`\n\`rare\`\n\`uncommon\`\n\`common\``,
+                timestamp: new Date(),
+            };
+
+            return message.channel.send({ embeds: [embed] });
+        }
 
         if(!getItem) {
             const shopList = allItems
