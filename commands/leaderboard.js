@@ -45,6 +45,7 @@ module.exports = {
             .setCustomId('leaderboardmenu')
             .setMinValues(0)
             .setMaxValues(1)
+            .setDisabled(true)
             .addOptions([
                 {
                     label: 'Net Balance',
