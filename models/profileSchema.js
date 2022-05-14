@@ -48,6 +48,11 @@ const profileSchema = new mongoose.Schema({
         required: true,
         type: Date, 
         default: Date.now 
+    }, 
+    awaitinginteraction: {
+        required: true,
+        type: Boolean, 
+        default: false,
     },
 })
 
