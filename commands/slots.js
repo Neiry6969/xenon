@@ -166,6 +166,8 @@ module.exports = {
                 } else {
                     slotsamount = profileData.coins;
                 }
+            } else if(slotsamount === 'half') {
+                slotsamount = Math.floor(profileData.coins / 2)
             } else if(letternumbers.find((val) => val.letter === slotsamount.slice(-1))) {
                 if(parseInt(slotsamount.slice(0, -1))) {
                     const number = parseFloat(slotsamount.slice(0, -1));

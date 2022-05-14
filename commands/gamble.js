@@ -86,6 +86,8 @@ module.exports = {
                 } else {
                     betamount = profileData.coins;
                 }
+            } else if(betamount === 'half') {
+                betamount = Math.floor(profileData.coins / 2)
             } else if(letternumbers.find((val) => val.letter === betamount.slice(-1))) {
                 if(parseInt(betamount.slice(0, -1))) {
                     const number = parseFloat(betamount.slice(0, -1));

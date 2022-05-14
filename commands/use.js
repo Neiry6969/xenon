@@ -68,8 +68,10 @@ module.exports = {
     
                             return message.reply({ embeds: [embed] });
                         } else {
-                            useamount = parseInt(useamount)
+                            useamount = data.inventory[item.item]
                         }
+                    } else if(slotsamount === 'half') {
+                        slotsamount = Math.floor(data.inventory[item.item] / 2)
                     } else if(!useamount || !parseInt(useamount)) {
                         useamount = 1
                     } else if(letternumbers.find((val) => val.letter === useamount.slice(-1))) {
