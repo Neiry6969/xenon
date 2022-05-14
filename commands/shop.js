@@ -73,7 +73,7 @@ module.exports = {
                 embed = {
                     color: '#AF97FE',
                     title: `Xenon Shop`,
-                    description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                    description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                     footer: {
                         text: `Page: ${page} | ${lastpage} | xe shop [item]`
                     }
@@ -102,7 +102,7 @@ module.exports = {
                 embed = {
                     color: '#AF97FE',
                     title: `Xenon Shop`,
-                    description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                    description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                     footer: {
                         text: `Page: ${page} | ${lastpage} | xe shop [item]`
                     }
@@ -134,7 +134,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
@@ -148,7 +148,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
@@ -168,7 +168,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
@@ -182,7 +182,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
@@ -351,7 +351,7 @@ module.exports = {
                 embed = {
                     color: '#AF97FE',
                     title: `Xenon Shop`,
-                    description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                    description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                     footer: {
                         text: `Page: ${page} | ${lastpage} | xe shop [item]`
                     }
@@ -380,7 +380,7 @@ module.exports = {
                 embed = {
                     color: '#AF97FE',
                     title: `Xenon Shop`,
-                    description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                    description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                     footer: {
                         text: `Page: ${page} | ${lastpage} | xe shop [item]`
                     }
@@ -412,7 +412,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
@@ -426,7 +426,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
@@ -446,7 +446,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
@@ -460,7 +460,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `${shopList.slice(display_start, display_end).sort().join("\n\n")}`,
                                 footer: {
                                     text: `Page: ${page} | ${lastpage} | xe shop [item]`
                                 }
