@@ -70,8 +70,8 @@ module.exports = {
                         } else {
                             useamount = data.inventory[item.item]
                         }
-                    } else if(slotsamount === 'half') {
-                        slotsamount = Math.floor(data.inventory[item.item] / 2)
+                    } else if(useamount === 'half') {
+                        useamount = Math.floor(data.inventory[item.item] / 2)
                     } else if(!useamount || !parseInt(useamount)) {
                         useamount = 1
                     } else if(letternumbers.find((val) => val.letter === useamount.slice(-1))) {
@@ -103,174 +103,183 @@ module.exports = {
                         return message.reply({ embeds: [embed] });
                     }
 
-                    if(item.item === 'bankmessage') {
-                        if(parseInt(useamount) === 1) {
-                            useamount = parseInt(useamount)
-                            const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000;
-                            const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
-
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        bankspace: expandedspace,
+                    const handleUseitem = async() => {
+                        if(item.item === 'bankmessage') {
+                            if(parseInt(useamount) === 1) {
+                                useamount = parseInt(useamount)
+                                const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000;
+                                const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
+    
+                                const response = await profileModel.findOneAndUpdate(
+                                    {
+                                        userId: message.author.id,
                                     },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-
+                                    {
+                                        $inc: {
+                                            bankspace: expandedspace,
+                                        },
+                                    },
+                                    {
+                                        upsert: true,
+                                    }
+                                );
+    
+                                data.inventory[item.item] = data.inventory[item.item] - 1;
+                                await inventoryModel.findOneAndUpdate(params, data);
+    
+                                const embed = {
+                                    color: 'RANDOM',
+                                    title: `You expanded your bankspace`,
+                                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
+                                    fields: [
+                                        {
+                                            name: 'Expanded Bankspace',
+                                            value: `\`${expandedspace.toLocaleString()}\``,
+                                            inline: true,
+                                        },
+                                        {
+                                            name: 'New Bankspace Total',
+                                            value: `\`${newbankspacetotal.toLocaleString()}\``,
+                                            inline: true,
+                                        },
+                                    ],
+                                    timestamp: new Date(),
+                                };
+    
+                                return message.reply({ embeds: [embed] });
+                            } else if(useamount > 1) {
+                                useamount = parseInt(useamount)
+                                const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000 * useamount;
+                                const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
+    
+                                const response = await profileModel.findOneAndUpdate(
+                                    {
+                                        userId: message.author.id,
+                                    },
+                                    {
+                                        $inc: {
+                                            bankspace: expandedspace,
+                                        },
+                                    },
+                                    {
+                                        upsert: true,
+                                    }
+                                );
+    
+                                data.inventory[item.item] = data.inventory[item.item] - useamount;
+                                await inventoryModel.findOneAndUpdate(params, data);
+    
+    
+                                const embed = {
+                                    color: 'RANDOM',
+                                    title: `You expanded your bankspace`,
+                                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
+                                    fields: [
+                                        {
+                                            name: 'Expanded Bankspace',
+                                            value: `\`${expandedspace.toLocaleString()}\``,
+                                            inline: true,
+                                        },
+                                        {
+                                            name: 'New Bankspace Total',
+                                            value: `\`${newbankspacetotal.toLocaleString()}\``,
+                                            inline: true,
+                                        },
+                                    ],
+                                    timestamp: new Date(),
+                                };
+    
+                                return message.reply({ embeds: [embed] });
+                            } else {
+                                useamount = 1;
+                                const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000;
+                                const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
+    
+                                const response = await profileModel.findOneAndUpdate(
+                                    {
+                                        userId: message.author.id,
+                                    },
+                                    {
+                                        $inc: {
+                                            bankspace: expandedspace,
+                                        },
+                                    },
+                                    {
+                                        upsert: true,
+                                    }
+                                );
+    
+                                data.inventory[item.item] = data.inventory[item.item] - 1;
+                                await inventoryModel.findOneAndUpdate(params, data);
+    
+    
+                                const embed = {
+                                    color: 'RANDOM',
+                                    title: `You expanded your bankspace`,
+                                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
+                                    fields: [
+                                        {
+                                            name: 'Expanded Bankspace',
+                                            value: `\`${expandedspace.toLocaleString()}\``,
+                                            inline: true,
+                                        },
+                                        {
+                                            name: 'New Bankspace Total',
+                                            value: `\`${newbankspacetotal.toLocaleString()}\``,
+                                            inline: true,
+                                        },
+                                    ],
+                                    timestamp: new Date(),
+                                };
+    
+                                return message.reply({ embeds: [embed] });
+                            }
+                        } else if(item.item === 'donut' || item.item === 'kfcchicken' || item.item === 'bread' || item.item === 'tomato') {
                             data.inventory[item.item] = data.inventory[item.item] - 1;
+    
                             await inventoryModel.findOneAndUpdate(params, data);
-
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `You expanded your bankspace`,
-                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
-                                fields: [
+                            return message.reply(`You eat one ${item.icon} \`${item.item}\` and it tastes good!`);
+                        } else if(item.item === 'premiumcard') {
+                            if(profileData.premium >= 1) {
+                                return message.reply(`You can't use a ${item.icon} \`${item.item}\`, since you are already a premium.`);
+                            } else {
+                                data.inventory[item.item] = data.inventory[item.item] - 1;
+    
+                                const response = await profileModel.findOneAndUpdate(
                                     {
-                                        name: 'Expanded Bankspace',
-                                        value: `\`${expandedspace.toLocaleString()}\``,
-                                        inline: true,
-                                    },
-                                    {
-                                        name: 'New Bankspace Total',
-                                        value: `\`${newbankspacetotal.toLocaleString()}\``,
-                                        inline: true,
-                                    },
-                                ],
-                                timestamp: new Date(),
-                            };
-
-                            return message.reply({ embeds: [embed] });
-                        } else if(useamount > 1) {
-                            useamount = parseInt(useamount)
-                            const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000 * useamount;
-                            const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
-
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        bankspace: expandedspace,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-
-                            data.inventory[item.item] = data.inventory[item.item] - useamount;
-                            await inventoryModel.findOneAndUpdate(params, data);
-
-
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `You expanded your bankspace`,
-                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
-                                fields: [
-                                    {
-                                        name: 'Expanded Bankspace',
-                                        value: `\`${expandedspace.toLocaleString()}\``,
-                                        inline: true,
+                                        userId: message.author.id,
                                     },
                                     {
-                                        name: 'New Bankspace Total',
-                                        value: `\`${newbankspacetotal.toLocaleString()}\``,
-                                        inline: true,
+                                        $inc: {
+                                            premium: 1,
+                                        },
                                     },
-                                ],
-                                timestamp: new Date(),
-                            };
-
-                            return message.reply({ embeds: [embed] });
+                                    {
+                                        upsert: true,
+                                    }
+                                );
+    
+                                await inventoryModel.findOneAndUpdate(params, data);
+                                return message.reply(`You used a ${item.icon} \`${item.item}\` and became a premium forever!`);
+                            }
                         } else {
-                            useamount = 1;
-                            const expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000;
-                            const newbankspacetotal = expandedspace + profileData.bankspace + profileData.expbankspace;
-
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        bankspace: expandedspace,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-
-                            data.inventory[item.item] = data.inventory[item.item] - 1;
-                            await inventoryModel.findOneAndUpdate(params, data);
-
-
                             const embed = {
-                                color: 'RANDOM',
-                                title: `You expanded your bankspace`,
-                                description: `**Item:** ${item.icon} \`${item.item}\`\n**Amount Used:** \`${useamount.toLocaleString()}\``,
-                                fields: [
-                                    {
-                                        name: 'Expanded Bankspace',
-                                        value: `\`${expandedspace.toLocaleString()}\``,
-                                        inline: true,
-                                    },
-                                    {
-                                        name: 'New Bankspace Total',
-                                        value: `\`${newbankspacetotal.toLocaleString()}\``,
-                                        inline: true,
-                                    },
-                                ],
+                                color: '#FF0000',
+                                title: `Use Error`,
+                                description: `You can't use this item.\n**Item:** ${item.icon} \`${item.item}\``,
                                 timestamp: new Date(),
                             };
-
+    
                             return message.reply({ embeds: [embed] });
                         }
-                    } else if(item.item === 'donut' || item.item === 'kfcchicken' || item.item === 'bread' || item.item === 'tomato') {
-                        data.inventory[item.item] = data.inventory[item.item] - 1;
-
-                        await inventoryModel.findOneAndUpdate(params, data);
-                        return message.reply(`You eat one ${item.icon} \`${item.item}\` and it tastes good!`);
-                    } else if(item.item === 'premiumcard') {
-                        if(profileData.premium >= 1) {
-                            return message.reply(`You can't use a ${item.icon} \`${item.item}\`, since you are already a premium.`);
-                        } else {
-                            data.inventory[item.item] = data.inventory[item.item] - 1;
-
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        premium: 1,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-
-                            await inventoryModel.findOneAndUpdate(params, data);
-                            return message.reply(`You used a ${item.icon} \`${item.item}\` and became a premium forever!`);
-                        }
-                    } else {
-                        const embed = {
-                            color: '#FF0000',
-                            title: `Use Error`,
-                            description: `You can't use this item.\n**Item:** ${item.icon} \`${item.item}\``,
-                            timestamp: new Date(),
-                        };
-
-                        return message.reply({ embeds: [embed] });
                     }
+
+                    if(totalprice >= 100000000000000000000000000000000000000000000000) {
+
+                    } else {
+                        return handleUseitem();
+                    }
+                    
                 }
             } else {
                 const embed = {
