@@ -11,8 +11,12 @@ function rankingicons(rank) {
         return '<:silvercrown:974760964702490634>'
     } else if(rank === 3) {
         return '<:bronzecrown:974755534345490443>'
-    } else {
+    } else if(rank === 4) {
         return '<a:finetrophy:968660247977803787>'
+    } else if(rank === 5) {
+        return '<a:finemedal:968654431484796979>'
+    } else {
+        return '<a:fineribbon:968642962831589427>'
     }
 }
 
