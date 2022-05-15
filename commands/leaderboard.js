@@ -67,7 +67,7 @@ module.exports = {
                     netbalance = null
                 }
 
-                return netbalance > 10000 && id !== '847528987831304192' && netbalance !== null ? collection.set(id, {
+                return netbalance > 10000 && id !== '847528987831304192' && user ? collection.set(id, {
                     id,
                     netbalance
                 })

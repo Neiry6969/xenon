@@ -1,5 +1,6 @@
 const { prefix } = require('../../config.json');
 const profileModel = require('../../models/profileSchema');
+const userModel = require('../../models/userSchema')
 const { Collection } = require('discord.js')
 
 // const cooldowns = require('../cooldowns.json')
@@ -49,6 +50,26 @@ module.exports = async(Discord, client, message) => {
 
     } catch (error) {
         console.log(error)
+    }
+
+    let userData; 
+    try {
+        userData = await userModel.findOne({ userId: message.author.id });
+        if(!userData) {
+            let user = await userModel.create({
+                userId: message.author.id,
+            });
+        
+            user.save();
+
+            userData = user;
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
+    if(userData.blacklisted === true) {
+        return;
     }
 
     const message_content = message.content?.toLowerCase()
@@ -181,7 +202,7 @@ module.exports = async(Discord, client, message) => {
         }
         
         try {
-            command.execute(message, args, cmd, client, Discord, profileData);
+            command.execute(message, args, cmd, client, Discord, profileData, userData);
         } catch (error) {
             message.reply("There was an error running this command.");
             console.log(error);

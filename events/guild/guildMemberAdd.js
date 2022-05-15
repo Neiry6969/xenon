@@ -1,4 +1,5 @@
 const profileModel = require('../../models/profileSchema');
+const userModel = require('../../models/userSchema');
 
 module.exports = async(client, discord, member) => {
     profileData = await profileModel.findOne({ userId: member.id });
@@ -22,4 +23,13 @@ module.exports = async(client, discord, member) => {
         profile.save();
     }
 
+
+    userData = await userModel.findOne({ userId: message.author.id });
+    if(!userData) {
+        let user = await profileModel.create({
+            userId: member.id,
+        });
+    
+        user.save();
+    }
 }

@@ -31,7 +31,7 @@ module.exports = {
             };
             return message.reply({ embeds: [embed] });
         } 
-
+        
         if(profileData.coins <= 0) {
             if (profileData.bank <= 0) {
                 return message.reply(`You got no coins in your wallet or your bank to share, your broke :c.`);
