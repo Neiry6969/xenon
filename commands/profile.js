@@ -2,6 +2,18 @@ const profileModel = require("../models/profileSchema");
 const inventoryModel = require('../models/inventorySchema');
 const allItems = require('../data/all_items');
 
+function calcexpfull(level) {
+    if(level < 50) {
+        return level * 10 + 100;
+    } else if(level >= 50 && level < 500) {
+        return level * 25
+    } else if(level >= 500 && level < 1000) {
+        return level * 50
+    } else if(level >= 1000) {
+        return level * 100
+    }
+}
+
 module.exports = {
     name: "profile",
     aliases: ['exp', 'level', 'lvl'],
@@ -53,7 +65,7 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`${profile.level.toLocaleString()}\`\nExperience Points: \`${profile.experiencepoints.toLocaleString()}\``,
+                                value: `Level: \`${profile.level.toLocaleString()}\`\nExperience: \`${profile.experiencepoints.toLocaleString()} | ${calcexpfull(profile.level).toLocaleString()}\``,
                                 inline: true,
                             },
                             {
@@ -122,7 +134,7 @@ module.exports = {
                                     fields: [
                                         {
                                             name: 'Level',
-                                            value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience Points: \`${target_profileData.experiencepoints.toLocaleString()}\``,
+                                            value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\``,
                                             inline: true,
                                         },
                                         {
@@ -162,7 +174,7 @@ module.exports = {
                                 fields: [
                                     {
                                         name: 'Level',
-                                        value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience Points: \`${target_profileData.experiencepoints.toLocaleString()}\``,
+                                        value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\``,
                                         inline: true,
                                     },
                                     {
@@ -234,7 +246,7 @@ module.exports = {
                             fields: [
                                 {
                                     name: 'Level',
-                                    value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience Points: \`${profileData.experiencepoints.toLocaleString()}\``,
+                                    value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\``,
                                     inline: true,
                                 },
                                 {
@@ -272,7 +284,7 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience Points: \`${profileData.experiencepoints.toLocaleString()}\``,
+                                value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\``,
                                 inline: true,
                             },
                             {
