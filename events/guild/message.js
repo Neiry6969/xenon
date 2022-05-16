@@ -3,7 +3,17 @@ const profileModel = require('../../models/profileSchema');
 const userModel = require('../../models/userSchema')
 const { Collection } = require('discord.js')
 
-// const cooldowns = require('../cooldowns.json')
+function calcexpfull(level) {
+    if(level < 50) {
+        return level * 10 + 100;
+    } else if(level >= 50 && level < 500) {
+        return level * 25
+    } else if(level >= 500 && level < 1000) {
+        return level * 50
+    } else if(level >= 1000) {
+        return level * 100
+    }
+}
 
 const cooldowns = new Map();
 
@@ -68,7 +78,7 @@ module.exports = async(Discord, client, message) => {
         console.log(error)
     }
 
-    if(userData.blacklisted === true) {
+    if(userData.blacklisted === true || userData.awaitinginteraction === true) {
         return;
     }
 
@@ -97,8 +107,32 @@ module.exports = async(Discord, client, message) => {
         );
     }
     
-    function executecmd() {
+    async function executecmd() {
         try {
+            const experiencepoints = profileData.experiencepoints
+            const experiencefull = calcexpfull(profileData.level)
+
+            if(experiencepoints >= experiencefull) {
+                
+                await profileModel.updateOne(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: -experiencefull,
+                            level: 1,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+
+                profileData.level = profileData.level + 1
+                profileData.experiencepoints = profileData.experiencepoints - experiencefull
+            }
+
             if(!cooldowns.has(command.name)){
                 cooldowns.set(command.name, new Collection());
             }

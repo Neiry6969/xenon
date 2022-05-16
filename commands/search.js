@@ -438,6 +438,23 @@ module.exports = {
             if(collected.size > 0) {
                 return;
             } else {
+
+                const experiencepoints_amount = Math.floor(4) + 1;
+
+                profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: experiencepoints_amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+
                 const embed = {
                     color: "RANDOM",
                     title: `Search timed out`,

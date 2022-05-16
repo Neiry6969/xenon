@@ -2,6 +2,7 @@ const { MessageActionRow, MessageButton } = require('discord.js')
 
 const profileModel = require("../models/profileSchema");
 const inventoryModel = require('../models/inventorySchema');
+const userModel = require('../models/userSchema');
 const allItems = require('../data/all_items');
 const letternumbers = require('../reference/letternumber');
 
@@ -138,6 +139,18 @@ module.exports = {
             const buy_msg = await message.reply({ embeds: [embed], components: [row] });
             const collector = buy_msg.createMessageComponentCollector({ time: 20 * 1000 });
 
+            await userModel.updateOne(
+                { userId: message.author.id },
+                {
+                    $set: {
+                        awaitinginteraction: true
+                    }
+                },
+                {
+                    upsert: true,
+                }
+            )
+
             collector.on('collect', async (button) => {
                 if(button.user.id != message.author.id) {
                     return button.reply({
@@ -149,6 +162,17 @@ module.exports = {
                 button.deferUpdate()
 
                 if(button.customId === "confirm") {
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
                     const params = {
                         userId: message.author.id,
                     }
@@ -197,6 +221,17 @@ module.exports = {
                     })
                 
                 } else if(button.customId === "cancel") {
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
                     const response = await profileModel.findOneAndUpdate(
                         {
                             userId: message.author.id,
@@ -236,6 +271,17 @@ module.exports = {
                 if(collected.size > 0) {
 
                 } else {
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
                     const response = await profileModel.findOneAndUpdate(
                         {
                             userId: message.author.id,

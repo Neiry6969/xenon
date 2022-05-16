@@ -1,6 +1,7 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
 
 const inventoryModel = require("../models/inventorySchema");
+const userModel = require('../models/userSchema');
 const allItems = require("../data/all_items");
 const letternumbers = require('../reference/letternumber');
 
@@ -156,7 +157,19 @@ module.exports = {
             };
             const gift_msg = await message.reply({ embeds: [embed], components: [row] });
     
-            const collector = gift_msg.createMessageComponentCollector({ time: 20 * 1000 });
+            const collector = gift_msg.createMessageComponentCollector({ time: 60 * 1000 });
+
+            await userModel.updateOne(
+                { userId: message.author.id },
+                {
+                    $set: {
+                        awaitinginteraction: true
+                    }
+                },
+                {
+                    upsert: true,
+                }
+            )
     
             collector.on('collect', async (button) => {
                 if(button.user.id != message.author.id) {
@@ -169,6 +182,17 @@ module.exports = {
                 button.deferUpdate()
     
                 if(button.customId === "confirm") {
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
     
                     const params_target = {
                         userId: target.id,
@@ -230,6 +254,17 @@ module.exports = {
                     })
                 
                 } else if(button.customId === "cancel") {
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
                                                 
                     const params_user = {
                         userId: message.author.id,
@@ -266,10 +301,21 @@ module.exports = {
                 
             });
     
-            collector.on('end', collected => {
+            collector.on('end', async collected => {
                 if(collected.size > 0) {
     
                 } else {
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
                     const params_user = {
                         userId: message.author.id,
                     }

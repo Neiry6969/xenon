@@ -2,6 +2,7 @@ const { MessageActionRow, MessageButton } = require('discord.js')
 
 const profileModel = require("../models/profileSchema");
 const letternumbers = require('../reference/letternumber');
+const userModel = require('../models/userSchema')
 
 module.exports = {
     name: "share",
@@ -87,6 +88,8 @@ module.exports = {
                 upsert: true,
             }
         )
+
+        
   
 
         let confirm = new MessageButton()
@@ -117,7 +120,19 @@ module.exports = {
         };
         const share_msg = await message.reply({ embeds: [embed], components: [row] });
 
-        const collector = share_msg.createMessageComponentCollector({ time: 20 * 1000 });
+        const collector = share_msg.createMessageComponentCollector({ time: 60 * 1000 });
+
+        await userModel.updateOneOne(
+            { userId: message.author.id },
+            {
+                $set: {
+                    awaitinginteraction: true
+                }
+            },
+            {
+                upsert: true,
+            }
+        )
 
         collector.on('collect', async (button) => {
             if(button.user.id != message.author.id) {
@@ -126,9 +141,21 @@ module.exports = {
                     ephemeral: true,
                 })
             } 
+
             
             button.deferUpdate()
             if(button.customId === "confirm") {
+                await userModel.updateOne(
+                    { userId: message.author.id },
+                    {
+                        $set: {
+                            awaitinginteraction: false
+                        }
+                    },
+                    {
+                        upsert: true,
+                    }
+                )
                 const target_profileData = await profileModel.findOne({ userId: target.id });
     
                 if(!target_profileData) {
@@ -208,6 +235,17 @@ module.exports = {
                 })
             
             } else if(button.customId === "cancel") {
+                await userModel.updateOne(
+                    { userId: message.author.id },
+                    {
+                        $set: {
+                            awaitinginteraction: false
+                        }
+                    },
+                    {
+                        upsert: true,
+                    }
+                )
                 const local_response = await profileModel.findOneAndUpdate(
                     {userId: message.author.id},
                     {
@@ -249,6 +287,18 @@ module.exports = {
             if(collected.size > 0) {
 
             } else {
+                await userModel.updateOne(
+                    { userId: message.author.id },
+                    {
+                        $set: {
+                            awaitinginteraction: false
+                        }
+                    },
+                    {
+                        upsert: true,
+                    }
+                )
+
                 const local_response = await profileModel.findOneAndUpdate(
                     {userId: message.author.id},
                     {

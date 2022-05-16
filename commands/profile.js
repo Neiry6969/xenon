@@ -14,6 +14,89 @@ function calcexpfull(level) {
     }
 }
 
+function bardisplay(percent) {
+    if (percent <= 20) {
+        const bar =
+        "<:barmidempty:975528569881104385><:barmidempty:975528569881104385><:barmidempty:975528569881104385><:barendempty:975529693640028211>";
+        const leftperc = 20 - percent;
+        if (leftperc > 15) {
+            return "<:barstartempty:975528227214876713>" + bar;
+        } else if (leftperc > 10) {
+            return "<:barstartlow:975528109900197990>" + bar;
+        } else if (leftperc > 5) {
+            return "<:barstartmid:975527911522181150>" + bar;
+        } else if (leftperc > 0) {
+            return "<:barstarthigh:975527916836360294>" + bar;
+        } else if (leftperc === 0) {
+            return "<:barstartfull:975526638831955968>" + bar;
+        }
+    } else if (percent <= 40) {
+        const bars = "<:barstartfull:975526638831955968>";
+        const bare =
+        "<:barmidempty:975528569881104385><:barmidempty:975528569881104385><:barendempty:975529693640028211>";
+        const leftperc = 40 - percent;
+        if (leftperc > 15) {
+            return bars + "<:barmidempty:975528569881104385>" + bare;
+        } else if (leftperc > 10) {
+            return bars + "<:barmidlow:975527412676849674>" + bare;
+        } else if (leftperc > 5) {
+            return bars + "<:barstartmid:975527911522181150>" + bare;
+        } else if (leftperc > 0) {
+            return bars + "<:barmidhigh:975526979598180412>" + bare;
+        } else if (leftperc === 0) {
+            return bars + "<:barmidfull:975526638697734237>" + bare;
+        }
+    } else if (percent <= 60) {
+        const bars =
+        "<:barstartfull:975526638831955968><:barmidfull:975526638697734237>";
+        const bare =
+        "<:barmidempty:975528569881104385><:barendempty:975529693640028211>";
+        const leftperc = 60 - percent;
+        if (leftperc > 15) {
+            return bars + "<:barmidempty:975528569881104385>" + bare;
+        } else if (leftperc > 10) {
+            return bars + "<:barmidlow:975527412676849674>" + bare;
+        } else if (leftperc > 5) {
+            return bars + "<:barstartmid:975527911522181150>" + bare;
+        } else if (leftperc > 0) {
+            return bars + "<:barmidhigh:975526979598180412>" + bare;
+        } else if (leftperc === 0) {
+            return bars + "<:barmidfull:975526638697734237>" + bare;
+        }
+    } else if (percent <= 80) {
+        const bars =
+        "<:barstartfull:975526638831955968><:barmidfull:975526638697734237><:barmidfull:975526638697734237>";
+        const bare = "<:barendempty:975529693640028211>";
+        const leftperc = 80 - percent;
+        if (leftperc > 15) {
+            return bars + "<:barmidempty:975528569881104385>" + bare;
+        } else if (leftperc > 10) {
+            return bars + "<:barmidlow:975527412676849674>" + bare;
+        } else if (leftperc > 5) {
+            return bars + "<:barstartmid:975527911522181150>" + bare;
+        } else if (leftperc > 0) {
+            return bars + "<:barmidhigh:975526979598180412>" + bare;
+        } else if (leftperc === 0) {
+            return bars + "<:barmidfull:975526638697734237>" + bare;
+        }
+    } else if (percent <= 100) {
+        const bar =
+        "<:barstartfull:975526638831955968><:barmidfull:975526638697734237><:barmidfull:975526638697734237><:barmidfull:975526638697734237>";
+        const leftperc = 100 - percent;
+        if (leftperc > 15) {
+            return bar + "<:barendempty:975529693640028211>";
+        } else if (leftperc > 10) {
+            return bar + "<:barendlow:975533190930391060>";
+        } else if (leftperc > 5) {
+            return bar + "<:barendmid:975533190934585374>";
+        } else if (leftperc >= 0) {
+            return bar + "<:barendhigh:975533190980730901>";
+        }
+    }
+}
+
+  
+
 module.exports = {
     name: "profile",
     aliases: ['exp', 'level', 'lvl'],
@@ -65,7 +148,7 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`${profile.level.toLocaleString()}\`\nExperience: \`${profile.experiencepoints.toLocaleString()} | ${calcexpfull(profile.level).toLocaleString()}\``,
+                                value: `Level: \`${profile.level.toLocaleString()}\`\nExperience: \`${profile.experiencepoints.toLocaleString()} | ${calcexpfull(profile.level).toLocaleString()}\`\n${bardisplay(0)}`,
                                 inline: true,
                             },
                             {
@@ -134,7 +217,7 @@ module.exports = {
                                     fields: [
                                         {
                                             name: 'Level',
-                                            value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\``,
+                                            value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(target_profileData.experiencepoints / calcexpfull(target_profileData.level) * 100))}`,
                                             inline: true,
                                         },
                                         {
@@ -170,11 +253,11 @@ module.exports = {
                                 thumbnail: {
                                     url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                                 },
-                                description: `${target_profileData.premium > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${target_profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
+                                description: `${target_profileData.premium > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${target_profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${target_profileData.prestige.toLocaleString()}\``,
                                 fields: [
                                     {
                                         name: 'Level',
-                                        value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\``,
+                                        value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(target_profileData.experiencepoints / calcexpfull(target_profileData.level) * 100))}`,
                                         inline: true,
                                     },
                                     {
@@ -231,6 +314,8 @@ module.exports = {
                             }
 
                         })
+
+
                         const total_balance = profileData.coins + profileData.bank;
                         const embed = {
                             color: 'RANDOM',
@@ -246,7 +331,7 @@ module.exports = {
                             fields: [
                                 {
                                     name: 'Level',
-                                    value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\``,
+                                    value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(profileData.experiencepoints / calcexpfull(profileData.level) * 100))}`,
                                     inline: true,
                                 },
                                 {
@@ -284,7 +369,7 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\``,
+                                value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(profileData.experiencepoints / calcexpfull(profileData.level) * 100))}`,
                                 inline: true,
                             },
                             {
