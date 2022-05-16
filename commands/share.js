@@ -122,7 +122,7 @@ module.exports = {
 
         const collector = share_msg.createMessageComponentCollector({ time: 60 * 1000 });
 
-        await userModel.updateOneOne(
+        await userModel.updateOne(
             { userId: message.author.id },
             {
                 $set: {
