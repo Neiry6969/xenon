@@ -1,33 +1,5 @@
 module.exports = [
     {
-        item: "donut",
-        name: "Donut",
-        aliases: ["donu"],
-        icon: "<:donut:965343121133162616>",
-        price: 40,
-        sell: 20,
-        trade: 0,
-        value: 40,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965343089600389240/image-removebg-preview_6.png?width=427&height=427",
-        description: "Fresh donut from Dunkin.",
-        rarity: "common",
-        type: "support"
-    },
-    {
-        item: "kfcchicken",
-        name: "KFC Chicken",
-        aliases: ["kfc", 'chicken'],
-        icon: "<:kfcchicken:965344093448335440>",
-        price: 69,
-        sell: 9,
-        trade: 0,
-        value: 69,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965343935142703244/image-removebg-preview_7.png?width=390&height=390",
-        description: "Yum fried chicken from kfc, hope theres no rats.",
-        rarity: "common",
-        type: "support"
-    },
-    {
         item: "stonecard",
         name: "Stone Card",
         aliases: ["stone", 'card'],
@@ -68,6 +40,20 @@ module.exports = [
         description: "Having this rifle enables you to use the hunt command. Wanna go hunting for items?",
         rarity: "common",
         type: "tool"
+    },
+    {
+        item: "fish",
+        name: "Fish",
+        aliases: [],
+        icon: "<:fish:975968181468405862>",
+        price: "unable to be bought",
+        sell: 2000,
+        trade: 0,
+        value: 2000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976202435381043200/unknown.png",
+        description: "Fish that can be collected or sold.",
+        rarity: "common",
+        type: "sellable"
     },
     {
         item: "fishingrod",
@@ -123,6 +109,32 @@ module.exports = [
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/972672189423816784/New_Project__8_-removebg-preview.png?width=427&height=427",
         description: "Strong pickaxe for some mining. Having this pickaxe allows you to use the mine command.",
         rarity: "common",
+        type: "tool"
+    },
+    {
+        item: "engineeringbench",
+        name: "Engineering Bench",
+        icon: "<:engineeringbench:976207393836892190>",
+        price: 250000,
+        sell: 100000,
+        trade: 100000,
+        value: 250000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976216515277889546/image__10_-removebg-preview.png?width=427&height=427",
+        description: "A special bench that enables you to craft items",
+        rarity: "uncommon",
+        type: "tool"
+    }, 
+    {
+        item: "heavysmelter",
+        name: "Heavy Smelter",
+        icon: "<:heavysmelter:976212798948405258>",
+        price: 750000,
+        sell: 500000,
+        trade: 500000,
+        value: 750000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976218298121347082/pixil-frame-0_13.png?width=427&height=427",
+        description: "Super smelter that enables you to craft items that require smelting",
+        rarity: "uncommon",
         type: "tool"
     },
     {
@@ -630,20 +642,6 @@ module.exports = [
         type: "collectable"
     },
     {
-        item: "fish",
-        name: "Fish",
-        aliases: [],
-        icon: ":fish:",
-        price: "unable to be bought",
-        sell: 2000,
-        trade: 0,
-        value: 2000,
-        imageUrl: "",
-        description: "Fish that can be collected or sold.",
-        rarity: "common",
-        type: "sellable"
-    },
-    {
         item: "shrimp",
         name: "Shrimp",
         aliases: ['shri', 'shrim', 'rimp', 'imp'],
@@ -756,20 +754,6 @@ module.exports = [
         type: "support"
     },
     {
-        item: "bankmessage",
-        name: "Bank Message",
-        aliases: ['mes', 'bank', 'messa', 'bankm', 'message', 'messag'],
-        icon: "<:bankmessage:967826119594233886>",
-        price: 500000,
-        sell: 200000,
-        trade: 0,
-        value: 500000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/967827365466112010/pixil-frame-0_6.png",
-        description: "Using this message you are able to expand your bankspace from 50,000 to 250,000. This expanded bankspace doesn't reset if you prestige.",
-        rarity: "epic",
-        type: "support"
-    },
-    {
         item: "fineribbon",
         name: "Fine Ribbon",
         aliases: ['finerib', 'fineri', 'finer', 'fineribb', 'fineribbbo', 'eribbon', 'ribbon'],
@@ -838,6 +822,20 @@ module.exports = [
         description: "Fine crown freshly polished, wow such a huge flex!",
         rarity: "legendary",
         type: "collectable"
+    },
+    {
+        item: "bankmessage",
+        name: "Bank Message",
+        aliases: ['mes', 'bank', 'messa', 'bankm', 'message', 'messag'],
+        icon: "<:bankmessage:967826119594233886>",
+        price: 500000,
+        sell: 200000,
+        trade: 0,
+        value: 500000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/967827365466112010/pixil-frame-0_6.png",
+        description: "Using this message you are able to expand your bankspace from 50,000 to 250,000. This expanded bankspace doesn't reset if you prestige.",
+        rarity: "epic",
+        type: "support"
     },
     {
         item: "premiumcard",
@@ -1091,20 +1089,6 @@ module.exports = [
         type: "collectable",
     },
     {
-        item: "bottleofcola",
-        name: "Bottle of Cola",
-        aliases: ["colabottle", 'cola'],
-        icon: "<:bottleofcola:965102489240211539>",
-        price: 10,
-        sell: 1,
-        trade: 5,
-        value: 10,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965102803011899412/2900eb50-5dec-45b7-995b-db6deb38b768.png",
-        description: "Well just a bottle of cola.",
-        rarity: "common",
-        type: "support",
-    },
-    {
         item: "flamesword",
         name: "Flame Sword",
         aliases: ["flame"],
@@ -1117,20 +1101,6 @@ module.exports = [
         description: "Expensive sword forged from an acient volcano. Imagine buy this.",
         rarity: "legendary",
         type: "collectable",
-    },
-    {
-        item: "monitor",
-        name: "PC Monitor",
-        aliases: ["monit"],
-        icon: "<a:monitor:965097022027866172>",
-        price: 10000,
-        sell: 1000,
-        trade: 0,
-        value: 10000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965273394142674984/965097022027866172.gif",
-        description: "Monitor for streaming and posting memes.",
-        rarity: "common",
-        type: "tool",
     },
     {
         item: "shinyfox",
@@ -1201,5 +1171,89 @@ module.exports = [
         rarity: "common",
         type: "material"
     }, 
-    
+    {
+        item: "bottleofcola",
+        name: "Bottle of Cola",
+        aliases: ["colabottle", 'cola'],
+        icon: "<:bottleofcola:965102489240211539>",
+        price: 10,
+        sell: 1,
+        trade: 5,
+        value: 10,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965102803011899412/2900eb50-5dec-45b7-995b-db6deb38b768.png",
+        description: "Well just a bottle of cola.",
+        rarity: "common",
+        type: "support",
+    },
+    {
+        item: "donut",
+        name: "Donut",
+        aliases: ["donu"],
+        icon: "<:donut:965343121133162616>",
+        price: 40,
+        sell: 20,
+        trade: 0,
+        value: 40,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965343089600389240/image-removebg-preview_6.png?width=427&height=427",
+        description: "Fresh donut from Dunkin.",
+        rarity: "common",
+        type: "support"
+    },
+    {
+        item: "kfcchicken",
+        name: "KFC Chicken",
+        aliases: ["kfc", 'chicken'],
+        icon: "<:kfcchicken:965344093448335440>",
+        price: 5000,
+        sell: 100,
+        trade: 0,
+        value: 5000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965343935142703244/image-removebg-preview_7.png?width=390&height=390",
+        description: "Yum fried chicken from kfc, hope theres no rats.",
+        rarity: "common",
+        type: "support"
+    },
+    {
+        item: "monitor",
+        name: "PC Monitor",
+        aliases: ["monit"],
+        icon: "<a:monitor:965097022027866172>",
+        price: 10000,
+        sell: 1000,
+        trade: 0,
+        value: 10000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965273394142674984/965097022027866172.gif",
+        description: "Monitor for streaming and posting memes.",
+        rarity: "common",
+        type: "tool",
+    },
+    {
+        item: "electricalwire",
+        name: "Electricalwire",
+        icon: "<:electricalwire:976215865454370816>",
+        price: "unable to be bought",
+        sell: 60000,
+        trade: 60000,
+        value: 60000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976216514912993360/image_17.png?width=427&height=427",
+        description: "Electrical wire. Interesting, must have been hard to craft.",
+        rarity: "common",
+        type: "material",
+        crafttools:[ 
+            {
+                i: "heavysmelter",
+                q: 1
+            },
+            {
+                i: "engineeringbench",
+                q: 1
+            }
+        ],
+        craftitems: [
+            {
+                i: "shardofcopper",
+                q: 1
+            }
+        ]
+    },
 ]

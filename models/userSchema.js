@@ -71,6 +71,14 @@ const userSchema = new mongoose.Schema(
         blacklisted: {
             type: Boolean,
             default: false,
+        },
+        knowledge: {
+            type: Number,
+            default: 0
+        },
+        settings: {
+            type: Object,
+            default: {},
         }
     }, 
     { minimize: false }

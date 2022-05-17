@@ -36,7 +36,7 @@ const itemSchema = new mongoose.Schema({
     type: {
         required: true,
         type: String,
-    }
+    },
 
 })
 
