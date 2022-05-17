@@ -40,7 +40,7 @@ function bardisplay(percent) {
         } else if (leftperc > 10) {
             return bars + "<:barmidlow:975527412676849674>" + bare;
         } else if (leftperc > 5) {
-            return bars + "<:barstartmid:975527911522181150>" + bare;
+            return bars + "<:barmidmid:975527288768696400>" + bare;
         } else if (leftperc > 0) {
             return bars + "<:barmidhigh:975526979598180412>" + bare;
         } else if (leftperc === 0) {
@@ -57,7 +57,7 @@ function bardisplay(percent) {
         } else if (leftperc > 10) {
             return bars + "<:barmidlow:975527412676849674>" + bare;
         } else if (leftperc > 5) {
-            return bars + "<:barstartmid:975527911522181150>" + bare;
+            return bars + "<:barmidmid:975527288768696400>" + bare;
         } else if (leftperc > 0) {
             return bars + "<:barmidhigh:975526979598180412>" + bare;
         } else if (leftperc === 0) {
@@ -73,7 +73,7 @@ function bardisplay(percent) {
         } else if (leftperc > 10) {
             return bars + "<:barmidlow:975527412676849674>" + bare;
         } else if (leftperc > 5) {
-            return bars + "<:barstartmid:975527911522181150>" + bare;
+            return bars + "<:barmidmid:975527288768696400>" + bare;
         } else if (leftperc > 0) {
             return bars + "<:barmidhigh:975526979598180412>" + bare;
         } else if (leftperc === 0) {
