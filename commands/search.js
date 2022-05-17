@@ -88,6 +88,21 @@ module.exports = {
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
                 const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
                 const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
+                const experiencepoints_amount = Math.floor(4) + 1;
+
+                await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: experiencepoints_amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
@@ -203,6 +218,21 @@ module.exports = {
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
                 const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
                 const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
+                const experiencepoints_amount = Math.floor(4) + 1;
+
+                await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: experiencepoints_amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
@@ -320,6 +350,21 @@ module.exports = {
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
                 const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
                 const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
+                const experiencepoints_amount = Math.floor(4) + 1;
+
+                await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: experiencepoints_amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
 
                 if(placesearched_items.items) {
                     const percent = (placesearched_items.itempecrent / 100).toFixed(2)
@@ -439,21 +484,6 @@ module.exports = {
                 return;
             } else {
 
-                const experiencepoints_amount = Math.floor(4) + 1;
-
-                profileModel.findOneAndUpdate(
-                    {
-                        userId: message.author.id,
-                    },
-                    {
-                        $inc: {
-                            experiencepoints: experiencepoints_amount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                );
 
                 const embed = {
                     color: "RANDOM",
