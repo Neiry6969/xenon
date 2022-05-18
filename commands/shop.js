@@ -243,13 +243,21 @@ module.exports = {
             inventoryModel.findOne(params_user, async(err, data) => {
                 let itemOwned;
 
+                async function ifhasamountitem(reqm, hasa) {
+                    if(hasa => reqm) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } 
+
                 let crafttools;
                 if(item.crafttools) {
                     crafttools = item.crafttools.map(value => {
                         const toolitem = allItems.find(({ item }) => item === value.i);
                         
 
-                        return `\`${value.q}\` ${toolitem.icon} \`${toolitem.item}\``;
+                        return `${ifhasamountitem(value.q, data.inventory[value.item]) ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${toolitem.icon} \`${toolitem.item}\``;
                     })
                     .join('\n')
                     
@@ -260,7 +268,7 @@ module.exports = {
                     craftitems = item.craftitems.map(value => {
                         const craftitem = allItems.find(({ item }) => item === value.i);
 
-                        return `\`${value.q}\` ${craftitem.icon} \`${craftitem.item}\``;
+                        return `${ifhasamountitem(value.q, data.inventory[value.item]) ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${craftitem.icon} \`${craftitem.item}\``;
                     })
                     .join('\n')
                 }
@@ -269,53 +277,43 @@ module.exports = {
 
                 if(!data.inventory[item.item]) {
                     itemOwned = 0
-                    
-                    const embed = {
-                        color: 'RANDOM',
-                        title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
-                        thumbnail: {
-                            url: item.imageUrl,
-                        },
-                        description: `> ${item.description}`,
-                        fields: [
-                            {
-                                name: '_ _',
-                                value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
-                            },
-                            {
-                                name: 'ID',
-                                value: `\`${item.item}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Rarity',
-                                value: `\`${item.rarity}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Type',
-                                value: `\`${item.type}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Required Cafted Tools',
-                                value: `${crafttools}`,
-                                inline: true,
-                            },
-                            {
-                                name: 'Required Cafted Materials',
-                                value: `${craftitems}`,
-                                inline: true,
-                            },
-                        ],
-                        timestamp: new Date(),
-                    };
-        
-                    return message.reply({ embeds: [embed] });
                 } else {
                     itemOwned = data.inventory[item.item]
-                    
-                    const embed = {
+                }
+                
+                let embed = {
+                    color: 'RANDOM',
+                    title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
+                    thumbnail: {
+                        url: item.imageUrl,
+                    },
+                    description: `> ${item.description}`,
+                    fields: [
+                        {
+                            name: '_ _',
+                            value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
+                        },
+                        {
+                            name: 'ID',
+                            value: `\`${item.item}\``,
+                            inline: true,
+                        },
+                        {
+                            name: 'Rarity',
+                            value: `\`${item.rarity}\``,
+                            inline: true,
+                        },
+                        {
+                            name: 'Type',
+                            value: `\`${item.type}\``,
+                            inline: true,
+                        },
+                    ],
+                    timestamp: new Date(),
+                };
+
+                if(craftitems && crafttools) {
+                    embed = {
                         color: 'RANDOM',
                         title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
                         thumbnail: {
@@ -355,9 +353,9 @@ module.exports = {
                         ],
                         timestamp: new Date(),
                     };
-        
-                    return message.reply({ embeds: [embed] });
                 }
+    
+                return message.reply({ embeds: [embed] });
 
                 
             })
