@@ -257,7 +257,7 @@ module.exports = {
                         const toolitem = allItems.find(({ item }) => item === value.i);
                         
 
-                        return `${ifhasamountitem(value.q, data.inventory[value.item]) ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${toolitem.icon} \`${toolitem.item}\``;
+                        return `${ifhasamountitem(value.q, data.inventory[value.item]) === true ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${toolitem.icon} \`${toolitem.item}\``;
                     })
                     .join('\n')
                     
@@ -268,7 +268,7 @@ module.exports = {
                     craftitems = item.craftitems.map(value => {
                         const craftitem = allItems.find(({ item }) => item === value.i);
 
-                        return `${ifhasamountitem(value.q, data.inventory[value.item]) ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${craftitem.icon} \`${craftitem.item}\``;
+                        return `${ifhasamountitem(value.q, data.inventory[value.item]) === true ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${craftitem.icon} \`${craftitem.item}\``;
                     })
                     .join('\n')
                 }
