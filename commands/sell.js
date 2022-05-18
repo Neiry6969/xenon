@@ -19,7 +19,7 @@ module.exports = {
         if(!getitem) {
             const embed = {
                 color: '#FF0000',
-                title: `Sell Error`,
+                title: `Sell error`,
                 description: `Specify the item to sell.\n${expectedsyntax}`,
             };
 
@@ -43,7 +43,7 @@ module.exports = {
         if(item === undefined) {
             const embed = {
                 color: '#FF0000',
-                title: `Sell Error`,
+                title: `Sell error`,
                 description: `\`${getitem}\` is not existent item.\n${expectedsyntax}`,
             };
 
@@ -53,7 +53,7 @@ module.exports = {
         if(item.sell === "unable to be sold") {
             const embed = {
                 color: '#FF0000',
-                title: `Sell Error`,
+                title: `Sell error`,
                 description: `This item is unable to be sold since it is a collectable.\n**Item:** ${item.icon} \`${item.item}\`\n**Item Type:** \`${item.type}\``,
             };
             return message.reply({ embeds: [embed] });
@@ -91,7 +91,7 @@ module.exports = {
             } else if (data.inventory[item.item] < sellamount) {
                 const embed = {
                     color: '#FF0000',
-                    title: `Sell Error`,
+                    title: `Sell error`,
                     description: `You don't have enough of that item to sell that much.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity Owned:** \`${data.inventory[item.item].toLocaleString()}\``,
                     timestamp: new Date(),
                 };

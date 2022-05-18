@@ -243,7 +243,7 @@ module.exports = {
             inventoryModel.findOne(params_user, async(err, data) => {
                 let itemOwned;
 
-                async function ifhasamountitem(reqm, hasa) {
+                function ifhasamountitem(reqm, hasa) {
                     if(hasa >= reqm) {
                         return true;
                     } else {
@@ -255,9 +255,8 @@ module.exports = {
                 if(item.crafttools) {
                     crafttools = item.crafttools.map(value => {
                         const toolitem = allItems.find(({ item }) => item === value.i);
-                        
 
-                        return `${ifhasamountitem(value.q, data.inventory[value.item]) === true ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${toolitem.icon} \`${toolitem.item}\``;
+                        return `${ifhasamountitem(value.q, data.inventory[toolitem.item]) === true ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)` : `\`${value.q.toLocaleString()}\``} ${toolitem.icon} \`${toolitem.item}\``;
                     })
                     .join('\n')
                     
@@ -268,7 +267,7 @@ module.exports = {
                     craftitems = item.craftitems.map(value => {
                         const craftitem = allItems.find(({ item }) => item === value.i);
 
-                        return `${ifhasamountitem(value.q, data.inventory[value.item]) === true ? `[\`${value.q}\`](https://www.google.com/)` : `\`${value.q}\``} ${craftitem.icon} \`${craftitem.item}\``;
+                        return `${ifhasamountitem(value.q, data.inventory[craftitem.item]) === true ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)` : `\`${value.q.toLocaleString()}\``} ${craftitem.icon} \`${craftitem.item}\``;
                     })
                     .join('\n')
                 }

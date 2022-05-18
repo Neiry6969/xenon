@@ -1253,6 +1253,10 @@ module.exports = [
             {
                 i: "shardofcopper",
                 q: 1
+            },
+            {
+                i: "finecrown",
+                q: 5
             }
         ]
     },
