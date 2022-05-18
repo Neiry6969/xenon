@@ -244,7 +244,7 @@ module.exports = {
                 let itemOwned;
 
                 async function ifhasamountitem(reqm, hasa) {
-                    if(hasa => reqm) {
+                    if(hasa >= reqm) {
                         return true;
                     } else {
                         return false;
