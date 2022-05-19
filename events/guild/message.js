@@ -269,7 +269,8 @@ module.exports = async(Discord, client, message) => {
             command.name === 'fish' ||
             command.name === 'harvest' ||
             command.name === 'slots' ||
-            command.name === 'gamble'
+            command.name === 'gamble'||
+            command.name === 'harv'
         ) {
             try {
                 command.execute(message, args, cmd, client, Discord, profileData);
