@@ -340,12 +340,12 @@ module.exports = {
                                 inline: true,
                             },
                             {
-                                name: 'Required Cafted Tools',
+                                name: 'Required Caft Tools',
                                 value: `${crafttools}`,
                                 inline: true,
                             },
                             {
-                                name: 'Required Cafted Materials',
+                                name: 'Required Caft Materials',
                                 value: `${craftitems}`,
                                 inline: true,
                             },

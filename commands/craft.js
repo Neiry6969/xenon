@@ -19,7 +19,28 @@ module.exports = {
 
         const iftable = args[0]?.toLowerCase()
         if(iftable === 'table' || iftable === 'list') {
-            return message.reply('craft')
+            const craftablelist = allItems
+            .map((value) => {
+                if(!value.craftitems && !value.crafttools) {
+                    return;
+                } else {
+                    return `${value.icon} **${value.name}**\nItem ID: \`${value.item}\``;
+                }
+            })
+            .filter(Boolean)
+            .join("\n\n")
+
+            const embed = {
+                color: 'RANDOM',
+                title: `Craftable Items`,
+                description: `${craftablelist}`,
+                footer: {
+                    text: `xe craft [item] [amount]`,
+                }
+            };
+
+            return message.reply({ embeds: [embed] });
+
         } else {
             if(!getitem) {
                 const embed = {
@@ -92,10 +113,10 @@ module.exports = {
                             missingitems = true;
                         }
 
-                        let message = `\`${value.q.toLocaleString()}/${hasamount.toLocaleString()}\` ${toolitem.icon} \`${toolitem.item}\``;
+                        let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${toolitem.icon} \`${toolitem.item}\``;
                         
                         if(ifhasamountitem(value.q, hasamount) === true) {
-                            message = `[\`${value.q.toLocaleString()}/${hasamount.toLocaleString()}\`](https://www.google.com/) ${toolitem.icon} \`${toolitem.item}\``
+                            message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${toolitem.icon} \`${toolitem.item}\``
                         }
 
                         return message;
@@ -119,10 +140,10 @@ module.exports = {
                         }
 
 
-                        let message = `\`${value.q.toLocaleString()}/${hasamount.toLocaleString()}\` ${craftitem.icon} \`${craftitem.item}\``;
+                        let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${craftitem.icon} \`${craftitem.item}\``;
                         
                         if(ifhasamountitem(value.q, hasamount) === true) {
-                            message = `[\`${value.q.toLocaleString()}/${hasamount.toLocaleString()}\`](https://www.google.com/) ${craftitem.icon} \`${craftitem.item}\``
+                            message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${craftitem.icon} \`${craftitem.item}\``
                         }
 
                         return message;
@@ -181,6 +202,158 @@ module.exports = {
         
                     return message.reply({ embeds: [embed] });
                 }
+
+                const confirmationlist = item.craftitems.map(value => {
+                    const craftitem = allItems.find(({ item }) => item === value.i);
+
+                    data.inventory[value.i] = data.inventory[value.i] - value.q * amount
+                    inventoryModel.findOneAndUpdate(params_user, data);
+
+                    return `\`${value.q * amount}x\` ${craftitem.icon} \`${craftitem.item}\``
+                })
+                .join('\n')
+
+                const hasItem = Object.keys(data.inventory).includes(item.item);
+                if(!hasItem) {
+                    data.inventory[item.item] = amount;
+                } else {
+                    data.inventory[item.item] = data.inventory[item.item] + amount;
+                }
+
+                await inventoryModel.findOneAndUpdate(params_user, data);
+
+                let confirm = new MessageButton()
+                    .setCustomId('confirm')
+                    .setLabel('Confirm')
+                    .setStyle('PRIMARY')
+
+                let cancel = new MessageButton()
+                    .setCustomId('cancel')
+                    .setLabel('Cancel')
+                    .setStyle('DANGER')
+
+                let row = new MessageActionRow()
+                    .addComponents(
+                        confirm,
+                        cancel
+                    );
+
+                const embed = {
+                    color: 'RANDOM',
+                    title: `Confirm craft`,
+                    description: `<@${message.author.id}>, are you sure you want to craft ${item.icon} \`${item.item}\` x\`${amount.toLocaleString()}\`\n\n**Here are the items that will be used for this craft:**\n${confirmationlist}`,
+                    timestamp: new Date(),
+                };
+                const craft_msg = await message.reply({ embeds: [embed], components: [row] });
+                const collector = craft_msg.createMessageComponentCollector({ time: 20 * 1000 });
+
+                collector.on('collect', async (button) => {
+                    if(button.user.id != message.author.id) {
+                        return button.reply({
+                            content: 'This is not for you.',
+                            ephemeral: true,
+                        })
+                    } 
+
+                    button.deferUpdate()
+
+                    if(button.customId === "confirm") {
+
+                        const embed = {
+                            color: '#00FF00',
+                            title: `Craft Successful`,
+                            description: `<@${message.author.id}>, you crafted an item!\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${amount.toLocaleString()}\`\n**Now You Have:** \`${data.inventory[item.item].toLocaleString()}x\` ${item.icon}\n\n**Here are the items that will be used for this craft:**\n${confirmationlist}`,
+                        };
+
+                        confirm
+                            .setDisabled()
+                            .setStyle("SUCCESS")
+
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+
+                        return craft_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    
+                    } else if(button.customId === "cancel") {
+                        item.craftitems.forEach(async value => {
+                            data.inventory[value.i] = data.inventory[value.i] + value.q * amount
+                            await inventoryModel.findOneAndUpdate(params_user, data);
+                        })
+        
+                        const hasItem = Object.keys(data.inventory).includes(item.item);
+                        if(!hasItem) {
+                            data.inventory[item.item] = amount;
+                        } else {
+                            data.inventory[item.item] = data.inventory[item.item] - amount;
+                        }
+        
+                        await inventoryModel.findOneAndUpdate(params_user, data);
+
+                        const embed = {
+                            color: '#FF0000',
+                            title: `Craft cancelled`,
+                            description: `<@${message.author.id}>, are you sure you want to craft ${item.icon} \`${item.item}\` x\`${amount.toLocaleString()}\`\n\n**Here are the items that will be used for this craft:**\n${confirmationlist}\nI guess not. Come back later if you change your mind.`,
+                            timestamp: new Date(),
+                        };
+                        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+
+                        cancel.setDisabled()
+                        
+                        return craft_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                
+                    }
+                    
+                });
+
+                collector.on('end', async collected => {
+                    if(collected.size > 0) {
+
+                    } else {
+                        item.craftitems.forEach(async value => {
+                            data.inventory[value.i] = data.inventory[value.i] + value.q * amount
+                            await inventoryModel.findOneAndUpdate(params_user, data);
+                        })
+        
+                        const hasItem = Object.keys(data.inventory).includes(item.item);
+                        if(!hasItem) {
+                            data.inventory[item.item] = amount;
+                        } else {
+                            data.inventory[item.item] = data.inventory[item.item] - amount;
+                        }
+        
+                        await inventoryModel.findOneAndUpdate(params_user, data);
+
+                        const embed = {
+                            color: '#FF0000',
+                            title: `Craft timeout`,
+                            description: `<@${message.author.id}>, are you sure you want to craft ${item.icon} \`${item.item}\` x\`${amount.toLocaleString()}\`\n\n**Here are the items that will be used for this craft:**\n${confirmationlist}\nI guess not. Come back later if you change your mind.`,
+                            timestamp: new Date(),
+                        };
+                        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+                        
+                        return craft_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    }
+                });
             })
         }
     }

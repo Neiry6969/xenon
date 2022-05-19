@@ -79,6 +79,10 @@ const userSchema = new mongoose.Schema(
         settings: {
             type: Object,
             default: {},
+        },
+        crafting: {
+            type: Object,
+            default: {},
         }
     }, 
     { minimize: false }

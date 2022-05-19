@@ -1,5 +1,6 @@
 const { prefix } = require('../../config.json');
 const profileModel = require('../../models/profileSchema');
+const inventoryModel = require('../../models/inventorySchema')
 const userModel = require('../../models/userSchema')
 const { Collection } = require('discord.js')
 
@@ -73,6 +74,22 @@ module.exports = async(Discord, client, message) => {
             user.save();
 
             userData = user;
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
+    let inventoryData; 
+    try {
+        inventoryData = await inventoryModel.findOne({ userId: message.author.id });
+        if(!inventoryData) {
+            let inventory = await inventoryModel.create({
+                userId: message.author.id,
+            });
+        
+            inventory.save();
+
+            inventoryData = inventory;
         }
     } catch (error) {
         console.log(error)

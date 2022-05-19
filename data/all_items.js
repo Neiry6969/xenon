@@ -1255,9 +1255,9 @@ module.exports = [
                 q: 1
             },
             {
-                i: "finecrown",
-                q: 5
-            }
+                i: "shardofsteel",
+                q: 2
+            },
         ]
     },
 ]

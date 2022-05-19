@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
 
-const inventorySchema = new mongoose.Schema({
-    userId: {
-        type: String,
-        required: true,
-        unique: true,
+const inventorySchema = new mongoose.Schema(
+    {
+        userId: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        inventory: {
+            type: Object,
+            default: {},
+        }
     },
-    inventory: {
-        type: Object,
-    }
-})
+    { minimize: false }
+)
 
 
 const model = mongoose.model('InventoryModels', inventorySchema);
