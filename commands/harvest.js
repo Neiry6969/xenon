@@ -51,8 +51,8 @@ module.exports = {
             const avocado = allItems.find((val) => (val.item.toLowerCase()) === "avocado")
             
             const lowest_table = `${bread.icon} \`${bread.item}\`, ${carrot.icon} \`${carrot.item}\`, ${lettuce.icon} \`${lettuce.item}\``
-            const lowmid_table = `${tomato.icon} \`${tomato.item}\`, ${corn.icon} \`${corn.item}\`, ${potato.icon} \`${potato.item}\``
-            const highmid_table = `${eggplant.icon} \`${eggplant.item}\`, ${onion.icon} \`${onion.item}\`, ${avocado.icon} \`${avocado.item}\``
+            const lowmid_table = `${tomato.icon} \`${tomato.item}\`, ${corn.icon} \`${corn.item}\`, ${eggplant.icon} \`${eggplant.item}\``
+            const highmid_table = `${potato.icon} \`${potato.item}\`, ${onion.icon} \`${onion.item}\`, ${avocado.icon} \`${avocado.item}\``
             const high_table = `${bubbletea.icon} \`${bubbletea.item}\``
 
 
