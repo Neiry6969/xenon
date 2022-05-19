@@ -187,6 +187,8 @@ module.exports = {
                 } else {
                     amount = parseInt(amount)
                 }   
+
+                amount = parseInt(amount)
     
                 if(!amount || amount < 0) {
                     return message.reply("You can only craft a whole number of items.");

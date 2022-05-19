@@ -82,6 +82,8 @@ module.exports = {
             buyamount = parseInt(buyamount)
         }   
 
+        buyamount = parseInt(buyamount)
+
         const totalprice = item.value * buyamount;
 
         if(!buyamount || buyamount < 0) {

@@ -98,19 +98,19 @@ module.exports = {
                 }
             } else {
                 betamount = parseInt(betamount)
-                if(betamount > profileData.coins) {
-                    const embed = {
-                        color: '#FF0000',
-                        title: `Gamble Error`,
-                        description: `You don't have that many coins to bet.\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
-                    };
-    
-                    return message.reply({ embeds: [embed] });
-                }
             }   
+            betamount = parseInt(betamount)
 
             if(!betamount || betamount < 0) {
                 return message.reply(`You can only bet a whole number of coins, don't try to break me smh.`)
+            } else if(betamount > profileData.coins) {
+                const embed = {
+                    color: '#FF0000',
+                    title: `Gamble Error`,
+                    description: `You don't have that many coins to bet.\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                };
+
+                return message.reply({ embeds: [embed] });
             } else if(betamount > maxbetamount) {
                 const embed = {
                     color: '#FF0000',
@@ -119,7 +119,7 @@ module.exports = {
                 };
 
                 return message.reply({ embeds: [embed] });
-            } 
+            }  
 
             const userdice1_random = Math.floor(Math.random() * 6) + 1;
             const userdice2_random = Math.floor(Math.random() * 6) + 1;

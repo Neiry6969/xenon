@@ -28,6 +28,8 @@ module.exports = {
             amount = parseInt(amount)
         }
 
+        amount = parseInt(amount)
+
 
         if(profileData.bank <= 0) {
             return message.reply("You bank seems to be empty, therefore you can't withdraw anything. Awkward...");

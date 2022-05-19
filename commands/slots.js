@@ -178,18 +178,20 @@ module.exports = {
                 }
             } else {
                 slotsamount = parseInt(slotsamount)
-                if(slotsamount > profileData.coins) {
-                    const embed = {
-                        color: '#FF0000',
-                        title: `Slots Error`,
-                        description: `You don't have that many coins to slots.\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
-                    };
-    
-                    return message.reply({ embeds: [embed] });
-                }
+                
             }   
 
-            if(!slotsamount || slotsamount < 0) {
+            slotsamount = parseInt(slotsamount)
+
+            if(slotsamount > profileData.coins) {
+                const embed = {
+                    color: '#FF0000',
+                    title: `Slots Error`,
+                    description: `You don't have that many coins to slots.\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                };
+
+                return message.reply({ embeds: [embed] });
+            } else if(!slotsamount || slotsamount < 0) {
                 return message.reply(`You can only slots a whole number of coins, don't try to break me smh.`)
             } else if(slotsamount > maxslotsamount) {
                 const embed = {

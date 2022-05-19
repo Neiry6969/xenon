@@ -95,6 +95,8 @@ module.exports = {
                 amount = parseInt(amount)
             }
 
+            amount = parseInt(amount)
+
             if(amount === 0) {
                 const embed = {
                     color: '#FF0000',

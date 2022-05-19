@@ -87,6 +87,8 @@ module.exports = {
                     } else {
                         useamount = parseInt(useamount)
                     }   
+
+                    useamount = parseInt(useamount)
             
                     const totalprice = item.value * useamount;
             

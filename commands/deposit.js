@@ -47,6 +47,8 @@ module.exports = {
             amount = parseInt(amount)
         }
 
+        amount = parseInt(amount)
+
 
 
         if(amount === 0){

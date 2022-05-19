@@ -84,6 +84,8 @@ module.exports = {
                 sellamount = parseInt(sellamount)
             }   
 
+            sellamount = parseInt(sellamount)
+
             if(!sellamount || sellamount < 0) {
                 return message.reply("You can only sell a whole number of items.");
             } else if (sellamount === 0) {
