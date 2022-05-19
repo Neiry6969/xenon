@@ -1269,7 +1269,7 @@ module.exports = [
     },
     {
         item: "electricalwire",
-        name: "Electricalwire",
+        name: "Electrical wire",
         icon: "<:electricalwire:976215865454370816>",
         price: "unable to be bought",
         sell: 60000,
@@ -1297,6 +1297,31 @@ module.exports = [
             {
                 i: "shardofsteel",
                 q: 2
+            },
+        ]
+    },
+    {
+        item: "vodka",
+        name: "Vodka",
+        icon: "<:vodka:976962174381604905>",
+        price: "unable to be bought",
+        sell: 1000000,
+        trade: 1000000,
+        value: 1000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976962143201153024/pixil-frame-0_25.png?width=390&height=390",
+        description: "Crazy vodka that make you drunk as hell.",
+        rarity: "rare",
+        type: "tool",
+        crafttools:[ 
+            {
+                i: "engineeringbench",
+                q: 1
+            }
+        ],
+        craftitems: [
+            {
+                i: "potato",
+                q: 180
             },
         ]
     },
