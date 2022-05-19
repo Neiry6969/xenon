@@ -59,8 +59,8 @@ const userSchema = new mongoose.Schema(
             default: {},
         },
         titles: {
-            type: Object,
-            default: {},
+            type: Array,
+            default: ['Newbie'],
         },
         title: {
             type: String,
