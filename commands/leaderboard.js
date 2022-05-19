@@ -27,8 +27,6 @@ module.exports = {
     description: "Check the leaderboard.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const collection = new Collection();
-        // const collection1 = new Collection();
-        // const collection2 = new Collection();
 
         await Promise.all(
             message.guild.members.cache.map(async(member) => {

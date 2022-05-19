@@ -309,12 +309,12 @@ module.exports = [
         item: "panda",
         name: "Panda",
         aliases: ["pan", "nda", "anda", "pand"],
-        icon: ":panda_face:",
+        icon: "<a:panda:976679999597846528>",
         price: "unable to be bought",
-        sell: 10000,
+        sell: 40000000,
         trade: 0,
-        value: 10000,
-        imageUrl: "",
+        value: 40000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976680634699382824/ezgif.com-gif-maker_3.gif?width=427&height=427",
         description: "Wow how'd you get this panda! Juicy panda that can be for your collection or be sold.",
         rarity: "common",
         type: "sellable"
@@ -382,8 +382,8 @@ module.exports = [
         icon: "<:statue:967460806860083252>",
         price: "unable to be bought",
         sell: "unable to be sold",
-        trade: 0,
-        value: 2500000,
+        trade: 40000000,
+        value: 40000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/967459472261926952/unknown.png?width=427&height=427",
         description: "Wow thats a rare statue! I swear I've seen it before somewhere.",
         rarity: "rare",
@@ -561,12 +561,12 @@ module.exports = [
         item: "unicorn",
         name: "Unicorn",
         aliases: ["cor", "uni", "icorn", "unic", "unico"],
-        icon: ":unicorn:",
+        icon: "<:unicorn:976930910911991839>",
         price: "unable to be bought",
         sell: 250000,
         trade: 0,
         value: 250000,
-        imageUrl: "",
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976929678717771806/images-removebg-preview.png",
         description: "Magical unicorn that can be for your collection or be sold.",
         rarity: "uncommon",
         type: "sellable"
@@ -821,7 +821,31 @@ module.exports = [
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/968669042334371840/ezgif.com-gif-maker_4.gif?width=439&height=439",
         description: "Fine crown freshly polished, wow such a huge flex!",
         rarity: "legendary",
-        type: "collectable"
+        type: "collectable",
+        crafttools:[ 
+            {
+                i: "heavysmelter",
+                q: 1
+            },
+            {
+                i: "engineeringbench",
+                q: 1
+            }
+        ],
+        craftitems: [
+            {
+                i: "bronzecrown",
+                q: 1
+            },
+            {
+                i: "silvercrown",
+                q: 1
+            },
+            {
+                i: "goldencrown",
+                q: 1
+            },
+        ]
     },
     {
         item: "bankmessage",
@@ -900,8 +924,8 @@ module.exports = [
         icon: "<:greenblossom:970837513960837160>",
         price: "unable to be bought",
         sell: "unable to be sold",
-        trade: 3000000,
-        value: 3000000,
+        trade: 2000000,
+        value: 2000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970837726406524948/image_3.png?width=390&height=390",
         description: "Cute blossom.",
         rarity: "uncommon",
@@ -915,7 +939,7 @@ module.exports = [
         price: 'unable to be bought',
         sell: 200000,
         trade: 210000,
-        value: 240000,
+        value: 250000,
         imageUrl: 'https://media.discordapp.net/attachments/965028200390475858/972672190250102784/New_Project__10_-removebg-preview.png?width=427&height=427',
         description: "Shard of gold for something...",
         rarity: "epic",
@@ -928,8 +952,8 @@ module.exports = [
         icon: "<:goldencrown:974761077269233664>",
         price: "unable to be bought",
         sell: "unable to be sold",
-        trade: 450000000,
-        value: 450000000,
+        trade: 100000000,
+        value: 100000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/974761797099868261/image_8.png?width=390&height=390",
         description: "Pure gold crown crafted by the shiniest gold.",
         rarity: "exotic",
@@ -955,8 +979,8 @@ module.exports = [
         price: "unable to be bought",
         icon: "<:bronzecrown:974755534345490443>",
         sell: "unable to be sold",
-        trade: 100000000,
-        value: 100000000,
+        trade: 60000000,
+        value: 60000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/974755759176953896/New_Project__14_-removebg-preview.png?width=390&height=390",
         description: "Crown of the kings in the bronze age.",
         rarity: "legendary",
@@ -969,12 +993,28 @@ module.exports = [
         icon: "<:goldenblossom:970836876707643432>",
         price: "unable to be bought",
         sell: "unable to be sold",
-        trade: 10000000,
-        value: 10000000,
+        trade: 5000000,
+        value: 5000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970837726637195314/New_Project_7-min.png?width=390&height=390",
         description: "Cute blossom.",
         rarity: "rare",
-        type: "collectable"
+        type: "collectable",
+        crafttools:[ 
+            {
+                i: "engineeringbench",
+                q: 1
+            }
+        ],
+        craftitems: [
+            {
+                i: "greenblossom",
+                q: 3
+            },
+            {
+                i: "shardofgold",
+                q: 10
+            },
+        ]
     },
     {
         item: "enhancedpickaxe",

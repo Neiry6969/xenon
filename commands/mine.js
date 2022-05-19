@@ -42,6 +42,10 @@ const high = [
     {
         item: 'shardofdiamond',
         maxamount: 3
+    }, 
+    {
+        item: 'enhancedpickaxe',
+        maxamount: 1
     }
 ]
 

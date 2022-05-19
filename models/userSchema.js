@@ -16,8 +16,14 @@ const userSchema = new mongoose.Schema(
             default: {},
         },
         job: {
-            type: String,
-            default: "none"
+            type: Object,
+            default: {
+                name: 'none',
+                hoursworked: 0,
+                streak: 0,
+                lastworked: Date.now(),
+                hoursworkedday: 0,
+            }
         },
         followers: {
             type: Array,

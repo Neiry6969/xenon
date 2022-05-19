@@ -191,4 +191,12 @@ module.exports = [
         description: 'Check the leaderboard.',
         shortdesc: 'Check the leaderboard.',
     },
+    {
+        command: 'craft',
+        aliases: ['make'],
+        cooldown: 5,
+        category: 'item interaction',
+        description: 'Craft a craftable item.',
+        shortdesc: 'Craft a craftable item.',
+    },
 ]

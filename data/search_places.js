@@ -98,4 +98,18 @@ module.exports = [
         items: 'skateboard',
         itempecrent: 1000,
     },
+    {
+        place: 'vamp empire',
+        message: `You went into the a scary castle and ran away with ❀ \`COINS\` as someone chased you.`,
+        coins: 10,
+        items: 'silvercrown',
+        itempecrent: 1000,
+    },
+    {
+        place: 'vast field',
+        message: `You wan around a vast green field and found ❀ \`COINS\` truly remarkable.`,
+        coins: 10000,
+        items: 'skateboard',
+        itempecrent: 20000,
+    },
 ]

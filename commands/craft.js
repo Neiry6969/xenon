@@ -41,6 +41,29 @@ module.exports = {
 
             return message.reply({ embeds: [embed] });
 
+        } else if(!getitem) {
+            const craftablelist = allItems
+            .map((value) => {
+                if(!value.craftitems && !value.crafttools) {
+                    return;
+                } else {
+                    return `${value.icon} **${value.name}**\nItem ID: \`${value.item}\``;
+                }
+            })
+            .filter(Boolean)
+            .join("\n\n")
+
+            const embed = {
+                color: 'RANDOM',
+                title: `Craftable Items`,
+                description: `${craftablelist}`,
+                footer: {
+                    text: `xe craft [item] [amount]`,
+                }
+            };
+
+            return message.reply({ embeds: [embed] });
+
         } else {
             if(!getitem) {
                 const embed = {
