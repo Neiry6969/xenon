@@ -200,33 +200,39 @@ module.exports = async(Discord, client, message) => {
                 profileData.experiencepoints = profileData.experiencepoints - experiencefull
             }
 
-            if(!cooldowns.has(command.name)){
-                cooldowns.set(command.name, new Collection());
+            const userID = message.author.id;
+            const commandname = command.name;
+
+            const params = {
+                userId: userID
             }
-        
-            const current_time = Date.now();
-            const time_stamps = cooldowns.get(command.name);
-            let cooldown_amount = (command.cooldown) * 1000;
-            
-            if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
-                if(command.cooldown <= 5 && command.cooldown > 2) {
-                    cooldown_amount = (command.cooldown - 2) * 1000
-                } else if(command.cooldown <= 15) {
-                    cooldown_amount = (command.cooldown - 5) * 1000
-                } else if(command.cooldown <= 120) {
-                    cooldown_amount = (command.cooldown - 10) * 1000
-                } else {
-                    cooldown_amount = command.cooldown * 1000
+
+            userModel.findOne(params, async(err, data) => {
+                if(!data.cooldowns[commandname]) {
+                    data.cooldowns[commandname] = 0
                 }
-            }
-    
-            if(time_stamps.has(message.author.id)){
-                const expiration_time = time_stamps.get(message.author.id) + cooldown_amount;
-    
-    
-                if(current_time < expiration_time){
-                    const time_left = Math.floor((expiration_time - current_time) / 1000);
-    
+
+                let cooldown_amount = (command.cooldown) * 1000;
+            
+                if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
+                    if(command.cooldown <= 5 && command.cooldown > 2) {
+                        cooldown_amount = (command.cooldown - 2) * 1000
+                    } else if(command.cooldown <= 15) {
+                        cooldown_amount = (command.cooldown - 5) * 1000
+                    } else if(command.cooldown <= 120) {
+                        cooldown_amount = (command.cooldown - 10) * 1000
+                    } else {
+                        cooldown_amount = command.cooldown * 1000
+                    }
+                }
+
+                const timeleft = new Date(data.cooldowns[commandname]);
+                let check = timeleft - Date.now() >= timeleft || timeleft - Date.now() <= 0;
+                
+
+                if(!check) {
+                    const time_left = Math.floor((timeleft - Date.now()) / 1000)
+
                     if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
                         const embed = {
                             color: '#FFC000',
@@ -254,29 +260,25 @@ module.exports = async(Discord, client, message) => {
             
                         return message.reply({ embeds: [embed] });
                     }
+                } else {
+                    try {
+                        command.execute(message, args, cmd, client, Discord, profileData, userData);
+                    } catch (error) {
+                        message.reply("There was an error running this command.");
+                        console.log(error);
+                        return;
+                    }
+
+                    data.cooldowns[commandname] = Date.now() + cooldown_amount;
                     
-                    
+                    await userModel.findOneAndUpdate(params, data);
                 }
-            }
-        
-            //If the author's id is not in time_stamps then add them with the current time.
-            time_stamps.set(message.author.id, current_time);
-            //Delete the user's id once the cooldown is over.
-            setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
+            })
         } catch (error) {
             message.reply("There was an error running this command.");
             console.log(error);
             return;
         }
-
-        try {
-            command.execute(message, args, cmd, client, Discord, profileData, userData);
-        } catch (error) {
-            message.reply("There was an error running this command.");
-            console.log(error);
-            return;
-        }
-
     }
 
 
