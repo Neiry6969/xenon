@@ -89,7 +89,11 @@ const userSchema = new mongoose.Schema(
         crafting: {
             type: Object,
             default: {},
-        }
+        },
+        cooldowns: {
+            type: Object,
+            default: {},
+        },
     }, 
     { minimize: false }
 )
