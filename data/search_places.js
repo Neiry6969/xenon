@@ -1,22 +1,3 @@
-const calc = [
-    {
-        place: 'studio',
-        coins: 100032,
-    },
-    {
-        place: 'beach',
-        coins: 10000,
-    },
-    {
-        place: 'valley',
-        coins: 1500,
-    },
-    {
-        place: 'school',
-        coins: 1000,
-    },
-]
-
 module.exports = [
     {
         place: 'studio',
