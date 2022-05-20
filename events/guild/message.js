@@ -208,8 +208,9 @@ module.exports = async(Discord, client, message) => {
             }
 
             userModel.findOne(params, async(err, data) => {
+                let cooldowntime = data.cooldowns[commandname]
                 if(!data.cooldowns[commandname]) {
-                    data.cooldowns[commandname] = 0
+                    cooldowntime = 0
                 }
 
                 let cooldown_amount = (command.cooldown) * 1000;
@@ -226,7 +227,7 @@ module.exports = async(Discord, client, message) => {
                     }
                 }
 
-                const timeleft = new Date(data.cooldowns[commandname]);
+                const timeleft = new Date(cooldowntime);
                 let check = timeleft - Date.now() >= timeleft || timeleft - Date.now() <= 0;
                 
 
