@@ -203,18 +203,84 @@ module.exports = async(Discord, client, message) => {
             const userID = message.author.id;
             const commandname = command.name;
 
-            const params = {
-                userId: userID
-            }
-
-            userModel.findOne(params, (err, data) => {
-                let cooldowntime = data.cooldowns[commandname]
-                if(!data.cooldowns[commandname]) {
-                    cooldowntime = 0
+            if(command.cooldown > 3600) {
+                const params = {
+                    userId: userID
                 }
-
+    
+                userModel.findOne(params, (err, data) => {
+                    let cooldowntime = data.cooldowns[commandname]
+                    if(!data.cooldowns[commandname]) {
+                        cooldowntime = 0
+                    }
+    
+                    let cooldown_amount = (command.cooldown) * 1000;
+                
+                    if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
+                        if(command.cooldown <= 5 && command.cooldown > 2) {
+                            cooldown_amount = (command.cooldown - 2) * 1000
+                        } else if(command.cooldown <= 15) {
+                            cooldown_amount = (command.cooldown - 5) * 1000
+                        } else if(command.cooldown <= 120) {
+                            cooldown_amount = (command.cooldown - 10) * 1000
+                        } else {
+                            cooldown_amount = command.cooldown * 1000
+                        }
+                    }
+    
+                    const timeleft = new Date(cooldowntime);
+                    let check = timeleft - Date.now() >= timeleft || timeleft - Date.now() <= 0;
+    
+                    if(!check) {
+                        const time_left = Math.floor((timeleft - Date.now()) / 1000)
+    
+                        if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
+                            const embed = {
+                                color: '#FFC000',
+                                title: `Slow it down! Don't try to break me!`,
+                                description: `You have **PREMIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
+                                author: {
+                                    name: `${client.user.username}`,
+                                    icon_url: `${client.user.displayAvatarURL()}`,
+                                },
+                                timestamp: new Date(),
+                            };
+                
+                            return message.reply({ embeds: [embed] });
+                        } else {
+                            const embed = {
+                                color: '#000000',
+                                title: `Slow it down! Don't try to break me!`,
+                                description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
+                                author: {
+                                    name: `${client.user.username}`,
+                                    icon_url: `${client.user.displayAvatarURL()}`,
+                                },
+                                timestamp: new Date(),
+                            };
+                
+                            return message.reply({ embeds: [embed] });
+                        }
+                    } else {
+                        try {
+                            data.cooldowns[commandname] = Date.now() + cooldown_amount;
+                            userModel.findOneAndUpdate(params, data);
+                            command.execute(message, args, cmd, client, Discord, profileData, userData);
+                            
+                        } catch (error) {
+                            message.reply("There was an error running this command.");
+                            console.log(error);
+                            return;
+                        }
+                        
+                    }
+                })
+            } else {
+                if(!cooldowns.has(commandname)) {
+                    cooldowns.set(commandname, new Collection());
+                }
                 let cooldown_amount = (command.cooldown) * 1000;
-            
+                
                 if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
                     if(command.cooldown <= 5 && command.cooldown > 2) {
                         cooldown_amount = (command.cooldown - 2) * 1000
@@ -227,43 +293,52 @@ module.exports = async(Discord, client, message) => {
                     }
                 }
 
-                const timeleft = new Date(cooldowntime);
-                let check = timeleft - Date.now() >= timeleft || timeleft - Date.now() <= 0;
+                const current_time = Date.now()
+                const time_stamps = cooldowns.get(commandname)
 
-                if(!check) {
-                    const time_left = Math.floor((timeleft - Date.now()) / 1000)
+                if(time_stamps.has(userID)) {
+                    const expiration_time = time_stamps.get(userID) + cooldown_amount;
 
-                    if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
-                        const embed = {
-                            color: '#FFC000',
-                            title: `Slow it down! Don't try to break me!`,
-                            description: `You have **PREMIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
-                            author: {
-                                name: `${client.user.username}`,
-                                icon_url: `${client.user.displayAvatarURL()}`,
-                            },
-                            timestamp: new Date(),
-                        };
-            
-                        return message.reply({ embeds: [embed] });
-                    } else {
-                        const embed = {
-                            color: '#000000',
-                            title: `Slow it down! Don't try to break me!`,
-                            description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
-                            author: {
-                                name: `${client.user.username}`,
-                                icon_url: `${client.user.displayAvatarURL()}`,
-                            },
-                            timestamp: new Date(),
-                        };
-            
-                        return message.reply({ embeds: [embed] });
+                    if(current_time < expiration_time) {
+                        const time_left = (expiration_time - current_time) / 1000
+
+                        if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
+                            const embed = {
+                                color: '#FFC000',
+                                title: `Slow it down! Don't try to break me!`,
+                                description: `You have **PREMIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
+                                author: {
+                                    name: `${client.user.username}`,
+                                    icon_url: `${client.user.displayAvatarURL()}`,
+                                },
+                                timestamp: new Date(),
+                            };
+                
+                            return message.reply({ embeds: [embed] });
+                        } else {
+                            const embed = {
+                                color: '#000000',
+                                title: `Slow it down! Don't try to break me!`,
+                                description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
+                                author: {
+                                    name: `${client.user.username}`,
+                                    icon_url: `${client.user.displayAvatarURL()}`,
+                                },
+                                timestamp: new Date(),
+                            };
+                
+                            return message.reply({ embeds: [embed] });
+                        }
+
+
                     }
-                } else {
+
+                    time_stamps.set(userID, current_time)
+                    setTimeout(() => {
+                        time_stamps.delete(userID, cooldown_amount)
+                    })
+
                     try {
-                        data.cooldowns[commandname] = Date.now() + cooldown_amount;
-                        userModel.findOneAndUpdate(params, data);
                         command.execute(message, args, cmd, client, Discord, profileData, userData);
                         
                     } catch (error) {
@@ -271,9 +346,9 @@ module.exports = async(Discord, client, message) => {
                         console.log(error);
                         return;
                     }
-                    
                 }
-            })
+
+            }
         } catch (error) {
             message.reply("There was an error running this command.");
             console.log(error);
