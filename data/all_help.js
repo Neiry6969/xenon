@@ -48,6 +48,22 @@ module.exports = [
         category: 'income',
     },
     {
+        command: 'weekly',
+        aliases: ['week'],
+        cooldown: 604800,
+        description: "Collect your weekly rewards.",
+        shortdesc: "Collect your weekly rewards.",
+        category: 'income',
+    },
+    {
+        command: 'monthly',
+        aliases: ['month'],
+        cooldown: 2678400,
+        description: "Collect your monthly rewards.",
+        shortdesc: "Collect your monthly rewards.",
+        category: 'income',
+    },
+    {
         command: "deposit",
         aliases: ["dep"],
         cooldown: 5,

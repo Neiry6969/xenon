@@ -3,10 +3,6 @@ const profileModel = require('../../models/profileSchema');
 const inventoryModel = require('../../models/inventorySchema')
 const userModel = require('../../models/userSchema')
 const { Collection } = require('discord.js')
-// const cooldowns = require('../../cooldowns.json')
-
-// const fs = require('fs')
-
 
 function calcexpfull(level) {
     if(level < 50) {
@@ -36,31 +32,24 @@ function premiumcooldowncalc(defaultcooldown) {
 
 function time_split(time) {
     if (time < 60) {
-        return `${time}s`;
+      return `${time}s`;
     } else if (time >= 60 && time < 3600) {
-        const minutes = Math.floor(time / 60);
-        const seconds = time % 60;
-        return `${minutes}m ${seconds}s`;
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      return `${minutes}m ${seconds}s`;
     } else if (time >= 3600 && time < 86400) {
-        const hours = Math.floor(time / 3600);
-        const minutes = Math.floor((time % 3600) / 60);
-        const seconds = Math.floor((time % 3600) % 60);
-        return `${hours}h ${minutes}m ${seconds}s`;
-    } else if (time >= 86400 && time < 604800) {
-        const days = Math.floor(time / 86400);
-        const hours = Math.floor((time % 86400) / 24);
-        const minutes = Math.floor(((time % 86400) % 24) / 60);
-        const seconds = Math.floor((((time % 86400) % 24) % 60) % 60);
-        return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    } else if (time >= 604800) {
-        const weeks = Math.floor(time / 604800);
-        const days = Math.floor((time % 604800) / 24);
-        const hours = Math.floor(((time % 604800) % 24) / 60);
-        const minutes = Math.floor((((time % 604800) % 24) % 60) / 60);
-        const seconds = Math.floor((((time % 604800) % 24) % 60) % 60);
-        return `${weeks}w ${days}d ${hours}h ${minutes}m ${seconds}s`;
+      const hours = Math.floor(time / 3600);
+      const minutes = Math.floor((time % 3600) / 60);
+      const seconds = Math.floor((time % 3600) % 60);
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (time >= 86400) {
+      const days = Math.floor(time / 86400);
+      const hours = Math.floor((time % 86400) / 3600);
+      const minutes = Math.floor(((time % 86400) % 3600) / 60);
+      const seconds = Math.floor(((time % 86400) % 3600) % 60);
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     } else {
-        return `${time}s`;
+      return `${time}s`;
     }
 }
 
