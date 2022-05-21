@@ -263,15 +263,15 @@ module.exports = async(Discord, client, message) => {
                 } else {
                     try {
                         command.execute(message, args, cmd, client, Discord, profileData, userData);
+                        data.cooldowns[commandname] = Date.now() + cooldown_amount;
+                    
+                        return userModel.findOneAndUpdate(params, data);
                     } catch (error) {
                         message.reply("There was an error running this command.");
                         console.log(error);
                         return;
                     }
-
-                    data.cooldowns[commandname] = Date.now() + cooldown_amount;
                     
-                    await userModel.findOneAndUpdate(params, data);
                 }
             })
         } catch (error) {
