@@ -229,7 +229,6 @@ module.exports = async(Discord, client, message) => {
 
                 const timeleft = new Date(cooldowntime);
                 let check = timeleft - Date.now() >= timeleft || timeleft - Date.now() <= 0;
-                
 
                 if(!check) {
                     const time_left = Math.floor((timeleft - Date.now()) / 1000)
