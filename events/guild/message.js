@@ -203,12 +203,12 @@ module.exports = async(Discord, client, message) => {
             const userID = message.author.id;
             const commandname = command.name;
 
-            if(command.cooldown > 3600) {
+            if(command.cooldown >= 3600) {
                 const params = {
                     userId: userID
                 }
     
-                userModel.findOne(params, (err, data) => {
+                userModel.findOne(params, async (err, data) => {
                     let cooldowntime = data.cooldowns[commandname]
                     if(!data.cooldowns[commandname]) {
                         cooldowntime = 0
@@ -264,7 +264,7 @@ module.exports = async(Discord, client, message) => {
                     } else {
                         try {
                             data.cooldowns[commandname] = Date.now() + cooldown_amount;
-                            userModel.findOneAndUpdate(params, data);
+                            await userModel.findOneAndUpdate(params, data);
                             command.execute(message, args, cmd, client, Discord, profileData, userData);
                             
                         } catch (error) {
@@ -276,9 +276,10 @@ module.exports = async(Discord, client, message) => {
                     }
                 })
             } else {
-                if(!cooldowns.has(commandname)) {
-                    cooldowns.set(commandname, new Collection());
+                if(!cooldowns.has(command.name)){
+                    cooldowns.set(command.name, new Collection());
                 }
+
                 let cooldown_amount = (command.cooldown) * 1000;
                 
                 if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
@@ -292,16 +293,17 @@ module.exports = async(Discord, client, message) => {
                         cooldown_amount = command.cooldown * 1000
                     }
                 }
-
-                const current_time = Date.now()
-                const time_stamps = cooldowns.get(commandname)
-
-                if(time_stamps.has(userID)) {
-                    const expiration_time = time_stamps.get(userID) + cooldown_amount;
-
+            
+                const current_time = Date.now();
+                const time_stamps = cooldowns.get(command.name);
+            
+                //If time_stamps has a key with the author's id then check the expiration time to send a message to a user.
+                if(time_stamps.has(message.author.id)){
+                    const expiration_time = time_stamps.get(message.author.id) + cooldown_amount;
+            
                     if(current_time < expiration_time) {
-                        const time_left = (expiration_time - current_time) / 1000
-
+                        const time_left = Math.floor((expiration_time - current_time) / 1000);
+            
                         if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
                             const embed = {
                                 color: '#FFC000',
@@ -329,23 +331,21 @@ module.exports = async(Discord, client, message) => {
                 
                             return message.reply({ embeds: [embed] });
                         }
-
-
                     }
-
-                    time_stamps.set(userID, current_time)
-                    setTimeout(() => {
-                        time_stamps.delete(userID, cooldown_amount)
-                    })
-
-                    try {
-                        command.execute(message, args, cmd, client, Discord, profileData, userData);
-                        
-                    } catch (error) {
-                        message.reply("There was an error running this command.");
-                        console.log(error);
-                        return;
-                    }
+                }
+            
+                //If the author's id is not in time_stamps then add them with the current time.
+                time_stamps.set(message.author.id, current_time);
+                //Delete the user's id once the cooldown is over.
+                setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
+            
+                try {
+                    return command.execute(message, args, cmd, client, Discord, profileData, userData);
+                    
+                } catch (error) {
+                    message.reply("There was an error running this command.");
+                    console.log(error);
+                    return;
                 }
 
             }
