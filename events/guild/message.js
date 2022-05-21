@@ -261,11 +261,11 @@ module.exports = async(Discord, client, message) => {
                         return message.reply({ embeds: [embed] });
                     }
                 } else {
-                    try {
-                        command.execute(message, args, cmd, client, Discord, profileData, userData);
-                        data.cooldowns[commandname] = Date.now() + cooldown_amount;
+                    try {data.cooldowns[commandname] = Date.now() + cooldown_amount;
                     
-                        return userModel.findOneAndUpdate(params, data);
+                        await userModel.findOneAndUpdate(params, data);
+                        command.execute(message, args, cmd, client, Discord, profileData, userData);
+                        
                     } catch (error) {
                         message.reply("There was an error running this command.");
                         console.log(error);
