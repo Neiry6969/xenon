@@ -207,7 +207,7 @@ module.exports = async(Discord, client, message) => {
                 userId: userID
             }
 
-            userModel.findOne(params, async(err, data) => {
+            userModel.findOne(params, (err, data) => {
                 let cooldowntime = data.cooldowns[commandname]
                 if(!data.cooldowns[commandname]) {
                     cooldowntime = 0
@@ -261,9 +261,9 @@ module.exports = async(Discord, client, message) => {
                         return message.reply({ embeds: [embed] });
                     }
                 } else {
-                    try {data.cooldowns[commandname] = Date.now() + cooldown_amount;
-                    
-                        await userModel.findOneAndUpdate(params, data);
+                    try {
+                        data.cooldowns[commandname] = Date.now() + cooldown_amount;
+                        userModel.findOneAndUpdate(params, data);
                         command.execute(message, args, cmd, client, Discord, profileData, userData);
                         
                     } catch (error) {
