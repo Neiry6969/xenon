@@ -25,7 +25,7 @@ module.exports = async(client, discord, member) => {
     }
 
 
-    userData = await userModel.findOne({ userId: message.author.id });
+    userData = await userModel.findOne({ userId: member.id });
     if(!userData) {
         let user = await profileModel.create({
             userId: member.id,
@@ -34,7 +34,7 @@ module.exports = async(client, discord, member) => {
         user.save();
     }
 
-    inventoryData = await inventoryModel.findOne({ userId: message.author.id });
+    inventoryData = await inventoryModel.findOne({ userId: member.id });
     if(!inventoryData) {
         let inventory = await inventoryModel.create({
             userId: member.id,

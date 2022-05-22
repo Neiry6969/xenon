@@ -28,6 +28,10 @@ function hunt() {
         const result = Math.floor(Math.random() * high.length);
 
         return high[result];
+    } else if(number >= 10000) {
+        const result = Math.floor(Math.random() * highest.length);
+
+        return highest[result];
     }
 }
 
@@ -54,13 +58,14 @@ module.exports = {
             const lowest_table = `${bird.icon} \`${bird.item}\`, ${chick.icon} \`${chick.item}\`, ${monkey.icon} \`${monkey.item}\``
             const lowmid_table = `${koala.icon} \`${koala.item}\`, ${pig.icon} \`${pig.item}\`, ${sheep.icon} \`${sheep.item}\``
             const highmid_table = `${elephant.icon} \`${elephant.item}\`, ${parrot.icon} \`${parrot.item}\``
-            const high_table = `${dragon.icon} \`${dragon.item}\`, ${unicorn.icon} \`${unicorn.item}\`, ${panda.icon} \`${panda.item}\``
+            const high_table = `${dragon.icon} \`${dragon.item}\`, ${unicorn.icon} \`${unicorn.item}\``
+            const highest_table = `${panda.icon} \`${panda.item}\``
 
 
             const embed = {
                 color: 'RANDOM',
                 title: `Hunt Table`,
-                description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.5%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.5%\`\nitems: ${high_table}`,
+                description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.5%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.49%\`\nitems: ${high_table}**Highest** ──── \`0.01%\`\nitems: ${highest_table}`,
                 timestamp: new Date(),
             };
     
