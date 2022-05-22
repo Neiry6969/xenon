@@ -230,10 +230,6 @@ module.exports = {
 
                 const confirmationlist = item.craftitems.map(value => {
                     const craftitem = allItems.find(({ item }) => item === value.i);
-
-                    data.inventory[value.i] = data.inventory[value.i] - value.q * amount
-                    inventoryModel.findOneAndUpdate(params_user, data);
-
                     return `\`${value.q * amount}x\` ${craftitem.icon} \`${craftitem.item}\``
                 })
                 .join('\n')
@@ -283,6 +279,19 @@ module.exports = {
                     button.deferUpdate()
 
                     if(button.customId === "confirm") {
+                        item.craftitems.forEach(async value => {
+                            data.inventory[value.i] = data.inventory[value.i] - value.q * amount
+                            await inventoryModel.findOneAndUpdate(params_user, data);
+                        })
+        
+                        const hasItem = Object.keys(data.inventory).includes(item.item);
+                        if(!hasItem) {
+                            data.inventory[item.item] = amount;
+                        } else {
+                            data.inventory[item.item] = data.inventory[item.item] + amount;
+                        }
+        
+                        await inventoryModel.findOneAndUpdate(params_user, data);
 
                         const embed = {
                             color: '#00FF00',
@@ -304,20 +313,6 @@ module.exports = {
                         })
                     
                     } else if(button.customId === "cancel") {
-                        item.craftitems.forEach(async value => {
-                            data.inventory[value.i] = data.inventory[value.i] + value.q * amount
-                            await inventoryModel.findOneAndUpdate(params_user, data);
-                        })
-        
-                        const hasItem = Object.keys(data.inventory).includes(item.item);
-                        if(!hasItem) {
-                            data.inventory[item.item] = amount;
-                        } else {
-                            data.inventory[item.item] = data.inventory[item.item] - amount;
-                        }
-        
-                        await inventoryModel.findOneAndUpdate(params_user, data);
-
                         const embed = {
                             color: '#FF0000',
                             title: `Craft cancelled`,
@@ -344,20 +339,6 @@ module.exports = {
                     if(collected.size > 0) {
 
                     } else {
-                        item.craftitems.forEach(async value => {
-                            data.inventory[value.i] = data.inventory[value.i] + value.q * amount
-                            await inventoryModel.findOneAndUpdate(params_user, data);
-                        })
-        
-                        const hasItem = Object.keys(data.inventory).includes(item.item);
-                        if(!hasItem) {
-                            data.inventory[item.item] = amount;
-                        } else {
-                            data.inventory[item.item] = data.inventory[item.item] - amount;
-                        }
-        
-                        await inventoryModel.findOneAndUpdate(params_user, data);
-
                         const embed = {
                             color: '#FF0000',
                             title: `Craft timeout`,
