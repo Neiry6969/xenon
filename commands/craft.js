@@ -296,7 +296,7 @@ module.exports = {
 
                         item.craftitems.forEach(async value => {
                             data.inventory[value.i] = data.inventory[value.i] - value.q * amount
-                            await inventoryModel.findOneAndUpdate(params_user, data);
+                            await inventoryModel.updateOne(params_user, data);
                         })
         
                         const hasItem = Object.keys(data.inventory).includes(item.item);
@@ -306,7 +306,7 @@ module.exports = {
                             data.inventory[item.item] = data.inventory[item.item] + amount;
                         }
         
-                        await inventoryModel.findOneAndUpdate(params_user, data);
+                        await inventoryModel.updateOne(params_user, data);
 
                         const embed = {
                             color: '#00FF00',
