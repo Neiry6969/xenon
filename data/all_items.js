@@ -393,7 +393,7 @@ module.exports = [
         item: "rat",
         name: "Rat",
         aliases: [],
-        icon: "<:rat:977747330075861052>",
+        icon: "<:rat:977791222099902484>",
         price: "unable to be bought",
         sell: 1000,
         trade: 0,
