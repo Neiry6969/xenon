@@ -230,7 +230,7 @@ module.exports = {
 
                 const confirmationlist = item.craftitems.map(value => {
                     const craftitem = allItems.find(({ item }) => item === value.i);
-                    return `\`${value.q * amount}x\` ${craftitem.icon} \`${craftitem.item}\``
+                    return `\`${(value.q * amount).toLocaleString()}x\` ${craftitem.icon} \`${craftitem.item}\``
                 })
                 .join('\n')
 
