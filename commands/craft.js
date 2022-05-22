@@ -234,6 +234,18 @@ module.exports = {
                 })
                 .join('\n')
 
+                await userModel.updateOne(
+                    { userId: message.author.id },
+                    {
+                        $set: {
+                            awaitinginteraction: true
+                        }
+                    },
+                    {
+                        upsert: true,
+                    }
+                )
+
                 let confirm = new MessageButton()
                     .setCustomId('confirm')
                     .setLabel('Confirm')
@@ -270,6 +282,18 @@ module.exports = {
                     button.deferUpdate()
 
                     if(button.customId === "confirm") {
+                        const local_response = await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: amount,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        )
+
                         item.craftitems.forEach(async value => {
                             data.inventory[value.i] = data.inventory[value.i] - value.q * amount
                             await inventoryModel.findOneAndUpdate(params_user, data);
@@ -304,6 +328,17 @@ module.exports = {
                         })
                     
                     } else if(button.customId === "cancel") {
+                        const local_response = await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: amount,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        )
                         const embed = {
                             color: '#FF0000',
                             title: `Craft cancelled`,
@@ -330,6 +365,17 @@ module.exports = {
                     if(collected.size > 0) {
 
                     } else {
+                        const local_response = await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: amount,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        )
                         const embed = {
                             color: '#FF0000',
                             title: `Craft timeout`,
