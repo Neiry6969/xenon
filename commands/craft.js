@@ -10,7 +10,7 @@ const letternumbers = require('../reference/letternumber');
 module.exports = {
     name: 'craft',
     aliases: ['make'],
-    cooldown: 35,
+    cooldown: 5,
     description: "Craft items.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const expectedsyntax = `\`xe craft [item] [amount]\``;
@@ -241,9 +241,6 @@ module.exports = {
                             awaitinginteraction: true
                         }
                     },
-                    {
-                        upsert: true,
-                    }
                 )
 
                 let confirm = new MessageButton()
@@ -270,6 +267,8 @@ module.exports = {
                 };
                 const craft_msg = await message.reply({ embeds: [embed], components: [row] });
                 const collector = craft_msg.createMessageComponentCollector({ time: 20 * 1000 });
+
+                
 
                 collector.on('collect', async (button) => {
                     if(button.user.id != message.author.id) {
