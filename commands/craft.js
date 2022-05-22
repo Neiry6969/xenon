@@ -234,15 +234,6 @@ module.exports = {
                 })
                 .join('\n')
 
-                const hasItem = Object.keys(data.inventory).includes(item.item);
-                if(!hasItem) {
-                    data.inventory[item.item] = amount;
-                } else {
-                    data.inventory[item.item] = data.inventory[item.item] + amount;
-                }
-
-                await inventoryModel.findOneAndUpdate(params_user, data);
-
                 let confirm = new MessageButton()
                     .setCustomId('confirm')
                     .setLabel('Confirm')
