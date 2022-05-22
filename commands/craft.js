@@ -10,7 +10,7 @@ const letternumbers = require('../reference/letternumber');
 module.exports = {
     name: 'craft',
     aliases: ['make'],
-    cooldown: 5,
+    cooldown: 25,
     description: "Craft items.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const expectedsyntax = `\`xe craft [item] [amount]\``;
