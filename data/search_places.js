@@ -14,7 +14,7 @@ module.exports = [
     {
         place: 'valley',
         message: `The valley had ❀ \`COINS\` and you just picked it up`,
-        coins: 1500,
+        coins: 2500,
         items: 'painting',
         itempecrent: 1000,
     },
