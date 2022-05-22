@@ -282,12 +282,12 @@ module.exports = {
                     button.deferUpdate()
 
                     if(button.customId === "confirm") {
-                        const local_response = await profileModel.findOneAndUpdate(
-                            {userId: message.author.id},
+                        await userModel.updateOne(
+                            { userId: message.author.id },
                             {
-                                $inc: {
-                                    coins: amount,
-                                },
+                                $set: {
+                                    awaitinginteraction: false
+                                }
                             },
                             {
                                 upsert: true,
@@ -328,12 +328,12 @@ module.exports = {
                         })
                     
                     } else if(button.customId === "cancel") {
-                        const local_response = await profileModel.findOneAndUpdate(
-                            {userId: message.author.id},
+                        await userModel.updateOne(
+                            { userId: message.author.id },
                             {
-                                $inc: {
-                                    coins: amount,
-                                },
+                                $set: {
+                                    awaitinginteraction: false
+                                }
                             },
                             {
                                 upsert: true,
@@ -365,12 +365,12 @@ module.exports = {
                     if(collected.size > 0) {
 
                     } else {
-                        const local_response = await profileModel.findOneAndUpdate(
-                            {userId: message.author.id},
+                        await userModel.updateOne(
+                            { userId: message.author.id },
                             {
-                                $inc: {
-                                    coins: amount,
-                                },
+                                $set: {
+                                    awaitinginteraction: false
+                                }
                             },
                             {
                                 upsert: true,
