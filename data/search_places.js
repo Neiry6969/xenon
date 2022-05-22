@@ -90,7 +90,7 @@ module.exports = [
         place: 'vast field',
         message: `You wan around a vast green field and found ❀ \`COINS\` truly remarkable.`,
         coins: 10000,
-        items: 'skateboard',
-        itempecrent: 20000,
+        items: 'greenblossom',
+        itempecrent: 1000,
     },
 ]
