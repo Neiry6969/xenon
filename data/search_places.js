@@ -84,7 +84,7 @@ module.exports = [
         message: `You went into the a scary castle and ran away with ❀ \`COINS\` as someone chased you.`,
         coins: 10,
         items: 'silvercrown',
-        itempecrent: 1000,
+        itempecrent: 1,
     },
     {
         place: 'vast field',
