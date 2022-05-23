@@ -8,11 +8,11 @@ module.exports = [
         number: 1000 * 1000,
     },
     {
-        letter: 'm',
+        letter: 'b',
         number: 1000 * 1000 * 1000,
     },
     {
-        letter: 'b',
+        letter: 't',
         number: 1000 * 1000 * 1000 * 1000,
     },
 ]
