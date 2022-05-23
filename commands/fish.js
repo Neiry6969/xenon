@@ -36,6 +36,8 @@ module.exports = {
     maxArgs: 0,
     description: "fish for some food.",
     async execute(message, args, cmd, client, Discord, profileData) {
+        const fishingrod = allItems.find((val) => (val.item.toLowerCase()) === "fishingrod")
+
         const iftable = args[0]?.toLowerCase()
         if(iftable === 'table' || iftable === 'list') {
             const fish = allItems.find((val) => (val.item.toLowerCase()) === "fish")
@@ -56,7 +58,7 @@ module.exports = {
 
             const embed = {
                 color: 'RANDOM',
-                title: `Fish Table`,
+                title: `Fish Table ${fishingrod.icon}`,
                 description: `**Fail** ──── \`60%\`\n\n**Lowest** ──── \`20%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.99%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.01%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
             };
@@ -69,7 +71,6 @@ module.exports = {
             }
     
             inventoryModel.findOne(params, async(err, data) => {
-                const fishingrod = allItems.find((val) => (val.item.toLowerCase()) === "fishingrod")
 
                 if(data) {
                     if(
@@ -77,7 +78,7 @@ module.exports = {
                     ) {
                         const embed = {
                             color: 'RANDOM',
-                            title: `Fish Error`,
+                            title: `Fish Error ${fishingrod.icon}`,
                             description: `You need atleast \`1\` ${fishingrod.item} ${fishingrod.icon} to go fishing. Use this command again when you have one.`,
                             timestamp: new Date(),
                         };
@@ -87,7 +88,7 @@ module.exports = {
                         if(result === `You weren't able to catch anything.`) {
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a fish`,
+                                title: `${message.author.username} went for a fish ${fishingrod.icon}`,
                                 description: result,
                                 timestamp: new Date(),
                             };
@@ -123,7 +124,7 @@ module.exports = {
                             
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a fish`,
+                                title: `${message.author.username} went for a fish ${fishingrod.icon}`,
                                 description: `You were able to catch something! You got a \`${item.item}\` ${item.icon}`,
                                 timestamp: new Date(),
                             };
@@ -135,7 +136,7 @@ module.exports = {
                 } else {
                     const embed = {
                         color: '#FF0000',
-                        title: `Fish Error`,
+                        title: `Fish Error ${fishingrod.icon}`,
                         description: `You need atleast \`1\` ${fishingrod.icon} \`${fishingrod.item}\` to go fishing. Use this command again when you have one.`,
                         timestamp: new Date(),
                     };

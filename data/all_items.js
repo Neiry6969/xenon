@@ -1323,22 +1323,48 @@ module.exports = [
         description: "Wooden chest used to obtain items.",
         rarity: "common",
         type: "lootbox",
-        lootbox: {},
+        lootbox: [
+            {
+                i: "fishingrod",
+                minq: 1,
+                maxq: 10
+            },
+            {
+                i: "hoe",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "shovel",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "rifle",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "pickaxe",
+                minq: 1,
+                maxq: 1, 
+            },
+        ],
     },
-    {
-        item: "chestofrare",
-        name: "Rare Chest",
-        icon: "<:chestofrare:978073326452887593>",
-        price: "unable to be bought",
-        sell: 250000,
-        trade: 250000,
-        value: 250000,
-        imageUrl: "https://media.discordapp.net/attachments/978070804849893466/978074792701878272/pixil-frame-0_5.png",
-        description: "Rare chest used to obtain items.",
-        rarity: "uncommon",
-        type: "lootbox",
-        lootbox: {},
-    },
+    // {
+    //     item: "chestofrare",
+    //     name: "Rare Chest",
+    //     icon: "<:chestofrare:978073326452887593>",
+    //     price: "unable to be bought",
+    //     sell: 250000,
+    //     trade: 250000,
+    //     value: 250000,
+    //     imageUrl: "https://media.discordapp.net/attachments/978070804849893466/978074792701878272/pixil-frame-0_5.png",
+    //     description: "Rare chest used to obtain items.",
+    //     rarity: "uncommon",
+    //     type: "lootbox",
+    //     lootbox: [],
+    // },
     {
         item: "chestofcommon",
         name: "Common Chest",
@@ -1351,47 +1377,47 @@ module.exports = [
         description: "Common chest used to obtain items.",
         rarity: "common",
         type: "lootbox",
-        lootbox: [ 
+        lootbox: [
             {
-                i: "donut",
-                minq: 1,
-                maxq: 100
+              i: "donut",
+              minq: 1,
+              maxq: 100
             },
             {
-                i: "bottleofcola",
-                minq: 1,
-                maxq: 400
+              i: "bottleofcola",
+              minq: 1,
+              maxq: 400
             },
             {
-                i: "pinkblossom",
-                minq: 1,
-                maxq: 10
+              i: "pinkblossom",
+              minq: 1,
+              maxq: 10
             },
             {
-                i: "bankmessage",
-                minq: 1,
-                maxq: 2
+              i: "bankmessage",
+              minq: 1,
+              maxq: 2
             },
             {
-                i: "bird",
-                minq: 1,
-                maxq: 5
+              i: "bird",
+              minq: 1,
+              maxq: 5
             },
             {
-                i: "fish",
-                minq: 1,
-                maxq: 6
+              i: "fish",
+              minq: 1,
+              maxq: 6
             },
             {
-                i: "bread",
-                minq: 1,
-                maxq: 6
+              i: "bread",
+              minq: 1,
+              maxq: 6
             },
             {
-                i: "chick",
-                minq: 1,
-                maxq: 8,
-            },
+              i: "chick",
+              minq: 1,
+              maxq: 8
+            }
         ],
     },
     {
@@ -1406,50 +1432,262 @@ module.exports = [
         description: "Jade chest used to obtain items.",
         rarity: "rare",
         type: "lootbox",
-        // lootbox: {},
+        lootbox: [    
+            {
+                i: "greenblossom",
+                minq: 1,
+                maxq: 20
+            },
+            {
+                i: "bankmessage",
+                minq: 1,
+                maxq: 10
+            },
+            {
+                i: "bird",
+                minq: 1,
+                maxq: 100
+            },
+            {
+                i: "fish",
+                minq: 1,
+                maxq: 69
+            },
+            {
+                i: "bread",
+                minq: 1,
+                maxq: 69
+            },
+            {
+                i: "chick",
+                minq: 1,
+                maxq: 20,
+            },
+            {
+                i: "avocado",
+                minq: 1,
+                maxq: 2, 
+            },
+            {
+                i: "hoe",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "shovel",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "rifle",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "pickaxe",
+                minq: 1,
+                maxq: 4, 
+            },
+            {
+                i: "fishingrod",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "fineribbon",
+                minq: 1,
+                maxq: 5, 
+            },
+            {
+                i: "finecoin",
+                minq: 1,
+                maxq: 2, 
+            },
+        ],
     },
     {
         item: "chestofangelic",
         name: "Angelic Chest",
         icon: "<:chestofangelic:978072802466877480>",
         price: "unable to be bought",
-        sell: 5000000,
-        trade: 5000000,
-        value: 5000000,
+        sell: 50000000,
+        trade: 50000000,
+        value: 50000000,
         imageUrl: "https://media.discordapp.net/attachments/978070804849893466/978072717284749382/pixil-frame-0_3.png",
         description: "Angelic chest used to obtain items.",
         rarity: "epic",
         type: "lootbox",
-        // lootbox: {
-
-        // },
+        lootbox: [
+            {
+                i: "fishingrod",
+                minq: 1,
+                maxq: 20
+            },
+            {
+                i: "hoe",
+                minq: 1,
+                maxq: 20, 
+            },
+            {
+                i: "shovel",
+                minq: 1,
+                maxq: 20, 
+            },
+            {
+                i: "rifle",
+                minq: 1,
+                maxq: 20, 
+            },
+            {
+                i: "pickaxe",
+                minq: 1,
+                maxq: 15, 
+            },
+            {
+                i: "shardofgold",
+                minq: 1,
+                maxq: 50, 
+            },
+            {
+                i: "goldenblossom",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "goldencrown",
+                minq: 1,
+                maxq: 1,
+            }
+        ],
     },
     {
         item: "chestofgods",
         name: "God's Chest",
         icon: "<:chestofgods:978073505914585119>",
         price: "unable to be bought",
-        sell: 30000000,
-        trade: 30000000,
-        value: 30000000,
+        sell: 200000000,
+        trade: 200000000,
+        value: 200000000,
         imageUrl: "https://media.discordapp.net/attachments/978070804849893466/978074779837923338/pixil-frame-0_6.png",
         description: "God's chest used to obtain items.",
         rarity: "epic",
         type: "lootbox",
-        // lootbox: {},
+        lootbox: [
+            {
+                i: "shardofgold",
+                minq: 1,
+                maxq: 500, 
+            },
+            {
+                i: "goldenblossom",
+                minq: 1,
+                maxq: 100, 
+            },
+            {
+                i: "goldencrown",
+                minq: 1,
+                maxq: 3,
+            },
+            {
+                i: "finetrophy",
+                minq: 1,
+                maxq: 1, 
+            },
+            {
+                i: "finemedal",
+                minq: 1,
+                maxq: 5, 
+            },
+            {
+                i: "bronzecrown",
+                minq: 1,
+                maxq: 1, 
+            },
+            {
+                i: "silvercrown",
+                minq: 1,
+                maxq: 1, 
+            },
+            {
+                i: "potato",
+                minq: 1000,
+                maxq: 10000, 
+            },
+            {
+                i: "onion",
+                minq: 100,
+                maxq: 10000, 
+            },
+            {
+                i: "blueblossom",
+                minq: 10,
+                maxq: 100, 
+            },
+        ],
     },
     {
         item: "chestofshadow",
         name: "Shadow Chest",
         icon: "<:chestofshadow:978075115554230352>",
         price: "unable to be bought",
-        sell: 50000000,
-        trade: 50000000,
-        value: 50000000,
+        sell: 500000000,
+        trade: 500000000,
+        value: 500000000,
         imageUrl: "https://media.discordapp.net/attachments/978070804849893466/978075091139194950/pixil-frame-0_8.png",
         description: "Shadow chest used to obtain shady items.",
         rarity: "legendary",
         type: "lootbox",
-        // lootbox: {},
+        lootbox: [
+            {
+                i: "scythe",
+                minq: 1,
+                maxq: 3, 
+            },
+            {
+                i: "fishingrod",
+                minq: 1,
+                maxq: 30
+            },
+            {
+                i: "hoe",
+                minq: 1,
+                maxq: 30, 
+            },
+            {
+                i: "shovel",
+                minq: 1,
+                maxq: 30, 
+            },
+            {
+                i: "rifle",
+                minq: 1,
+                maxq: 30, 
+            },
+            {
+                i: "pickaxe",
+                minq: 1,
+                maxq: 15, 
+            },
+            {
+                i: "finetrophy",
+                minq: 1,
+                maxq: 3, 
+            },
+            {
+                i: "finemedal",
+                minq: 1,
+                maxq: 10, 
+            },
+            {
+                i: "finecrown",
+                minq: 1,
+                maxq: 1, 
+            },
+            {
+                i: "moon",
+                minq: 5,
+                maxq: 15, 
+            },
+        ],
     },
 ]

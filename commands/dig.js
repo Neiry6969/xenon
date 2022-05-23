@@ -36,6 +36,8 @@ module.exports = {
     maxArgs: 0,
     description: "dig for some treasures.",
     async execute(message, args, cmd, client, Discord, profileData) {
+        const shovel = allItems.find((val) => (val.item.toLowerCase()) === "shovel")
+
         const iftable = args[0]?.toLowerCase()
         if(iftable === 'table' || iftable === 'list') {
             const worm = allItems.find((val) => (val.item.toLowerCase()) === "worm")
@@ -57,7 +59,7 @@ module.exports = {
 
             const embed = {
                 color: 'RANDOM',
-                title: `Dig Table`,
+                title: `Dig Table ${shovel.icon}`,
                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.9%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.1%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
             };
@@ -70,7 +72,6 @@ module.exports = {
             }
 
             inventoryModel.findOne(params, async(err, data) => {
-                const shovel = allItems.find((val) => (val.item.toLowerCase()) === "shovel")
 
                 if(data) {
                     if(
@@ -78,7 +79,7 @@ module.exports = {
                     ) {
                         const embed = {
                             color: 'RANDOM',
-                            title: `Dig Error`,
+                            title: `Dig Error ${shovel.icon}`,
                             description: `You need atleast \`1\` ${shovel.item} ${shovel.icon} to go digging. Use this command again when you have one.`,
                             timestamp: new Date(),
                         };
@@ -88,7 +89,7 @@ module.exports = {
                         if(result === `You weren't able to dig anything, just bad luck.`) {
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a dig`,
+                                title: `${message.author.username} went for a dig ${shovel.icon}`,
                                 description: result,
                                 timestamp: new Date(),
                             };
@@ -124,7 +125,7 @@ module.exports = {
                             
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a dig`,
+                                title: `${message.author.username} went for a dig ${shovel.icon}`,
                                 description: `You pulled something out of the ground! You got a \`${item.item}\` ${item.icon}`,
                                 timestamp: new Date(),
                             };
@@ -136,7 +137,7 @@ module.exports = {
                 } else {
                     const embed = {
                         color: '#FF0000',
-                        title: `Dig Error`,
+                        title: `Dig Error ${shovel.icon}`,
                         description: `You need atleast \`1\` ${shovel.icon} \`${shovel.item}\` to go digging. Use this command again when you have one.`,
                         timestamp: new Date(),
                     };

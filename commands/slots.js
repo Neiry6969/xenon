@@ -1,4 +1,6 @@
 const profileModel = require("../models/profileSchema");
+const inventoryModel = require('../models/inventorySchema');
+
 const letternumbers = require('../reference/letternumber');
 
 const winningicons = [
@@ -112,9 +114,13 @@ module.exports = {
     minArgs: 0,
     maxArgs: 0,
     description: "slots your money away.",
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, profileData, userData, inventoryData) {
         const iftable = args[0]?.toLowerCase();
-        const maxwallet = 25000000;
+        let maxwallet = 25000000;
+
+        if(inventoryData.inventory['finecrown'] >= 1) {
+            maxwallet = 500000000
+        } 
 
 
         if(iftable === 'table' || iftable === 'list') {

@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton } = require('discord.js')
+const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js')
 
 const profileModel = require("../models/profileSchema");
 const allItems = require("../data/all_items");
@@ -114,6 +114,7 @@ module.exports = {
                         'bread', 
                         'tomato',
                         'premiumcard',
+                        'chestofcommon'
                     ]
                     
                     if(item.item === 'premiumcard') {
@@ -296,6 +297,67 @@ module.exports = {
                                 await inventoryModel.findOneAndUpdate(params, data);
                                 return message.reply(`You used a ${item.icon} \`${item.item}\` and became a premium forever!`);
                             }
+                        } else if(item.type = "lootbox") {
+                            let itemsarray = [];
+
+                            let i;
+                            for (i = 0; i < useamount; i++) {
+                                const resultitemnumber = Math.floor(Math.random() * item.lootbox.length)
+                                const resultitemobject = item.lootbox[resultitemnumber]
+                                const resultitem = resultitemobject.i
+                                const maxq = resultitemobject.maxq - 1;
+                                const minq = resultitemobject.minq;
+                                const resultamount = Math.floor(Math.random() * maxq) + minq
+
+                                const hasitem = itemsarray.find(({ item }) => item === resultitem)
+                                if(hasitem) {
+                                    const index = itemsarray.findIndex(object => {
+                                        return object.item === hasitem.item;
+                                    });
+                                    
+                                    const added_amount = hasitem.quantity + resultamount
+                                
+                                    itemsarray[index].quantity = added_amount
+                                } else {
+                                itemsarray.push({
+                                        item: resultitem,
+                                        quantity: resultamount,
+                                    })
+                                }
+                            }
+
+
+                            itemsarray.forEach(async value => {
+                                const hasItem = Object.keys(data.inventory).includes(value.item);
+                                if(!hasItem) {
+                                    data.inventory[value.item] = value.quantity;
+                                } else {
+                                    data.inventory[value.item] = data.inventory[value.item] + value.quantity;
+                                }
+
+                                await inventoryModel.updateOne({ userId: message.author.id }, data);
+                            })
+
+                            data.inventory[item.item] = data.inventory[item.item] - useamount;
+                            await inventoryModel.findOneAndUpdate(params, data);
+
+
+
+                            const resultsmap = itemsarray.map(value => {
+                                const lootitem = allItems.find(({ item }) => item === value.item)  
+
+                                return `\`${value.quantity.toLocaleString()}x\` ${lootitem.icon} \`${lootitem.item}\``
+                            })
+                            .sort()
+                            .join('\n')
+
+                            const embed = new MessageEmbed()
+                                .setTitle(`${message.author.username}'s ${item.name}`)
+                                .setThumbnail(item.imageUrl)
+                                .setDescription(resultsmap)
+                                .setFooter({ text: `${useamount.toLocaleString()}x ${item.item}`, iconURL: message.author.displayAvatarURL() });
+
+                            return message.reply({ embeds: [embed] });  
                         } else {
                             const embed = {
                                 color: '#FF0000',
@@ -307,8 +369,13 @@ module.exports = {
                             return message.reply({ embeds: [embed] });
                         }
                     }
+
+                    const confirmationitems = [
+                        'bankmessage',
+                        'premiumcard',
+                    ]
        
-                    if(totalprice >= 1000000) {
+                    if(totalprice >= 1000000 && confirmationitems.includes(item.item)) {
                         let expandedspace; 
                         if(item.item === 'bankmessage') {
                             expandedspace = Math.floor(Math.random() * (200000 * useamount)) + 50000 * useamount;
@@ -335,10 +402,6 @@ module.exports = {
                                     );
         
                                     data.inventory[item.item] = data.inventory[item.item] - useamount;
-                                    await inventoryModel.findOneAndUpdate(params, data);
-                                } else if(item.item === 'donut' || item.item === 'kfcchicken' || item.item === 'bread' || item.item === 'tomato') {
-                                    data.inventory[item.item] = data.inventory[item.item] - 1;
-            
                                     await inventoryModel.findOneAndUpdate(params, data);
                                 } else if(item.item === 'premiumcard') {
                                     data.inventory[item.item] = data.inventory[item.item] - 1;
@@ -377,10 +440,6 @@ module.exports = {
                                     );
         
                                     data.inventory[item.item] = data.inventory[item.item] + useamount;
-                                    await inventoryModel.findOneAndUpdate(params, data);
-                                } else if(item.item === 'donut' || item.item === 'kfcchicken' || item.item === 'bread' || item.item === 'tomato') {
-                                    data.inventory[item.item] = data.inventory[item.item] + 1;
-            
                                     await inventoryModel.findOneAndUpdate(params, data);
                                 } else if(item.item === 'premiumcard') {
                                     data.inventory[item.item] = data.inventory[item.item] + 1;

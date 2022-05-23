@@ -82,6 +82,8 @@ module.exports = {
     maxArgs: 0,
     description: "Mine for some materials.",
     async execute(message, args, cmd, client, Discord, profileData) {
+        const pickaxe = allItems.find((val) => (val.item.toLowerCase()) === "pickaxe")
+
         const iftable = args[0]?.toLowerCase()
         if(iftable === 'table' || iftable === 'list') {
             const lowestMap = lowest
@@ -131,7 +133,6 @@ module.exports = {
             }
     
             inventoryModel.findOne(params, async(err, data) => {
-                const pickaxe = allItems.find((val) => (val.item.toLowerCase()) === "pickaxe")
 
                 if(data) {
                     if(
@@ -139,7 +140,7 @@ module.exports = {
                     ) {
                         const embed = {
                             color: 'RANDOM',
-                            title: `Mine Error`,
+                            title: `Mine Error ${pickaxe.icon}`,
                             description: `You need atleast \`1\` ${pickaxe.item} ${pickaxe.icon} to go minning. Use this command again when you have one.`,
                             timestamp: new Date(),
                         };
@@ -149,7 +150,7 @@ module.exports = {
                         if(result === `You weren't able to mine anything, unlucky.`) {
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a mine`,
+                                title: `${message.author.username} went for a mine ${pickaxe.icon}`,
                                 description: result,
                                 timestamp: new Date(),
                             };
@@ -185,7 +186,7 @@ module.exports = {
                             
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a mine`,
+                                title: `${message.author.username} went for a mine ${pickaxe.icon}`,
                                 description: `Nice find! You got [\`${amount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug) \`${item.item}\` ${item.icon}`,
                                 timestamp: new Date(),
                             };
@@ -197,7 +198,7 @@ module.exports = {
                 } else {
                     const embed = {
                         color: '#FF0000',
-                        title: `Mine Error`,
+                        title: `Mine Error ${pickaxe.icon}`,
                         description: `You need atleast \`1\` ${pickaxe.icon} \`${pickaxe.item}\` to go minning. Use this command again when you have one.`,
                         timestamp: new Date(),
                     };

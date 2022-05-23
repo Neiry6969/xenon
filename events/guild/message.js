@@ -254,7 +254,7 @@ module.exports = async(Discord, client, message) => {
                         try {
                             data.cooldowns[commandname] = Date.now() + cooldown_amount;
                             await userModel.findOneAndUpdate(params, data);
-                            command.execute(message, args, cmd, client, Discord, profileData, userData);
+                            command.execute(message, args, cmd, client, Discord, profileData, userData, inventoryData);
                             
                         } catch (error) {
                             message.reply("There was an error running this command.");
@@ -329,7 +329,7 @@ module.exports = async(Discord, client, message) => {
                 setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
             
                 try {
-                    return command.execute(message, args, cmd, client, Discord, profileData, userData);
+                    return command.execute(message, args, cmd, client, Discord, profileData, userData, inventoryData);
                     
                 } catch (error) {
                     message.reply("There was an error running this command.");
@@ -357,7 +357,7 @@ module.exports = async(Discord, client, message) => {
             command.name === 'harv'
         ) {
             try {
-                command.execute(message, args, cmd, client, Discord, profileData);
+                command.execute(message, args, cmd, client, Discord, profileData, inventoryData);
             } catch (error) {
                 message.reply("There was an error running this command.");
                 console.log(error);

@@ -37,6 +37,8 @@ module.exports = {
     maxArgs: 0,
     description: "harvest for some food.",
     async execute(message, args, cmd, client, Discord, profileData) {
+        const hoe = allItems.find((val) => (val.item.toLowerCase()) === "hoe")
+
         const iftable = args[0]?.toLowerCase()
         if(iftable === 'table' || iftable === 'list') {
             const bread = allItems.find((val) => (val.item.toLowerCase()) === "bread")
@@ -58,7 +60,7 @@ module.exports = {
 
             const embed = {
                 color: 'RANDOM',
-                title: `Harvest Table`,
+                title: `Harvest Table ${hoe.icon}`,
                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.5%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.5%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
             };
@@ -71,7 +73,6 @@ module.exports = {
             }
     
             inventoryModel.findOne(params, async(err, data) => {
-                const hoe = allItems.find((val) => (val.item.toLowerCase()) === "hoe")
 
                 if(data) {
                     if(
@@ -79,7 +80,7 @@ module.exports = {
                     ) {
                         const embed = {
                             color: 'RANDOM',
-                            title: `Harvest Error`,
+                            title: `Harvest Error ${hoe.icon}`,
                             description: `You need atleast \`1\` ${hoe.item} ${hoe.icon} to go harvesting. Use this command again when you have one.`,
                             timestamp: new Date(),
                         };
@@ -89,7 +90,7 @@ module.exports = {
                         if(result === `You weren't able to harvest anything.`) {
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a harvest`,
+                                title: `${message.author.username} went for a harvest ${hoe.icon}`,
                                 description: result,
                                 timestamp: new Date(),
                             };
@@ -125,7 +126,7 @@ module.exports = {
                             
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a harvest`,
+                                title: `${message.author.username} went for a harvest ${hoe.icon}`,
                                 description: `You were able to harvest something! You got a \`${item.item}\` ${item.icon}`,
                                 timestamp: new Date(),
                             };
@@ -137,7 +138,7 @@ module.exports = {
                 } else {
                     const embed = {
                         color: '#FF0000',
-                        title: `Harvest Error`,
+                        title: `Harvest Error ${hoe.icon}`,
                         description: `You need atleast \`1\` ${hoe.icon} \`${hoe.item}\` to go harvesting. Use this command again when you have one.`,
                         timestamp: new Date(),
                     };

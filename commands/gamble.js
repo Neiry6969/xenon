@@ -1,4 +1,6 @@
 const profileModel = require("../models/profileSchema");
+
+const allitems = require('../data/all_items')
 const letternumbers = require('../reference/letternumber');
 
 const dice = [
@@ -36,12 +38,16 @@ module.exports = {
     minArgs: 0,
     maxArgs: 0,
     description: "bet your money away.",
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, profileData, userData, inventoryData) {
         const maxwinningmulti = 1.5;
         const minwinningmulti = 0.5;
         const iftable = args[0]?.toLowerCase();
-        const maxwallet = 25000000;
+        let maxwallet = 25000000;
 
+        if(inventoryData.inventory['finecrown'] >= 1) {
+            maxwallet = 500000000
+        } 
+    
 
         if(iftable === 'table' || iftable === 'list') {
             const embed = {

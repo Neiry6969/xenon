@@ -41,6 +41,8 @@ module.exports = {
     maxArgs: 0,
     description: "hunt for some animals.",
     async execute(message, args, cmd, client, Discord, profileData) {
+        const rifle = allItems.find((val) => (val.item.toLowerCase()) === "rifle")
+
         const iftable = args[0]?.toLowerCase()
         if(iftable === 'table' || iftable === 'list') {
             const bird = allItems.find((val) => (val.item.toLowerCase()) === "bird")
@@ -64,7 +66,7 @@ module.exports = {
 
             const embed = {
                 color: 'RANDOM',
-                title: `Hunt Table`,
+                title: `Hunt Table ${rifle.icon}`,
                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.5%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.49%\`\nitems: ${high_table}\n\n**Highest** ──── \`0.01%\`\nitems: ${highest_table}`,
                 timestamp: new Date(),
             };
@@ -77,7 +79,6 @@ module.exports = {
             }
     
             inventoryModel.findOne(params, async(err, data) => {
-                const rifle = allItems.find((val) => (val.item.toLowerCase()) === "rifle")
 
                 if(data) {
                     if(
@@ -85,7 +86,7 @@ module.exports = {
                     ) {
                         const embed = {
                             color: 'RANDOM',
-                            title: `Hunt Error`,
+                            title: `Hunt Error ${rifle.icon}`,
                             description: `You need atleast \`1\` ${rifle.item} ${rifle.icon} to go hunting. Use this command again when you have one.`,
                             timestamp: new Date(),
                         };
@@ -95,7 +96,7 @@ module.exports = {
                         if(result === `You weren't able to hunt any animals, welp I guess you should sharpen your aim.`) {
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a hunt`,
+                                title: `${message.author.username} went for a hunt ${rifle.icon}`,
                                 description: result,
                                 timestamp: new Date(),
                             };
@@ -131,7 +132,7 @@ module.exports = {
                             
                             const embed = {
                                 color: 'RANDOM',
-                                title: `${message.author.username} went for a hunt`,
+                                title: `${message.author.username} went for a hunt ${rifle.icon}`,
                                 description: `Wow nice shot! You got a \`${item.item}\` ${item.icon}`,
                                 timestamp: new Date(),
                             };
@@ -143,7 +144,7 @@ module.exports = {
                 } else {
                     const embed = {
                         color: '#FF0000',
-                        title: `Hunt Error`,
+                        title: `Hunt Error ${rifle.icon}`,
                         description: `You need atleast \`1\` ${rifle.icon} \`${rifle.item}\` to go hunting. Use this command again when you have one.`,
                         timestamp: new Date(),
                     };
