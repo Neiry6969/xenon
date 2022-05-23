@@ -208,6 +208,20 @@ module.exports = [
         type: "collectable"
     },
     {
+        item: "ghost",
+        name: "Ghost",
+        aliases: [],
+        icon: "<:ghost:978412292012146688>",
+        price: "unable to be bought",
+        sell: 10000000,
+        trade: 10000000,
+        value: 10000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/978412383087243384/pixil-frame-0_47.png",
+        description: "Boo! Ghost!",
+        rarity: "rare",
+        type: "collectable"
+    },
+    {
         item: "excaliburghost",
         name: "Excalibur's Ghost",
         aliases: ["excal", 'excali', 'eghost', 'burg', 'exca'],
@@ -1737,20 +1751,6 @@ module.exports = [
         description: "Cool cellphone. Used to do things you do on your cellphone.",
         rarity: "common",
         type: "tool"
-    },
-    {
-        item: "ghost",
-        name: "Ghost",
-        aliases: [],
-        icon: "<:ghost:978412292012146688>",
-        price: "unable to be bought",
-        sell: 10000000,
-        trade: 10000000,
-        value: 10000000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/978412383087243384/pixil-frame-0_47.png",
-        description: "Boo! Ghost!",
-        rarity: "rare",
-        type: "collectable"
     },
     {
         item: "airpods",
