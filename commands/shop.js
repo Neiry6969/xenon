@@ -19,7 +19,7 @@ module.exports = {
              embed = {
                 color: '#AF97FE',
                 title: `Xenon Item Rarity Chart`,
-                description: `**Ranking from highest to lowest:**\n\n\`mythical\`\n\`godly\`\n\`legendary\n\`exotic\`\n\`epic\`\n\`rare\`\n\`uncommon\`\n\`common\``,
+                description: `**Ranking from highest to lowest:**\n\n\`mythical\`\n\`godly\`\n\`legendary\`\n\`exotic\`\n\`epic\`\n\`rare\`\n\`uncommon\`\n\`common\``,
                 timestamp: new Date(),
             };
 

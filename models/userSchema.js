@@ -94,6 +94,9 @@ const userSchema = new mongoose.Schema(
             type: Object,
             default: {},
         },
+        dailystreak: {
+            type: Date,
+        },
     }, 
     { minimize: false }
 )

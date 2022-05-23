@@ -77,12 +77,16 @@ module.exports = {
     
                 return message.reply({ embeds: [embed] });
             }
+
+           
     
 
             if(amount === 'max' || amount === 'all') {
                 amount = data.inventory[item.item];
             } else if(amount === 'half') {
                 amount = Math.floor(data.inventory[item.item] / 2)
+            } else if(!amount) {
+                amount = 1
             } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
                 if(parseInt(amount.slice(0, -1))) {
                     const number = parseFloat(amount.slice(0, -1));

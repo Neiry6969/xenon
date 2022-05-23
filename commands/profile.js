@@ -383,7 +383,7 @@ module.exports = {
                             },
                             { 
                                 name: 'Other (MISC)',
-                                value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
+                                value: `Daily Streak: <:streakflame:978108608254459954> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
                             },
                             
                         ],

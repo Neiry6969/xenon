@@ -41,6 +41,15 @@ module.exports = {
             }
         }
 
+        if(!amount) {
+            const embed = {
+                color: '#FF0000',
+                title: `Transaction Error`,
+                description: `Specify the amount you want to share.\n${expectedsyntax}`,
+            };
+            return message.reply({ embeds: [embed] })
+        }
+
         if(amount === 'max' || amount === 'all') {
             amount = profileData.coins;
         } else if(amount === 'half') {
