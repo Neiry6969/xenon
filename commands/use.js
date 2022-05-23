@@ -114,7 +114,12 @@ module.exports = {
                         'bread', 
                         'tomato',
                         'premiumcard',
-                        'chestofcommon'
+                        'chestofcommon',
+                        'chestofgods',
+                        'chestofangelic',
+                        'chestofjade',
+                        'chestofshadow',
+                        'chestofwooden',
                     ]
                     
                     if(item.item === 'premiumcard') {
