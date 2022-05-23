@@ -44,9 +44,6 @@ module.exports = {
         const iftable = args[0]?.toLowerCase();
         let maxwallet = 25000000;
 
-        if(inventoryData.inventory['finecrown'] >= 1) {
-            maxwallet = 500000000
-        } 
     
 
         if(iftable === 'table' || iftable === 'list') {
@@ -59,6 +56,10 @@ module.exports = {
     
             message.reply({ embeds: [embed] })
         } else {
+            
+            if(inventoryData.inventory['finecrown'] >= 1) {
+                maxwallet = 500000000
+            } 
             let betamount = args[0]
             const maxbetamount = 500000;
 

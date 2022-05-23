@@ -118,10 +118,6 @@ module.exports = {
         const iftable = args[0]?.toLowerCase();
         let maxwallet = 25000000;
 
-        if(inventoryData.inventory['finecrown'] >= 1) {
-            maxwallet = 500000000
-        } 
-
 
         if(iftable === 'table' || iftable === 'list') {
             const multifor2 = multiplieramount_2.map((value) => {
@@ -140,6 +136,10 @@ module.exports = {
     
             message.reply({ embeds: [embed] })
         } else {
+            
+            if(inventoryData.inventory['finecrown'] >= 1) {
+                maxwallet = 500000000
+            } 
             let slotsamount = args[0]
             const maxslotsamount = 500000;
 
