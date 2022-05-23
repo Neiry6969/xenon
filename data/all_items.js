@@ -1378,6 +1378,11 @@ module.exports = [
         type: "lootbox",
         lootbox: [
             {
+                i: "cellphone",
+                minq: 1,
+                maxq: 1
+            },
+            {
               i: "donut",
               minq: 1,
               maxq: 100
@@ -1431,7 +1436,17 @@ module.exports = [
         description: "Jade chest used to obtain items.",
         rarity: "rare",
         type: "lootbox",
-        lootbox: [    
+        lootbox: [   
+            {
+                i: "airpods",
+                minq: 1,
+                maxq: 1
+            }, 
+            {
+                i: "ghost",
+                minq: 1,
+                maxq: 1
+            }, 
             {
                 i: "greenblossom",
                 minq: 1,
@@ -1518,6 +1533,16 @@ module.exports = [
         type: "lootbox",
         lootbox: [
             {
+                i: "airpods",
+                minq: 1,
+                maxq: 5
+            }, 
+            {
+                i: "ghost",
+                minq: 1,
+                maxq: 5
+            },
+            {
                 i: "fishingrod",
                 minq: 1,
                 maxq: 20
@@ -1572,6 +1597,16 @@ module.exports = [
         rarity: "epic",
         type: "lootbox",
         lootbox: [
+            {
+                i: "airpods",
+                minq: 1,
+                maxq: 20
+            }, 
+            {
+                i: "ghost",
+                minq: 1,
+                maxq: 20
+            },
             {
                 i: "shardofgold",
                 minq: 1,
@@ -1688,5 +1723,47 @@ module.exports = [
                 maxq: 15, 
             },
         ],
+    },
+    {
+        item: "cellphone",
+        name: "Cell Phone",
+        aliases: [],
+        icon: "<:cellphone:978410224966852638>",
+        price: "unable to be bought",
+        sell: 5000,
+        trade: 0,
+        value: 5000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/978412550679056444/pixil-frame-0_41.png",
+        description: "Cool cellphone. Used to do things you do on your cellphone.",
+        rarity: "common",
+        type: "tool"
+    },
+    {
+        item: "ghost",
+        name: "Ghost",
+        aliases: [],
+        icon: "<:ghost:978412292012146688>",
+        price: "unable to be bought",
+        sell: 10000000,
+        trade: 10000000,
+        value: 10000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/978412383087243384/pixil-frame-0_47.png",
+        description: "Boo! Ghost!",
+        rarity: "rare",
+        type: "collectable"
+    },
+    {
+        item: "airpods",
+        name: "Airpods",
+        aliases: [],
+        icon: "<:airpods:978413884606144533>",
+        price: "unable to be bought",
+        sell: 10000000,
+        trade: 10000000,
+        value: 10000000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/978401349031063572/pixil-frame-0_38.png",
+        description: "Wear these and you will be cooler, you can't hear anyone's insults no more.",
+        rarity: "rare",
+        type: "collectable"
     },
 ]
