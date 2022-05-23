@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton } = require('discord.js')
+const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js')
 
 const allItems = require('../data/all_items');
 const itemModel = require('../models/itemSchema');
@@ -272,6 +272,15 @@ module.exports = {
                     .join('\n')
                 }
                 
+                let lootboxitems;
+                if(item.lootbox) {
+                    lootboxitems = item.lootbox.map(value => {
+                        const craftitem = allItems.find(({ item }) => item === value.i);
+
+                        return `${craftitem.icon} \`${craftitem.item}\` [\`${value.minq.toLocaleString()} - ${value.maxq.toLocaleString()}\`]`;
+                    })
+                    .join('\n')
+                }
 
 
                 if(!data.inventory[item.item]) {
@@ -279,15 +288,13 @@ module.exports = {
                 } else {
                     itemOwned = data.inventory[item.item]
                 }
-                
-                let embed = {
-                    color: 'RANDOM',
-                    title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
-                    thumbnail: {
-                        url: item.imageUrl,
-                    },
-                    description: `> ${item.description}`,
-                    fields: [
+
+                const embed = new MessageEmbed()
+                    .setColor('RANDOM')
+                    .setTitle(`**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`)
+                    .setThumbnail(item.imageUrl)
+                    .setDescription(`> ${item.description}`)
+                    .addFields(
                         {
                             name: '_ _',
                             value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
@@ -307,54 +314,71 @@ module.exports = {
                             value: `\`${item.type}\``,
                             inline: true,
                         },
-                    ],
-                    timestamp: new Date(),
-                };
+                    )
+                    .setTimestamp()
 
-                if(craftitems && crafttools) {
-                    embed = {
-                        color: 'RANDOM',
-                        title: `**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`,
-                        thumbnail: {
-                            url: item.imageUrl,
-                        },
-                        description: `> ${item.description}`,
-                        fields: [
-                            {
-                                name: '_ _',
-                                value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
-                            },
-                            {
-                                name: 'ID',
-                                value: `\`${item.item}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Rarity',
-                                value: `\`${item.rarity}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Type',
-                                value: `\`${item.type}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Required Caft Tools',
-                                value: `${crafttools}`,
-                                inline: true,
-                            },
-                            {
-                                name: 'Required Caft Materials',
-                                value: `${craftitems}`,
-                                inline: true,
-                            },
-                        ],
-                        timestamp: new Date(),
-                    };
+                let messagecontents = { embeds: [embed] }
+
+
+                if(craftitems) {
+                    embed.addFields(
+                        {
+                            name: 'Required Caft Tools',
+                            value: `${crafttools}`,
+                            inline: true,
+                        }
+                    )
+                }
+
+                if(crafttools) {
+                    embed.addFields( 
+                        {
+                            name: 'Required Caft Materials',
+                            value: `${craftitems}`,
+                            inline: true,
+                        }
+                    )
+                }
+
+                if(lootboxitems) {
+                    let itemsbutton = new MessageButton()
+                        .setCustomId('itemsbutton')
+                        .setLabel('Possible Items')
+                        .setStyle('PRIMARY')
+
+                    let row = new MessageActionRow()
+                        .addComponents(
+                            itemsbutton
+                        );
+
+                    messagecontents = { embeds: [embed], components: [row] }
                 }
     
-                return message.reply({ embeds: [embed] });
+                const item_msg = await message.channel.send(messagecontents);
+
+                if(lootboxitems) {
+                    const ephemeralitemsembed = new MessageEmbed()
+                        .setTitle(`**Possible Items** [Possible Quantities]`)
+                        .setDescription(lootboxitems)
+                    const collector = item_msg.createMessageComponentCollector({ time: 10 * 1000 });
+                    collector.on('collect', async (interaction) => {
+                        if(interaction.customId === "itemsbutton") {
+                            await interaction.reply({ embeds: [ephemeralitemsembed], ephemeral: true });
+                        }
+                        
+                    });
+    
+                    collector.on('end', collected => {
+                        item_msg.components[0].components.forEach(c => {
+                            c.setDisabled()
+                            c.setStyle('SECONDARY')
+                        })
+                        item_msg.edit({
+                            components: item_msg.components
+                        })
+                    });
+
+                }
 
                 
             })

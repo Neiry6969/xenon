@@ -97,7 +97,7 @@ function slot(num) {
     ]
     if(num <= 690) {
         return '<:excalibur:966537260034043974>';
-    } else if(num <= 2690) {
+    } else if(num <= 1690) {
         return '<:creatorscrown:965024171463688323>';
     } else {
         const result = Math.floor(Math.random() * leftovericons.length);

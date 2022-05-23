@@ -1256,7 +1256,7 @@ module.exports = [
     {
         item: "electricalwire",
         name: "Electrical wire",
-        icon: "<:electricalwire:976215865454370816>",
+        icon: "<:electricalwire:978058884432416768>",
         price: "unable to be bought",
         sell: 60000,
         trade: 60000,
@@ -1351,7 +1351,48 @@ module.exports = [
         description: "Common chest used to obtain items.",
         rarity: "common",
         type: "lootbox",
-        lootbox: {},
+        lootbox: [ 
+            {
+                i: "donut",
+                minq: 1,
+                maxq: 100
+            },
+            {
+                i: "bottleofcola",
+                minq: 1,
+                maxq: 400
+            },
+            {
+                i: "pinkblossom",
+                minq: 1,
+                maxq: 10
+            },
+            {
+                i: "bankmessage",
+                minq: 1,
+                maxq: 2
+            },
+            {
+                i: "bird",
+                minq: 1,
+                maxq: 5
+            },
+            {
+                i: "fish",
+                minq: 1,
+                maxq: 6
+            },
+            {
+                i: "bread",
+                minq: 1,
+                maxq: 6
+            },
+            {
+                i: "chick",
+                minq: 1,
+                maxq: 8,
+            },
+        ],
     },
     {
         item: "chestofjade",
@@ -1365,7 +1406,7 @@ module.exports = [
         description: "Jade chest used to obtain items.",
         rarity: "rare",
         type: "lootbox",
-        lootbox: {},
+        // lootbox: {},
     },
     {
         item: "chestofangelic",
@@ -1379,7 +1420,9 @@ module.exports = [
         description: "Angelic chest used to obtain items.",
         rarity: "epic",
         type: "lootbox",
-        lootbox: {},
+        // lootbox: {
+
+        // },
     },
     {
         item: "chestofgods",
@@ -1393,7 +1436,7 @@ module.exports = [
         description: "God's chest used to obtain items.",
         rarity: "epic",
         type: "lootbox",
-        lootbox: {},
+        // lootbox: {},
     },
     {
         item: "chestofshadow",
@@ -1407,6 +1450,6 @@ module.exports = [
         description: "Shadow chest used to obtain shady items.",
         rarity: "legendary",
         type: "lootbox",
-        lootbox: {},
+        // lootbox: {},
     },
 ]
