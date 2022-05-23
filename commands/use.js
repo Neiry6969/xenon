@@ -330,7 +330,9 @@ module.exports = {
                                     })
                                 }
                             }
-
+                            
+                            data.inventory[item.item] = data.inventory[item.item] - useamount;
+                            inventoryModel.findOneAndUpdate(params, data);
 
                             itemsarray.forEach(async value => {
                                 const hasItem = Object.keys(data.inventory).includes(value.item);
@@ -343,8 +345,7 @@ module.exports = {
                                 await inventoryModel.updateOne({ userId: message.author.id }, data);
                             })
 
-                            data.inventory[item.item] = data.inventory[item.item] - useamount;
-                            await inventoryModel.findOneAndUpdate(params, data);
+                            
 
 
 
