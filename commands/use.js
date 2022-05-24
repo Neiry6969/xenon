@@ -310,7 +310,7 @@ module.exports = {
                             const resultitemnumber = Math.floor(Math.random() * item.lootbox.length)
                             const resultitemobject = item.lootbox[resultitemnumber]
                             const resultitem = resultitemobject.i
-                            const maxq = resultitemobject.maxq - 1;
+                            const maxq = resultitemobject.maxq - resultitemobject.minq;
                             const minq = resultitemobject.minq;
                             const resultamount = Math.floor(Math.random() * maxq) + minq
 
@@ -343,7 +343,7 @@ module.exports = {
                             }
 
                         })
-                        
+
                         inventoryData.inventory[item.item] = inventoryData.inventory[item.item] - useamount;
                         await inventoryModel.findOneAndUpdate(params, inventoryData);
 
