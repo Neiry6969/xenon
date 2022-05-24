@@ -1274,7 +1274,7 @@ module.exports = [
         sell: 60000,
         trade: 60000,
         value: 60000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976216514912993360/image_17.png?width=427&height=427",
+        imageUrl: "https://images-ext-2.discordapp.net/external/fYFPw5FqPaVW1TsTB7aqkppckpEioIIoheaNulLyh8I/%3Fsize%3D96%26quality%3Dlossless/https/cdn.discordapp.com/emojis/978058884432416768.webp",
         description: "Electrical wire. Interesting, must have been hard to craft.",
         rarity: "common",
         type: "material",

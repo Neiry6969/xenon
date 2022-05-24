@@ -19,7 +19,7 @@ module.exports = {
 
         console.log(hoursBetweenDates)
 
-        if (hoursBetweenDates > 24) {
+        if (hoursBetweenDates > 48) {
             await profileModel.findOneAndUpdate(
                 {
                     userId: message.author.id,
