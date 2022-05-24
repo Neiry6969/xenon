@@ -3,7 +3,7 @@ const profileModel = require('../models/profileSchema');
 const allItems = require('../data/all_items');
 
 const lowest = ['worm', 'rat', 'rock']
-const lowmid = ['snail', 'lizard']
+const lowmid = ['snail', 'lizard', 'chestofwooden']
 const highmid = ['scorpion', 'web', 'bluecoin']
 const high = ['statue', 'bronzecrown']
 
@@ -50,9 +50,10 @@ module.exports = {
             const web = allItems.find((val) => (val.item.toLowerCase()) === "web")
             const statue = allItems.find((val) => (val.item.toLowerCase()) === "statue")
             const bronzecrown = allItems.find((val) => (val.item.toLowerCase()) === "bronzecrown")
+            const chestofwooden = allItems.find((val) => (val.item.toLowerCase()) === "chestofwooden")
             
             const lowest_table = `${worm.icon} \`${worm.item}\`, ${rat.icon} \`${rat.item}\`, ${rock.icon} \`${rock.item}\``
-            const lowmid_table = `${lizard.icon} \`${lizard.item}\`, ${snail.icon} \`${snail.item}\``
+            const lowmid_table = `${lizard.icon} \`${lizard.item}\`, ${snail.icon} \`${snail.item}\`, ${chestofwooden.icon} \`${chestofwooden.item}\``
             const highmid_table = `${scorpion.icon} \`${scorpion.item}\`, ${bluecoin.icon} \`${bluecoin.item}\`, ${web.icon} \`${web.item}\``
             const high_table = `${statue.icon} \`${statue.item}\`, ${bronzecrown.icon} \`${bronzecrown.item}\``
 
