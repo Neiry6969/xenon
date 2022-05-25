@@ -162,7 +162,7 @@ module.exports = {
                             },
                             { 
                                 name: 'Other (MISC)',
-                                value: `Daily Streak: <a:Lssl:806961744885973062>\`0\`\nCommands Issued: \`0\`\nDeaths: ❀ \`0\``,
+                                value: `Daily Streak: <a:Lssl:806961744885973062>\`0\`\nCommands Issued: \`0\`\nDeaths: <:ghost:978412292012146688> \`0\``,
                             },
                             
                         ],
@@ -231,7 +231,7 @@ module.exports = {
                                         },
                                         { 
                                             name: 'Other (MISC)',
-                                            value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
+                                            value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
                                         },
                                         
                                     ],
@@ -271,7 +271,7 @@ module.exports = {
                                     },
                                     { 
                                         name: 'Other (MISC)',
-                                        value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
+                                        value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
                                     },
                                     
                                 ],
@@ -345,7 +345,7 @@ module.exports = {
                                 },
                                 { 
                                     name: 'Other (MISC)',
-                                    value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
+                                    value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
                                 },
                                 
                             ],
@@ -383,7 +383,7 @@ module.exports = {
                             },
                             { 
                                 name: 'Other (MISC)',
-                                value: `Daily Streak: <:streakflame:978108608254459954> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: ❀ \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
+                                value: `Daily Streak: <:streakflame:978108608254459954> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
                             },
                             
                         ],

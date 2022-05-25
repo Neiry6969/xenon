@@ -1766,4 +1766,18 @@ module.exports = [
         rarity: "rare",
         type: "collectable"
     },
+    {
+        item: "lifesaver",
+        name: "Life Saver",
+        aliases: [],
+        icon: "<:lifesaver:978754575098085426>",
+        price: 40000,
+        sell: 20000,
+        trade: 40000,
+        value: 40000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/978754687899684925/pixil-frame-0_53.png?width=390&height=390",
+        description: "Holly life saver that saves you when you die. Automatically used from you inventory when you die.",
+        rarity: "common",
+        type: "support" 
+    }
 ]
