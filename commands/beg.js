@@ -17,7 +17,7 @@ function randomizer(precent) {
 module.exports = {
     name: "beg",
     aliases: [],
-    cooldown: 0,
+    cooldown: 45,
     description: "check the user balance.",
     async execute(message, args, cmd, client, Discord, profileData, userData, inventoryData) {
         const searchidexrandom = Math.floor(Math.random() * beg_data.length)
