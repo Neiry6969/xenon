@@ -34,7 +34,7 @@ module.exports = {
             const embed = {
                 color: 'RANDOM',
                 title: `Here, have your monthly rewards`,
-                description: `**Monthly coins:** ❀ \`${monthly_amount.toLocaleString()}\`\n**User:** \`${message.author.username}\` [<@${message.author.id}>]\n\n**Your next monthly can be collected in:**\n\n\`31d 0h 0m 0s\``,
+                description: `**Monthly coins:** \`❀ ${monthly_amount.toLocaleString()}\`\n**User:** \`${message.author.username}\` [<@${message.author.id}>]\n\n**Your next monthly can be collected in:**\n\n\`31d 0h 0m 0s\``,
                 timestamp: new Date(),
             };
 

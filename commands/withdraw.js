@@ -72,16 +72,16 @@ module.exports = {
                 fields: [
                     {
                         name: 'Withdrawn',
-                        value: `❀ \`${amount.toLocaleString()}\``,
+                        value: `\`❀ ${amount.toLocaleString()}\``,
                     },
                     {
                         name: 'Current Bank Balance',
-                        value: `❀ \`${newBank.toLocaleString()}\``,
+                        value: `\`❀ ${newBank.toLocaleString()}\``,
                         inline: true,
                     },
                     {
                         name: 'Current Wallet Balance',
-                        value: `❀ \`${newWallet.toLocaleString()}\``,
+                        value: `\`❀ ${newWallet.toLocaleString()}\``,
                         inline: true,
                     },
                     

@@ -64,7 +64,7 @@ module.exports = {
 
         if(buyamount === 'max' || buyamount === 'all') {
             if(profileData.coins < item.value) {
-                return message.reply(`You need atleast ❀ \`${item.value}\` in your wallet to buy a ${item.icon} \`${item.item}\``);
+                return message.reply(`You need atleast \`❀ ${item.value}\` in your wallet to buy a ${item.icon} \`${item.item}\``);
             } else {
                 buyamount = Math.floor(profileData.coins / item.value)
             }
@@ -94,7 +94,7 @@ module.exports = {
             const embed = {
                 color: '#FF0000',
                 title: `Purchase Error`,
-                description: `You don't have enough coins in your wallet to buy that many of item.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Purchase Cost:** ❀ \`${totalprice.toLocaleString()}\`\n**Current Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                description: `You don't have enough coins in your wallet to buy that many of item.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Purchase Cost:** \`❀ ${totalprice.toLocaleString()}\`\n**Current Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 timestamp: new Date(),
             };
 
@@ -135,7 +135,7 @@ module.exports = {
             const embed = {
                 color: 'RANDOM',
                 title: `Confirm purchase`,
-                description: `<@${message.author.id}>, are you sure you want to buy ${item.icon} \`${item.item}\` x\`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\` (❀ \`${item.price.toLocaleString()}\` for each)`,
+                description: `<@${message.author.id}>, are you sure you want to buy ${item.icon} \`${item.item}\` x\`${buyamount.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (\`❀ ${item.price.toLocaleString()}\` for each)`,
                 timestamp: new Date(),
             };
             const buy_msg = await message.reply({ embeds: [embed], components: [row] });
@@ -204,7 +204,7 @@ module.exports = {
                         const embed = {
                             color: '#A8FE97',
                             title: `Purchase Receipt`,
-                            description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** ❀ \`${totalprice.toLocaleString()}\`\n**Each Bought For:** ❀ \`${item.price.toLocaleString()}\`\n**Now You Have** \`${amountowned.toLocaleString()}\``,
+                            description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** \`❀ ${totalprice.toLocaleString()}\`\n**Each Bought For:** \`❀ ${item.price.toLocaleString()}\`\n**Now You Have** \`${amountowned.toLocaleString()}\``,
                             timestamp: new Date(),
                         };
 
@@ -250,7 +250,7 @@ module.exports = {
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase cancelled`,
-                        description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\` (❀ \`${item.price.toLocaleString()}\` for each)\nI guess not. Come back later if you change your mind.`,
+                        description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (\`❀ ${item.price.toLocaleString()}\` for each)\nI guess not. Come back later if you change your mind.`,
                         timestamp: new Date(),
                     };
                     
@@ -300,7 +300,7 @@ module.exports = {
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase timeout`,
-                        description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** ❀ \`${totalprice.toLocaleString()}\` \nI guess not. Come back later if you change your mind.`,
+                        description: `<@${message.author.id}>, confirm that want to buy the following:\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` \nI guess not. Come back later if you change your mind.`,
                         timestamp: new Date(),
                     };
                     
@@ -373,7 +373,7 @@ module.exports = {
                 const embed = {
                     color: '#A8FE97',
                     title: `Purchase Receipt`,
-                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** ❀ \`${totalprice.toLocaleString()}\`\n**Each Bought For:** ❀ \`${item.price.toLocaleString()}\`\n**Now You Have:** \`${data.inventory[item.item].toLocaleString()}\``,
+                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** \`❀ ${totalprice.toLocaleString()}\`\n**Each Bought For:** \`❀ ${item.price.toLocaleString()}\`\n**Now You Have:** \`${data.inventory[item.item].toLocaleString()}\``,
                     timestamp: new Date(),
                 };
 

@@ -82,14 +82,14 @@ module.exports = {
             const hasLife = Object.keys(inventoryData.inventory).includes('lifesaver');
             if(!hasLife || hasLife < 1) {
                 dmdeathembed.setTitle(`You died, rip. <:ghost:978412292012146688>`)
-                dmdeathembed.setDescription(`You didn't have any items to save you from this death. You lost your whole wallet.\n\nDeath: \`begging\`\nCoins Lost: ❀ \`${lostcoins.toLocaleString()}\``)
+                dmdeathembed.setDescription(`You didn't have any items to save you from this death. You lost your whole wallet.\n\nDeath: \`begging\`\nCoins Lost: \`❀ ${lostcoins.toLocaleString()}\``)
             } else { 
                 inventoryData.inventory['lifesaver'] = inventoryData.inventory['lifesaver'] - 1;
                 await inventoryModel.findOneAndUpdate(params, inventoryData);
 
-                dmdeathembed.setColor('##edfaf1')
+                dmdeathembed.setColor('#edfaf1')
                 dmdeathembed.setTitle(`You were saved from death's grasps because of a lifesaver!`)
-                dmdeathembed.setDescription(`Since you had a <:lifesaver:978754575098085426> \`lifesaver\` in your inventory, death was scared and ran away, but after the <:lifesaver:978754575098085426> \`lifesaver\` disappeared. Whew, close shave!\n\nDeath: \`begging\`\nAvoided Coin Loss: ❀ \`${lostcoins.toLocaleString()}\`\nLifes Left: <:lifesaver:978754575098085426> \`${inventoryData.inventory['lifesaver'].toLocaleString()}\``)
+                dmdeathembed.setDescription(`Since you had a <:lifesaver:978754575098085426> \`lifesaver\` in your inventory, death was scared and ran away, but after the <:lifesaver:978754575098085426> \`lifesaver\` disappeared. Whew, close shave!\n\nDeath: \`begging\`\nAvoided Coin Loss: \`❀ ${lostcoins.toLocaleString()}\`\nLifes Left: <:lifesaver:978754575098085426> \`${inventoryData.inventory['lifesaver'].toLocaleString()}\``)
 
             }
 

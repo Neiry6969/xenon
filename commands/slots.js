@@ -148,7 +148,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Slots Error`,
-                    description: `You are too rich to use the slots machine.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                    description: `You are too rich to use the slots machine.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
@@ -193,7 +193,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Slots Error`,
-                    description: `You don't have that many coins to slots.\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                    description: `You don't have that many coins to slots.\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
@@ -203,7 +203,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Slots Error`,
-                    description: `You aren't able to slots that many coins\n**Max Amount:** ❀ \`${maxslotsamount.toLocaleString()}\``,
+                    description: `You aren't able to slots that many coins\n**Max Amount:** \`❀ ${maxslotsamount.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
@@ -253,7 +253,7 @@ module.exports = {
                 const embed = {
                     color: '#ff4c4c',
                     title: `${message.author.username}'s losing slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** ❀ \`${slotsamount.toLocaleString()}\`\n**Wallet:** ❀ \`${lostamount.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** \`❀ ${slotsamount.toLocaleString()}\`\n**Wallet:** \`❀ ${lostamount.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
@@ -280,7 +280,7 @@ module.exports = {
                 const embed = {
                     color: '#ff4c4c',
                     title: `${message.author.username}'s losing slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** ❀ \`${slotsamount.toLocaleString()}\`\n**Wallet:** ❀ \`${lostamount.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**You lost:** \`❀ ${slotsamount.toLocaleString()}\`\n**Wallet:** \`❀ ${lostamount.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }
@@ -317,7 +317,7 @@ module.exports = {
                 const embed = {
                     color: '#b7ffa1',
                     title: `${message.author.username}'s winning slots machine`,
-                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** ❀ \`${winamount.toLocaleString()}\`\n**Wallet:** ❀ \`${wallet.toLocaleString()}\``,
+                    description: `**[>${resultslots.join(' ')}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`❀ ${winamount.toLocaleString()}\`\n**Wallet:** \`❀ ${wallet.toLocaleString()}\``,
                     footer: {
                         text: 'Xenon Slots'
                     }

@@ -124,7 +124,7 @@ module.exports = {
                 icon_url: `${message.author.displayAvatarURL()}`,
             },
             title: `Confirm transaction`,
-            description: `<@${message.author.id}>, do you want to share ❀ \`${amount.toLocaleString()}\` to <@${target.id}>?`,
+            description: `<@${message.author.id}>, do you want to share \`❀ ${amount.toLocaleString()}\` to <@${target.id}>?`,
             timestamp: new Date(),
         };
         const share_msg = await message.reply({ embeds: [embed], components: [row] });
@@ -214,16 +214,16 @@ module.exports = {
                         icon_url: `${message.author.displayAvatarURL()}`,
                     },
                     title: `Transaction success, here is the receipt`,
-                    description: `<@${message.author.id}> shared ❀ \`${amount.toLocaleString()}\` to <@${target.id}>`,
+                    description: `<@${message.author.id}> shared \`❀ ${amount.toLocaleString()}\` to <@${target.id}>`,
                     fields: [
                         {
                             name: `${message.author.username}`,
-                            value: `**Wallet:** -❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - amount).toLocaleString()}\``,
+                            value: `**Wallet:** -\`❀ ${amount.toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - amount).toLocaleString()}\``,
                             inline: true,
                         },
                         {
                             name: `${target.username}`,
-                            value: `**Wallet:** +❀ \`${amount.toLocaleString()}\`\n**New Wallet:** \`${(target_profileData_coins).toLocaleString()}\``,
+                            value: `**Wallet:** +\`❀ ${amount.toLocaleString()}\`\n**New Wallet:** \`${(target_profileData_coins).toLocaleString()}\``,
                         },
                         
                     ],
@@ -273,7 +273,7 @@ module.exports = {
                         icon_url: `${message.author.displayAvatarURL()}`,
                     },
                     title: `Transaction cancelled`,
-                    description: `<@${message.author.id}>, do you want to share ❀ \`${amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
+                    description: `<@${message.author.id}>, do you want to share \`❀ ${amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
                     timestamp: new Date(),
                 };
                 
@@ -326,7 +326,7 @@ module.exports = {
                         icon_url: `${message.author.displayAvatarURL()}`,
                     },
                     title: `Transaction timeout`,
-                    description: `<@${message.author.id}>, do you want to share ❀ \`${amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
+                    description: `<@${message.author.id}>, do you want to share \`❀ ${amount.toLocaleString()}\` to <@${target.id}>?\nI guess not...`,
                     timestamp: new Date(),
                 };
                 

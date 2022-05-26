@@ -492,7 +492,7 @@ module.exports = {
                             icon_url: `${message.author.displayAvatarURL()}`,
                         },
                         title: `Confirm action`,
-                        description: `<@${message.author.id}>, do you are you sure you want to use \`${useamount.toLocaleString()}\` ${item.icon} \`${item.item}\`?\nWorth: ❀ \`${totalprice.toLocaleString()}\``,
+                        description: `<@${message.author.id}>, do you are you sure you want to use \`${useamount.toLocaleString()}\` ${item.icon} \`${item.item}\`?\nWorth: \`❀ ${totalprice.toLocaleString()}\``,
                         timestamp: new Date(),
                     };
                     const use_msg = await message.reply({ embeds: [embed], components: [row] });
@@ -608,7 +608,7 @@ module.exports = {
                                     icon_url: `${message.author.displayAvatarURL()}`,
                                 },
                                 title: `Action cancelled`,
-                                description: `<@${message.author.id}>, do you are you sure you want to use \`${useamount.toLocaleString()}\` ${item.icon} \`${item.item}\`?\nWorth: ❀ \`${totalprice.toLocaleString()}\`\nI guess not.`,
+                                description: `<@${message.author.id}>, do you are you sure you want to use \`${useamount.toLocaleString()}\` ${item.icon} \`${item.item}\`?\nWorth: \`❀ ${totalprice.toLocaleString()}\`\nI guess not.`,
                                 timestamp: new Date(),
                             };
                             
@@ -650,7 +650,7 @@ module.exports = {
                                     icon_url: `${message.author.displayAvatarURL()}`,
                                 },
                                 title: `Action timeout`,
-                                description: `<@${message.author.id}>, do you are you sure you want to use \`${useamount.toLocaleString()}\` ${item.icon} \`${item.item}\`?\nWorth: ❀ \`${totalprice.toLocaleString()}\`\nI guess not.`,
+                                description: `<@${message.author.id}>, do you are you sure you want to use \`${useamount.toLocaleString()}\` ${item.icon} \`${item.item}\`?\nWorth: \`❀ ${totalprice.toLocaleString()}\`\nI guess not.`,
                                 timestamp: new Date(),
                             };
                             

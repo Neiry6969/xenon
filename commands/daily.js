@@ -15,9 +15,7 @@ module.exports = {
         const now = new Date();
 
         const msBetweenDates = Math.abs(then.getTime() - now.getTime());
-        const hoursBetweenDates = msBetweenDates / 1000 / 60 / 60
-
-        console.log(hoursBetweenDates)
+        const hoursBetweenDates = msBetweenDates / 1000 / 60 / 60;
 
         if (hoursBetweenDates > 48) {
             await profileModel.findOneAndUpdate(
@@ -81,7 +79,7 @@ module.exports = {
         const embed = {
             color: 'RANDOM',
             title: `Here, have your daily rewards`,
-            description: `**Daily coins:** ❀ \`${totalamount.toLocaleString()}\`\n**Streak:** <:streakflame:978108608254459954> \`${streak.toLocaleString()}\`\n**User:** \`${message.author.username}\` [<@${message.author.id}>]\n\n**Your next daily can be collected in:**\n\n\`${24}h 0m 0s\``,
+            description: `**Daily coins:** \`❀ ${totalamount.toLocaleString()}\`\n**Streak:** <:streakflame:978108608254459954> \`${streak.toLocaleString()}\`\n**User:** \`${message.author.username}\` [<@${message.author.id}>]\n\n**Your next daily can be collected in:**\n\n\`${24}h 0m 0s\``,
             timestamp: new Date(),
         };
 

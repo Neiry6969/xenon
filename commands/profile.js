@@ -153,7 +153,7 @@ module.exports = {
                             },
                             {
                                 name: 'Balance',
-                                value: `Wallet: ❀ \`0\`\nBank: ❀ \`${profile.bank.toLocaleString()}\`\nBankspace: \`${profile.bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`0\``,
+                                value: `Wallet: ❀ \`0\`\nBank: \`❀ ${profile.bank.toLocaleString()}\`\nBankspace: \`${profile.bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`0\``,
                                 inline: true,
                             },
                             {
@@ -222,12 +222,12 @@ module.exports = {
                                         },
                                         {
                                             name: 'Balance',
-                                            value: `Wallet: ❀ \`${target_profileData.coins.toLocaleString()}\`\nBank: ❀ \`${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                                            value: `Wallet: \`❀ ${target_profileData.coins.toLocaleString()}\`\nBank: \`❀ ${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
                                             inline: true,
                                         },
                                         {
                                             name: 'Inv',
-                                            value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                                            value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
                                         },
                                         { 
                                             name: 'Other (MISC)',
@@ -262,12 +262,12 @@ module.exports = {
                                     },
                                     {
                                         name: 'Balance',
-                                        value: `Wallet: ❀ \`${target_profileData.coins.toLocaleString()}\`\nBank: ❀ \`${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                                        value: `Wallet: \`❀ ${target_profileData.coins.toLocaleString()}\`\nBank: \`❀ ${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
                                         inline: true,
                                     },
                                     {
                                         name: 'Inv',
-                                        value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                                        value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
                                     },
                                     { 
                                         name: 'Other (MISC)',
@@ -336,12 +336,12 @@ module.exports = {
                                 },
                                 {
                                     name: 'Balance',
-                                    value: `Wallet: ❀ \`${profileData.coins.toLocaleString()}\`\nBank: ❀ \`${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                                    value: `Wallet: \`❀ ${profileData.coins.toLocaleString()}\`\nBank: \`❀ ${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
                                     inline: true,
                                 },
                                 {
                                     name: 'Inventory',
-                                    value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                                    value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
                                 },
                                 { 
                                     name: 'Other (MISC)',
@@ -374,12 +374,12 @@ module.exports = {
                             },
                             {
                                 name: 'Balance',
-                                value: `Wallet: ❀ \`${profileData.coins.toLocaleString()}\`\nBank: ❀ \`${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`${total_balance.toLocaleString()}\``,
+                                value: `Wallet: \`❀ ${profileData.coins.toLocaleString()}\`\nBank: \`❀ ${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
                                 inline: true,
                             },
                             {
                                 name: 'Inventory',
-                                value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: ❀ \`${itemsworth.toLocaleString()}\``,
+                                value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
                             },
                             { 
                                 name: 'Other (MISC)',

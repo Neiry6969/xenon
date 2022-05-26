@@ -68,7 +68,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Slots Error`,
-                    description: `You are too rich to gamble.\n**Cap:** ❀ \`${maxwallet.toLocaleString()}\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                    description: `You are too rich to gamble.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
@@ -114,7 +114,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Gamble Error`,
-                    description: `You don't have that many coins to bet.\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                    description: `You don't have that many coins to bet.\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
@@ -122,7 +122,7 @@ module.exports = {
                 const embed = {
                     color: '#FF0000',
                     title: `Gamble Error`,
-                    description: `You aren't able to bet that many coins\n**Max Amount:** ❀ \`${maxbetamount.toLocaleString()}\``,
+                    description: `You aren't able to bet that many coins\n**Max Amount:** \`❀ ${maxbetamount.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
@@ -183,7 +183,7 @@ module.exports = {
                 const embed = {
                     color: '#ff4c4c',
                     title: `${message.author.username}'s betting game`,
-                    description: `You Lost!\n\n**You lost:** ❀ \`${betamount.toLocaleString()}\`\n**Wallet:** ❀ \`${lostamount.toLocaleString()}\``,
+                    description: `You Lost!\n\n**You lost:** \`❀ ${betamount.toLocaleString()}\`\n**Wallet:** \`❀ ${lostamount.toLocaleString()}\``,
                     fields: [
                         {
                             name: `${message.author.username}`,
@@ -207,7 +207,7 @@ module.exports = {
                 const embed = {
                     color: '#FFFF00',
                     title: `${message.author.username}'s betting game`,
-                    description: `You Tied! Nothing has changed.\n\n**You Won:** ❀ \`0\`\n**Wallet:** ❀ \`${profileData.coins.toLocaleString()}\``,
+                    description: `You Tied! Nothing has changed.\n\n**You Won:** ❀ \`0\`\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                     fields: [
                         {
                             name: `${message.author.username}`,
@@ -254,7 +254,7 @@ module.exports = {
                 const embed = {
                     color: '#00FF00',
                     title: `${message.author.username}'s betting game`,
-                    description: `You Won!\n\n**You Won:** ❀ \`${winningamount.toLocaleString()}\`\n**Multiplier:** \`x${multiplier}\` \`${parseInt(multiplier * 100)}%\`\n**Wallet:** ❀ \`${wallet.toLocaleString()}\``,
+                    description: `You Won!\n\n**You Won:** \`❀ ${winningamount.toLocaleString()}\`\n**Multiplier:** \`x${multiplier}\` \`${parseInt(multiplier * 100)}%\`\n**Wallet:** \`❀ ${wallet.toLocaleString()}\``,
                     fields: [
                         {
                             name: `${message.author.username}`,

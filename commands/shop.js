@@ -32,7 +32,7 @@ module.exports = {
                 if(value.price === "unable to be bought") {
                     return;
                 } else {
-                    return `${value.icon} **${value.name}**    **───**   ❀ \`${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
+                    return `${value.icon} **${value.name}**    **───**   \`❀ ${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
                 }
             }).filter(Boolean)
 
@@ -297,7 +297,7 @@ module.exports = {
                     .addFields(
                         {
                             name: '_ _',
-                            value: `**BUY:** ❀ \`${item.price?.toLocaleString()}\`\n**SELL:** ❀ \`${item.sell?.toLocaleString()}\`\n**TRADE:** ❀ \`${item.trade?.toLocaleString()}\``,
+                            value: `**BUY:** \`❀ ${item.price?.toLocaleString()}\`\n**SELL:** \`❀ ${item.sell?.toLocaleString()}\`\n**TRADE:** \`❀ ${item.trade?.toLocaleString()}\``,
                         },
                         {
                             name: 'ID',
@@ -390,7 +390,7 @@ module.exports = {
                 if(value.price === "unable to be bought") {
                     return;
                 } else {
-                    return `${value.icon} **${value.name}**    **───**   ❀ \`${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
+                    return `${value.icon} **${value.name}**    **───**   \`❀ ${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
                 }
             }).filter(Boolean)
 

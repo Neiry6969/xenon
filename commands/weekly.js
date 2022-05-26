@@ -34,7 +34,7 @@ module.exports = {
             const embed = {
                 color: 'RANDOM',
                 title: `Here, have your weekly rewards`,
-                description: `**Weekly coins:** ❀ \`${weekly_amount.toLocaleString()}\`\n**User:** \`${message.author.username}\` [<@${message.author.id}>]\n\n**Your next weekly can be collected in:**\n\n\`7d 0h 0m 0s\``,
+                description: `**Weekly coins:** \`❀ ${weekly_amount.toLocaleString()}\`\n**User:** \`${message.author.username}\` [<@${message.author.id}>]\n\n**Your next weekly can be collected in:**\n\n\`7d 0h 0m 0s\``,
                 timestamp: new Date(),
             };
 

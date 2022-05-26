@@ -52,15 +52,15 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Wallet',
-                                value: `❀ \`${profile.coins.toLocaleString()}\``,
+                                value: `\`❀ ${profile.coins.toLocaleString()}\``,
                             },
                             {
                                 name: 'Bank',
-                                value: `❀ \`${profile.bank.toLocaleString()}\` | \`${profile.bankspace.toLocaleString()}\` \`0.00%\``,
+                                value: `\`❀ ${profile.bank.toLocaleString()}\` | \`${profile.bankspace.toLocaleString()}\` \`0.00%\``,
                             },
                             {
                                 name: 'Net Worth',
-                                value: `❀ \`0\``
+                                value: `\`❀ 0\``
                             }
                             
                         ],
@@ -107,15 +107,15 @@ module.exports = {
                                     fields: [
                                         {
                                             name: 'Wallet',
-                                            value: `❀ \`${target_profileData.coins.toLocaleString()}\``,
+                                            value: `\`❀ ${target_profileData.coins.toLocaleString()}\``,
                                         },
                                         {
                                             name: 'Bank',
-                                            value: `❀ \`${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                                            value: `\`❀ ${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                                         },
                                         {
                                             name: 'Net Worth',
-                                            value: `❀ \`${networth.toLocaleString()}\``
+                                            value: `\`❀ ${networth.toLocaleString()}\``
                                         }
                                         
                                     ],
@@ -138,15 +138,15 @@ module.exports = {
                                 fields: [
                                     {
                                         name: 'Wallet',
-                                        value: `❀ \`${target_profileData.coins.toLocaleString()}\``,
+                                        value: `\`❀ ${target_profileData.coins.toLocaleString()}\``,
                                     },
                                     {
                                         name: 'Bank',
-                                        value: `❀ \`${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                                        value: `\`❀ ${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                                     },
                                     {
                                         name: 'Net Worth',
-                                        value: `❀ \`${networth.toLocaleString()}\``
+                                        value: `\`❀ ${networth.toLocaleString()}\``
                                     }
                                     
                                 ],
@@ -196,15 +196,15 @@ module.exports = {
                             fields: [
                                 {
                                     name: 'Wallet',
-                                    value: `❀ \`${profileData.coins.toLocaleString()}\``,
+                                    value: `\`❀ ${profileData.coins.toLocaleString()}\``,
                                 },
                                 {
                                     name: 'Bank',
-                                    value: `❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                                    value: `\`❀ ${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                                 },
                                 {
                                     name: 'Net Worth',
-                                    value: `❀ \`${networth.toLocaleString()}\``
+                                    value: `\`❀ ${networth.toLocaleString()}\``
                                 }
                                 
                             ],
@@ -227,15 +227,15 @@ module.exports = {
                         fields: [
                             {
                                 name: 'Wallet',
-                                value: `❀ \`${profileData.coins.toLocaleString()}\``,
+                                value: `\`❀ ${profileData.coins.toLocaleString()}\``,
                             },
                             {
                                 name: 'Bank',
-                                value: `❀ \`${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                                value: `\`❀ ${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                             },
                             {
                                 name: 'Net Worth',
-                                value: `❀ \`${networth.toLocaleString()}\``
+                                value: `\`❀ ${networth.toLocaleString()}\``
                             }
                             
                         ],
