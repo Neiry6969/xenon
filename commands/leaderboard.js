@@ -26,6 +26,16 @@ module.exports = {
         const collection0 = new Collection();
         const collection1 = new Collection();
         
+        const embed = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle(`${message.guild.name} Currency Leaderboard`)
+                .setDescription(`**Loading**, fetching cached users. This might take a while...`)
+                .setTimestamp()
+
+        
+        const leaderboard_msg = await message.channel.send({ embeds: [embed]});
+
+        
         await Promise.all(
             message.guild.members.cache.map(async(member) => {
                 const id = member.id;
@@ -185,16 +195,15 @@ module.exports = {
             .addComponents(
                 leaderboardmenu
             );
+        
+        embed
+            .setColor('RANDOM')
+            .setTitle(`${message.guild.name} Net Balance Leaderboard`)
+            .setDescription(`${leaderboard ? leaderboard : 'There is no leaderboard. This can also be because members have not been cached.'}`)
+        
+        leaderboard_msg.edit({ embeds: [embed], components: [row] });
 
         
-        const embed = new MessageEmbed()
-                .setColor('RANDOM')
-                .setTitle(`${message.guild.name} Net Balance Leaderboard`)
-                .setDescription(`${leaderboard ? leaderboard : 'There is no leaderboard. This can also be because members have not been cached.'}`)
-                .setTimestamp()
-
-        
-        const leaderboard_msg = await message.channel.send({ embeds: [embed], components: [row] });
 
         const collector = leaderboard_msg.createMessageComponentCollector({ time: 120 * 1000 });
 
