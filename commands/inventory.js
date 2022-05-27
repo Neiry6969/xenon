@@ -10,15 +10,22 @@ module.exports = {
     cooldown: 3,
     description: "check your inventory.",
     async execute(message, args, cmd, client, Discord, profileData) {
-        if(message.mentions.users.first()) {
-            const target = message.mentions.users.first()
-            const target_id = target.id
+        let target;
 
-            const params = {
-                userId: target_id,
+        if(message.mentions.users.first()) {
+            target = message.mentions.users.first()
+        } else {
+            try {
+                const featch_user = await message.guild.members.fetch(args[0])
+                target = featch_user.user
+            } catch (error) {
+                target = null
             }
-    
-            inventoryModel.findOne(params, async(err, data) => {
+        }
+
+        
+        if(target) {
+            inventoryModel.findOne({ userId: target.id }, async(err, data) => {
                 if(!data) return message.reply("This user has nothing in their inventory move along.");
     
                 const mappedData = Object.keys(data.inventory)
@@ -54,22 +61,36 @@ module.exports = {
                     
                     
                     if(lastpage === 1) {
+                        let leftfarbutton = new MessageButton()
+                            .setCustomId('leftfar')
+                            .setLabel('<<')
+                            .setStyle('PRIMARY')
+                            .setDisabled()
+                        
                         let leftbutton = new MessageButton()
                             .setCustomId('left')
                             .setLabel('<')
                             .setStyle('PRIMARY')
                             .setDisabled()
-
+        
+                        let rightfarbutton = new MessageButton()
+                            .setCustomId('rightfar')
+                            .setLabel('>>')
+                            .setStyle('PRIMARY')
+                            .setDisabled()
+           
                         let rightbutton = new MessageButton()
                             .setCustomId('right')
                             .setLabel('>')
                             .setStyle('PRIMARY')
                             .setDisabled()
-
+        
                         let row = new MessageActionRow()
                             .addComponents(
+                                leftfarbutton,
                                 leftbutton,
-                                rightbutton
+                                rightbutton,
+                                rightfarbutton
                             );
             
                         embed = {
@@ -89,12 +110,23 @@ module.exports = {
                         const inv_msg = await message.channel.send({ embeds: [embed], components: [row] });
                     
                     } else { 
+                        let leftfarbutton = new MessageButton()
+                            .setCustomId('leftfar')
+                            .setLabel('<<')
+                            .setStyle('PRIMARY')
+                            .setDisabled()
+                        
                         let leftbutton = new MessageButton()
                             .setCustomId('left')
                             .setLabel('<')
                             .setStyle('PRIMARY')
                             .setDisabled()
 
+                        let rightfarbutton = new MessageButton()
+                            .setCustomId('rightfar')
+                            .setLabel('>>')
+                            .setStyle('PRIMARY')
+        
                         let rightbutton = new MessageButton()
                             .setCustomId('right')
                             .setLabel('>')
@@ -102,8 +134,10 @@ module.exports = {
 
                         let row = new MessageActionRow()
                             .addComponents(
+                                leftfarbutton,
                                 leftbutton,
-                                rightbutton
+                                rightbutton,
+                                rightfarbutton
                             );
 
                         embed = {
@@ -140,7 +174,9 @@ module.exports = {
 
                                 if(page === lastpage) {
                                     leftbutton.setDisabled(false);
+                                    leftfarbutton.setDisabled(false)
                                     rightbutton.setDisabled();
+                                    rightfarbutton.setDisabled()
 
                                     embed = {
                                         color: 'RANDOM',
@@ -160,6 +196,56 @@ module.exports = {
                                 } else {
                                     leftbutton.setDisabled(false)
                                     rightbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
+
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${target.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${target.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    inv_msg.edit({ embeds: [embed], components: [row] });
+                                }
+                            } else if(button.customId === "rightfar") {
+                                page = lastpage
+                                display_start = (page - 1) * itemsperpage;
+                                display_end = page * itemsperpage;
+
+                                if(page === lastpage) {
+                                    leftbutton.setDisabled(false);
+                                    leftfarbutton.setDisabled(false)
+                                    rightbutton.setDisabled();
+                                    rightfarbutton.setDisabled()
+
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${target.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${target.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    inv_msg.edit({ embeds: [embed], components: [row] });
+                                } else {
+                                    leftbutton.setDisabled(false)
+                                    rightbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
 
                                     embed = {
                                         color: 'RANDOM',
@@ -184,7 +270,56 @@ module.exports = {
 
                                 if(page === 1) {
                                     leftbutton.setDisabled();
+                                    leftfarbutton.setDisabled()
                                     rightbutton.setDisabled(false);
+                                    rightfarbutton.setDisabled(false)
+
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${target.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${target.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    inv_msg.edit({ embeds: [embed], components: [row] });
+                                } else {
+                                    leftbutton.setDisabled(false)
+                                    rightbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${target.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${target.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    inv_msg.edit({ embeds: [embed], components: [row] });
+                                } 
+                            } else if(button.customId === 'leftfar') {
+                                page = 1
+                                display_start = (page - 1) * itemsperpage;
+                                display_end = page * itemsperpage;
+
+                                if(page === 1) {
+                                    leftbutton.setDisabled();
+                                    leftfarbutton.setDisabled()
+                                    rightbutton.setDisabled(false);
+                                    rightfarbutton.setDisabled(false)
 
                                     embed = {
                                         color: 'RANDOM',
@@ -204,7 +339,8 @@ module.exports = {
                                 } else {
                                     leftbutton.setDisabled(false)
                                     rightbutton.setDisabled(false)
-
+                                    leftfarbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
                                     embed = {
                                         color: 'RANDOM',
                                         title: `${target.username}'s Inventory`,
@@ -276,22 +412,36 @@ module.exports = {
                     
                     
                     if(lastpage === 1) {
+                        let leftfarbutton = new MessageButton()
+                            .setCustomId('leftfar')
+                            .setLabel('<<')
+                            .setStyle('PRIMARY')
+                            .setDisabled()
+                        
                         let leftbutton = new MessageButton()
                             .setCustomId('left')
                             .setLabel('<')
                             .setStyle('PRIMARY')
                             .setDisabled()
-
+        
+                        let rightfarbutton = new MessageButton()
+                            .setCustomId('rightfar')
+                            .setLabel('>>')
+                            .setStyle('PRIMARY')
+                            .setDisabled()
+           
                         let rightbutton = new MessageButton()
                             .setCustomId('right')
                             .setLabel('>')
                             .setStyle('PRIMARY')
                             .setDisabled()
-
+        
                         let row = new MessageActionRow()
                             .addComponents(
+                                leftfarbutton,
                                 leftbutton,
-                                rightbutton
+                                rightbutton,
+                                rightfarbutton
                             );
             
                         embed = {
@@ -311,12 +461,23 @@ module.exports = {
                         const inv_msg = await message.channel.send({ embeds: [embed], components: [row] });
                     
                     } else { 
+                        let leftfarbutton = new MessageButton()
+                            .setCustomId('leftfar')
+                            .setLabel('<<')
+                            .setStyle('PRIMARY')
+                            .setDisabled()
+                        
                         let leftbutton = new MessageButton()
                             .setCustomId('left')
                             .setLabel('<')
                             .setStyle('PRIMARY')
                             .setDisabled()
 
+                        let rightfarbutton = new MessageButton()
+                            .setCustomId('rightfar')
+                            .setLabel('>>')
+                            .setStyle('PRIMARY')
+        
                         let rightbutton = new MessageButton()
                             .setCustomId('right')
                             .setLabel('>')
@@ -324,8 +485,10 @@ module.exports = {
 
                         let row = new MessageActionRow()
                             .addComponents(
+                                leftfarbutton,
                                 leftbutton,
-                                rightbutton
+                                rightbutton,
+                                rightfarbutton
                             );
 
                         embed = {
@@ -363,7 +526,9 @@ module.exports = {
 
                                 if(page === lastpage) {
                                     leftbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
                                     rightbutton.setDisabled();
+                                    rightfarbutton.setDisabled()
 
                                     embed = {
                                         color: 'RANDOM',
@@ -383,6 +548,56 @@ module.exports = {
                                 } else {
                                     leftbutton.setDisabled(false)
                                     rightbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
+
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${message.author.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    await inv_msg.edit({ embeds: [embed], components: [row] });
+                                }
+                            } else if(button.customId === "rightfar") {
+                                page = lastpage
+                                display_start = (page - 1) * itemsperpage;
+                                display_end = page * itemsperpage;
+
+                                if(page === lastpage) {
+                                    leftbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
+                                    rightbutton.setDisabled();
+                                    rightfarbutton.setDisabled()
+
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${message.author.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    await inv_msg.edit({ embeds: [embed], components: [row] });
+                                } else {
+                                    leftbutton.setDisabled(false)
+                                    rightbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
 
                                     embed = {
                                         color: 'RANDOM',
@@ -407,7 +622,9 @@ module.exports = {
 
                                 if(page === 1) {
                                     rightbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
                                     leftbutton.setDisabled();
+                                    leftfarbutton.setDisabled()
 
                                     embed = {
                                         color: 'RANDOM',
@@ -427,6 +644,56 @@ module.exports = {
                                 } else {
                                     leftbutton.setDisabled(false)
                                     rightbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
+
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${message.author.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    await inv_msg.edit({ embeds: [embed], components: [row] });
+                                }
+                            } else if(button.customId === "leftfar") {
+                                page = 1
+                                display_start = (page - 1) * itemsperpage;
+                                display_end = page * itemsperpage;
+
+                                if(page === 1) {
+                                    rightbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
+                                    leftbutton.setDisabled();
+                                    leftfarbutton.setDisabled()
+
+                                    embed = {
+                                        color: 'RANDOM',
+                                        title: `${message.author.username}'s Inventory`,
+                                        author: {
+                                            name: `_____________`,
+                                            icon_url: `${message.author.displayAvatarURL()}`,
+                                        },
+                                        description: `${mappedData.slice(display_start, display_end).join("\n")}`,
+                                        timestamp: new Date(),
+                                        footer: {
+                                            text: `Page: ${page} | ${lastpage}`
+                                        }
+                                    };
+                        
+                                    await inv_msg.edit({ embeds: [embed], components: [row] });
+                                } else {
+                                    leftbutton.setDisabled(false)
+                                    rightbutton.setDisabled(false)
+                                    rightfarbutton.setDisabled(false)
+                                    leftfarbutton.setDisabled(false)
 
                                     embed = {
                                         color: 'RANDOM',

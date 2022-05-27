@@ -106,11 +106,23 @@ module.exports = {
     description: "check the user profile.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const bankspace = profileData.bankspace + profileData.expbankspace;
+        let target;
 
         if(message.mentions.users.first()) {
-            const target = message.mentions.users.first()
+            target = message.mentions.users.first()
+        } else {
+            try {
+                const featch_user = await message.guild.members.fetch(args[0])
+                target = featch_user.user
+            } catch (error) {
+                target = null
+            }
+        }
+         
+       
+        
+        if(target) {
             const target_id = target.id
-
             let target_profileData;
             try {   
                 target_profileData = await profileModel.findOne({ userId: target_id });

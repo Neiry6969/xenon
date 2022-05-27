@@ -27,13 +27,26 @@ module.exports = {
         }
 
         if(!getItem) {
-            const shopList = allItems
-            .map((value) => {
+            const shopmaparray = allItems.map((value) => {
                 if(value.price === "unable to be bought") {
                     return;
                 } else {
-                    return `${value.icon} **${value.name}**    **───**   \`❀ ${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
+                    return {
+                        price: value.price,
+                        icon: value.icon,
+                        name: value.name,
+                        item: value.item
+                    }
                 }
+            })
+            .filter(Boolean)
+            .sort(function(a, b) {
+                return a.price - b.price; 
+            })
+
+            const shopList = shopmaparray
+            .map((value) => {
+                return `${value.icon} **${value.name}**    **───**   \`❀ ${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
             }).filter(Boolean)
 
             const shop = Object.values(shopList).filter(Boolean);
@@ -52,12 +65,24 @@ module.exports = {
             let display_end = page * itemsperpage;
 
             if(lastpage === 1) {
+                let leftfarbutton = new MessageButton()
+                    .setCustomId('leftfar')
+                    .setLabel('<<')
+                    .setStyle('PRIMARY')
+                    .setDisabled()
+                
                 let leftbutton = new MessageButton()
                     .setCustomId('left')
                     .setLabel('<')
                     .setStyle('PRIMARY')
                     .setDisabled()
 
+                let rightfarbutton = new MessageButton()
+                    .setCustomId('rightfar')
+                    .setLabel('>>')
+                    .setStyle('PRIMARY')
+                    .setDisabled()
+   
                 let rightbutton = new MessageButton()
                     .setCustomId('right')
                     .setLabel('>')
@@ -66,8 +91,10 @@ module.exports = {
 
                 let row = new MessageActionRow()
                     .addComponents(
+                        leftfarbutton,
                         leftbutton,
-                        rightbutton
+                        rightbutton,
+                        rightfarbutton
                     );
     
                 embed = {
@@ -81,13 +108,24 @@ module.exports = {
 
                 message.reply({ embeds: [embed], components: [row] });
                
-            } else { 
+            } else {                    
+                let leftfarbutton = new MessageButton()
+                    .setCustomId('leftfar')
+                    .setLabel('<<')
+                    .setStyle('PRIMARY')
+                    .setDisabled()
+                
                 let leftbutton = new MessageButton()
                     .setCustomId('left')
                     .setLabel('<')
                     .setStyle('PRIMARY')
                     .setDisabled()
 
+                let rightfarbutton = new MessageButton()
+                    .setCustomId('rightfar')
+                    .setLabel('>>')
+                    .setStyle('PRIMARY')
+   
                 let rightbutton = new MessageButton()
                     .setCustomId('right')
                     .setLabel('>')
@@ -95,8 +133,10 @@ module.exports = {
 
                 let row = new MessageActionRow()
                     .addComponents(
+                        leftfarbutton,
                         leftbutton,
-                        rightbutton
+                        rightbutton,
+                        rightfarbutton
                     );
 
                 embed = {
@@ -132,7 +172,9 @@ module.exports = {
 
                         if(page === lastpage) {
                             leftbutton.setDisabled(false)
+                            leftfarbutton.setDisabled(false)
                             rightbutton.setDisabled();
+                            rightfarbutton.setDisabled();
 
                             embed = {
                                 color: '#AF97FE',
@@ -150,6 +192,8 @@ module.exports = {
                         } else {
                             leftbutton.setDisabled(false)
                             rightbutton.setDisabled(false)
+                            rightfarbutton.setDisabled(false);
+                            leftfarbutton.setDisabled(false)
 
                             embed = {
                                 color: '#AF97FE',
@@ -165,14 +209,16 @@ module.exports = {
                 
                             await shop_msg.edit({ embeds: [embed], components: [row] });
                         }
-                    } else if(button.customId === "left") {
-                        page = page - 1
+                    } else if(button.customId === "rightfar") {
+                        page = lastpage
                         display_start = (page - 1) * itemsperpage;
                         display_end = page * itemsperpage;
 
-                        if(page === 1) {
-                            rightbutton.setDisabled(false)
-                            leftbutton.setDisabled();
+                        if(page === lastpage) {
+                            leftbutton.setDisabled(false)
+                            leftfarbutton.setDisabled(false)
+                            rightbutton.setDisabled();
+                            rightfarbutton.setDisabled();
 
                             embed = {
                                 color: '#AF97FE',
@@ -190,6 +236,96 @@ module.exports = {
                         } else {
                             leftbutton.setDisabled(false)
                             rightbutton.setDisabled(false)
+                            rightfarbutton.setDisabled(false);
+                            leftfarbutton.setDisabled(false)
+
+                            embed = {
+                                color: '#AF97FE',
+                                title: `Xenon Shop`,
+                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                thumbnail: {
+                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
+                                },
+                                footer: {
+                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
+                                }
+                            };
+                
+                            await shop_msg.edit({ embeds: [embed], components: [row] });
+                        }
+                    }  else if(button.customId === "left") {
+                        page = page - 1
+                        display_start = (page - 1) * itemsperpage;
+                        display_end = page * itemsperpage;
+
+                        if(page === 1) {
+                            rightbutton.setDisabled(false)
+                            rightfarbutton.setDisabled(false)
+                            leftbutton.setDisabled();
+                            leftfarbutton.setDisabled()
+
+                            embed = {
+                                color: '#AF97FE',
+                                title: `Xenon Shop`,
+                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                thumbnail: {
+                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
+                                },
+                                footer: {
+                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
+                                }
+                            };
+                
+                            await shop_msg.edit({ embeds: [embed], components: [row] });
+                        } else {
+                            leftbutton.setDisabled(false)
+                            rightbutton.setDisabled(false)
+                            rightfarbutton.setDisabled(false);
+                            leftfarbutton.setDisabled(false)
+
+                            embed = {
+                                color: '#AF97FE',
+                                title: `Xenon Shop`,
+                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                thumbnail: {
+                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
+                                },
+                                footer: {
+                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
+                                }
+                            };
+                
+                            await shop_msg.edit({ embeds: [embed], components: [row] });
+                        }
+                    } else if(button.customId === 'leftfar') {
+                        page = 1
+                        display_start = (page - 1) * itemsperpage;
+                        display_end = page * itemsperpage;
+
+                        if(page === 1) {
+                            rightbutton.setDisabled(false)
+                            rightfarbutton.setDisabled(false)
+                            leftbutton.setDisabled();
+                            leftfarbutton.setDisabled()
+
+                            embed = {
+                                color: '#AF97FE',
+                                title: `Xenon Shop`,
+                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                thumbnail: {
+                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
+                                },
+                                footer: {
+                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
+                                }
+                            };
+                
+                            await shop_msg.edit({ embeds: [embed], components: [row] });
+                        } else {
+                            leftbutton.setDisabled(false)
+                            rightbutton.setDisabled(false)
+                            rightfarbutton.setDisabled(false);
+                            leftfarbutton.setDisabled(false)
 
                             embed = {
                                 color: '#AF97FE',

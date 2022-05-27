@@ -12,7 +12,19 @@ module.exports = {
     maxArgs: 1,
     description: "share coins with other users.",
     async execute(message, args, cmd, client, Discord, profileData) {
-        const target = message.mentions.users.first()
+        let target;
+
+        if(message.mentions.users.first()) {
+            target = message.mentions.users.first()
+        } else {
+            try {
+                const featch_user = await message.guild.members.fetch(args[0])
+                target = featch_user.user
+            } catch (error) {
+                target = null
+            }
+        }
+        
         let amount = args[1]?.toLowerCase();
 
         const expectedsyntax = `**Expected Syntax:** \`xe share [user] [amount]\``

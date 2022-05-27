@@ -16,7 +16,18 @@ module.exports = {
         const expectedsyntax = `**Expected Syntax:** \`xe gift [user] [item] [amount]\``;
         const getitem = args[1]?.toLowerCase();
         let amount = args[2]?.toLowerCase();
-        const target = message.mentions.users.first()
+        let target;
+
+        if(message.mentions.users.first()) {
+            target = message.mentions.users.first()
+        } else {
+            try {
+                const featch_user = await message.guild.members.fetch(args[0])
+                target = featch_user.user
+            } catch (error) {
+                target = null
+            }
+        }
 
         const params = {
             userId: message.author.id,

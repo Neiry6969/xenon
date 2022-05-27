@@ -11,14 +11,25 @@ module.exports = {
     description: "check the user balance.",
     async execute(message, args, cmd, client, Discord, profileData) {
         const bankspace = profileData.bankspace + profileData.expbankspace;
+        let target;
 
         if(message.mentions.users.first()) {
-            const target = message.mentions.users.first()
-            const target_id = target.id
-
+            target = message.mentions.users.first()
+        } else {
+            try {
+                const featch_user = await message.guild.members.fetch(args[0])
+                target = featch_user.user
+            } catch (error) {
+                target = null
+            }
+        }
+         
+       
+        
+        if(target) {
             let target_profileData;
             try {   
-                target_profileData = await profileModel.findOne({ userId: target_id });
+                target_profileData = await profileModel.findOne({ userId: target.id });
 
                 if(!target_profileData) {
                     let profile = await profileModel.create({
