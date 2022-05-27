@@ -210,6 +210,7 @@ module.exports = {
                             let inventorydata;
                             try {   
                                 inventorydata = await inventoryModel.findOne({ userId: id });
+                                if(!inventorydata) {
                                     inventorydata = null;
                                 }
                             } catch (error) {
