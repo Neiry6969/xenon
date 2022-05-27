@@ -25,6 +25,107 @@ module.exports = {
         const collection = new Collection();
         const collection0 = new Collection();
         const collection1 = new Collection();
+        
+        await Promise.all(
+            message.guild.members.cache.map(async(member) => {
+                const id = member.id;
+                let itemsworth = 0;
+
+                let inventorydata;
+                try {   
+                    inventorydata = await inventoryModel.findOne({ userId: id });
+                    if(!inventorydata) {
+                        inventorydata = null;
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+
+               if(!inventorydata) {
+                   itemsworth = 0;
+               } else {
+                    Object.keys(inventorydata.inventory)
+                    .forEach((key) => {
+                        if(inventorydata.inventory[key] === 0) {
+                            return;
+                        } else {
+                            const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+
+                            itemsworth = itemsworth + (item.value * inventorydata.inventory[key]);
+                        }
+
+                    })
+               }
+
+                if(itemsworth === NaN) {
+                    itemsworth = null
+                }
+
+                return itemsworth > 10000 && id !== '847528987831304192' && inventorydata ? collection1.set(id, {
+                    id,
+                    itemsworth
+                })
+                : null
+            })
+
+        )
+
+        
+         await Promise.all(
+            message.guild.members.cache.map(async(member) => {
+                const id = member.id;
+                let itemsworth = 0;
+
+                let profiledata;
+                try {   
+                    profiledata = await profileModel.findOne({ userId: id });
+                    if(!profiledata) {
+                        profiledata = null;
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+
+                let inventorydata;
+                try {   
+                    inventorydata = await inventoryModel.findOne({ userId: id });
+                    if(!inventorydata) {
+                        inventorydata = null;
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+
+               if(!inventorydata) {
+                   itemsworth = 0;
+               } else {
+                    Object.keys(inventorydata.inventory)
+                    .forEach((key) => {
+                        if(inventorydata.inventory[key] === 0) {
+                            return;
+                        } else {
+                            const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+
+                            itemsworth = itemsworth + (item.value * inventorydata.inventory[key]);
+                        }
+
+                    })
+               }
+
+                const networth = profileData.coins + profileData.bank + itemsworth;
+
+                if(networth === NaN) {
+                    networth = null
+                }
+
+                return networth > 10000 && id !== '847528987831304192' && profiledata && inventorydata ? collection0.set(id, {
+                    id,
+                    networth
+                })
+                : null
+            })
+
+        )
 
         await Promise.all(
             message.guild.members.cache.map(async(member) => {
@@ -108,61 +209,6 @@ module.exports = {
             i.deferUpdate()
             if(i.customId === 'leaderboardmenu') {
                 if(i.values[0] === 'networth') {
-                    await Promise.all(
-                        message.guild.members.cache.map(async(member) => {
-                            const id = member.id;
-                            let itemsworth = 0;
-
-                            let profiledata;
-                            try {   
-                                profiledata = await profileModel.findOne({ userId: id });
-                                if(!profiledata) {
-                                    profiledata = null;
-                                }
-                            } catch (error) {
-                                console.log(error)
-                            }
-
-                            let inventorydata;
-                            try {   
-                                inventorydata = await inventoryModel.findOne({ userId: id });
-                                if(!inventorydata) {
-                                    inventorydata = null;
-                                }
-                            } catch (error) {
-                                console.log(error)
-                            }
-
-                           if(!inventorydata) {
-                               itemsworth = 0;
-                           } else {
-                                Object.keys(inventorydata.inventory)
-                                .forEach((key) => {
-                                    if(inventorydata.inventory[key] === 0) {
-                                        return;
-                                    } else {
-                                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
-
-                                        itemsworth = itemsworth + (item.value * inventorydata.inventory[key]);
-                                    }
-
-                                })
-                           }
-                            
-                            const networth = profileData.coins + profileData.bank + itemsworth;
-            
-                            if(networth === NaN) {
-                                networth = null
-                            }
-            
-                            return networth > 10000 && id !== '847528987831304192' && profiledata && inventorydata ? collection0.set(id, {
-                                id,
-                                networth
-                            })
-                            : null
-                        })
-                        
-                    )
 
                     data = collection0.sort((a, b) => b.networth - a.networth).first(10)
 
@@ -202,50 +248,7 @@ module.exports = {
 
                     leaderboard_msg.edit({ embeds: [embed], components: [row] });
                 } else if(i.values[0] === 'inventoryworth') {
-                    await Promise.all(
-                        message.guild.members.cache.map(async(member) => {
-                            const id = member.id;
-                            let itemsworth = 0;
-
-                            let inventorydata;
-                            try {   
-                                inventorydata = await inventoryModel.findOne({ userId: id });
-                                if(!inventorydata) {
-                                    inventorydata = null;
-                                }
-                            } catch (error) {
-                                console.log(error)
-                            }
-
-                           if(!inventorydata) {
-                               itemsworth = 0;
-                           } else {
-                                Object.keys(inventorydata.inventory)
-                                .forEach((key) => {
-                                    if(inventorydata.inventory[key] === 0) {
-                                        return;
-                                    } else {
-                                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
-
-                                        itemsworth = itemsworth + (item.value * inventorydata.inventory[key]);
-                                    }
-
-                                })
-                           }
-            
-                            if(itemsworth === NaN) {
-                                itemsworth = null
-                            }
-            
-                            return itemsworth > 10000 && id !== '847528987831304192' && inventorydata ? collection1.set(id, {
-                                id,
-                                itemsworth
-                            })
-                            : null
-                        })
-                        
-                    )
-
+                    
                     data = collection1.sort((a, b) => b.itemsworth - a.itemsworth).first(10)
 
                     leaderboard = data.map((v, i) => {
