@@ -133,7 +133,7 @@ module.exports = {
                                 console.log(error)
                             }
 
-                           if(!inventorydata.inventory) {
+                           if(!inventorydata) {
                                itemsworth = 0;
                            } else {
                                 Object.keys(inventorydata.inventory)
@@ -217,7 +217,7 @@ module.exports = {
                                 console.log(error)
                             }
 
-                           if(!inventorydata.inventory) {
+                           if(!inventorydata) {
                                itemsworth = 0;
                            } else {
                                 Object.keys(inventorydata.inventory)
