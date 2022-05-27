@@ -297,7 +297,7 @@ module.exports = {
                     multiplier = multiplieramount_2.find((val) => (val.icon.toLowerCase()) === majorityelement).multi;
                 }
 
-                const winamount = multiplier * slotsamount;
+                const winamount = Math.floor(multiplier * slotsamount);
                 const wallet = profileData.coins + winamount;
 
                 const response = await profileModel.findOneAndUpdate(
