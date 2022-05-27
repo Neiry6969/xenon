@@ -95,7 +95,7 @@ module.exports = {
         
         const leaderboard_msg = await message.channel.send({ embeds: [embed], components: [row] });
 
-        const collector = leaderboard_msg.createMessageComponentCollector({ time: 20 * 1000 });
+        const collector = leaderboard_msg.createMessageComponentCollector({ time: 120 * 1000 });
 
         collector.on('collect', async (i) => {
             if(i.user.id != message.author.id) {
