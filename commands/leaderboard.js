@@ -33,14 +33,7 @@ module.exports = {
                 try {   
                     profiledata = await profileModel.findOne({ userId: id });
                     if(!profiledata) {
-                        let profile = await profileModel.create({
-                            userId: message.author.id,
-                            serverId: message.guild.id,
-                        });
-                    
-                        profile.save();
-            
-                        profiledata = profile;
+                        profiledata = null;
                     }
                 } catch (error) {
                     console.log(error)
@@ -124,14 +117,7 @@ module.exports = {
                             try {   
                                 profiledata = await profileModel.findOne({ userId: id });
                                 if(!profiledata) {
-                                    let profile = await profileModel.create({
-                                        userId: message.author.id,
-                                        serverId: message.guild.id,
-                                    });
-                                
-                                    profile.save();
-                        
-                                    profiledata = profile;
+                                    profiledata = null;
                                 }
                             } catch (error) {
                                 console.log(error)
@@ -141,13 +127,7 @@ module.exports = {
                             try {   
                                 inventorydata = await inventoryModel.findOne({ userId: id });
                                 if(!inventorydata) {
-                                    let inventory = await inventoryModel.create({
-                                        userId: message.author.id,
-                                    });
-                                
-                                    inventory.save();
-                        
-                                    inventorydata = inventory;
+                                    inventorydata = null;
                                 }
                             } catch (error) {
                                 console.log(error)
@@ -230,14 +210,7 @@ module.exports = {
                             let inventorydata;
                             try {   
                                 inventorydata = await inventoryModel.findOne({ userId: id });
-                                if(!inventorydata) {
-                                    let inventory = await inventoryModel.create({
-                                        userId: message.author.id,
-                                    });
-                                
-                                    inventory.save();
-                        
-                                    inventorydata = inventory;
+                                    inventorydata = null;
                                 }
                             } catch (error) {
                                 console.log(error)
