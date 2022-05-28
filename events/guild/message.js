@@ -204,7 +204,7 @@ module.exports = async(Discord, client, message) => {
 
                 let cooldown_amount = (command.cooldown) * 1000;
             
-                if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
+                if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || profileData.premium >= 1) {
                     if(command.cooldown <= 5 && command.cooldown > 2) {
                         cooldown_amount = (command.cooldown - 2) * 1000
                     } else if(command.cooldown <= 15) {
