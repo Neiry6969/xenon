@@ -128,7 +128,7 @@ module.exports = {
                     networth = null
                 }
 
-                return networth > 10000 && id !== '847528987831304192' && profiledata && inventorydata ? collection0.set(id, {
+                return networth > 10000 && id !== '847528987831304192' && id !== '567805802388127754' && profiledata && inventorydata ? collection0.set(id, {
                     id,
                     networth
                 })
