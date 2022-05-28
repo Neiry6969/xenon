@@ -71,7 +71,7 @@ module.exports = {
                     itemsworth = null
                 }
 
-                return itemsworth > 10000 && id !== '847528987831304192' && inventorydata ? collection1.set(id, {
+                return itemsworth > 10000 && id !== '847528987831304192' && id !== '567805802388127754' && inventorydata ? collection1.set(id, {
                     id,
                     itemsworth
                 })
@@ -156,7 +156,7 @@ module.exports = {
                     netbalance = null
                 }
 
-                return netbalance > 10000 && id !== '847528987831304192' && profiledata ? collection.set(id, {
+                return netbalance > 10000 && id !== '847528987831304192' && id !== '567805802388127754' && profiledata ? collection.set(id, {
                     id,
                     netbalance
                 })
