@@ -14,7 +14,7 @@ module.exports = {
     maxArgs: 1,
     description: "use useable items.",
     async execute(message, args, cmd, client, Discord, profileData, userData, inventoryData) {
-        const expectedsyntax = `**Expected Syntax:** \`xe share [item]\``
+        const expectedsyntax = `**Expected Syntax:** \`xe use [item]\``
         const getItem = args[0]?.toLowerCase();
         let useamount = args[1]?.toLowerCase();
 
