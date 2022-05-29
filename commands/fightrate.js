@@ -140,7 +140,7 @@ module.exports = {
                 ]
             }
 
-            const fightr_msg = await message.reply({ content: `<@${message.author.id}> **VS** <@${target.id}>`, embeds: [fightr_embed] })
+            const fightr_msg = await message.channel.send({ content: `<@${message.author.id}> **VS** <@${target.id}>`, embeds: [fightr_embed] })
 
             setTimeout(() => {
                 fightr_embed = {
