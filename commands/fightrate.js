@@ -9,7 +9,7 @@ const inventoryModel = require('../models/inventorySchema')
 module.exports = {
     name: "fightrate",
     aliases: ['fightr'],
-    cooldown: 0,
+    cooldown: 20,
     minArgs: 0,
     maxArgs: 1,
     description: "fightrate coins with other users.",
