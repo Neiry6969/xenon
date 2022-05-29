@@ -19,6 +19,14 @@ client.events = new Collection();
     require(`./handlers/${handler}`)(client, Discord);
 });
 
+process.on('uncaughtException', (err) => {
+    console.log(err)
+})
+
+process.on('unhandledRejection', (err) => {
+    console.log(err)
+})
+
 
 mongoose
     .connect(mongodb_srv, {
