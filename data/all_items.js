@@ -330,7 +330,7 @@ module.exports = [
         value: 40000000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/976680634699382824/ezgif.com-gif-maker_3.gif?width=427&height=427",
         description: "Wow how'd you get this panda! Juicy panda that can be for your collection or be sold.",
-        rarity: "common",
+        rarity: "rare",
         type: "sellable"
     },
     {
@@ -620,7 +620,7 @@ module.exports = [
         icon: "<:bubbletea:978015620824182834>",
         price: "unable to be bought",
         sell: 'unable to be sold',
-        trade: 0,
+        trade: 250000,
         value: 250000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/978015522857816094/pixil-frame-0__34_-removebg-preview.png?width=390&height=390",
         description: "Awesome popular drink! It most commonly consists of tea accompanied by chewy tapioca balls. Num!",
@@ -924,8 +924,8 @@ module.exports = [
         icon: "<:greenblossom:970837513960837160>",
         price: "unable to be bought",
         sell: "unable to be sold",
-        trade: 2000000,
-        value: 2000000,
+        trade: 200000,
+        value: 200000,
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/970837726406524948/image_3.png?width=390&height=390",
         description: "Cute blossom.",
         rarity: "uncommon",
@@ -1007,7 +1007,7 @@ module.exports = [
         craftitems: [
             {
                 i: "greenblossom",
-                q: 3
+                q: 10
             },
             {
                 i: "shardofgold",
