@@ -71,16 +71,16 @@ module.exports = {
 
             
             embed.setDescription(beginteraction.deathdescription)
-            await profileModel.findOneAndUpdate(params,  {
+
+
+            const hasLife = Object.keys(inventoryData.inventory).includes('lifesaver');
+            if(!hasLife || hasLife < 1) {
+                 await profileModel.findOneAndUpdate(params,  {
                 $inc: {
                     coins: -lostcoins,
                     deaths: 1
                 }
             })
-
-
-            const hasLife = Object.keys(inventoryData.inventory).includes('lifesaver');
-            if(!hasLife || hasLife < 1) {
                 dmdeathembed.setTitle(`You died, rip. <:ghost:978412292012146688>`)
                 dmdeathembed.setDescription(`You didn't have any items to save you from this death. You lost your whole wallet.\n\nDeath: \`begging\`\nCoins Lost: \`❀ ${lostcoins.toLocaleString()}\``)
             } else { 
