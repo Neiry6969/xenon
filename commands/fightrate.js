@@ -8,8 +8,8 @@ const inventoryModel = require('../models/inventorySchema')
 
 module.exports = {
     name: "fightrate",
-    aliases: ['fightr'],
-    cooldown: 20,
+    aliases: ['fightr', 'fgr'],
+    cooldown: 180,
     minArgs: 0,
     maxArgs: 1,
     description: "fightrate coins with other users.",
@@ -101,34 +101,22 @@ module.exports = {
             return message.reply(`<@${target.id}> doesn't have that many coins to fight.`);
         } 
 
-        // if(amount > 0) {
-        //     const local_response = await profileModel.updateMany(
-        //         {},
-        //         {
-        //             $inc: {
-        //                 coins: -amount,
-        //             },
-        //         },
-        //         {
-        //             upsert: true,
-        //             arrayFilters: [ message.author.id, target.id ]
-        //         }
-        //     )
-        // }
 
-        let ratelocal = Math.floor(Math.random() * 100)
+        async function fightrate(prize) {
+            let ratelocal = Math.floor(Math.random() * 100)
             let ratenonlocal = Math.floor(Math.random() * 100)
             let fightr_embed = {
                 title: 'Fightrate Game...',
                 color: 'DARK_BLUE',
+                description: `**Prize:** \`${prize ? `\`❀ ${prize.toLocaleString()}\`` : "none"}\``,
                 fields: [
                     {
-                        name: `${message.author.username}`,
+                        name: `${message.author.username}#${message.author.discriminator}`,
                         value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`❔\``,
                         inline: true,
                     },
                     {
-                        name: `${target.username}`,
+                        name: `${target.username}#${target.discriminator}`,
                         value: `<@${target.id}>\n<:excalibur:966537260034043974> \`❔\``,
                         inline: true,
                     },
@@ -146,14 +134,15 @@ module.exports = {
                 fightr_embed = {
                     title: 'Fightrate Game...',
                     color: 'DARK_BLUE',
+                    description: `**Prize:** \`${prize ? `\`❀ ${prize.toLocaleString()}\`` : "none"}\``,
                     fields: [
                         {
-                            name: `${message.author.username}`,
-                            value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}\``,
+                            name: `${message.author.username}#${message.author.discriminator}`,
+                            value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}%\``,
                             inline: true,
                         },
                         {
-                            name: `${target.username}`,
+                            name: `${target.username}#${target.discriminator}`,
                             value: `<@${target.id}>\n<:excalibur:966537260034043974> \`❔\``,
                             inline: true,
                         },
@@ -171,15 +160,16 @@ module.exports = {
                 fightr_embed = {
                     title: 'Fightrate Game...',
                     color: 'DARK_BLUE',
+                    description: `**Prize:** \`${prize ? `\`❀ ${prize.toLocaleString()}\`` : "none"}\``,
                     fields: [
                         {
-                            name: `${message.author.username}`,
-                            value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}\``,
+                            name: `${message.author.username}#${message.author.discriminator}`,
+                            value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}%\``,
                             inline: true,
                         },
                         {
-                            name: `${target.username}`,
-                            value: `<@${target.id}>\n<:excalibur:966537260034043974> \`${ratenonlocal}\``,
+                            name: `${target.username}#${target.discriminator}`,
+                            value: `<@${target.id}>\n<:excalibur:966537260034043974> \`${ratenonlocal}%\``,
                             inline: true,
                         },
                         {
@@ -204,233 +194,265 @@ module.exports = {
                 fightr_embed = {
                     title: 'Fightrate Game...',
                     color: 'DARK_BLUE',
+                    description: `**Prize:** \`${prize ? `\`❀ ${prize.toLocaleString()}\`` : "none"}\``,
                     fields: [
                         {
-                            name: `${message.author.username}`,
-                            value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}\``,
+                            name: `${message.author.username}#${message.author.discriminator}`,
+                            value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}%\``,
                             inline: true,
                         },
                         {
-                            name: `${target.username}`,
-                            value: `<@${target.id}>\n<:excalibur:966537260034043974> \`${ratenonlocal}\``,
+                            name: `${target.username}#${target.discriminator}`,
+                            value: `<@${target.id}>\n<:excalibur:966537260034043974> \`${ratenonlocal}%\``,
                             inline: true,
                         },
                         {
                             name: `Results`,
-                            value: `\`${winner.username}\` won with a higher rate! Sheesh lucky!`,
+                            value: `\`${winner.username}#${winner.discriminator}\` won with a higher rate! Sheesh lucky!`,
                             inline: false,
                         },
                     ]
                 }
-                return fightr_msg.edit({ content: `<@${winner.id}> **is the winner!**`, embeds: [fightr_embed] })
+                fightr_msg.edit({ content: `<@${winner.id}> **is the winner!**`, embeds: [fightr_embed] })
+                
             }, 2000)
+            return winner.id
+        }
 
-        // if(amount <= 0) {
-        //     let ratelocal = Math.floor(Math.random() * 100)
-        //     let ratenonlocal = Math.floor(Math.random() * 100)
-        //     let fightr_embed = {
-        //         title: 'Fightrate Game...',
-        //         color: 'DARK_BLUE',
-        //         fields: [
-        //             {
-        //                 name: `${message.author.username}`,
-        //                 value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`❔\``,
-        //                 inline: true,
-        //             },
-        //             {
-        //                 name: `${target.username}`,
-        //                 value: `<@${target.id}>\n<:excalibur:966537260034043974> \`❔\``,
-        //                 inline: true,
-        //             },
-        //             {
-        //                 name: `Results`,
-        //                 value: `\`Fightrate is still in proccess...\``,
-        //                 inline: false,
-        //             },
-        //         ]
-        //     }
+        if(amount <= 0) {
+            fightrate()
+        } else {        
+            const totalprize = amount * 2;
+            async function nonlocalconfirm() {
+                let confirm = new MessageButton()
+                    .setCustomId('confirm')
+                    .setLabel('Confirm')
+                    .setStyle('PRIMARY')
+    
+                let cancel = new MessageButton()
+                    .setCustomId('cancel')
+                    .setLabel('Cancel')
+                    .setStyle('DANGER')
+    
+                let row = new MessageActionRow()
+                    .addComponents(
+                        confirm,
+                        cancel
+                    );
+    
+                const embed = new MessageEmbed()
+                    .setColor("#A020F0")
+                    .setTitle(`Confirm action`)
+                    .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\``)
+    
+                const fight_msg2 = await message.channel.send({ content: `<@${target.id}>`, embeds: [embed], components: [row] })
+    
+                const collector = fight_msg2.createMessageComponentCollector({ time: 60 * 1000 });
+    
+                collector.on('collect', async (button) => {
+                    if(button.user.id != target.id) {
+                        return button.reply({
+                            content: 'This is not for you.',
+                            ephemeral: true,
+                        })
+                    } 
+    
+                    
+                    button.deferUpdate()
+                    if(button.customId === "confirm") {
+                        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SUCCESS")
+    
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+    
+                        embed
+                            .setTitle(`Action confirmed`)
+                            .setColor("GREEN")
+    
+                        fight_msg2.edit({
+                            content: `<@${target.id}>`,
+                            embeds: [embed],
+                            components: [row]
+                        })
 
-        //     const fightr_msg = await message.reply({ content: `<@${message.author.id}> **VS** <@${target.id}>`, embeds: [fightr_embed] })
+                        await profileModel.updateMany({}, {
+                            $inc: {
+                                coins: -amount
+                            }
+                        }, 
+                        {
+                            arrayFilters: [target.id, message.author.id],
+                            upsert: true
+                        })
 
-        //     setTimeout(() => {
-        //         fightr_embed = {
-        //             title: 'Fightrate Game...',
-        //             color: 'DARK_BLUE',
-        //             fields: [
-        //                 {
-        //                     name: `${message.author.username}`,
-        //                     value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}\``,
-        //                     inline: true,
-        //                 },
-        //                 {
-        //                     name: `${target.username}`,
-        //                     value: `<@${target.id}>\n<:excalibur:966537260034043974> \`❔\``,
-        //                     inline: true,
-        //                 },
-        //                 {
-        //                     name: `Results`,
-        //                     value: `\`Fightrate is still in proccess...\``,
-        //                     inline: false,
-        //                 },
-        //             ]
-        //         }
-        //         fightr_msg.edit({ content: `<@${message.author.id}> **VS** <@${target.id}>`, embeds: [fightr_embed] })
-        //     }, 1000)
+                        async function fightresults() {
+                            const winnerid = await fightrate(totalprize)
 
-        //     setTimeout(() => {
-        //         fightr_embed = {
-        //             title: 'Fightrate Game...',
-        //             color: 'DARK_BLUE',
-        //             fields: [
-        //                 {
-        //                     name: `${message.author.username}`,
-        //                     value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}\``,
-        //                     inline: true,
-        //                 },
-        //                 {
-        //                     name: `${target.username}`,
-        //                     value: `<@${target.id}>\n<:excalibur:966537260034043974> \`${ratenonlocal}\``,
-        //                     inline: true,
-        //                 },
-        //                 {
-        //                     name: `Results`,
-        //                     value: `\`Fightrate is still in proccess...\``,
-        //                     inline: false,
-        //                 },
-        //             ]
-        //         }
-        //         fightr_msg.edit({ content: `<@${message.author.id}> **VS** <@${target.id}>`, embeds: [fightr_embed] })
-        //     }, 1000)
+                            await profileModel.findOneAndUpdate({
+                                userId: winnerid
+                            }, {
+                                $inc: {
+                                    coins: totalprize
+                                }
+                            })
+                        }
 
-        //     let winner;
+                        fightresults()
 
-        //     if(ratelocal > ratenonlocal) {
-        //         winner = message.author
-        //     } else if(ratenonlocal > ratelocal) {
-        //         winner = target
-        //     }
+                    } else if(button.customId === "cancel") {
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+    
+                        cancel.setDisabled()
+    
+                        embed
+                            .setColor('RED')
+                            .setTitle(`Action cancelled`)
+                            .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\`\nNo? Okay...`)
+                        
+                        fight_msg2.edit({
+                            content: `<@${target.id}>`,
+                            embeds: [embed],
+                            components: [row]
+                        })
+    
+                    }
+                    
+                });
+    
+                collector.on('end', async collected => {
+                    if(collected.size > 0) {
+                        
+                    } else {
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+    
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+                        
+                        embed
+                            .setColor('RED')
+                            .setTitle(`Action timeout`)
+                            .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\`\nNo? Okay...`)
+                        
+                        fight_msg2.edit({
+                            content: `<@${target.id}>`,
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    }
+                });
+            }
 
-        //     setTimeout(() => {
-        //         fightr_embed = {
-        //             title: 'Fightrate Game...',
-        //             color: 'DARK_BLUE',
-        //             fields: [
-        //                 {
-        //                     name: `${message.author.username}`,
-        //                     value: `<@${message.author.id}>\n<:excalibur:966537260034043974> \`${ratelocal}\``,
-        //                     inline: true,
-        //                 },
-        //                 {
-        //                     name: `${target.username}`,
-        //                     value: `<@${target.id}>\n<:excalibur:966537260034043974> \`${ratenonlocal}\``,
-        //                     inline: true,
-        //                 },
-        //                 {
-        //                     name: `Results`,
-        //                     value: `\`${winner.username}\` won with a higher rate! Sheesh lucky!`,
-        //                     inline: false,
-        //                 },
-        //             ]
-        //         }
-        //         fightr_msg.edit({ content: `<@${winner.id}> **is the winner!**`, embeds: [fightr_embed] })
-        //     }, 1000)
+            let confirm = new MessageButton()
+                .setCustomId('confirm')
+                .setLabel('Confirm')
+                .setStyle('PRIMARY')
 
-        // } else {
-        //     let confirm = new MessageButton()
-        //         .setCustomId('confirm')
-        //         .setLabel('Confirm')
-        //         .setStyle('PRIMARY')
+            let cancel = new MessageButton()
+                .setCustomId('cancel')
+                .setLabel('Cancel')
+                .setStyle('DANGER')
 
-        //     let cancel = new MessageButton()
-        //         .setCustomId('cancel')
-        //         .setLabel('Cancel')
-        //         .setStyle('DANGER')
+            let row = new MessageActionRow()
+                .addComponents(
+                    confirm,
+                    cancel
+                );
 
-        //     let row = new MessageActionRow()
-        //         .addComponents(
-        //             confirm,
-        //             cancel
-        //         );
+            const embed = new MessageEmbed()
+                .setColor("#A020F0")
+                .setTitle(`Confirm action`)
+                .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?`)
 
-        //     const embed = new MessageEmbed()
-        //         .setColor("#A020F0")
-        //         .setTitle(`Confirm action`)
-        //         .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?`)
+            const fight_msg = await message.reply({ embeds: [embed], components: [row] })
 
-        //     const fight_msg = await message.reply({ embeds: [embed], components: [row] })
+          
 
-        //     const collector = fight_msg.createMessageComponentCollector({ time: 60 * 1000 });
+            const collector = fight_msg.createMessageComponentCollector({ time: 60 * 1000 });
 
-        //     collector.on('collect', async (button) => {
-        //         if(button.user.id != message.author.id) {
-        //             return button.reply({
-        //                 content: 'This is not for you.',
-        //                 ephemeral: true,
-        //             })
-        //         } 
+            collector.on('collect', async (button) => {
+                if(button.user.id != message.author.id) {
+                    return button.reply({
+                        content: 'This is not for you.',
+                        ephemeral: true,
+                    })
+                } 
 
                 
-        //         button.deferUpdate()
-        //         if(button.customId === "confirm") {
+                button.deferUpdate()
+                if(button.customId === "confirm") {
                     
-        //             confirm
-        //                 .setDisabled()
-        //                 .setStyle("SUCCESS")
+                    confirm
+                        .setDisabled()
+                        .setStyle("SUCCESS")
 
-        //             cancel
-        //                 .setDisabled()
-        //                 .setStyle("SECONDARY")
+                    cancel
+                        .setDisabled()
+                        .setStyle("SECONDARY")
 
-        //             fight_msg.edit({
-        //                 embeds: [embed],
-        //                 components: [row]
-        //             })
+                    embed
+                        .setTitle(`Action confirmed`)
+                        .setColor("GREEN")
+
+                    fight_msg.edit({
+                        embeds: [embed],
+                        components: [row]
+                    })
+
+                    nonlocalconfirm()
+                } else if(button.customId === "cancel") {
+                    confirm
+                        .setDisabled()
+                        .setStyle("SECONDARY")
+
+                    cancel.setDisabled()
+
+                    embed
+                        .setColor('RED')
+                        .setTitle(`Action cancelled`)
+                        .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
+                    
+                    fight_msg.edit({
+                        embeds: [embed],
+                        components: [row]
+                    })
+
+                }
                 
-        //         } else if(button.customId === "cancel") {
-        //             confirm
-        //                 .setDisabled()
-        //                 .setStyle("SECONDARY")
+            });
 
-        //             cancel.setDisabled()
+            collector.on('end', async collected => {
+                if(collected.size > 0) {
+                    
+                } else {
+                    confirm
+                        .setDisabled()
+                        .setStyle("SECONDARY")
 
-        //             embed
-        //                 .setColor('RED')
-        //                 .setTitle(`Action cancelled`)
-        //                 .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
+                    cancel
+                        .setDisabled()
+                        .setStyle("SECONDARY")
                     
-        //             fight_msg.edit({
-        //                 embeds: [embed],
-        //                 components: [row]
-        //             })
-            
-        //         }
-                
-        //     });
-
-        //     collector.on('end', async collected => {
-        //         if(collected.size > 0) {
+                    embed
+                        .setColor('RED')
+                        .setTitle(`Action timeout`)
+                        .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
                     
-        //         } else {
-        //             confirm
-        //                 .setDisabled()
-        //                 .setStyle("SECONDARY")
-
-        //             cancel
-        //                 .setDisabled()
-        //                 .setStyle("SECONDARY")
-                    
-        //             embed
-        //                 .setColor('RED')
-        //                 .setTitle(`Action timed out`)
-        //                 .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
-                    
-        //             fight_msg.edit({
-        //                 embeds: [embed],
-        //                 components: [row]
-        //             })
-        //         }
-        //     });
-        // }
+                    fight_msg.edit({
+                        embeds: [embed],
+                        components: [row]
+                    })
+                }
+            });
+        }
 
     }
 }
