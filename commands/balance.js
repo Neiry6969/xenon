@@ -57,9 +57,6 @@ module.exports = {
                             name: `_____________`,
                             icon_url: `${target.displayAvatarURL()}`,
                         },
-                        thumbnail: {
-                            url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
-                        },
                         fields: [
                             {
                                 name: 'Wallet',
@@ -112,9 +109,6 @@ module.exports = {
                                         name: `_____________`,
                                         icon_url: `${target.displayAvatarURL()}`,
                                     },
-                                    thumbnail: {
-                                        url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
-                                    },
                                     fields: [
                                         {
                                             name: 'Wallet',
@@ -142,9 +136,6 @@ module.exports = {
                                 author: {
                                     name: `_____________`,
                                     icon_url: `${target.displayAvatarURL()}`,
-                                },
-                                thumbnail: {
-                                    url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                                 },
                                 fields: [
                                     {
@@ -201,9 +192,6 @@ module.exports = {
                                 name: `_____________`,
                                 icon_url: `${message.author.displayAvatarURL()}`,
                             },
-                            thumbnail: {
-                                url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
-                            },
                             fields: [
                                 {
                                     name: 'Wallet',
@@ -231,9 +219,6 @@ module.exports = {
                         author: {
                             name: `_____________`,
                             icon_url: `${message.author.displayAvatarURL()}`,
-                        },
-                        thumbnail: {
-                            url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
                         },
                         fields: [
                             {
