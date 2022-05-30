@@ -63,7 +63,7 @@ module.exports = [
         items: ["donut", 'bottleofcola', 'monitor', 'bread', 'lifesaver'],
         description: "Here honey, have this for your lunch money ❀ \`COINS\`. Don't lose it.", 
         faildescription: "Stop begging so much, I got no money for you.",  
-        deathdescription: `You didn't pass you exams and you asked for moeny so your mom killed you on the spot. Shame!`,
+        deathdescription: `You didn't pass your exams and you asked for moeny so your mom killed you on the spot. Shame!`,
         itemdescription: "Dank memer also gave you a ITEM",
         multicoins: 1,
         successrate: 70 * 100,
