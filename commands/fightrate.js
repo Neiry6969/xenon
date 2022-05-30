@@ -218,241 +218,241 @@ module.exports = {
             }, 2000)
             return winner.id
         }
-
-        if(amount <= 0) {
-            fightrate()
-        } else {        
-            const totalprize = amount * 2;
-            async function nonlocalconfirm() {
-                let confirm = new MessageButton()
-                    .setCustomId('confirm')
-                    .setLabel('Confirm')
-                    .setStyle('PRIMARY')
+        fightrate()
+//         if(amount <= 0) {
+//             fightrate()
+//         } else {        
+//             const totalprize = amount * 2;
+//             async function nonlocalconfirm() {
+//                 let confirm = new MessageButton()
+//                     .setCustomId('confirm')
+//                     .setLabel('Confirm')
+//                     .setStyle('PRIMARY')
     
-                let cancel = new MessageButton()
-                    .setCustomId('cancel')
-                    .setLabel('Cancel')
-                    .setStyle('DANGER')
+//                 let cancel = new MessageButton()
+//                     .setCustomId('cancel')
+//                     .setLabel('Cancel')
+//                     .setStyle('DANGER')
     
-                let row = new MessageActionRow()
-                    .addComponents(
-                        confirm,
-                        cancel
-                    );
+//                 let row = new MessageActionRow()
+//                     .addComponents(
+//                         confirm,
+//                         cancel
+//                     );
     
-                const embed = new MessageEmbed()
-                    .setColor("#A020F0")
-                    .setTitle(`Confirm action`)
-                    .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\``)
+//                 const embed = new MessageEmbed()
+//                     .setColor("#A020F0")
+//                     .setTitle(`Confirm action`)
+//                     .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\``)
     
-                const fight_msg2 = await message.channel.send({ content: `<@${target.id}>`, embeds: [embed], components: [row] })
+//                 const fight_msg2 = await message.channel.send({ content: `<@${target.id}>`, embeds: [embed], components: [row] })
     
-                const collector = fight_msg2.createMessageComponentCollector({ time: 60 * 1000 });
+//                 const collector = fight_msg2.createMessageComponentCollector({ time: 60 * 1000 });
     
-                collector.on('collect', async (button) => {
-                    if(button.user.id != target.id) {
-                        return button.reply({
-                            content: 'This is not for you.',
-                            ephemeral: true,
-                        })
-                    } 
+//                 collector.on('collect', async (button) => {
+//                     if(button.user.id != target.id) {
+//                         return button.reply({
+//                             content: 'This is not for you.',
+//                             ephemeral: true,
+//                         })
+//                     } 
     
                     
-                    button.deferUpdate()
-                    if(button.customId === "confirm") {
+//                     button.deferUpdate()
+//                     if(button.customId === "confirm") {
                         
-                        confirm
-                            .setDisabled()
-                            .setStyle("SUCCESS")
+//                         confirm
+//                             .setDisabled()
+//                             .setStyle("SUCCESS")
     
-                        cancel
-                            .setDisabled()
-                            .setStyle("SECONDARY")
+//                         cancel
+//                             .setDisabled()
+//                             .setStyle("SECONDARY")
     
-                        embed
-                            .setTitle(`Action confirmed`)
-                            .setColor("GREEN")
+//                         embed
+//                             .setTitle(`Action confirmed`)
+//                             .setColor("GREEN")
     
-                        fight_msg2.edit({
-                            content: `<@${target.id}>`,
-                            embeds: [embed],
-                            components: [row]
-                        })
+//                         fight_msg2.edit({
+//                             content: `<@${target.id}>`,
+//                             embeds: [embed],
+//                             components: [row]
+//                         })
 
-                        await profileModel.updateMany({}, {
-                            $inc: {
-                                coins: -amount
-                            }
-                        }, 
-                        {
-                            arrayFilters: [target.id, message.author.id],
-                            upsert: true
-                        })
+//                         await profileModel.updateMany({}, {
+//                             $inc: {
+//                                 coins: -amount
+//                             }
+//                         }, 
+//                         {
+//                             arrayFilters: [target.id, message.author.id],
+//                             upsert: true
+//                         })
 
-                        async function fightresults() {
-                            const winnerid = await fightrate(totalprize)
+//                         async function fightresults() {
+//                             const winnerid = await fightrate(totalprize)
 
-                            await profileModel.findOneAndUpdate({
-                                userId: winnerid
-                            }, {
-                                $inc: {
-                                    coins: totalprize
-                                }
-                            })
-                        }
+//                             await profileModel.findOneAndUpdate({
+//                                 userId: winnerid
+//                             }, {
+//                                 $inc: {
+//                                     coins: totalprize
+//                                 }
+//                             })
+//                         }
 
-                        fightresults()
+//                         fightresults()
 
-                    } else if(button.customId === "cancel") {
-                        confirm
-                            .setDisabled()
-                            .setStyle("SECONDARY")
+//                     } else if(button.customId === "cancel") {
+//                         confirm
+//                             .setDisabled()
+//                             .setStyle("SECONDARY")
     
-                        cancel.setDisabled()
+//                         cancel.setDisabled()
     
-                        embed
-                            .setColor('RED')
-                            .setTitle(`Action cancelled`)
-                            .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\`\nNo? Okay...`)
+//                         embed
+//                             .setColor('RED')
+//                             .setTitle(`Action cancelled`)
+//                             .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\`\nNo? Okay...`)
                         
-                        fight_msg2.edit({
-                            content: `<@${target.id}>`,
-                            embeds: [embed],
-                            components: [row]
-                        })
+//                         fight_msg2.edit({
+//                             content: `<@${target.id}>`,
+//                             embeds: [embed],
+//                             components: [row]
+//                         })
     
-                    }
+//                     }
                     
-                });
+//                 });
     
-                collector.on('end', async collected => {
-                    if(collected.size > 0) {
+//                 collector.on('end', async collected => {
+//                     if(collected.size > 0) {
                         
-                    } else {
-                        confirm
-                            .setDisabled()
-                            .setStyle("SECONDARY")
+//                     } else {
+//                         confirm
+//                             .setDisabled()
+//                             .setStyle("SECONDARY")
     
-                        cancel
-                            .setDisabled()
-                            .setStyle("SECONDARY")
+//                         cancel
+//                             .setDisabled()
+//                             .setStyle("SECONDARY")
                         
-                        embed
-                            .setColor('RED')
-                            .setTitle(`Action timeout`)
-                            .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\`\nNo? Okay...`)
+//                         embed
+//                             .setColor('RED')
+//                             .setTitle(`Action timeout`)
+//                             .setDescription(`<@${target.id}>, do you want to fightrate <@${message.author.id}> betting \`❀ ${amount.toLocaleString()}\`?\n**Total:** \`❀ ${(amount * 2).toLocaleString()}\`\nNo? Okay...`)
                         
-                        fight_msg2.edit({
-                            content: `<@${target.id}>`,
-                            embeds: [embed],
-                            components: [row]
-                        })
-                    }
-                });
-            }
+//                         fight_msg2.edit({
+//                             content: `<@${target.id}>`,
+//                             embeds: [embed],
+//                             components: [row]
+//                         })
+//                     }
+//                 });
+//             }
 
-            let confirm = new MessageButton()
-                .setCustomId('confirm')
-                .setLabel('Confirm')
-                .setStyle('PRIMARY')
+//             let confirm = new MessageButton()
+//                 .setCustomId('confirm')
+//                 .setLabel('Confirm')
+//                 .setStyle('PRIMARY')
 
-            let cancel = new MessageButton()
-                .setCustomId('cancel')
-                .setLabel('Cancel')
-                .setStyle('DANGER')
+//             let cancel = new MessageButton()
+//                 .setCustomId('cancel')
+//                 .setLabel('Cancel')
+//                 .setStyle('DANGER')
 
-            let row = new MessageActionRow()
-                .addComponents(
-                    confirm,
-                    cancel
-                );
+//             let row = new MessageActionRow()
+//                 .addComponents(
+//                     confirm,
+//                     cancel
+//                 );
 
-            const embed = new MessageEmbed()
-                .setColor("#A020F0")
-                .setTitle(`Confirm action`)
-                .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?`)
+//             const embed = new MessageEmbed()
+//                 .setColor("#A020F0")
+//                 .setTitle(`Confirm action`)
+//                 .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?`)
 
-            const fight_msg = await message.reply({ embeds: [embed], components: [row] })
+//             const fight_msg = await message.reply({ embeds: [embed], components: [row] })
 
           
 
-            const collector = fight_msg.createMessageComponentCollector({ time: 60 * 1000 });
+//             const collector = fight_msg.createMessageComponentCollector({ time: 60 * 1000 });
 
-            collector.on('collect', async (button) => {
-                if(button.user.id != message.author.id) {
-                    return button.reply({
-                        content: 'This is not for you.',
-                        ephemeral: true,
-                    })
-                } 
+//             collector.on('collect', async (button) => {
+//                 if(button.user.id != message.author.id) {
+//                     return button.reply({
+//                         content: 'This is not for you.',
+//                         ephemeral: true,
+//                     })
+//                 } 
 
                 
-                button.deferUpdate()
-                if(button.customId === "confirm") {
+//                 button.deferUpdate()
+//                 if(button.customId === "confirm") {
                     
-                    confirm
-                        .setDisabled()
-                        .setStyle("SUCCESS")
+//                     confirm
+//                         .setDisabled()
+//                         .setStyle("SUCCESS")
 
-                    cancel
-                        .setDisabled()
-                        .setStyle("SECONDARY")
+//                     cancel
+//                         .setDisabled()
+//                         .setStyle("SECONDARY")
 
-                    embed
-                        .setTitle(`Action confirmed`)
-                        .setColor("GREEN")
+//                     embed
+//                         .setTitle(`Action confirmed`)
+//                         .setColor("GREEN")
 
-                    fight_msg.edit({
-                        embeds: [embed],
-                        components: [row]
-                    })
+//                     fight_msg.edit({
+//                         embeds: [embed],
+//                         components: [row]
+//                     })
 
-                    nonlocalconfirm()
-                } else if(button.customId === "cancel") {
-                    confirm
-                        .setDisabled()
-                        .setStyle("SECONDARY")
+//                     nonlocalconfirm()
+//                 } else if(button.customId === "cancel") {
+//                     confirm
+//                         .setDisabled()
+//                         .setStyle("SECONDARY")
 
-                    cancel.setDisabled()
+//                     cancel.setDisabled()
 
-                    embed
-                        .setColor('RED')
-                        .setTitle(`Action cancelled`)
-                        .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
+//                     embed
+//                         .setColor('RED')
+//                         .setTitle(`Action cancelled`)
+//                         .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
                     
-                    fight_msg.edit({
-                        embeds: [embed],
-                        components: [row]
-                    })
+//                     fight_msg.edit({
+//                         embeds: [embed],
+//                         components: [row]
+//                     })
 
-                }
+//                 }
                 
-            });
+//             });
 
-            collector.on('end', async collected => {
-                if(collected.size > 0) {
+//             collector.on('end', async collected => {
+//                 if(collected.size > 0) {
                     
-                } else {
-                    confirm
-                        .setDisabled()
-                        .setStyle("SECONDARY")
+//                 } else {
+//                     confirm
+//                         .setDisabled()
+//                         .setStyle("SECONDARY")
 
-                    cancel
-                        .setDisabled()
-                        .setStyle("SECONDARY")
+//                     cancel
+//                         .setDisabled()
+//                         .setStyle("SECONDARY")
                     
-                    embed
-                        .setColor('RED')
-                        .setTitle(`Action timeout`)
-                        .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
+//                     embed
+//                         .setColor('RED')
+//                         .setTitle(`Action timeout`)
+//                         .setDescription(`<@${message.author.id}>, are you sure you want to bet \`❀ ${amount.toLocaleString()}\`?\nNo? Okay...`)
                     
-                    fight_msg.edit({
-                        embeds: [embed],
-                        components: [row]
-                    })
-                }
-            });
-        }
+//                     fight_msg.edit({
+//                         embeds: [embed],
+//                         components: [row]
+//                     })
+//                 }
+//             });
+//         }
 
     }
 }
