@@ -1,5 +1,4 @@
-const inventoryModel = require('../models/inventorySchema');
-const profileModel = require('../models/profileSchema');
+const economyModel = require('../models/economySchema');
 const allItems = require('../data/all_items');
 
 let amount;
@@ -81,7 +80,11 @@ module.exports = {
     cooldown: 120,
     maxArgs: 0,
     description: "Mine for some materials.",
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData) {
+        const params = {
+            userId: message.author.id,
+        }
+
         const pickaxe = allItems.find((val) => (val.item.toLowerCase()) === "pickaxe")
 
         const iftable = args[0]?.toLowerCase()
@@ -128,84 +131,56 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         } else {
             const result = mine()
-            const params = {
-                userId: message.author.id,
-            }
+            
     
-            inventoryModel.findOne(params, async(err, data) => {
-
-                if(data) {
-                    if(
-                        !data.inventory[pickaxe.item] || data.inventory[pickaxe.item] === 0 || !data
-                    ) {
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `Mine Error ${pickaxe.icon}`,
-                            description: `You need atleast \`1\` ${pickaxe.item} ${pickaxe.icon} to go minning. Use this command again when you have one.`,
-                            timestamp: new Date(),
-                        };
-                
-                        return message.reply({ embeds: [embed] });
-                    } else {
-                        if(result === `You weren't able to mine anything, unlucky.`) {
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `${message.author.username} went for a mine ${pickaxe.icon}`,
-                                description: result,
-                                timestamp: new Date(),
-                            };
-                    
-                            return message.reply({ embeds: [embed] });
-                        } else {
-                            const item = allItems.find((val) => (val.item.toLowerCase()) === result)
-                            const hasItem = Object.keys(data.inventory).includes(item.item);
-                            if(!hasItem) {
-                                data.inventory[item.item] = amount;
-                            } else {
-                                data.inventory[item.item] = data.inventory[item.item] + amount;
-                            }
-                            await inventoryModel.findOneAndUpdate(params, data);
-                            
-                            const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
-                            const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
-
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        expbankspace: expbankspace_amount,
-                                        experiencepoints: experiencepoints_amount,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-                            
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `${message.author.username} went for a mine ${pickaxe.icon}`,
-                                description: `Nice find! You got [\`${amount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug) \`${item.item}\` ${item.icon}`,
-                                timestamp: new Date(),
-                            };
-                    
-                            return message.reply({ embeds: [embed] });
-                        }
-                        
-                    }
-                } else {
+            if(
+                !userData.inventory[pickaxe.item] || userData.inventory[pickaxe.item] === 0 || !userData
+            ) {
+                const embed = {
+                    color: 'RANDOM',
+                    title: `Mine Error ${pickaxe.icon}`,
+                    description: `You need atleast \`1\` ${pickaxe.item} ${pickaxe.icon} to go minning. Use this command again when you have one.`,
+                    timestamp: new Date(),
+                };
+        
+                return message.reply({ embeds: [embed] });
+            } else {
+                if(result === `You weren't able to mine anything, unlucky.`) {
                     const embed = {
-                        color: '#FF0000',
-                        title: `Mine Error ${pickaxe.icon}`,
-                        description: `You need atleast \`1\` ${pickaxe.icon} \`${pickaxe.item}\` to go minning. Use this command again when you have one.`,
+                        color: 'RANDOM',
+                        title: `${message.author.username} went for a mine ${pickaxe.icon}`,
+                        description: result,
                         timestamp: new Date(),
                     };
             
-                   return message.reply({ embeds: [embed] });
+                    return message.reply({ embeds: [embed] });
+                } else {
+                    const item = allItems.find((val) => (val.item.toLowerCase()) === result)
+                    const hasItem = Object.keys(userData.inventory).includes(item.item);
+                    if(!hasItem) {
+                        userData.inventory[item.item] = 1;
+                    } else {
+                        userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                    }
+
+                    const expbankspace_amount = Math.floor(Math.random() * 1000) + 100;
+                    const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+                    userData.bank.expbankspace = userData.bank.expbankspace + expbankspace_amount
+                    userData.experiencepoints = userData.experiencepoints + experiencepoints_amount
+                    userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
+                    await economyModel.findOneAndUpdate(params, userData);
+                    
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${message.author.username} went for a mine ${pickaxe.icon}`,
+                        description: `Nice find! You got [\`${amount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug) \`${item.item}\` ${item.icon}`,
+                        timestamp: new Date(),
+                    };
+            
+                    return message.reply({ embeds: [embed] });
                 }
-            })
+                
+            }
         }
         
     }

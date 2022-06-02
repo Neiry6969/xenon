@@ -7,7 +7,7 @@ module.exports = {
     aliases: [],
     cooldown: 5,
     description: 'Commands for the bot.',
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData) {
         const getcommand = args[0]?.toLocaleString();
 
         if(!getcommand) {

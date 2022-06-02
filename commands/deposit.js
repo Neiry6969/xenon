@@ -1,4 +1,4 @@
-const profileModel = require("../models/profileSchema");
+const economyModel = require("../models/economySchema");
 const letternumbers = require('../reference/letternumber');
 
 module.exports = {
@@ -6,11 +6,13 @@ module.exports = {
     aliases: ["dep"],
     cooldown: 5,
     description: "deposit coins into your bank.",
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData) {
         let amount = args[0]?.toLowerCase();
-        const bankspace = profileData.bankspace + profileData.expbankspace;
-        const bank_percent_filled = ((profileData.bank / bankspace) * 100).toFixed(2);
-        const availableBankspace = bankspace - profileData.bank;
+        const bankcoins = userData.bank.coins;
+        const walletcoins = userData.wallet;
+        const bankspace = userData.bank.bankspace + userData.bank.expbankspace + userData.bank.otherbankspace;
+        const bank_percent_filled = ((bankcoins / bankspace) * 100).toFixed(2);
+        const availableBankspace = bankspace - bankcoins;
 
         const expectedsyntax = `**Expected Syntax:** \`xe deposit [amount]\``
 
@@ -18,7 +20,7 @@ module.exports = {
             const embed = {
                 color: '#FF0000',
                 title: 'Your deposit failed',
-                description: `Your bank can't hold anymore coins...\n**Current Bank Status:** \`❀ ${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
+                description: `Your bank can't hold anymore coins...\n**Current Bank Status:** \`❀ ${bankcoins.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
                 author: {
                     name: `_____________`,
                     icon_url: `${message.author.displayAvatarURL()}`,
@@ -28,13 +30,20 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         }
 
-        if(amount === 'max' || amount === 'all') {
-            amount = profileData.coins;
+        if(!amount) {
+            const embed = {
+                color: '#FF0000',
+                title: `Deposit Error`,
+                description: `Specify the amount you want to deposit.\n${expectedsyntax}`,
+            };
+            return message.reply({ embeds: [embed] })
+        } if(amount === 'max' || amount === 'all') {
+            amount = walletcoins;
             if(amount > availableBankspace) {
                 amount = availableBankspace
             } 
         } else if(amount === 'half') {
-            amount = Math.floor(profileData.coins / 2)
+            amount = Math.floor(walletcoins / 2)
         } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
             if(parseInt(amount.slice(0, -1))) {
                 const number = parseFloat(amount.slice(0, -1));
@@ -53,16 +62,9 @@ module.exports = {
 
         if(amount === 0){
             return message.reply("You deposited nothing, so nothing changed. Are you good?");
-        } else if(!amount) {
-            const embed = {
-                color: '#FF0000',
-                title: `Deposit Error`,
-                description: `Specify the amount you want to deposit.\n${expectedsyntax}`,
-            };
-            return message.reply({ embeds: [embed] })
         } else if(amount < 0 || amount % 1 != 0) {
             return message.reply("Deposit amount must be a whole number.");
-        } else if(amount > profileData.coins) {
+        } else if(amount > walletcoins) {
             return message.reply(`You don't have that amount of coins to deposit.`);
         } else if(amount > availableBankspace) {
             const embed = {
@@ -78,44 +80,25 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         }
 
-        const new_bank = profileData.bank + amount;
-        const new_wallet = profileData.coins - amount;
+        const new_bank = bankcoins + amount;
+        const new_wallet = walletcoins - amount;
         try {
-            await profileModel.findOneAndUpdate(
-                {
-                    userId: message.author.id,
-                },
-                {
-                    $inc: {
-                        coins: -amount,
-                        bank: amount,
-                    },
-                }
-            );
+            const params = {
+                userId: message.author.id
+            }
+            userData.wallet = new_wallet
+            userData.bank.coins = new_bank
+
+            await economyModel.findOneAndUpdate(params, userData);
 
             const embed = {
                 color: 'RANDOM',
+                title: `Deposit`,
                 author: {
-                    name: `_____________`,
+                    name: `${message.author.username}#${message.author.discriminator}`,
                     icon_url: `${message.author.displayAvatarURL()}`,
                 },
-                fields: [
-                    {
-                        name: 'Deposited',
-                        value: `\`❀ ${amount.toLocaleString()}\``,
-                    },
-                    {
-                        name: 'Current Bank Balance',
-                        value: `\`❀ ${new_bank.toLocaleString()}\``,
-                        inline: true,
-                    },
-                    {
-                        name: 'Current Wallet Balance',
-                        value: `\`❀ ${new_wallet.toLocaleString()}\``,
-                        inline: true,
-                    },
-                    
-                ],
+                description: `Deposited: \`❀ ${amount.toLocaleString()}\`\nCurrent Bank Balance: \`❀ ${new_bank.toLocaleString()}\`\nCurrent Wallet Balance: \`❀ ${new_wallet.toLocaleString()}\``,
                 timestamp: new Date(),
             };
             return message.reply({ embeds: [embed] });

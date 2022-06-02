@@ -474,20 +474,6 @@ module.exports = [
         type: "sellable"
     },
     {
-        item: "web",
-        name: "Web",
-        aliases: [],
-        icon: "<:web:978441349445611571>",
-        price: "unable to be bought",
-        sell: 100000,
-        trade: 0,
-        value: 100000,
-        imageUrl: "",
-        description: "Might be spiderman's own web bro! What was it doing underground? Web can be for your collection or be sold.",
-        rarity: "common",
-        type: "sellable"
-    },
-    {
         item: "bread",
         name: "Bread",
         aliases: ['brea'],
@@ -1142,20 +1128,6 @@ module.exports = [
         type: "collectable",
     },
     {
-        item: "shinyfox",
-        name: "Shiny Fox",
-        aliases: ["fox", 'shiny'],
-        icon: "<:shinyfox:965272583496953936>",
-        price: 6900000,
-        sell: 5000000,
-        trade: 5000000,
-        value: 5000000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965273171278327808/pixil-frame-0_1.png",
-        description: "Fox ate all of it's jewelry and turned into this...",
-        rarity: "uncommon",
-        type: "collectable"
-    },
-    {
         item: "testerstea",
         name: "Testers Tea",
         aliases: ["tea", 'testers', 'test', 'tester'],
@@ -1167,34 +1139,6 @@ module.exports = [
         imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965275585947521104/pixil-frame-0_4.png",
         description: "Tea given to the testers for their hard work finding bugs.",
         rarity: "legendary",
-        type: "collectable"
-    },
-    {
-        item: "sixymedal",
-        name: "Sixy Medal",
-        aliases: ["smedal", 'sixy', 'sexy'],
-        icon: "<:sixymedal:966144529054990407>",
-        price: "unable to be bought",
-        sell: "unable to be sold",
-        trade: 50000000,
-        value: 50000000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/966144501087346788/pixil-frame-0_5.png",
-        description: "Very hot medal for 6969 people...no not sus.\n\nWorldwide Quantity: `6969`",
-        rarity: "legendary",
-        type: "collectable"
-    },
-    {
-        item: "bluecoin",
-        name: "Blue Coin",
-        aliases: ['bluec', 'bcoin', 'blcoin'],
-        icon: "<:bluecoin:967464569847029840>",
-        price: "unable to be bought",
-        sell: "unable to be sold",
-        trade: 800000,
-        value: 800000,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/967464517904785428/image__1_-removebg-preview.png?width=408&height=427",
-        description: "Wow that some coin that I haven't seen before! could it be from another civilization? Blue coin can be for your collection or be sold.",
-        rarity: "common",
         type: "collectable"
     },
     {
@@ -1210,20 +1154,6 @@ module.exports = [
         rarity: "common",
         type: "material"
     }, 
-    {
-        item: "bottleofcola",
-        name: "Bottle of Cola",
-        aliases: ["colabottle", 'cola'],
-        icon: "<:bottleofcola:965102489240211539>",
-        price: 10,
-        sell: 1,
-        trade: 5,
-        value: 10,
-        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/965102803011899412/2900eb50-5dec-45b7-995b-db6deb38b768.png",
-        description: "Well just a bottle of cola.",
-        rarity: "common",
-        type: "support",
-    },
     {
         item: "donut",
         name: "Donut",
@@ -1670,71 +1600,6 @@ module.exports = [
                 i: "blueblossom",
                 minq: 10,
                 maxq: 100, 
-            },
-        ],
-    },
-    {
-        item: "chestofshadow",
-        name: "Shadow Chest",
-        icon: "<:chestofshadow:978075115554230352>",
-        price: "unable to be bought",
-        sell: 500000000,
-        trade: 500000000,
-        value: 500000000,
-        imageUrl: "https://media.discordapp.net/attachments/978070804849893466/978075091139194950/pixil-frame-0_8.png",
-        description: "Shadow chest used to obtain shady items.",
-        rarity: "legendary",
-        type: "lootbox",
-        lootbox: [
-            {
-                i: "scythe",
-                minq: 1,
-                maxq: 3, 
-            },
-            {
-                i: "fishingrod",
-                minq: 1,
-                maxq: 30
-            },
-            {
-                i: "hoe",
-                minq: 1,
-                maxq: 30, 
-            },
-            {
-                i: "shovel",
-                minq: 1,
-                maxq: 30, 
-            },
-            {
-                i: "rifle",
-                minq: 1,
-                maxq: 30, 
-            },
-            {
-                i: "pickaxe",
-                minq: 1,
-                maxq: 15, 
-            },
-            {
-                i: "finetrophy",
-                minq: 1,
-                maxq: 3, 
-            },
-            {
-                i: "finemedal",
-                minq: 1,
-                maxq: 10, 
-            },
-            {
-                i: "finecrown",
-                minq: 1,
-                maxq: 1, 
-            },
-            {
-                i: "moon",
-                minq: 5,
-                maxq: 15, 
             },
         ],
     },

@@ -1,5 +1,6 @@
-const profileModel = require("../models/profileSchema");
-const inventoryModel = require('../models/inventorySchema');
+const { MessageEmbed } = require('discord.js');
+
+const economyModel = require("../models/economySchema");
 const allItems = require('../data/all_items');
 
 module.exports = {
@@ -8,9 +9,9 @@ module.exports = {
     cooldown: 3,
     minArgs: 0,
     maxArgs: 1,
-    description: "check the user balance.",
-    async execute(message, args, cmd, client, Discord, profileData) {
-        const bankspace = profileData.bankspace + profileData.expbankspace;
+    description: "Check a user's balance.",
+    async execute(message, args, cmd, client, Discord, userData) {
+        const user = message.author;
         let target;
 
         if(message.mentions.users.first()) {
@@ -23,224 +24,108 @@ module.exports = {
                 target = null
             }
         }
-         
-       
+
+        const embed = new MessageEmbed()
+            .setColor("RANDOM")
+            .setTitle(`Balance`)
+            .setTimestamp()
+            
         
         if(target) {
-            let target_profileData;
+            let targetData;
             try {   
-                target_profileData = await profileModel.findOne({ userId: target.id });
-
-                if(!target_profileData) {
-                    let profile = await profileModel.create({
+                targetData = await economyModel.findOne({ userId: target.id });
+                if(!targetData) {
+                    let targetuser = await economyModel.create({
                         userId: target.id,
-                        serverId: message.guild.id,
-                        coins: 0,
-                        bank: 0,
-                        bankspace: 1000,
-                        expbankspace: 0,
-                        experiencepoints: 0,
-                        level: 0,
-                        dailystreak: 0,
-                        prestige: 0,
-                        commands: 0,
-                        deaths: 0,
-                        premium: 0,
                     });
+
+                    targetData = targetuser
                 
-                    profile.save();
-
-                    const embed = {
-                        color: 'RANDOM',
-                        title: `${target.username}'s Balance`,
-                        author: {
-                            name: `_____________`,
-                            icon_url: `${target.displayAvatarURL()}`,
-                        },
-                        fields: [
-                            {
-                                name: 'Wallet',
-                                value: `\`❀ ${profile.coins.toLocaleString()}\``,
-                            },
-                            {
-                                name: 'Bank',
-                                value: `\`❀ ${profile.bank.toLocaleString()}\` | \`${profile.bankspace.toLocaleString()}\` \`0.00%\``,
-                            },
-                            {
-                                name: 'Net Worth',
-                                value: `\`❀ 0\``
-                            }
-                            
-                        ],
-                        timestamp: new Date(),
-                    };
-
-                    return message.channel.send({ embeds: [embed] });
-                } else {
-                    const bankspace = target_profileData.bankspace + target_profileData.expbankspace;
-                    const bank_percent_filled = ((target_profileData.bank / bankspace) * 100).toFixed(2);
-
-                    let itemsworth = 0;
-        
-                    inventoryModel.findOne(
-                        {
-                            userId: target.id
-                        }, async(err, data) => {
-                            if(!data) {
-                                itemsworth = 0;
-                            } else {
-                                Object.keys(data.inventory)
-                                .forEach((key) => {
-                                    if(data.inventory[key] === 0) {
-                                        return;
-                                    } else {
-                                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
-        
-                                        itemsworth = itemsworth + (item.value * data.inventory[key]);
-                                    }
-        
-                                })
-                                const networth = target_profileData.coins + target_profileData.bank + itemsworth;
-                                
-                                const embed = {
-                                    color: 'RANDOM',
-                                    title: `${target.username}'s Balance`,
-                                    author: {
-                                        name: `_____________`,
-                                        icon_url: `${target.displayAvatarURL()}`,
-                                    },
-                                    fields: [
-                                        {
-                                            name: 'Wallet',
-                                            value: `\`❀ ${target_profileData.coins.toLocaleString()}\``,
-                                        },
-                                        {
-                                            name: 'Bank',
-                                            value: `\`❀ ${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
-                                        },
-                                        {
-                                            name: 'Net Worth',
-                                            value: `\`❀ ${networth.toLocaleString()}\``
-                                        }
-                                        
-                                    ],
-                                    timestamp: new Date(),
-                                };
-                                return message.channel.send({ embeds: [embed] });
-                            }
-                            const networth = target_profileData.coins + target_profileData.bank + itemsworth;
-                                
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `${target.username}'s Balance`,
-                                author: {
-                                    name: `_____________`,
-                                    icon_url: `${target.displayAvatarURL()}`,
-                                },
-                                fields: [
-                                    {
-                                        name: 'Wallet',
-                                        value: `\`❀ ${target_profileData.coins.toLocaleString()}\``,
-                                    },
-                                    {
-                                        name: 'Bank',
-                                        value: `\`❀ ${target_profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
-                                    },
-                                    {
-                                        name: 'Net Worth',
-                                        value: `\`❀ ${networth.toLocaleString()}\``
-                                    }
-                                    
-                                ],
-                                timestamp: new Date(),
-                            };
-                            return message.channel.send({ embeds: [embed] });
-                        }
-                    )
+                    targetuser.save();
                 }
-            } catch (error) {
+            } catch(error) {
                 console.log(error)
             }
-        } else {
-            const bank_percent_filled = ((profileData.bank / bankspace) * 100).toFixed(2);
+
+            const bankspace = targetData.bank.bankspace + targetData.bank.expbankspace + targetData.bank.bankmessagespace;
+            const bank_percent_filled = ((targetData.bank.coins / bankspace) * 100).toFixed(2);
             let itemsworth = 0;
-        
-            inventoryModel.findOne(
-                {
-                    userId: message.author.id
-                }, async(err, data) => {
-                    if(!data) {
-                        itemsworth = 0;
+
+            if(!targetData.inventory) {
+                itemsworth = 0;
+            } else {
+                Object.keys(targetData.inventory)
+                .forEach((key) => {
+                    if(targetData.inventory[key] === 0) {
+                        return;
                     } else {
-                        Object.keys(data.inventory)
-                        .forEach((key) => {
-                            if(data.inventory[key] === 0) {
-                                return;
-                            } else {
-                                const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                                itemsworth = itemsworth + (item.value * data.inventory[key]);
-                            }
-
-                        })
-                        const networth = profileData.coins + profileData.bank + itemsworth;
-
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `${message.author.username}'s Balance`,
-                            author: {
-                                name: `_____________`,
-                                icon_url: `${message.author.displayAvatarURL()}`,
-                            },
-                            fields: [
-                                {
-                                    name: 'Wallet',
-                                    value: `\`❀ ${profileData.coins.toLocaleString()}\``,
-                                },
-                                {
-                                    name: 'Bank',
-                                    value: `\`❀ ${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
-                                },
-                                {
-                                    name: 'Net Worth',
-                                    value: `\`❀ ${networth.toLocaleString()}\``
-                                }
-                                
-                            ],
-                            timestamp: new Date(),
-                        };
-                        return message.channel.send({ embeds: [embed] });
+                        itemsworth = itemsworth + (item.value * targetData.inventory[key]);
                     }
-                    const networth = profileData.coins + profileData.bank + itemsworth;
 
-                    const embed = {
-                        color: 'RANDOM',
-                        title: `${message.author.username}'s Balance`,
-                        author: {
-                            name: `_____________`,
-                            icon_url: `${message.author.displayAvatarURL()}`,
-                        },
-                        fields: [
-                            {
-                                name: 'Wallet',
-                                value: `\`❀ ${profileData.coins.toLocaleString()}\``,
-                            },
-                            {
-                                name: 'Bank',
-                                value: `\`❀ ${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``,
-                            },
-                            {
-                                name: 'Net Worth',
-                                value: `\`❀ ${networth.toLocaleString()}\``
-                            }
-                            
-                        ],
-                        timestamp: new Date(),
-                    };
-                    return message.channel.send({ embeds: [embed] });
-                }
-            )
+                })
+            }
+
+            const networth = targetData.wallet + targetData.bank.coins + itemsworth;
+
+            embed
+                .setDescription(
+                    `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()} / ${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``
+                )
+                .setAuthor(
+                    {
+                        name: `${target.username}#${target.discriminator}`,
+                        iconURL: target.displayAvatarURL(),
+                    }
+                )
+                .addFields({
+                    name: `Net Worth`,
+                    value: `\`❀ ${networth.toLocaleString()}\``
+                })
+
+        } else {
+            const bankspace = userData.bank.bankspace + userData.bank.expbankspace + userData.bank.otherbankspace;
+            const bank_percent_filled = ((userData.bank.coins / bankspace) * 100).toFixed(2);
+            let itemsworth = 0;
+
+            if(!userData.inventory) {
+                itemsworth = 0;
+            } else {
+                Object.keys(userData.inventory)
+                .forEach((key) => {
+                    if(userData.inventory[key] === 0) {
+                        return;
+                    } else {
+                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+
+                        itemsworth = itemsworth + (item.value * userData.inventory[key]);
+                    }
+
+                })
+            }
+
+            const networth = userData.wallet + userData.bank.coins + itemsworth;
+
+            embed
+                .setDescription(
+                    `Wallet: \`❀ ${userData.wallet.toLocaleString()}\`\nBank: \`❀ ${userData.bank.coins.toLocaleString()} / ${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``
+                )
+                .setAuthor(
+                    {
+                        name: `${user.username}#${user.discriminator}`,
+                        iconURL: user.displayAvatarURL(),
+                    }
+                )
+                .addFields({
+                    name: `Net Worth`,
+                    value: `\`❀ ${networth.toLocaleString()}\``
+                })
+    
         }
+
+        message.reply({ embeds: [embed] })
 
     },
 

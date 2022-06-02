@@ -1,8 +1,6 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js')
 
 const allItems = require('../data/all_items');
-const itemModel = require('../models/itemSchema');
-const inventoryModel = require('../models/inventorySchema');
 
 module.exports = {
     name: "shop",
@@ -10,7 +8,7 @@ module.exports = {
     cooldown: 5,
     maxArgs: 0,
     description: 'see what is in the item shop.',
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData) {
         const getItem = args[0]?.toLowerCase();
         const ifcondition = args[0]?.toLowerCase();
 
@@ -46,7 +44,7 @@ module.exports = {
 
             const shopList = shopmaparray
             .map((value) => {
-                return `${value.icon} **${value.name}**    **───**   \`❀ ${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
+                return `${value.icon} **${value.name}**    **───**   \`❀ ${value.price.toLocaleString()}\` (${userData.inventory[value.item] ? userData.inventory[value.item].toLocaleString() : 0})\nItem ID: \`${value.item}\``;
             }).filter(Boolean)
 
             const shop = Object.values(shopList).filter(Boolean);
@@ -371,348 +369,138 @@ module.exports = {
             if(item === undefined) {
                 return message.reply(`\`${getItem}\` is not even an existing item.`);
             }
+            function ifhasamountitem(reqm, hasa) {
+                if(hasa >= reqm) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } 
 
-            const params_user = {
-                userId: message.author.id,
+            let crafttools;
+            if(item.crafttools) {
+                crafttools = item.crafttools.map(value => {
+                    const toolitem = allItems.find(({ item }) => item === value.i);
+
+                    return `${ifhasamountitem(value.q, userData.inventory[toolitem.item]) === true ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)` : `\`${value.q.toLocaleString()}\``} ${toolitem.icon} \`${toolitem.item}\``;
+                })
+                .join('\n')
+                
             }
-    
-            inventoryModel.findOne(params_user, async(err, data) => {
-                let itemOwned;
 
-                function ifhasamountitem(reqm, hasa) {
-                    if(hasa >= reqm) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                } 
+            let craftitems;
+            if(item.craftitems) {
+                craftitems = item.craftitems.map(value => {
+                    const craftitem = allItems.find(({ item }) => item === value.i);
 
-                let crafttools;
-                if(item.crafttools) {
-                    crafttools = item.crafttools.map(value => {
-                        const toolitem = allItems.find(({ item }) => item === value.i);
-
-                        return `${ifhasamountitem(value.q, data.inventory[toolitem.item]) === true ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)` : `\`${value.q.toLocaleString()}\``} ${toolitem.icon} \`${toolitem.item}\``;
-                    })
-                    .join('\n')
-                    
-                }
-
-                let craftitems;
-                if(item.craftitems) {
-                    craftitems = item.craftitems.map(value => {
-                        const craftitem = allItems.find(({ item }) => item === value.i);
-
-                        return `${ifhasamountitem(value.q, data.inventory[craftitem.item]) === true ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)` : `\`${value.q.toLocaleString()}\``} ${craftitem.icon} \`${craftitem.item}\``;
-                    })
-                    .join('\n')
-                }
-                
-                let lootboxitems;
-                if(item.lootbox) {
-                    lootboxitems = item.lootbox.map(value => {
-                        const craftitem = allItems.find(({ item }) => item === value.i);
-
-                        return `${craftitem.icon} \`${craftitem.item}\` [\`${value.minq.toLocaleString()} - ${value.maxq.toLocaleString()}\`]`;
-                    })
-                    .join('\n')
-                }
-
-
-                if(!data.inventory[item.item]) {
-                    itemOwned = 0
-                } else {
-                    itemOwned = data.inventory[item.item]
-                }
-
-                const embed = new MessageEmbed()
-                    .setColor('RANDOM')
-                    .setTitle(`**${item.icon} ${item.name}** (${itemOwned?.toLocaleString()} Owned)`)
-                    .setThumbnail(item.imageUrl)
-                    .setDescription(`> ${item.description}`)
-                    .addFields(
-                        {
-                            name: '_ _',
-                            value: `**BUY:** \`❀ ${item.price?.toLocaleString()}\`\n**SELL:** \`❀ ${item.sell?.toLocaleString()}\`\n**TRADE:** \`❀ ${item.trade?.toLocaleString()}\``,
-                        },
-                        {
-                            name: 'ID',
-                            value: `\`${item.item}\``,
-                            inline: true,
-                        },
-                        {
-                            name: 'Rarity',
-                            value: `\`${item.rarity}\``,
-                            inline: true,
-                        },
-                        {
-                            name: 'Type',
-                            value: `\`${item.type}\``,
-                            inline: true,
-                        },
-                    )
-                    .setTimestamp()
-
-                let messagecontents = { embeds: [embed] }
-
-
-                if(craftitems) {
-                    embed.addFields(
-                        {
-                            name: 'Required Caft Tools',
-                            value: `${crafttools}`,
-                            inline: true,
-                        }
-                    )
-                }
-
-                if(crafttools) {
-                    embed.addFields( 
-                        {
-                            name: 'Required Caft Materials',
-                            value: `${craftitems}`,
-                            inline: true,
-                        }
-                    )
-                }
-
-                if(lootboxitems) {
-                    let itemsbutton = new MessageButton()
-                        .setCustomId('itemsbutton')
-                        .setLabel('Possible Items')
-                        .setStyle('PRIMARY')
-
-                    let row = new MessageActionRow()
-                        .addComponents(
-                            itemsbutton
-                        );
-
-                    messagecontents = { embeds: [embed], components: [row] }
-                }
-    
-                const item_msg = await message.channel.send(messagecontents);
-
-                if(lootboxitems) {
-                    const ephemeralitemsembed = new MessageEmbed()
-                        .setTitle(`**Possible Items** [Possible Quantities]`)
-                        .setDescription(lootboxitems)
-                    const collector = item_msg.createMessageComponentCollector({ time: 10 * 1000 });
-                    collector.on('collect', async (interaction) => {
-                        if(interaction.customId === "itemsbutton") {
-                            await interaction.reply({ embeds: [ephemeralitemsembed], ephemeral: true });
-                        }
-                        
-                    });
-    
-                    collector.on('end', collected => {
-                        item_msg.components[0].components.forEach(c => {
-                            c.setDisabled()
-                            c.setStyle('SECONDARY')
-                        })
-                        item_msg.edit({
-                            components: item_msg.components
-                        })
-                    });
-
-                }
-
-                
-            })
-
-
-        } else {
-            const shopList = allItems
-            .map((value) => {
-                if(value.price === "unable to be bought") {
-                    return;
-                } else {
-                    return `${value.icon} **${value.name}**    **───**   \`❀ ${value.price.toLocaleString()}\`\nItem ID: \`${value.item}\``;
-                }
-            }).filter(Boolean)
-
-            const shop = Object.values(shopList).filter(Boolean);
-            const shoplength = shop.length;
-            const itemsperpage = 6;
+                    return `${ifhasamountitem(value.q, userData.inventory[craftitem.item]) === true ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)` : `\`${value.q.toLocaleString()}\``} ${craftitem.icon} \`${craftitem.item}\``;
+                })
+                .join('\n')
+            }
             
-            let lastpage;
-            if(shoplength % itemsperpage > 0) {
-                lastpage = Math.floor(shoplength / itemsperpage) + 1;
-            } else {
-                lastpage = shoplength / itemsperpage;
+            let lootboxitems;
+            if(item.lootbox) {
+                lootboxitems = item.lootbox.map(value => {
+                    const craftitem = allItems.find(({ item }) => item === value.i);
+
+                    return `${craftitem.icon} \`${craftitem.item}\` [\`${value.minq.toLocaleString()} - ${value.maxq.toLocaleString()}\`]`;
+                })
+                .join('\n')
             }
 
-            let page = 1;
-            let display_start = (page - 1) * itemsperpage;
-            let display_end = page * itemsperpage;
 
-            if(lastpage === 1) {
-                let leftbutton = new MessageButton()
-                    .setCustomId('left')
-                    .setLabel('<')
-                    .setStyle('PRIMARY')
-                    .setDisabled()
-
-                let rightbutton = new MessageButton()
-                    .setCustomId('right')
-                    .setLabel('>')
-                    .setStyle('PRIMARY')
-                    .setDisabled()
-
-                let row = new MessageActionRow()
-                    .addComponents(
-                        leftbutton,
-                        rightbutton
-                    );
-    
-                embed = {
-                    color: '#AF97FE',
-                    title: `Xenon Shop`,
-                    description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
-                    thumbnail: {
-                        url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
+            const embed = new MessageEmbed()
+                .setColor('RANDOM')
+                .setTitle(`**${item.icon} ${item.name}** (${userData.inventory[item.item] ? userData.inventory[item.item].toLocaleString() : "0"} Owned)`)
+                .setThumbnail(item.imageUrl)
+                .setDescription(`> ${item.description}`)
+                .addFields(
+                    {
+                        name: '_ _',
+                        value: `**BUY:** \`❀ ${item.price?.toLocaleString()}\`\n**SELL:** \`❀ ${item.sell?.toLocaleString()}\`\n**TRADE:** \`❀ ${item.trade?.toLocaleString()}\``,
                     },
-                    footer: {
-                        text: `Page: ${page} | ${lastpage} | xe shop [item]`
+                    {
+                        name: 'ID',
+                        value: `\`${item.item}\``,
+                        inline: true,
+                    },
+                    {
+                        name: 'Rarity',
+                        value: `\`${item.rarity}\``,
+                        inline: true,
+                    },
+                    {
+                        name: 'Type',
+                        value: `\`${item.type}\``,
+                        inline: true,
+                    },
+                )
+                .setTimestamp()
+
+            let messagecontents = { embeds: [embed] }
+
+
+            if(craftitems) {
+                embed.addFields(
+                    {
+                        name: 'Required Caft Tools',
+                        value: `${crafttools}`,
+                        inline: true,
                     }
-                };
+                )
+            }
 
-                message.reply({ embeds: [embed], components: [row] });
-               
-            } else { 
-                let leftbutton = new MessageButton()
-                    .setCustomId('left')
-                    .setLabel('<')
-                    .setStyle('PRIMARY')
-                    .setDisabled()
+            if(crafttools) {
+                embed.addFields( 
+                    {
+                        name: 'Required Caft Materials',
+                        value: `${craftitems}`,
+                        inline: true,
+                    }
+                )
+            }
 
-                let rightbutton = new MessageButton()
-                    .setCustomId('right')
-                    .setLabel('>')
+            if(lootboxitems) {
+                let itemsbutton = new MessageButton()
+                    .setCustomId('itemsbutton')
+                    .setLabel('Possible Items')
                     .setStyle('PRIMARY')
 
                 let row = new MessageActionRow()
                     .addComponents(
-                        leftbutton,
-                        rightbutton
+                        itemsbutton
                     );
 
-                embed = {
-                    color: '#AF97FE',
-                    title: `Xenon Shop`,
-                    description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
-                    thumbnail: {
-                        url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
-                    },
-                    footer: {
-                        text: `Page: ${page} | ${lastpage} | xe shop [item]`
-                    }
-                };
-            
-                const shop_msg = await message.channel.send({ embeds: [embed], components: [row] });
+                messagecontents = { embeds: [embed], components: [row] }
+            }
 
-                const collector = shop_msg.createMessageComponentCollector({ time: 20 * 1000 });
+            const item_msg = await message.channel.send(messagecontents);
 
-                collector.on('collect', async (button) => {
-                    if(button.user.id != message.author.id) {
-                        return button.reply({
-                            content: 'This is not for you.',
-                            ephemeral: true,
-                        })
-                    } 
-                    
-                    button.deferUpdate()
-
-                    if(button.customId === "right") {
-                        page = page + 1
-                        display_start = (page - 1) * itemsperpage;
-                        display_end = page * itemsperpage;
-
-                        if(page === lastpage) {
-                            leftbutton.setDisabled(false)
-                            rightbutton.setDisabled();
-
-                            embed = {
-                                color: '#AF97FE',
-                                title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
-                                thumbnail: {
-                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
-                                },
-                                footer: {
-                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
-                                }
-                            };
-                
-                            await shop_msg.edit({ embeds: [embed], components: [row] });
-                        } else {
-                            leftbutton.setDisabled(false)
-                            rightbutton.setDisabled(false)
-
-                            embed = {
-                                color: '#AF97FE',
-                                title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
-                                thumbnail: {
-                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
-                                },
-                                footer: {
-                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
-                                }
-                            };
-                
-                            await shop_msg.edit({ embeds: [embed], components: [row] });
-                        }
-                    } else if(button.customId === "left") {
-                        page = page - 1
-                        display_start = (page - 1) * itemsperpage;
-                        display_end = page * itemsperpage;
-
-                        if(page === 1) {
-                            rightbutton.setDisabled(false)
-                            leftbutton.setDisabled();
-
-                            embed = {
-                                color: '#AF97FE',
-                                title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
-                                thumbnail: {
-                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
-                                },
-                                footer: {
-                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
-                                }
-                            };
-                
-                            await shop_msg.edit({ embeds: [embed], components: [row] });
-                        } else {
-                            leftbutton.setDisabled(false)
-                            rightbutton.setDisabled(false)
-
-                            embed = {
-                                color: '#AF97FE',
-                                title: `Xenon Shop`,
-                                thumbnail: {
-                                    url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
-                                },
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
-                                footer: {
-                                    text: `Page: ${page} | ${lastpage} | xe shop [item]`
-                                }
-                            };
-                
-                            await shop_msg.edit({ embeds: [embed], components: [row] });
-                        }
+            if(lootboxitems) {
+                const ephemeralitemsembed = new MessageEmbed()
+                    .setTitle(`**Possible Items** [Possible Quantities]`)
+                    .setDescription(lootboxitems)
+                const collector = item_msg.createMessageComponentCollector({ time: 10 * 1000 });
+                collector.on('collect', async (interaction) => {
+                    if(interaction.customId === "itemsbutton") {
+                        await interaction.reply({ embeds: [ephemeralitemsembed], ephemeral: true });
                     }
                     
                 });
 
                 collector.on('end', collected => {
-                    shop_msg.components[0].components.forEach(c => {c.setDisabled()})
-                    shop_msg.edit({
-                        components: shop_msg.components
+                    item_msg.components[0].components.forEach(c => {
+                        c.setDisabled()
+                        c.setStyle('SECONDARY')
+                    })
+                    item_msg.edit({
+                        components: item_msg.components
                     })
                 });
+
             }
+
+
         }
 
 
