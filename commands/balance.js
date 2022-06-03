@@ -48,7 +48,7 @@ module.exports = {
                 console.log(error)
             }
 
-            const bankspace = targetData.bank.bankspace + targetData.bank.expbankspace + targetData.bank.bankmessagespace;
+            const bankspace = targetData.bank.bankspace + targetData.bank.expbankspace + targetData.bank.otherbankspace;
             const bank_percent_filled = ((targetData.bank.coins / bankspace) * 100).toFixed(2);
             let itemsworth = 0;
 

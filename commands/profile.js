@@ -168,7 +168,7 @@ module.exports = {
                         )
                 } else {     
                     const total_balance = targetData.wallet + targetData.bank.coins;
-                    const bankspace = targetData.bank.bankspace + targetData.bank.expbankspace + targetData.bank.bankmessagespace;
+                    const bankspace = targetData.bank.bankspace + targetData.bank.expbankspace + targetData.bank.otherbankspace;
                     let itemsworth = 0;
                     let items = 0;
                     let uniqueitems = 0;
