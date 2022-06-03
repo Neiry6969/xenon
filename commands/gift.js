@@ -1,8 +1,12 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
+const fs = require('fs')
+const mongoose = require('mongoose');
 
 const economyModel = require("../models/economySchema");
 const allItems = require("../data/all_items");
 const letternumbers = require('../reference/letternumber');
+const interactionproccesses = require('../interactionproccesses.json')
+
 
 module.exports = {
     name: "gift",
@@ -132,15 +136,8 @@ module.exports = {
         } 
 
         if(!userData.inventory[item.item] || userData.inventory[item.item] === 0) {
-            return message.reply(`You have 0 ${item.icon} \`${item.item}\`, so how are you going to gift that?`);
+            return message.reply(`You have \`0\` ${item.icon} \`${item.item}\`, so how are you going to gift that?`);
         } 
-
-
-        userData.interactionproccesses.interaction = true
-        userData.interactionproccesses.proccessing = true
-        userData.inventory[item.item] = userData.inventory[item.item] - amount;
-        await economyModel.findOneAndUpdate(params, userData);
-
         const params_target = {
             userId: target.id
         }
@@ -154,179 +151,204 @@ module.exports = {
                     data.inventory[item.item] = data.inventory[item.item] + amount;
                 }
                 await economyModel.findOneAndUpdate(params_target, data);
-            } else {
-                new economyModel({
-                    params_target,
-                    inventory: {
-                        [item.item]: amount
+                interactionproccesses[message.author.id] = {
+                    interaction: true,
+                    proccessingcoins: true
+                }
+                fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+                userData.interactionproccesses.interaction = true
+                userData.interactionproccesses.proccessingcoins = true
+                userData.inventory[item.item] = userData.inventory[item.item] - amount;
+                await economyModel.findOneAndUpdate(params, userData);
+        
+        
+                let confirm = new MessageButton()
+                    .setCustomId('confirm')
+                    .setLabel('Confirm')
+                    .setStyle('PRIMARY')
+        
+                let cancel = new MessageButton()
+                    .setCustomId('cancel')
+                    .setLabel('Cancel')
+                    .setStyle('DANGER')
+        
+                let row = new MessageActionRow()
+                    .addComponents(
+                        confirm,
+                        cancel
+                    );
+        
+                const embed = {
+                    color: 'RANDOM',
+                    author: {
+                        name: `_____________`,
+                        icon_url: `${message.author.displayAvatarURL()}`,
+                    },
+                    title: `Confirm transaction`,
+                    description: `<@${message.author.id}>, do you want to gift \`${amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?`,
+                    timestamp: new Date(),
+                };
+                const gift_msg = await message.reply({ embeds: [embed], components: [row] });
+        
+                const collector = gift_msg.createMessageComponentCollector({ time: 20 * 1000 });
+        
+                collector.on('collect', async (button) => {
+                    if(button.user.id != message.author.id) {
+                        return button.reply({
+                            content: 'This is not for you.',
+                            ephemeral: true,
+                        })
+                    } 
+                    
+                    button.deferUpdate()
+        
+                    if(button.customId === "confirm") {
+                        interactionproccesses[message.author.id] = {
+                            interaction: true,
+                            proccessingcoins: true
+                        }
+                        fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+                        userData.interactionproccesses.interaction = false
+                        userData.interactionproccesses.proccessingcoins = false
+                        await economyModel.findOneAndUpdate(params, userData);
+        
+                        const embed = {
+                            color: '#A8FE97',
+                            title: `Gift Successful`,
+                            description: `<@${message.author.id}> gifted items to <@${target.id}>, here are the details:`,
+                            fields: [
+                                {
+                                    name: 'Item',
+                                    value: `${item.icon} \`${item.item}\``,
+                                    inline: true,
+                                },
+                                {
+                                    name: 'Quantity',
+                                    value: `\`${amount.toLocaleString()}\``,
+                                    inline: true,
+                                },
+                            ],
+                            timestamp: new Date(),
+                        };
+        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SUCCESS")
+        
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+        
+                        gift_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    
+                    } else if(button.customId === "cancel") {
+                        interactionproccesses[message.author.id] = {
+                            interaction: true,
+                            proccessingcoins: true
+                        }
+                        fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+                        userData.interactionproccesses.interaction = false
+                        userData.interactionproccesses.proccessingcoins = false
+                        userData.inventory[item.item] = userData.inventory[item.item] + amount;
+                        await economyModel.findOneAndUpdate(params, userData);
+        
+                        const params_target = {
+                            userId: target.id
+                        }
+        
+                        economyModel.findOne(params_target, async(err, data) => {
+                            data.inventory[item.item] = data.inventory[item.item] - amount;
+                            await economyModel.findOneAndUpdate(params_target, data);
+                        })
+        
+                        const embed = {
+                            color: '#FF0000',
+                            author: {
+                                name: `_____________`,
+                                icon_url: `${message.author.displayAvatarURL()}`,
+                            },
+                            title: `Transaction cancelled`,
+                            description: `<@${message.author.id}>, do you want to gift \`${amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?\nI guess not...`,
+                            timestamp: new Date(),
+                        };
+                        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+        
+                        cancel.setDisabled()
+                        
+                        gift_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                
                     }
-                }).save();
+                    
+                });
+        
+                collector.on('end', async collected => {
+                    if(collected.size > 0) {
+        
+                    } else {
+                        interactionproccesses[message.author.id] = {
+                            interaction: true,
+                            proccessingcoins: true
+                        }
+                        fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+                        userData.interactionproccesses.interaction = false
+                        userData.interactionproccesses.proccessingcoins = false
+                        userData.inventory[item.item] = userData.inventory[item.item] + amount;
+                        await economyModel.findOneAndUpdate(params, userData);
+        
+                        const params_target = {
+                            userId: target.id
+                        }
+        
+                        economyModel.findOne(params_target, async(err, data) => {
+                            data.inventory[item.item] = data.inventory[item.item] - amount;
+                            await economyModel.findOneAndUpdate(params_target, data);
+                        })
+        
+        
+                        const embed = {
+                            color: '#FF0000',
+                            author: {
+                                name: `_____________`,
+                                icon_url: `${message.author.displayAvatarURL()}`,
+                            },
+                            title: `Transaction timeout`,
+                            description: `<@${message.author.id}>, do you want to gift \`${amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?\nI guess not...`,
+                            timestamp: new Date(),
+                        };
+                        
+                        confirm
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+        
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
+                        
+                        gift_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
+                    }
+                });
+            } else {
+                new economyModel(
+                    params_target,
+                ).save();
+                newuser = true
+                return message.reply("That account has just been created after this command, item has not been sent. You can try this command again after.\n`after your cooldown`")
             }
         })
 
-
-        let confirm = new MessageButton()
-            .setCustomId('confirm')
-            .setLabel('Confirm')
-            .setStyle('PRIMARY')
-
-        let cancel = new MessageButton()
-            .setCustomId('cancel')
-            .setLabel('Cancel')
-            .setStyle('DANGER')
-
-        let row = new MessageActionRow()
-            .addComponents(
-                confirm,
-                cancel
-            );
-
-        const embed = {
-            color: 'RANDOM',
-            author: {
-                name: `_____________`,
-                icon_url: `${message.author.displayAvatarURL()}`,
-            },
-            title: `Confirm transaction`,
-            description: `<@${message.author.id}>, do you want to gift \`${amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?`,
-            timestamp: new Date(),
-        };
-        const gift_msg = await message.reply({ embeds: [embed], components: [row] });
-
-        const collector = gift_msg.createMessageComponentCollector({ time: 20 * 1000 });
-
-        collector.on('collect', async (button) => {
-            if(button.user.id != message.author.id) {
-                return button.reply({
-                    content: 'This is not for you.',
-                    ephemeral: true,
-                })
-            } 
-            
-            button.deferUpdate()
-
-            if(button.customId === "confirm") {
-                userData.interactionproccesses.interaction = false
-                userData.interactionproccesses.proccessing = false
-                await economyModel.findOneAndUpdate(params, userData);
-
-                const embed = {
-                    color: '#A8FE97',
-                    title: `Gift Successful`,
-                    description: `<@${message.author.id}> gifted items to <@${target.id}>, here are the details:`,
-                    fields: [
-                        {
-                            name: 'Item',
-                            value: `${item.icon} \`${item.item}\``,
-                            inline: true,
-                        },
-                        {
-                            name: 'Quantity',
-                            value: `\`${amount.toLocaleString()}\``,
-                            inline: true,
-                        },
-                    ],
-                    timestamp: new Date(),
-                };
-
-                confirm
-                    .setDisabled()
-                    .setStyle("SUCCESS")
-
-                cancel
-                    .setDisabled()
-                    .setStyle("SECONDARY")
-
-                gift_msg.edit({
-                    embeds: [embed],
-                    components: [row]
-                })
-            
-            } else if(button.customId === "cancel") {
-                userData.interactionproccesses.interaction = false
-                userData.interactionproccesses.proccessing = false
-                userData.inventory[item.item] = userData.inventory[item.item] + amount;
-                await economyModel.findOneAndUpdate(params, userData);
-
-                const params_target = {
-                    userId: target.id
-                }
-
-                economyModel.findOne(params_target, async(err, data) => {
-                    data.inventory[item.item] = data.inventory[item.item] - amount;
-                    await economyModel.findOneAndUpdate(params_target, data);
-                })
-
-                const embed = {
-                    color: '#FF0000',
-                    author: {
-                        name: `_____________`,
-                        icon_url: `${message.author.displayAvatarURL()}`,
-                    },
-                    title: `Transaction cancelled`,
-                    description: `<@${message.author.id}>, do you want to gift \`${amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?\nI guess not...`,
-                    timestamp: new Date(),
-                };
-                
-                confirm
-                    .setDisabled()
-                    .setStyle("SECONDARY")
-
-                cancel.setDisabled()
-                
-                gift_msg.edit({
-                    embeds: [embed],
-                    components: [row]
-                })
         
-            }
-            
-        });
-
-        collector.on('end', async collected => {
-            if(collected.size > 0) {
-
-            } else {
-                userData.interactionproccesses.interaction = false
-                userData.interactionproccesses.proccessing = false
-                userData.inventory[item.item] = userData.inventory[item.item] + amount;
-                await economyModel.findOneAndUpdate(params, userData);
-
-                const params_target = {
-                    userId: target.id
-                }
-
-                economyModel.findOne(params_target, async(err, data) => {
-                    data.inventory[item.item] = data.inventory[item.item] - amount;
-                    await economyModel.findOneAndUpdate(params_target, data);
-                })
-
-
-                const embed = {
-                    color: '#FF0000',
-                    author: {
-                        name: `_____________`,
-                        icon_url: `${message.author.displayAvatarURL()}`,
-                    },
-                    title: `Transaction timeout`,
-                    description: `<@${message.author.id}>, do you want to gift \`${amount.toLocaleString()}\` ${item.icon} **${item.item}** to <@${target.id}>?\nI guess not...`,
-                    timestamp: new Date(),
-                };
-                
-                confirm
-                    .setDisabled()
-                    .setStyle("SECONDARY")
-
-                cancel
-                    .setDisabled()
-                    .setStyle("SECONDARY")
-                
-                gift_msg.edit({
-                    embeds: [embed],
-                    components: [row]
-                })
-            }
-        });
         
 
     }

@@ -1,8 +1,10 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
+const fs = require('fs')
 
 const economyModel = require("../models/economySchema");
 const allItems = require('../data/all_items');
 const letternumbers = require('../reference/letternumber');
+const interactionproccesses = require('../interactionproccesses.json')
 
 
 module.exports = {
@@ -103,6 +105,11 @@ module.exports = {
         }
 
         if(totalprice >= 100000) {
+            interactionproccesses[message.author.id] = {
+                interaction: true,
+                proccessingcoins: true
+            }
+            fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
             const hasItem = Object.keys(userData.inventory).includes(item.item);
             if(!hasItem) {
                 userData.inventory[item.item] = buyamount;
@@ -111,7 +118,7 @@ module.exports = {
             }
             userData.wallet = userData.wallet - totalprice
             userData.interactionproccesses.interaction = true
-            userData.interactionproccesses.proccessing = true
+            userData.interactionproccesses.proccessingcoins = true
 
             await economyModel.findOneAndUpdate(params, userData);
 
@@ -153,8 +160,13 @@ module.exports = {
                 button.deferUpdate()
 
                 if(button.customId === "confirm") {
+                    interactionproccesses[message.author.id] = {
+                        interaction: false,
+                        proccessingcoins: false
+                    }
+                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                     userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessing = false
+                    userData.interactionproccesses.proccessingcoins = false
                     await economyModel.findOneAndUpdate(params, userData);
 
                     const amountowned = userData.inventory[item.item]
@@ -179,10 +191,15 @@ module.exports = {
                     })
                 
                 } else if(button.customId === "cancel") {
+               interactionproccesses[message.author.id] = {
+                        interaction: false,
+                        proccessingcoins: false
+                    }
+                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                     userData.inventory[item.item] = userData.inventory[item.item] - buyamount;
                     userData.wallet = userData.wallet + totalprice
                     userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessing = false
+                    userData.interactionproccesses.proccessingcoins = false
 
                     await economyModel.findOneAndUpdate(params, userData);
                     const embed = {
@@ -211,10 +228,15 @@ module.exports = {
                 if(collected.size > 0) {
 
                 } else {
+               interactionproccesses[message.author.id] = {
+                        interaction: false,
+                        proccessingcoins: false
+                    }
+                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                     userData.inventory[item.item] = userData.inventory[item.item] - buyamount;
                     userData.wallet = userData.wallet + totalprice
                     userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessing = false
+                    userData.interactionproccesses.proccessingcoins = false
 
                     await economyModel.findOneAndUpdate(params, userData);
 

@@ -1,7 +1,11 @@
 const { prefix } = require('../../config.json');
 const economyModel = require('../../models/economySchema');
+const fs = require('fs')
 
 const { Collection, MessageEmbed } = require('discord.js')
+
+const interactionproccesses = require('../../interactionproccesses.json')
+const icoodowns = require('../../cooldowns.json')
 
 function calcexpfull(level) {
     if(level < 50) {
@@ -57,13 +61,13 @@ module.exports = async(Discord, client, message) => {
     if(!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
 
     const user = message.author;
-
+    const userID = user.id
     let userData;
     try {   
-        userData = await economyModel.findOne({ userId: message.author.id });
+        userData = await economyModel.findOne({ userId: userID });
         if(!userData) {
             let user = await economyModel.create({
-                userId: message.author.id,
+                userId: userID,
             });
         
             user.save();
@@ -74,11 +78,22 @@ module.exports = async(Discord, client, message) => {
     } catch (error) {
         console.log(error)
     }
-    
+    if(!interactionproccesses[user]) {
+        interactionproccesses[userID] = {
+            interaction: false,
+            proccessingcoins: false
+        }
+
+        fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+    }
+
+    if(interactionproccesses[userID].interaction === true || interactionproccesses[userID].proccessingcoins === true) return;
+
     if(userData.moderation.blacklist.status === true || userData.moderation.ban.status === true || userData.interactionproccesses.interaction === true) {
         return;
     }
 
+    
     const message_content = message.content?.toLowerCase()
     const args = message_content.toLowerCase().slice(prefix.length).split(/ +/);
     const cmd = args.shift().toLowerCase();
@@ -117,7 +132,7 @@ module.exports = async(Discord, client, message) => {
     
     async function executecmd() {
         try {
-            const userID = user.id;
+
             const commandname = command.name;
 
             if(command.cooldown > 3600) {
@@ -213,8 +228,8 @@ module.exports = async(Discord, client, message) => {
                 const current_time = Date.now();
                 const time_stamps = cooldowns.get(command.name);
             
-                if(time_stamps.has(message.author.id)){
-                    const expiration_time = time_stamps.get(message.author.id) + cooldown_amount;
+                if(time_stamps.has(userID)){
+                    const expiration_time = time_stamps.get(userID) + cooldown_amount;
             
                     if(current_time < expiration_time) {
                         const time_left = Math.floor((expiration_time - current_time) / 1000);
@@ -241,8 +256,8 @@ module.exports = async(Discord, client, message) => {
                     }
                 }
             
-                time_stamps.set(message.author.id, current_time);
-                setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
+                time_stamps.set(userID, current_time);
+                setTimeout(() => time_stamps.delete(userID), cooldown_amount);
             
                 try {
                     return command.execute(message, args, cmd, client, Discord, userData);

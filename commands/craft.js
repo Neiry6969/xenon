@@ -1,8 +1,11 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
+const fs = require('fs')
 
 const economyModel = require('../models/economySchema');
 const allItems = require('../data/all_items');
 const letternumbers = require('../reference/letternumber');
+const interactionproccesses = require('../interactionproccesses.json')
+
 
 
 module.exports = {
@@ -230,9 +233,13 @@ module.exports = {
                 return `\`${(value.q * amount).toLocaleString()}x\` ${craftitem.icon} \`${craftitem.item}\``
             })
             .join('\n')
-
+            interactionproccesses[message.author.id] = {
+                interaction: true,
+                proccessingcoins: true
+            }
+            fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
             userData.interactionproccesses.interaction = true
-            userData.interactionproccesses.proccessing = true
+            userData.interactionproccesses.proccessingcoins = true
             item.craftitems.forEach(async value => {
                 userData.inventory[value.i] = userData.inventory[value.i] - value.q * amount
             })
@@ -284,8 +291,13 @@ module.exports = {
                 button.deferUpdate()
 
                 if(button.customId === "confirm") {
+                    interactionproccesses[message.author.id] = {
+                        interaction: false,
+                        proccessingcoins: false
+                    }
+                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                     userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessing = false
+                    userData.interactionproccesses.proccessingcoins = false
 
                     userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
                     await economyModel.updateOne(params, userData);
@@ -305,7 +317,7 @@ module.exports = {
                 
                 } else if(button.customId === "cancel") {
                     userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessing = false
+                    userData.interactionproccesses.proccessingcoins = false
                     item.craftitems.forEach(async value => {
                         userData.inventory[value.i] = userData.inventory[value.i] + value.q * amount
                     })
@@ -344,8 +356,13 @@ module.exports = {
                 if(collected.size > 0) {
 
                 } else {
+               interactionproccesses[message.author.id] = {
+                        interaction: false,
+                        proccessingcoins: false
+                    }
+                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                     userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessing = false
+                    userData.interactionproccesses.proccessingcoins = false
                     item.craftitems.forEach(async value => {
                         userData.inventory[value.i] = userData.inventory[value.i] + value.q * amount
                     })

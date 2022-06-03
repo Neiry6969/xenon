@@ -10,12 +10,7 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    aliases: { 
-        required: true,
-        type: Object
-    },
     icon: {
-        required: true,
         type: String,
     },
     price: {},
@@ -23,21 +18,25 @@ const itemSchema = new mongoose.Schema({
     trade: {},
     imageUrl: {
         type: String,
-        required: true,
     },
     description: {
-        required: true,
         type: String,
     },
     rarity: {
-        required: true,
         type: String,
     },
     type: {
-        required: true,
         type: String,
     },
-
+    lootbox: {
+        type: Array
+    },
+    crafttools: {
+        type: Array
+    },
+    craftitems: {
+        type: Array
+    },
 })
 
 

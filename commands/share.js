@@ -1,7 +1,10 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
+const fs = require('fs')
 
 const economyModel = require("../models/economySchema");
 const letternumbers = require('../reference/letternumber');
+const interactionproccesses = require('../interactionproccesses.json')
+
 
 module.exports = {
     name: "share",
@@ -155,8 +158,13 @@ module.exports = {
             target_profileData_coins = target_profileData.wallet + amount
         }
 
+        interactionproccesses[message.author.id] = {
+            interaction: true,
+            proccessingcoins: true
+        }
+        fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
         userData.interactionproccesses.interaction = true
-        userData.interactionproccesses.proccessing = true
+        userData.interactionproccesses.proccessingcoins = true
         userData.wallet = userData.wallet - amount
         await economyModel.updateOne(params, userData);
 
@@ -172,8 +180,13 @@ module.exports = {
             
             button.deferUpdate()
             if(button.customId === "confirm") {
+                interactionproccesses[message.author.id] = {
+                    interaction: false,
+                    proccessingcoins: false
+                }
+                fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                 userData.interactionproccesses.interaction = false
-                userData.interactionproccesses.proccessing = false
+                userData.interactionproccesses.proccessingcoins = false
 
                 await economyModel.updateOne(params, userData);
                 const embed = {
@@ -224,8 +237,13 @@ module.exports = {
                         upsert: true,
                     }
                 );
+                interactionproccesses[message.author.id] = {
+                    interaction: false,
+                    proccessingcoins: false
+                }
+                fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                 userData.interactionproccesses.interaction = false
-                userData.interactionproccesses.proccessing = false
+                userData.interactionproccesses.proccessingcoins = false
                 userData.wallet = userData.wallet + amount
                 await economyModel.updateOne(params, userData);
 
@@ -270,8 +288,13 @@ module.exports = {
                         upsert: true,
                     }
                 );
+                interactionproccesses[message.author.id] = {
+                    interaction: false,
+                    proccessingcoins: false
+                }
+                fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                 userData.interactionproccesses.interaction = false
-                userData.interactionproccesses.proccessing = false
+                userData.interactionproccesses.proccessingcoins = false
                 userData.wallet = userData.wallet + amount
                 await economyModel.updateOne(params, userData);
                 const embed = {

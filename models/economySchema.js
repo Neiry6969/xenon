@@ -172,7 +172,7 @@ const economySchema = new mongoose.Schema(
             type: Object, 
             default: {
                 interaction: false,
-                proccessing: false
+                proccessingcoins: false
             },
         },
         usersocial: {
