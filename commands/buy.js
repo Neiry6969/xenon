@@ -263,7 +263,7 @@ module.exports = {
             });
             
         } else {
-            const hasItem = Object.keys(userData.inventory).includes(item.item);
+             const hasItem = Object.keys(userData.inventory).includes(item.item);
             if(!hasItem) {
                 userData.inventory[item.item] = buyamount;
             } else {
