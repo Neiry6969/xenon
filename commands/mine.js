@@ -158,9 +158,9 @@ module.exports = {
                     const item = allItems.find((val) => (val.item.toLowerCase()) === result)
                     const hasItem = Object.keys(userData.inventory).includes(item.item);
                     if(!hasItem) {
-                        userData.inventory[item.item] = 1;
+                        userData.inventory[item.item] = amount;
                     } else {
-                        userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                        userData.inventory[item.item] = userData.inventory[item.item] + amount;
                     }
 
                     const expbankspace_amount = Math.floor(Math.random() * 1000) + 100;
