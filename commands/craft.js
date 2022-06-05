@@ -1,19 +1,18 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
-const fs = require('fs')
 
-const economyModel = require('../models/economySchema');
+const profileModel = require("../models/profileSchema");
+const inventoryModel = require('../models/inventorySchema');
+const userModel = require('../models/userSchema');
 const allItems = require('../data/all_items');
 const letternumbers = require('../reference/letternumber');
-const interactionproccesses = require('../interactionproccesses.json')
-
 
 
 module.exports = {
     name: 'craft',
     aliases: ['make'],
-    cooldown: 10,
+    cooldown: 35,
     description: "Craft items.",
-    async execute(message, args, cmd, client, Discord, userData) {
+    async execute(message, args, cmd, client, Discord, profileData, userData, inventoryData) {
         const expectedsyntax = `\`xe craft [item] [amount]\``;
         let amount = args[1]?.toLowerCase();
         const getitem = args[0]?.toLowerCase();
@@ -110,7 +109,7 @@ module.exports = {
                 return message.reply({ embeds: [embed] });
             }
 
-            const params = {
+            const params_user = {
                 userId: message.author.id,
             }
 
@@ -127,8 +126,8 @@ module.exports = {
             if(item.crafttools) {
                 crafttools = item.crafttools.map(value => {
                     const toolitem = allItems.find(({ item }) => item === value.i);
-                    let hasamount = userData.inventory[toolitem.item];
-                    if(!userData.inventory[toolitem.item]){
+                    let hasamount = inventoryData.inventory[toolitem.item];
+                    if(!inventoryData.inventory[toolitem.item]){
                         hasamount = 0
                     }
 
@@ -153,8 +152,8 @@ module.exports = {
             if(item.craftitems) {
                 craftitems = item.craftitems.map(value => {
                     const craftitem = allItems.find(({ item }) => item === value.i);
-                    let hasamount = userData.inventory[craftitem.item];
-                    if(!userData.inventory[craftitem.item]){
+                    let hasamount = inventoryData.inventory[craftitem.item];
+                    if(!inventoryData.inventory[craftitem.item]){
                         hasamount = 0
                     }
 
@@ -188,7 +187,7 @@ module.exports = {
             const craftitemamountmap = item.craftitems.map(value => {
                 const craftitem = allItems.find(({ item }) => item === value.i);
 
-                return Math.floor(userData.inventory[craftitem.item] / value.q);
+                return Math.floor(inventoryData.inventory[craftitem.item] / value.q);
             })
 
             const maxcraftamount = Math.min(...craftitemamountmap)
@@ -233,25 +232,15 @@ module.exports = {
                 return `\`${(value.q * amount).toLocaleString()}x\` ${craftitem.icon} \`${craftitem.item}\``
             })
             .join('\n')
-            interactionproccesses[message.author.id] = {
-                interaction: true,
-                proccessingcoins: true
-            }
-            fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-            userData.interactionproccesses.interaction = true
-            userData.interactionproccesses.proccessingcoins = true
-            item.craftitems.forEach(async value => {
-                userData.inventory[value.i] = userData.inventory[value.i] - value.q * amount
-            })
 
-            const hasItem = Object.keys(userData.inventory).includes(item.item);
-            if(!hasItem) {
-                userData.inventory[item.item] = amount;
-            } else {
-                userData.inventory[item.item] = userData.inventory[item.item] + amount;
-            }
-
-            await economyModel.updateOne(params, userData);
+            await userModel.updateOne(
+                { userId: message.author.id },
+                {
+                    $set: {
+                        awaitinginteraction: true
+                    }
+                },
+            )
 
             let confirm = new MessageButton()
                 .setCustomId('confirm')
@@ -291,16 +280,36 @@ module.exports = {
                 button.deferUpdate()
 
                 if(button.customId === "confirm") {
-                    interactionproccesses[message.author.id] = {
-                        interaction: false,
-                        proccessingcoins: false
-                    }
-                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-                    userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessingcoins = false
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
 
-                    userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
-                    await economyModel.updateOne(params, userData);
+                    item.craftitems.forEach(async value => {
+                        inventoryData.inventory[value.i] = inventoryData.inventory[value.i] - value.q * amount
+                    })
+    
+                    const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
+                    if(!hasItem) {
+                        inventoryData.inventory[item.item] = amount;
+                    } else {
+                        inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + amount;
+                    }
+    
+                    await inventoryModel.updateOne(params_user, inventoryData);
+
+                    const embed = {
+                        color: '#00FF00',
+                        title: `Craft Successful`,
+                        description: `<@${message.author.id}>, you crafted an item!\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${amount.toLocaleString()}\`\n**Now You Have:** \`${inventoryData.inventory[item.item].toLocaleString()}x\` ${item.icon}\n\n**Here are the items that will be used for this craft:**\n${confirmationlist}`,
+                    };
 
                     confirm
                         .setDisabled()
@@ -316,20 +325,17 @@ module.exports = {
                     })
                 
                 } else if(button.customId === "cancel") {
-                    userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessingcoins = false
-                    item.craftitems.forEach(async value => {
-                        userData.inventory[value.i] = userData.inventory[value.i] + value.q * amount
-                    })
-
-                    const hasItem = Object.keys(userData.inventory).includes(item.item);
-                    if(!hasItem) {
-                        userData.inventory[item.item] = 0;
-                    } else {
-                        userData.inventory[item.item] = userData.inventory[item.item] - amount;
-                    }
-
-                    await economyModel.updateOne(params, userData);
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
                     const embed = {
                         color: '#FF0000',
                         title: `Craft cancelled`,
@@ -356,26 +362,17 @@ module.exports = {
                 if(collected.size > 0) {
 
                 } else {
-               interactionproccesses[message.author.id] = {
-                        interaction: false,
-                        proccessingcoins: false
-                    }
-                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-                    userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessingcoins = false
-                    item.craftitems.forEach(async value => {
-                        userData.inventory[value.i] = userData.inventory[value.i] + value.q * amount
-                    })
-
-                    const hasItem = Object.keys(userData.inventory).includes(item.item);
-                    if(!hasItem) {
-                        userData.inventory[item.item] = 0;
-                    } else {
-                        userData.inventory[item.item] = userData.inventory[item.item] - amount;
-                    }
-
-                    await economyModel.updateOne(params, userData);
-            
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
                     const embed = {
                         color: '#FF0000',
                         title: `Craft timeout`,

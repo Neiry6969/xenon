@@ -1,7 +1,6 @@
-const economyModel = require("../models/economySchema");
+const profileModel = require("../models/profileSchema");
+const inventoryModel = require('../models/inventorySchema');
 const allItems = require('../data/all_items');
-
-const { MessageEmbed } = require('discord.js')
 
 function calcexpfull(level) {
     if(level < 50) {
@@ -104,8 +103,9 @@ module.exports = {
     cooldown: 5,
     minArgs: 0,
     maxArgs: 1,
-    description: "Check the user profile.",
-    async execute(message, args, cmd, client, Discord, userData) {
+    description: "check the user profile.",
+    async execute(message, args, cmd, client, Discord, profileData) {
+        const bankspace = profileData.bankspace + profileData.expbankspace;
         let target;
 
         if(message.mentions.users.first()) {
@@ -123,168 +123,287 @@ module.exports = {
         
         if(target) {
             const target_id = target.id
-            let targetData;
+            let target_profileData;
             try {   
-                targetData = await economyModel.findOne({ userId: target_id });
+                target_profileData = await profileModel.findOne({ userId: target_id });
 
-                const embed = new MessageEmbed() 
-                    .setColor('RANDOM')
-                    .setTitle('Profile')
-                    .setAuthor({
-                        name: `${target.username}#${target.discriminator}`,
-                        iconURL: target.displayAvatarURL(),
-                    })
-
-                if(!targetData) {
-                    const targetdata = await economyModel.create({
+                if(!target_profileData) {
+                    let profile = await profileModel.create({
                         userId: target.id,
-                    })
+                        serverId: message.guild.id,
+                        coins: 0,
+                        bank: 0,
+                        bankspace: 1000,
+                        expbankspace: 0,
+                        experiencepoints: 0,
+                        level: 0,
+                        dailystreak: 0,
+                        prestige: 0,
+                        commands: 0,
+                        deaths: 0,
+                        premium: 0,
+                    });
+                
+                    profile.save();
 
-                    targetdata.save();
-
-                    embed
-                        .setDescription(
-                            `**Prestige:** \`0\``
-                        )
-                        .addFields(
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${target.username}'s Profile`,
+                        author: {
+                            name: `_____________`,
+                            icon_url: `${target.displayAvatarURL()}`,
+                        },
+                        thumbnail: {
+                            url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                        },
+                        description: `${profile.premium > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${profile.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profile.prestige.toLocaleString()}\``,
+                        fields: [
                             {
                                 name: 'Level',
-                                value: `Level: \`0\`\nExperience: \`0 | ${calcexpfull(0).toLocaleString()}\`\n${bardisplay(0)}`,
+                                value: `Level: \`${profile.level.toLocaleString()}\`\nExperience: \`${profile.experiencepoints.toLocaleString()} | ${calcexpfull(profile.level).toLocaleString()}\`\n${bardisplay(0)}`,
                                 inline: true,
                             },
                             {
                                 name: 'Balance',
-                                value: `Wallet: \`❀ 0\`\nBank: \`❀ 0\`\nBankspace: \`1000\`\nTotal Balance: \`❀ 0\``,
+                                value: `Wallet: ❀ \`0\`\nBank: \`❀ ${profile.bank.toLocaleString()}\`\nBankspace: \`${profile.bankspace.toLocaleString()}\`\nTotal Balance: ❀ \`0\``,
                                 inline: true,
                             },
                             {
                                 name: 'Inv',
-                                value: `Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: \`❀ 0\``,
+                                value: `Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: ❀ \`0\``,
                             },
                             { 
                                 name: 'Other (MISC)',
                                 value: `Daily Streak: <a:Lssl:806961744885973062>\`0\`\nCommands Issued: \`0\`\nDeaths: <:ghost:978412292012146688> \`0\``,
                             },
-                        )
-                } else {     
-                    const total_balance = targetData.wallet + targetData.bank.coins;
-                    const bankspace = targetData.bank.bankspace + targetData.bank.expbankspace + targetData.bank.otherbankspace;
+                            
+                        ],
+                        timestamp: new Date(),
+                    };
+                    return message.channel.send({ embeds: [embed] });
+                } else {
                     let itemsworth = 0;
                     let items = 0;
                     let uniqueitems = 0;
-
-                    if(!targetData.inventory) {
-                        itemsworth = 0;
-                        items = 0;
-                        uniqueitems = 0;
-                    } else {
-                        Object.keys(targetData.inventory)
-                        .forEach((key) => {
-                            if(targetData.inventory[key] === 0) {
-                                return;
+        
+                    inventoryModel.findOne(
+                        {
+                            userId: target.id
+                        }, async(err, data) => {
+                            if(!data) {
+                                itemsworth = 0;
+                                items = 0;
+                                uniqueitems = 0;
                             } else {
-                                const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+                                Object.keys(data.inventory)
+                                .forEach((key) => {
+                                    if(data.inventory[key] === 0) {
+                                        return;
+                                    } else {
+                                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+        
+                                        itemsworth = itemsworth + (item.value * data.inventory[key]);
+                                        uniqueitems = uniqueitems + 1;
+                                        items = items + data.inventory[key]
+        
+                                                    
+                                        
+                                    }
+        
+                                })
+                                const total_balance = target_profileData.coins + target_profileData.bank;
+                                const bankspace = target_profileData.bankspace + target_profileData.expbankspace;
 
-                                itemsworth = itemsworth + (item.value * targetData.inventory[key]);
-                                uniqueitems = uniqueitems + 1;
-                                items = items + targetData.inventory[key]
+
+                                const embed = {
+                                    color: 'RANDOM',
+                                    title: `${target.username}'s Profile`,
+                                    author: {
+                                        name: `_____________`,
+                                        icon_url: `${target.displayAvatarURL()}`,
+                                    },
+                                    thumbnail: {
+                                        url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                                    },
+                                    description: `${target_profileData.premium > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${target_profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${target_profileData.prestige.toLocaleString()}\``,
+                                    fields: [
+                                        {
+                                            name: 'Level',
+                                            value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(target_profileData.experiencepoints / calcexpfull(target_profileData.level) * 100))}`,
+                                            inline: true,
+                                        },
+                                        {
+                                            name: 'Balance',
+                                            value: `Wallet: \`❀ ${target_profileData.coins.toLocaleString()}\`\nBank: \`❀ ${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
+                                            inline: true,
+                                        },
+                                        {
+                                            name: 'Inv',
+                                            value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
+                                        },
+                                        { 
+                                            name: 'Other (MISC)',
+                                            value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
+                                        },
+                                        
+                                    ],
+                                    timestamp: new Date(),
+                                };
+                                return message.channel.send({ embeds: [embed] });
                             }
+                            const total_balance = target_profileData.coins + target_profileData.bank;
+                            const bankspace = target_profileData.bankspace + target_profileData.expbankspace;
 
-                        })
-                    }
-                    let badges_map;
-                    embed
-                        .setDescription(
-                            `${targetData.premium.rank > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${targetData.premium.rank}\`\n` : ""}${badges_map ? `**Badges:**  ${badges_map}\n` : ""}**Prestige:** \`${targetData.prestige.toLocaleString()}\``
-                        )
-                        .addFields(
-                            {
-                                name: 'Level',
-                                value: `Level: \`${targetData.level.toLocaleString()}\`\nExperience: \`${targetData.experiencepoints.toLocaleString()} | ${calcexpfull(targetData.level).toLocaleString()}\`\n${bardisplay(parseInt(targetData.experiencepoints / calcexpfull(targetData.level) * 100))}`,
-                                inline: true,
-                            },
-                            {
-                                name: 'Balance',
-                                value: `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
-                                inline: true,
-                            },
-                            {
-                                name: 'Inv',
-                                value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
-                            },
-                            { 
-                                name: 'Other (MISC)',
-                                value: `Daily Streak: <a:Lssl:806961744885973062> \`${targetData.streaks.daily.strk.toLocaleString()}\`\nCommands Issued: \`${targetData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${targetData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(targetData.createdAt / 1000).getTime()}:D>`,
-                            },
-                        )
+
+                            const embed = {
+                                color: 'RANDOM',
+                                title: `${target.username}'s Profile`,
+                                author: {
+                                    name: `_____________`,
+                                    icon_url: `${target.displayAvatarURL()}`,
+                                },
+                                thumbnail: {
+                                    url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                                },
+                                description: `${target_profileData.premium > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${target_profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${target_profileData.prestige.toLocaleString()}\``,
+                                fields: [
+                                    {
+                                        name: 'Level',
+                                        value: `Level: \`${target_profileData.level.toLocaleString()}\`\nExperience: \`${target_profileData.experiencepoints.toLocaleString()} | ${calcexpfull(target_profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(target_profileData.experiencepoints / calcexpfull(target_profileData.level) * 100))}`,
+                                        inline: true,
+                                    },
+                                    {
+                                        name: 'Balance',
+                                        value: `Wallet: \`❀ ${target_profileData.coins.toLocaleString()}\`\nBank: \`❀ ${target_profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
+                                        inline: true,
+                                    },
+                                    {
+                                        name: 'Inv',
+                                        value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
+                                    },
+                                    { 
+                                        name: 'Other (MISC)',
+                                        value: `Daily Streak: <a:Lssl:806961744885973062> \`${target_profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${target_profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${target_profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(target_profileData.createdAt / 1000).getTime()}:D>`,
+                                    },
+                                    
+                                ],
+                                timestamp: new Date(),
+                            };
+                            return message.channel.send({ embeds: [embed] });
+                        }
+                    )
                 }
-                
-                return message.channel.send({ embeds: [embed] });
             } catch (error) {
                 console.log(error)
             }
         } else {
-            const premiumrank = userData.premium.rank;
-            const bankspace = userData.bank.bankspace + userData.bank.expbankspace + userData.bank.otherbankspace;
-            const walletcoins = userData.wallet;
-            const bankcoins = userData.bank.coins;
-            const total_balance = walletcoins + bankcoins;
-
             let itemsworth = 0;
             let items = 0;
             let uniqueitems = 0;
 
-            if(userData.inventory) {
-                Object.keys(userData.inventory)
-                .forEach((key) => {
-                    if(userData.inventory[key] === 0) {
-                        return;
+            inventoryModel.findOne(
+                {
+                    userId: message.author.id
+                }, async(err, data) => {
+                    if(!data) {
+                        itemsworth = 0;
+                        items = 0;
+                        uniqueitems = 0;
                     } else {
-                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+                        Object.keys(data.inventory)
+                        .forEach((key) => {
+                            if(data.inventory[key] === 0) {
+                                return;
+                            } else {
+                                const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                        itemsworth = itemsworth + (item.value * userData.inventory[key]);
-                        uniqueitems = uniqueitems + 1;
-                        items = items + userData.inventory[key]
+                                itemsworth = itemsworth + (item.value * data.inventory[key]);
+                                uniqueitems = uniqueitems + 1;
+                                items = items + data.inventory[key]
+
+                                            
+                                
+                            }
+
+                        })
+
+
+                        const total_balance = profileData.coins + profileData.bank;
+                        const embed = {
+                            color: 'RANDOM',
+                            title: `${message.author.username}'s Profile`,
+                            author: {
+                                name: `_____________`,
+                                icon_url: `${message.author.displayAvatarURL()}`,
+                            },
+                            thumbnail: {
+                                url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                            },
+                            description: `${profileData.premium > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
+                            fields: [
+                                {
+                                    name: 'Level',
+                                    value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(profileData.experiencepoints / calcexpfull(profileData.level) * 100))}`,
+                                    inline: true,
+                                },
+                                {
+                                    name: 'Balance',
+                                    value: `Wallet: \`❀ ${profileData.coins.toLocaleString()}\`\nBank: \`❀ ${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
+                                    inline: true,
+                                },
+                                {
+                                    name: 'Inventory',
+                                    value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
+                                },
+                                { 
+                                    name: 'Other (MISC)',
+                                    value: `Daily Streak: <a:Lssl:806961744885973062> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
+                                },
+                                
+                            ],
+                            timestamp: new Date(),
+                        };
+                        return message.channel.send({ embeds: [embed] });
                     }
-                })
-            } 
-    
+                    const total_balance = profileData.coins + profileData.bank;
 
-            const embed = {
-                color: 'RANDOM',
-                title: `${message.author.username}'s Profile`,
-                author: {
-                    name: `_____________`,
-                    icon_url: `${message.author.displayAvatarURL()}`,
-                },
-                thumbnail: {
-                    url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
-                },
-                description: `${premiumrank > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${premiumrank}\`\n` : ""}**Badges:**\n**Prestige:** \`${userData.prestige.toLocaleString()}\``,
-                fields: [
-                    {
-                        name: 'Level',
-                        value: `Level: \`${userData.level.toLocaleString()}\`\nExperience: \`${userData.experiencepoints.toLocaleString()} | ${calcexpfull(userData.level).toLocaleString()}\`\n${bardisplay(parseInt(userData.experiencepoints / calcexpfull(userData.level) * 100))}`,
-                        inline: true,
-                    },
-                    {
-                        name: 'Balance',
-                        value: `Wallet: \`❀ ${walletcoins.toLocaleString()}\`\nBank: \`❀ ${bankcoins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
-                        inline: true,
-                    },
-                    {
-                        name: 'Inventory',
-                        value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
-                    },
-                    { 
-                        name: 'Other (MISC)',
-                        value: `Daily Streak: <:streakflame:978108608254459954> \`${userData.streaks.daily.strk.toLocaleString()}\`\nCommands Issued: \`${userData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${userData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(userData.createdAt / 1000).getTime()}:D>`,
-                    },
-                    
-                ],
-                timestamp: new Date(),
-            };
-            return message.channel.send({ embeds: [embed] });
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${message.author.username}'s Profile`,
+                        author: {
+                            name: `_____________`,
+                            icon_url: `${message.author.displayAvatarURL()}`,
+                        },
+                        thumbnail: {
+                            url: 'https://images-ext-1.discordapp.net/external/6nmfj0nBEN12JpYIYi5pCxaqhcaopWIxNlWgGDbbv5g/https/i.gifer.com/UL7g.gif',
+                        },
+                        description: `${profileData.premium > 0 ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${profileData.premium}\`\n` : ""}**Badges:**\n**Prestige:** \`${profileData.prestige.toLocaleString()}\``,
+                        fields: [
+                            {
+                                name: 'Level',
+                                value: `Level: \`${profileData.level.toLocaleString()}\`\nExperience: \`${profileData.experiencepoints.toLocaleString()} | ${calcexpfull(profileData.level).toLocaleString()}\`\n${bardisplay(parseInt(profileData.experiencepoints / calcexpfull(profileData.level) * 100))}`,
+                                inline: true,
+                            },
+                            {
+                                name: 'Balance',
+                                value: `Wallet: \`❀ ${profileData.coins.toLocaleString()}\`\nBank: \`❀ ${profileData.bank.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
+                                inline: true,
+                            },
+                            {
+                                name: 'Inventory',
+                                value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
+                            },
+                            { 
+                                name: 'Other (MISC)',
+                                value: `Daily Streak: <:streakflame:978108608254459954> \`${profileData.dailystreak.toLocaleString()}\`\nCommands Issued: \`${profileData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${profileData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(profileData.createdAt / 1000).getTime()}:D>`,
+                            },
+                            
+                        ],
+                        timestamp: new Date(),
+                    };
+                    return message.channel.send({ embeds: [embed] });
+                }
+            )
     
         }
 

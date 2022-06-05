@@ -1,11 +1,8 @@
 const { prefix } = require('../../config.json');
-const economyModel = require('../../models/economySchema');
-const fs = require('fs')
-
-const { Collection, MessageEmbed } = require('discord.js')
-
-const interactionproccesses = require('../../interactionproccesses.json')
-const icoodowns = require('../../cooldowns.json')
+const profileModel = require('../../models/profileSchema');
+const inventoryModel = require('../../models/inventorySchema')
+const userModel = require('../../models/userSchema')
+const { Collection } = require('discord.js')
 
 function calcexpfull(level) {
     if(level < 50) {
@@ -60,40 +57,72 @@ function time_split(time) {
 module.exports = async(Discord, client, message) => {
     if(!message.content.toLowerCase().startsWith(prefix) || message.author.bot) return;
 
-    const user = message.author;
-    const userID = user.id
-    let userData;
+    let profileData;
     try {   
-        userData = await economyModel.findOne({ userId: userID });
+        profileData = await profileModel.findOne({ userId: message.author.id });
+        if(!profileData) {
+            let profile = await profileModel.create({
+                userId: message.author.id,
+                serverId: message.guild.id,
+                coins: 0,
+                bank: 0,
+                bankspace: 1000,
+                expbankspace: 0,
+                experiencepoints: 0,
+                level: 0,
+                dailystreak: 0,
+                prestige: 0,
+                commands: 1,
+                deaths: 0,
+                premium: 0,
+            });
+        
+            profile.save();
+
+            profileData = profile;
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+
+    let userData; 
+    try {
+        userData = await userModel.findOne({ userId: message.author.id });
         if(!userData) {
-            let user = await economyModel.create({
-                userId: userID,
+            let user = await userModel.create({
+                userId: message.author.id,
             });
         
             user.save();
 
             userData = user;
         }
-
     } catch (error) {
         console.log(error)
     }
-    if(!interactionproccesses[user]) {
-        interactionproccesses[userID] = {
-            interaction: false,
-            proccessingcoins: false
+
+    let inventoryData; 
+    try {
+        inventoryData = await inventoryModel.findOne({ userId: message.author.id });
+        if(!inventoryData) {
+            let inventory = await inventoryModel.create({
+                userId: message.author.id,
+            });
+        
+            inventory.save();
+
+            inventoryData = inventory;
         }
-
-        fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-    }
-
-    if(interactionproccesses[userID].interaction === true || interactionproccesses[userID].proccessingcoins === true) return;
-
-    if(userData.moderation.blacklist.status === true || userData.moderation.ban.status === true || userData.interactionproccesses.interaction === true) {
-        return;
+    } catch (error) {
+        console.log(error)
     }
 
     
+    if(userData.blacklisted === true || userData.awaitinginteraction === true) {
+        return;
+    }
+
     const message_content = message.content?.toLowerCase()
     const args = message_content.toLowerCase().slice(prefix.length).split(/ +/);
     const cmd = args.shift().toLowerCase();
@@ -103,39 +132,67 @@ module.exports = async(Discord, client, message) => {
 
     if(!client.commands.find(a => a.aliases && a.aliases.includes(cmd)) && !client.commands.get(cmd)) {
         return;
-    } 
-
-    async function backgroundupdates() {
-        const params = {
-            userId: user.id,
+    } else {
+        const params_user = {
+            userId: message.author.id,
         }
 
-        userData.commands = userData.commands + 1
+        await profileModel.findOneAndUpdate(
+            params_user,
+            {
+                $inc: {
+                    commands: 1,
+                },
+            },
+            {
+                upsert: true,
+            }
+        );
 
-        const hasCommand = Object.keys(userData.commandsObject).includes(command.name);
-        if(!hasCommand) {
-            userData.commandsObject[command.name] = 1;
-        } else {
-            userData.commandsObject[command.name] = userData.commandsObject[command.name] + 1;
-        }
+    
 
-        const experiencepoints = userData.experiencepoints
-        const experiencefull = calcexpfull(userData.level)
-        if(experiencepoints >= experiencefull) { 
-            userData.level = userData.level + 1
-            userData.experiencepoints = experiencepoints - experiencefull
-        }
+        userModel.findOne(params_user, async(err, data) => {
+            const hasCommand = Object.keys(data.commands).includes(command.name);
+            if(!hasCommand) {
+                data.commands[command.name] = 1;
+            } else {
+                data.commands[command.name] = data.commands[command.name] + 1;
+            }
 
-        await economyModel.findOneAndUpdate(params, userData);
+            await userModel.findOneAndUpdate(params_user, data);
+        })
     }
-
     
     async function executecmd() {
         try {
+            const experiencepoints = profileData.experiencepoints
+            const experiencefull = calcexpfull(profileData.level)
 
+            if(experiencepoints >= experiencefull) {
+                
+                await profileModel.updateOne(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: -experiencefull,
+                            level: 1,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
+
+                profileData.level = profileData.level + 1
+                profileData.experiencepoints = profileData.experiencepoints - experiencefull
+            }
+
+            const userID = message.author.id;
             const commandname = command.name;
 
-            if(command.cooldown > 3600) {
+            if(command.cooldown >= 3600) {
                 const params = {
                     userId: userID
                 }
@@ -147,7 +204,7 @@ module.exports = async(Discord, client, message) => {
 
                 let cooldown_amount = (command.cooldown) * 1000;
             
-                if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+                if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
                     if(command.cooldown <= 5 && command.cooldown > 2) {
                         cooldown_amount = (command.cooldown - 2) * 1000
                     } else if(command.cooldown <= 15) {
@@ -165,10 +222,10 @@ module.exports = async(Discord, client, message) => {
                 if(!check) {
                     const time_left = Math.floor((timeleft - Date.now()) / 1000)
 
-                    if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+                    if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
                         const embed = {
                             color: '#FFC000',
-                            title: `You are on cooldown!`,
+                            title: `Slow it down! Don't try to break me!`,
                             description: `You have **PREMIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
                             author: {
                                 name: `${client.user.username}`,
@@ -181,7 +238,7 @@ module.exports = async(Discord, client, message) => {
                     } else {
                         const embed = {
                             color: '#000000',
-                            title: `You are on cooldown!`,
+                            title: `Slow it down! Don't try to break me!`,
                             description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
                             author: {
                                 name: `${client.user.username}`,
@@ -195,9 +252,9 @@ module.exports = async(Discord, client, message) => {
                 } else {
                     try {
                         userData.cooldowns[commandname] = Date.now() + cooldown_amount;
-                        await economyModel.findOneAndUpdate(params, userData);
-                        return command.execute(message, args, cmd, client, Discord, userData);
-                    
+                        await userModel.findOneAndUpdate(params, userData);
+                        return command.execute(message, args, cmd, client, Discord, profileData, userData, inventoryData);
+                        
                     } catch (error) {
                         message.reply("There was an error running this command.");
                         console.log(error);
@@ -206,14 +263,13 @@ module.exports = async(Discord, client, message) => {
                     
                 }
             } else {
-                backgroundupdates()
                 if(!cooldowns.has(command.name)){
                     cooldowns.set(command.name, new Collection());
                 }
 
                 let cooldown_amount = (command.cooldown) * 1000;
-
-                if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+                
+                if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
                     if(command.cooldown <= 5 && command.cooldown > 2) {
                         cooldown_amount = (command.cooldown - 2) * 1000
                     } else if(command.cooldown <= 15) {
@@ -228,39 +284,50 @@ module.exports = async(Discord, client, message) => {
                 const current_time = Date.now();
                 const time_stamps = cooldowns.get(command.name);
             
-                if(time_stamps.has(userID)){
-                    const expiration_time = time_stamps.get(userID) + cooldown_amount;
+                //If time_stamps has a key with the author's id then check the expiration time to send a message to a user.
+                if(time_stamps.has(message.author.id)){
+                    const expiration_time = time_stamps.get(message.author.id) + cooldown_amount;
             
                     if(current_time < expiration_time) {
                         const time_left = Math.floor((expiration_time - current_time) / 1000);
-
-                        const embed = new MessageEmbed()
-                            .setColor('#000000')
-                            .setTitle(`You are on cooldown!`)
-                            .setDescription(`You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``)
-                            .setAuthor(
-                                {
-                                    name: `${user.username}#${user.discriminator}`,
-                                    iconURL: user.displayAvatarURL(),
-                                }
-                            )
-                            .setTimestamp()
             
-                        if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
-                            embed
-                                .setColor('#FFC000')
-                                .setDescription(`You have **PREMIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,) 
-                        } 
-
-                        return message.reply({ embeds: [embed] });
+                        if(message.guild.id === '852261411136733195' || profileData.premium >= 1) {
+                            const embed = {
+                                color: '#FFC000',
+                                title: `Slow it down! Don't try to break me!`,
+                                description: `You have **PREMIUM** cooldown\nTry the command again in **${time_split(time_left)}**\nPremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
+                                author: {
+                                    name: `${client.user.username}`,
+                                    icon_url: `${client.user.displayAvatarURL()}`,
+                                },
+                                timestamp: new Date(),
+                            };
+                
+                            return message.reply({ embeds: [embed] });
+                        } else {
+                            const embed = {
+                                color: '#000000',
+                                title: `Slow it down! Don't try to break me!`,
+                                description: `You have **DEFAULT** cooldown\nTry the command again in **${time_split(time_left)}**\nDefault Cooldown: \`${time_split(command.cooldown)}\`\npremium Cooldown: \`${time_split(premiumcooldowncalc(command.cooldown))}\``,
+                                author: {
+                                    name: `${client.user.username}`,
+                                    icon_url: `${client.user.displayAvatarURL()}`,
+                                },
+                                timestamp: new Date(),
+                            };
+                
+                            return message.reply({ embeds: [embed] });
+                        }
                     }
                 }
             
-                time_stamps.set(userID, current_time);
-                setTimeout(() => time_stamps.delete(userID), cooldown_amount);
+                //If the author's id is not in time_stamps then add them with the current time.
+                time_stamps.set(message.author.id, current_time);
+                //Delete the user's id once the cooldown is over.
+                setTimeout(() => time_stamps.delete(message.author.id), cooldown_amount);
             
                 try {
-                    return command.execute(message, args, cmd, client, Discord, userData);
+                    return command.execute(message, args, cmd, client, Discord, profileData, userData, inventoryData);
                     
                 } catch (error) {
                     message.reply("There was an error running this command.");
@@ -274,8 +341,9 @@ module.exports = async(Discord, client, message) => {
             console.log(error);
             return;
         }
-        
     }
+
+
     if(args[0]?.toLowerCase() === 'table' || args[0]?.toLowerCase() === 'list') {
         if(
             command.name === 'mine' ||
@@ -288,7 +356,7 @@ module.exports = async(Discord, client, message) => {
             command.name === 'dig'
         ) {
             try {
-                command.execute(message, args, cmd, client, Discord, userData);
+                command.execute(message, args, cmd, client, Discord, profileData, inventoryData);
             } catch (error) {
                 message.reply("There was an error running this command.");
                 console.log(error);

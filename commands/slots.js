@@ -1,4 +1,5 @@
-const economyModel = require("../models/economySchema");
+const profileModel = require("../models/profileSchema");
+const inventoryModel = require('../models/inventorySchema');
 
 const letternumbers = require('../reference/letternumber');
 
@@ -113,7 +114,7 @@ module.exports = {
     minArgs: 0,
     maxArgs: 0,
     description: "slots your money away.",
-    async execute(message, args, cmd, client, Discord,  userData) {
+    async execute(message, args, cmd, client, Discord, profileData, userData, inventoryData) {
         const iftable = args[0]?.toLowerCase();
         let maxwallet = 25000000;
 
@@ -136,25 +137,25 @@ module.exports = {
             message.reply({ embeds: [embed] })
         } else {
             
-            if(userData.inventory['finecrown'] >= 1) {
+            if(inventoryData.inventory['finecrown'] >= 1) {
                 maxwallet = 500000000
             } 
             let slotsamount = args[0]
             const maxslotsamount = 500000;
 
             
-            if(userData.wallet >= maxwallet) {
+            if(profileData.coins >= maxwallet) {
                 const embed = {
                     color: '#FF0000',
                     title: `Slots Error`,
-                    description: `You are too rich to use the slots machine.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
+                    description: `You are too rich to use the slots machine.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
             }
 
-            if(userData.wallet < 5000) {
-                if(userData.bank.coins >= 5000) {
+            if(profileData.coins < 5000) {
+                if(profileData.bank >= 5000) {
                     return message.reply(`You need at least ❀ \`5,000\` to use the slots machine, maybe withdraw some?`)
                 } else {
                     return message.reply(`You need at least ❀ \`5,000\` to use the slots machine.`)
@@ -166,13 +167,13 @@ module.exports = {
             }
 
             if(slotsamount === 'max' || slotsamount === 'all') {
-                if(userData.wallet > maxslotsamount) {
+                if(profileData.coins > maxslotsamount) {
                     slotsamount = maxslotsamount;
                 } else {
-                    slotsamount = userData.wallet;
+                    slotsamount = profileData.coins;
                 }
             } else if(slotsamount === 'half') {
-                slotsamount = Math.floor(userData.wallet / 2)
+                slotsamount = Math.floor(profileData.coins / 2)
             } else if(letternumbers.find((val) => val.letter === slotsamount.slice(-1))) {
                 if(parseInt(slotsamount.slice(0, -1))) {
                     const number = parseFloat(slotsamount.slice(0, -1));
@@ -188,18 +189,16 @@ module.exports = {
 
             slotsamount = parseInt(slotsamount)
 
-            if(slotsamount > userData.wallet) {
+            if(slotsamount > profileData.coins) {
                 const embed = {
                     color: '#FF0000',
                     title: `Slots Error`,
-                    description: `You don't have that many coins to slots.\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
+                    description: `You don't have that many coins to slots.\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
             } else if(!slotsamount || slotsamount < 0) {
                 return message.reply(`You can only slots a whole number of coins, don't try to break me smh.`)
-            } else if (slotsamount < 5000) {
-                return message.reply(`You need to bet atleast at least ❀ \`5,000\` with the slots machine.`)
             } else if(slotsamount > maxslotsamount) {
                 const embed = {
                     color: '#FF0000',
@@ -235,13 +234,13 @@ module.exports = {
             const majorityelementcount = countElements(majorityElement, resultslots)
 
             if(majorityelement === false) {
-                const response = await economyModel.findOneAndUpdate(
+                const response = await profileModel.findOneAndUpdate(
                     {
                         userId: message.author.id,
                     },
                     {
                         $inc: {
-                            wallet: -slotsamount,
+                            coins: -slotsamount,
                         },
                     },
                     {
@@ -249,7 +248,7 @@ module.exports = {
                     }
                 );
 
-                const lostamount = userData.wallet - slotsamount;
+                const lostamount = profileData.coins - slotsamount;
 
                 const embed = {
                     color: '#ff4c4c',
@@ -262,13 +261,13 @@ module.exports = {
 
                 msg.edit({ embeds: [embed] })
             } else if (!winningicons.includes(majorityelement)) {
-                const response = await economyModel.findOneAndUpdate(
+                const response = await profileModel.findOneAndUpdate(
                     {
                         userId: message.author.id,
                     },
                     {
                         $inc: {
-                            wallet: -slotsamount,
+                            coins: -slotsamount,
                         },
                     },
                     {
@@ -276,7 +275,7 @@ module.exports = {
                     }
                 );
 
-                const lostamount = userData.wallet - slotsamount;
+                const lostamount = profileData.coins - slotsamount;
 
                 const embed = {
                     color: '#ff4c4c',
@@ -299,15 +298,15 @@ module.exports = {
                 }
 
                 const winamount = Math.floor(multiplier * slotsamount);
-                const wallet = userData.wallet + winamount;
+                const wallet = profileData.coins + winamount;
 
-                const response = await economyModel.findOneAndUpdate(
+                const response = await profileModel.findOneAndUpdate(
                     {
                         userId: message.author.id,
                     },
                     {
                         $inc: {
-                            wallet: winamount,
+                            coins: winamount,
                         },
                     },
                     {

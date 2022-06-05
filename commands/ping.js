@@ -2,7 +2,6 @@ module.exports = {
     name: 'ping',
     aliases: ['latency'],
     cooldown: 10,
-    cooldownmsg: 'Stop trying to break the bot',
     description: "check the bit's latency status.",
     execute(message, args, cmd, client, Discord) {
         const embed = {

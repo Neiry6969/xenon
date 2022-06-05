@@ -1,10 +1,10 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
-const fs = require('fs')
 
-const economyModel = require("../models/economySchema");
+const profileModel = require("../models/profileSchema");
+const inventoryModel = require('../models/inventorySchema');
+const userModel = require('../models/userSchema');
 const allItems = require('../data/all_items');
 const letternumbers = require('../reference/letternumber');
-const interactionproccesses = require('../interactionproccesses.json')
 
 
 module.exports = {
@@ -14,10 +14,7 @@ module.exports = {
     description: "buy items.",
     minArgs: 0,
     maxArgs: 1,
-    async execute(message, args, cmd, client, Discord, userData) {
-        const params = {
-            userId: message.author.id
-        }
+    async execute(message, args, cmd, client, Discord, profileData) {
         const expectedsyntax = `**Expected Syntax:** \`xe buy [item] [amount]\``;
         let buyamount = args[1]?.toLowerCase();
         const getitem = args[0]?.toLowerCase();
@@ -66,10 +63,10 @@ module.exports = {
         } 
 
         if(buyamount === 'max' || buyamount === 'all') {
-            if(userData.wallet < item.value) {
+            if(profileData.coins < item.value) {
                 return message.reply(`You need atleast \`❀ ${item.value}\` in your wallet to buy a ${item.icon} \`${item.item}\``);
             } else {
-                buyamount = Math.floor(userData.wallet / item.value)
+                buyamount = Math.floor(profileData.coins / item.value)
             }
         } else if(!buyamount) {
             buyamount = 1
@@ -93,11 +90,11 @@ module.exports = {
             return message.reply("You can only buy a whole number of items.");
         } else if (buyamount === 0) {
             return message.reply("So you want to buy nothing, why bother?");
-        } else if (userData.wallet < totalprice) {
+        } else if (profileData.coins < totalprice) {
             const embed = {
                 color: '#FF0000',
                 title: `Purchase Error`,
-                description: `You don't have enough coins in your wallet to buy that many of that item.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Purchase Cost:** \`❀ ${totalprice.toLocaleString()}\`\n**Current Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
+                description: `You don't have enough coins in your wallet to buy that many of item.\n\n**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Purchase Cost:** \`❀ ${totalprice.toLocaleString()}\`\n**Current Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 timestamp: new Date(),
             };
 
@@ -105,22 +102,19 @@ module.exports = {
         }
 
         if(totalprice >= 100000) {
-            interactionproccesses[message.author.id] = {
-                interaction: true,
-                proccessingcoins: true
-            }
-            fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-            const hasItem = Object.keys(userData.inventory).includes(item.item);
-            if(!hasItem) {
-                userData.inventory[item.item] = buyamount;
-            } else {
-                userData.inventory[item.item] = userData.inventory[item.item] + buyamount;
-            }
-            userData.wallet = userData.wallet - totalprice
-            userData.interactionproccesses.interaction = true
-            userData.interactionproccesses.proccessingcoins = true
-
-            await economyModel.findOneAndUpdate(params, userData);
+            const response = await profileModel.findOneAndUpdate(
+                {
+                    userId: message.author.id,
+                },
+                {
+                    $inc: {
+                        coins: -totalprice,
+                    },
+                },
+                {
+                    upsert: true,
+                }
+            );
 
             let confirm = new MessageButton()
                 .setCustomId('confirm')
@@ -147,7 +141,17 @@ module.exports = {
             const buy_msg = await message.reply({ embeds: [embed], components: [row] });
             const collector = buy_msg.createMessageComponentCollector({ time: 20 * 1000 });
 
-            
+            await userModel.updateOne(
+                { userId: message.author.id },
+                {
+                    $set: {
+                        awaitinginteraction: true
+                    }
+                },
+                {
+                    upsert: true,
+                }
+            )
 
             collector.on('collect', async (button) => {
                 if(button.user.id != message.author.id) {
@@ -160,48 +164,89 @@ module.exports = {
                 button.deferUpdate()
 
                 if(button.customId === "confirm") {
-                    interactionproccesses[message.author.id] = {
-                        interaction: false,
-                        proccessingcoins: false
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
+                    const params = {
+                        userId: message.author.id,
                     }
-                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-                    userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessingcoins = false
-                    await economyModel.findOneAndUpdate(params, userData);
+            
+                    inventoryModel.findOne(params, async(err, data) => {
+                        let amountowned;
+                        if(data) {
+                            const hasItem = Object.keys(data.inventory).includes(item.item);
+                            if(!hasItem) {
+                                data.inventory[item.item] = buyamount;
+                            } else {
+                                data.inventory[item.item] = data.inventory[item.item] + buyamount;
+                            }
+                            await inventoryModel.findOneAndUpdate(params, data);
+                            amountowned = data.inventory[item.item];
+                            
+                        } else {
+                            new inventoryModel({
+                                userId: message.author.id,
+                                inventory: {
+                                    [item.item]: buyamount
+                                }
+                            }).save();
+                            amountowned = buyamount
+            
+                        }
+                        const embed = {
+                            color: '#A8FE97',
+                            title: `Purchase Receipt`,
+                            description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** \`❀ ${totalprice.toLocaleString()}\`\n**Each Bought For:** \`❀ ${item.price.toLocaleString()}\`\n**Now You Have** \`${amountowned.toLocaleString()}\``,
+                            timestamp: new Date(),
+                        };
 
-                    const amountowned = userData.inventory[item.item]
-                    const embed = {
-                        color: '#A8FE97',
-                        title: `Purchase Receipt`,
-                        description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** \`❀ ${totalprice.toLocaleString()}\`\n**Each Bought For:** \`❀ ${item.price.toLocaleString()}\`\n**Now You Have** \`${amountowned.toLocaleString()}\``,
-                        timestamp: new Date(),
-                    };
+                        confirm
+                            .setDisabled()
+                            .setStyle("SUCCESS")
 
-                    confirm
-                        .setDisabled()
-                        .setStyle("SUCCESS")
+                        cancel
+                            .setDisabled()
+                            .setStyle("SECONDARY")
 
-                    cancel
-                        .setDisabled()
-                        .setStyle("SECONDARY")
-
-                    return buy_msg.edit({
-                        embeds: [embed],
-                        components: [row]
+                        return buy_msg.edit({
+                            embeds: [embed],
+                            components: [row]
+                        })
                     })
                 
                 } else if(button.customId === "cancel") {
-               interactionproccesses[message.author.id] = {
-                        interaction: false,
-                        proccessingcoins: false
-                    }
-                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-                    userData.inventory[item.item] = userData.inventory[item.item] - buyamount;
-                    userData.wallet = userData.wallet + totalprice
-                    userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessingcoins = false
-
-                    await economyModel.findOneAndUpdate(params, userData);
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
+                    const response = await profileModel.findOneAndUpdate(
+                        {
+                            userId: message.author.id,
+                        },
+                        {
+                            $inc: {
+                                coins: totalprice,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase cancelled`,
@@ -228,18 +273,30 @@ module.exports = {
                 if(collected.size > 0) {
 
                 } else {
-               interactionproccesses[message.author.id] = {
-                        interaction: false,
-                        proccessingcoins: false
-                    }
-                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-                    userData.inventory[item.item] = userData.inventory[item.item] - buyamount;
-                    userData.wallet = userData.wallet + totalprice
-                    userData.interactionproccesses.interaction = false
-                    userData.interactionproccesses.proccessingcoins = false
-
-                    await economyModel.findOneAndUpdate(params, userData);
-
+                    await userModel.updateOne(
+                        { userId: message.author.id },
+                        {
+                            $set: {
+                                awaitinginteraction: false
+                            }
+                        },
+                        {
+                            upsert: true,
+                        }
+                    )
+                    const response = await profileModel.findOneAndUpdate(
+                        {
+                            userId: message.author.id,
+                        },
+                        {
+                            $inc: {
+                                coins: totalprice,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
                     const embed = {
                         color: '#FF0000',
                         title: `Purchase timeout`,
@@ -263,24 +320,65 @@ module.exports = {
             });
             
         } else {
-             const hasItem = Object.keys(userData.inventory).includes(item.item);
-            if(!hasItem) {
-                userData.inventory[item.item] = buyamount;
-            } else {
-                userData.inventory[item.item] = userData.inventory[item.item] + buyamount;
+            const params = {
+                userId: message.author.id,
             }
-            userData.wallet = userData.wallet - totalprice
+    
+            inventoryModel.findOne(params, async(err, data) => {
+                if(data) {
+                    const hasItem = Object.keys(data.inventory).includes(item.item);
+                    if(!hasItem) {
+                        data.inventory[item.item] = buyamount;
+                    } else {
+                        data.inventory[item.item] = data.inventory[item.item] + buyamount;
+                    }
+                    await inventoryModel.findOneAndUpdate(params, data);
+    
+                    const response = await profileModel.findOneAndUpdate(
+                        {
+                            userId: message.author.id,
+                        },
+                        {
+                            $inc: {
+                                coins: -totalprice,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
+                } else {
+                    new inventoryModel({
+                        userId: message.author.id,
+                        inventory: {
+                            [item.item]: buyamount
+                        }
+                    }).save();
+    
+                    const response = await profileModel.findOneAndUpdate(
+                        {
+                            userId: message.author.id,
+                        },
+                        {
+                            $inc: {
+                                coins: -totalprice,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
+                }
 
-            await economyModel.findOneAndUpdate(params, userData);
-            
-            const embed = {
-                color: '#A8FE97',
-                title: `Purchase Receipt`,
-                description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** \`❀ ${totalprice.toLocaleString()}\`\n**Each Bought For:** \`❀ ${item.price.toLocaleString()}\`\n**Now You Have:** \`${userData.inventory[item.item].toLocaleString()}\``,
-                timestamp: new Date(),
-            };
+                const embed = {
+                    color: '#A8FE97',
+                    title: `Purchase Receipt`,
+                    description: `**Item:** ${item.icon} \`${item.item}\`\n**Quantity:** \`${buyamount.toLocaleString()}\`\n**Bought For:** \`❀ ${totalprice.toLocaleString()}\`\n**Each Bought For:** \`❀ ${item.price.toLocaleString()}\`\n**Now You Have:** \`${data.inventory[item.item].toLocaleString()}\``,
+                    timestamp: new Date(),
+                };
 
-            return message.reply({ embeds: [embed] });
+                return message.reply({ embeds: [embed] });
+            })    
         }
     }
 }

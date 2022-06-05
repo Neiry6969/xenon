@@ -1,4 +1,4 @@
-const economyModel = require("../models/economySchema");
+const profileModel = require("../models/profileSchema");
 
 const allitems = require('../data/all_items')
 const letternumbers = require('../reference/letternumber');
@@ -38,7 +38,7 @@ module.exports = {
     minArgs: 0,
     maxArgs: 0,
     description: "bet your money away.",
-    async execute(message, args, cmd, client, Discord, userData) {
+    async execute(message, args, cmd, client, Discord, profileData, userData, inventoryData) {
         const maxwinningmulti = 1.5;
         const minwinningmulti = 0.5;
         const iftable = args[0]?.toLowerCase();
@@ -57,25 +57,25 @@ module.exports = {
             message.reply({ embeds: [embed] })
         } else {
             
-            if(userData.inventory['finecrown'] >= 1) {
+            if(inventoryData.inventory['finecrown'] >= 1) {
                 maxwallet = 500000000
             } 
             let betamount = args[0]
             const maxbetamount = 500000;
 
             
-            if(userData.wallet >= maxwallet) {
+            if(profileData.coins >= maxwallet) {
                 const embed = {
                     color: '#FF0000',
                     title: `Slots Error`,
-                    description: `You are too rich to gamble.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
+                    description: `You are too rich to gamble.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
             }
 
-            if(userData.wallet < 5000) {
-                if(userData.bank.coins >= 5000) {
+            if(profileData.coins < 5000) {
+                if(profileData.bank >= 5000) {
                     return message.reply(`You need at least ❀ \`5,000\` to use the bet machine, maybe withdraw some?`)
                 } else {
                     return message.reply(`You need at least ❀ \`5,000\` to use the bet machine.`)
@@ -88,13 +88,13 @@ module.exports = {
             
 
             if(betamount === 'max' || betamount === 'all') {
-                if(userData.wallet > maxbetamount) {
+                if(profileData.coins > maxbetamount) {
                     betamount = maxbetamount;
                 } else {
-                    betamount = userData.wallet;
+                    betamount = profileData.coins;
                 }
             } else if(betamount === 'half') {
-                betamount = Math.floor(userData.wallet / 2)
+                betamount = Math.floor(profileData.coins / 2)
             } else if(letternumbers.find((val) => val.letter === betamount.slice(-1))) {
                 if(parseInt(betamount.slice(0, -1))) {
                     const number = parseFloat(betamount.slice(0, -1));
@@ -110,16 +110,14 @@ module.exports = {
 
             if(!betamount || betamount < 0) {
                 return message.reply(`You can only bet a whole number of coins, don't try to break me smh.`)
-            } else if(betamount > userData.wallet) {
+            } else if(betamount > profileData.coins) {
                 const embed = {
                     color: '#FF0000',
                     title: `Gamble Error`,
-                    description: `You don't have that many coins to bet.\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
+                    description: `You don't have that many coins to bet.\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                 };
 
                 return message.reply({ embeds: [embed] });
-            } else if (betamount < 5000) {
-                return message.reply(`You need to bet atleast at least ❀ \`5,000\` with the bet machine.`)
             } else if(betamount > maxbetamount) {
                 const embed = {
                     color: '#FF0000',
@@ -166,13 +164,13 @@ module.exports = {
             const msg = await message.channel.send({ embeds: [embed] })  
             
             if(userdice_total < xenondice_total) {
-                const response = await economyModel.findOneAndUpdate(
+                const response = await profileModel.findOneAndUpdate(
                     {
                         userId: message.author.id,
                     },
                     {
                         $inc: {
-                            wallet: -betamount,
+                            coins: -betamount,
                         },
                     },
                     {
@@ -180,7 +178,7 @@ module.exports = {
                     }
                 );
 
-                const lostamount = userData.wallet - betamount;
+                const lostamount = profileData.coins - betamount;
 
                 const embed = {
                     color: '#ff4c4c',
@@ -209,7 +207,7 @@ module.exports = {
                 const embed = {
                     color: '#FFFF00',
                     title: `${message.author.username}'s betting game`,
-                    description: `You Tied! Nothing has changed.\n\n**You Won:** ❀ \`0\`\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
+                    description: `You Tied! Nothing has changed.\n\n**You Won:** ❀ \`0\`\n**Wallet:** \`❀ ${profileData.coins.toLocaleString()}\``,
                     fields: [
                         {
                             name: `${message.author.username}`,
@@ -236,15 +234,15 @@ module.exports = {
                 const multiplier = multipliercalc.toFixed(2);
 
                 const winningamount = Math.floor(multiplier * betamount);
-                const wallet = userData.wallet + winningamount;
+                const wallet = profileData.coins + winningamount;
 
-                const response = await economyModel.findOneAndUpdate(
+                const response = await profileModel.findOneAndUpdate(
                     {
                         userId: message.author.id,
                     },
                     {
                         $inc: {
-                            wallet: winningamount,
+                            coins: winningamount,
                         },
                     },
                     {

@@ -1,6 +1,7 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
 
-const economyModel = require("../models/economySchema");
+const profileModel = require("../models/profileSchema");
+const inventoryModel = require('../models/inventorySchema');
 const allItems = require('../data/all_items');
 const searchplaces = require('../data/search_places')
 
@@ -34,10 +35,7 @@ module.exports = {
     minArgs: 0,
     maxArgs: 1,
     description: "sell an item.",
-    async execute(message, args, cmd, client, Discord, userData) {
-        const params = {
-            userId: message.author.id,
-        }
+    async execute(message, args, cmd, client, Discord, profileData) {
         const displayedplaces = getRandom(searchplaces, 3)
 
         let placesearched;
@@ -91,21 +89,59 @@ module.exports = {
                 const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
                 const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
                 const experiencepoints_amount = Math.floor(4) + 1;
-                userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
-                userData.experiencepoints = userData.experiencepoints + experiencepoints_amount;
+
+                await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: experiencepoints_amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
                         const percent = (placesearched_items.itempecrent / 100).toFixed(2)
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
-                        userData.wallet = userData.wallet + coins
-
-                        const hasItem = Object.keys(userData.inventory).includes(item.item);
-                        if(!hasItem) {
-                            userData.inventory[item.item] = 1;
-                        } else {
-                            userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                        await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: coins,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
+                        
+                        const params_user = {
+                            userId: message.author.id,
                         }
+
+                        inventoryModel.findOne(params_user, async(err, data) => {
+                            if(data) {
+                                const hasItem = Object.keys(data.inventory).includes(item.item);
+                                if(!hasItem) {
+                                    data.inventory[item.item] = 1;
+                                } else {
+                                    data.inventory[item.item] = data.inventory[item.item] + 1;
+                                }
+                                await inventoryModel.findOneAndUpdate(params_user, data);
+                            } else {
+                                new inventoryModel({
+                                    userId: message.author.id,
+                                    inventory: {
+                                        [item.item]: 1
+                                    }
+                                }).save();
+                            }
+                        })
     
                         const embed = {
                             color: "RANDOM",
@@ -122,8 +158,18 @@ module.exports = {
                             .setDisabled()
                         search_msg.edit({ embeds: [embed], components: [row] })
                     } else {
-                        userData.wallet = userData.wallet + coins
-
+                        await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: coins,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
+    
                         const embed = {
                             color: "RANDOM",
                             title: `${message.author.username} searched ${placesearched_items.place}`,
@@ -140,7 +186,17 @@ module.exports = {
                         search_msg.edit({ embeds: [embed], components: [row] })
                     }
                 } else {
-                    userData.wallet = userData.wallet + coins
+                    await profileModel.findOneAndUpdate(
+                        {userId: message.author.id},
+                        {
+                            $inc: {
+                                coins: coins,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
 
                     const embed = {
                         color: "RANDOM",
@@ -157,31 +213,65 @@ module.exports = {
                         .setDisabled()
                     search_msg.edit({ embeds: [embed], components: [row] })
                 }
-
-                await economyModel.findOneAndUpdate(params, userData);
-            
             } else if(button.customId === displayedplaces[1].place) {
                 placesearched = displayedplaces[1].place;
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
                 const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
                 const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
                 const experiencepoints_amount = Math.floor(4) + 1;
-                userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
-                userData.experiencepoints = userData.experiencepoints + experiencepoints_amount;
 
+                await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: experiencepoints_amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
 
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
                         const percent = (placesearched_items.itempecrent / 100).toFixed(2)
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
-                        userData.wallet = userData.wallet + coins;
+                        await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: coins,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
 
-                        const hasItem = Object.keys(userData.inventory).includes(item.item);
-                        if(!hasItem) {
-                            userData.inventory[item.item] = 1;
-                        } else {
-                            userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                        const params_user = {
+                            userId: message.author.id,
                         }
+
+                        inventoryModel.findOne(params_user, async(err, data) => {
+                            if(data) {
+                                const hasItem = Object.keys(data.inventory).includes(item.item);
+                                if(!hasItem) {
+                                    data.inventory[item.item] = 1;
+                                } else {
+                                    data.inventory[item.item] = data.inventory[item.item] + 1;
+                                }
+                                await inventoryModel.findOneAndUpdate(params_user, data);
+                            } else {
+                                new inventoryModel({
+                                    userId: message.author.id,
+                                    inventory: {
+                                        [item.item]: 1
+                                    }
+                                }).save();
+                            }
+                        })
     
                         const embed = {
                             color: "RANDOM",
@@ -200,7 +290,17 @@ module.exports = {
 
                         
                     } else {
-                        userData.wallet = userData.wallet + coins;
+                        await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: coins,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
     
                         const embed = {
                             color: "RANDOM",
@@ -218,7 +318,17 @@ module.exports = {
                         search_msg.edit({ embeds: [embed], components: [row] })
                     }
                 } else {
-                    userData.wallet = userData.wallet + coins;
+                    await profileModel.findOneAndUpdate(
+                        {userId: message.author.id},
+                        {
+                            $inc: {
+                                coins: coins,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
 
                     const embed = {
                         color: "RANDOM",
@@ -235,30 +345,65 @@ module.exports = {
                         .setDisabled()
                     search_msg.edit({ embeds: [embed], components: [row] })
                 }
-                await economyModel.findOneAndUpdate(params, userData);
-
             } else if(button.customId === displayedplaces[2].place) {
                 placesearched = displayedplaces[2].place;
                 const placesearched_items = searchplaces.find((val) => (val.place.toLowerCase()) === placesearched);
                 const coins = Math.floor(Math.random() * placesearched_items.coins) + 500;
                 const search_result = placesearched_items.message.replace('COINS', coins.toLocaleString())
                 const experiencepoints_amount = Math.floor(4) + 1;
-                userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
-                userData.experiencepoints = userData.experiencepoints + experiencepoints_amount;
 
+                await profileModel.findOneAndUpdate(
+                    {
+                        userId: message.author.id,
+                    },
+                    {
+                        $inc: {
+                            experiencepoints: experiencepoints_amount,
+                        },
+                    },
+                    {
+                        upsert: true,
+                    }
+                );
 
                 if(placesearched_items.items) {
                     const percent = (placesearched_items.itempecrent / 100).toFixed(2)
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
-                        userData.wallet = userData.wallet + coins;
+                        await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: coins,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
 
-                        const hasItem = Object.keys(userData.inventory).includes(item.item);
-                        if(!hasItem) {
-                            userData.inventory[item.item] = 1;
-                        } else {
-                            userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                        const params_user = {
+                            userId: message.author.id,
                         }
+
+                        inventoryModel.findOne(params_user, async(err, data) => {
+                            if(data) {
+                                const hasItem = Object.keys(data.inventory).includes(item.item);
+                                if(!hasItem) {
+                                    data.inventory[item.item] = 1;
+                                } else {
+                                    data.inventory[item.item] = data.inventory[item.item] + 1;
+                                }
+                                await inventoryModel.findOneAndUpdate(params_user, data);
+                            } else {
+                                new inventoryModel({
+                                    userId: message.author.id,
+                                    inventory: {
+                                        [item.item]: 1
+                                    }
+                                }).save();
+                            }
+                        })
     
                         const embed = {
                             color: "RANDOM",
@@ -275,7 +420,17 @@ module.exports = {
                             .setDisabled()
                         search_msg.edit({ embeds: [embed], components: [row] })
                     } else {
-                        userData.wallet = userData.wallet + coins;
+                        await profileModel.findOneAndUpdate(
+                            {userId: message.author.id},
+                            {
+                                $inc: {
+                                    coins: coins,
+                                },
+                            },
+                            {
+                                upsert: true,
+                            }
+                        );
     
                         const embed = {
                             color: "RANDOM",
@@ -293,7 +448,17 @@ module.exports = {
                         search_msg.edit({ embeds: [embed], components: [row] })
                     }
                 } else {
-                    userData.wallet = userData.wallet + coins;
+                    await profileModel.findOneAndUpdate(
+                        {userId: message.author.id},
+                        {
+                            $inc: {
+                                coins: coins,
+                            },
+                        },
+                        {
+                            upsert: true,
+                        }
+                    );
 
                     const embed = {
                         color: "RANDOM",
@@ -310,7 +475,7 @@ module.exports = {
                         .setDisabled()
                     search_msg.edit({ embeds: [embed], components: [row] })
                 }
-                await economyModel.findOneAndUpdate(params, userData);
+
             }
         })
 

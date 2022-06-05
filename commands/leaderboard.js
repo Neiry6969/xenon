@@ -1,6 +1,7 @@
 const { Collection, MessageActionRow, MessageSelectMenu, MessageEmbed } = require('discord.js');
 
-const economyModel = require("../models/economySchema");
+const profileModel = require("../models/profileSchema");
+const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
 function rankingicons(rank) {
@@ -20,7 +21,7 @@ module.exports = {
     aliases: ['leaderb', 'lb', 'leaderboard'],
     cooldown: 15,
     description: "Check the leaderboard.",
-    async execute(message, args, cmd, client, Discord, userData) {
+    async execute(message, args, cmd, client, Discord, profileData) {
         const collection = new Collection();
         const collection0 = new Collection();
         const collection1 = new Collection();
@@ -40,27 +41,27 @@ module.exports = {
                 const id = member.id;
                 let itemsworth = 0;
 
-                let inventoryData;
+                let inventorydata;
                 try {   
-                    inventoryData = await economyModel.findOne({ userId: id });
-                    if(!inventoryData) {
-                        inventoryData = null;
+                    inventorydata = await inventoryModel.findOne({ userId: id });
+                    if(!inventorydata) {
+                        inventorydata = null;
                     }
                 } catch (error) {
                     console.log(error)
                 }
 
-               if(!inventoryData) {
+               if(!inventorydata) {
                    itemsworth = 0;
                } else {
-                    Object.keys(inventoryData?.inventory)
+                    Object.keys(inventorydata.inventory)
                     .forEach((key) => {
-                        if(inventoryData?.inventory[key] === 0) {
+                        if(inventorydata.inventory[key] === 0) {
                             return;
                         } else {
                             const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                            itemsworth = itemsworth + (item.value * inventoryData?.inventory[key]);
+                            itemsworth = itemsworth + (item.value * inventorydata.inventory[key]);
                         }
 
                     })
@@ -70,7 +71,7 @@ module.exports = {
                     itemsworth = null
                 }
 
-                return itemsworth > 10000 && id !== '847528987831304192' && inventoryData ? collection1.set(id, {
+                return itemsworth > 10000 && id !== '847528987831304192' && inventorydata ? collection1.set(id, {
                     id,
                     itemsworth
                 })
@@ -80,43 +81,54 @@ module.exports = {
         )
 
         
-        await Promise.all(
+         await Promise.all(
             message.guild.members.cache.map(async(member) => {
                 const id = member.id;
-                let economyData;
+                let itemsworth = 0;
+
+                let profiledata;
                 try {   
-                    economyData = await economyModel.findOne({ userId: id });
-                    if(!economyData) {
-                        economyData = null;
+                    profiledata = await profileModel.findOne({ userId: id });
+                    if(!profiledata) {
+                        profiledata = null;
                     }
                 } catch (error) {
                     console.log(error)
                 }
 
-                if(!economyData) {
-                    itemsworth = 0;
-                } else {
-                    Object.keys(economyData?.inventory)
+                let inventorydata;
+                try {   
+                    inventorydata = await inventoryModel.findOne({ userId: id });
+                    if(!inventorydata) {
+                        inventorydata = null;
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+
+               if(!inventorydata) {
+                   itemsworth = 0;
+               } else {
+                    Object.keys(inventorydata.inventory)
                     .forEach((key) => {
-                        if(economyData?.inventory[key] === 0) {
+                        if(inventorydata.inventory[key] === 0) {
                             return;
                         } else {
                             const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                            itemsworth = itemsworth + (item.value * economyData?.inventory[key]);
+                            itemsworth = itemsworth + (item.value * inventorydata.inventory[key]);
                         }
 
                     })
-                }
+               }
 
-                let networth = economyData?.wallet + economyData?.bank.coins + itemsworth
+                const networth = profileData.coins + profileData.bank + itemsworth;
 
                 if(networth === NaN) {
                     networth = null
                 }
-                
 
-                return networth > 10000 && id !== '847528987831304192' && economyData ? collection0.set(id, {
+                return networth > 10000 && id !== '847528987831304192' && profiledata && inventorydata ? collection0.set(id, {
                     id,
                     networth
                 })
@@ -128,24 +140,23 @@ module.exports = {
         await Promise.all(
             message.guild.members.cache.map(async(member) => {
                 const id = member.id;
-                let economyData;
-                
+                let profiledata;
                 try {   
-                    economyData = await economyModel.findOne({ userId: id });
-                    if(!economyData) {
-                        economyData = null;
+                    profiledata = await profileModel.findOne({ userId: id });
+                    if(!profiledata) {
+                        profiledata = null;
                     }
                 } catch (error) {
                     console.log(error)
                 }
 
-                let netbalance = economyData?.wallet + economyData?.bank.coins
+                let netbalance = profiledata?.coins + profiledata?.bank
 
                 if(netbalance === NaN) {
                     netbalance = null
                 }
 
-                return netbalance > 10000 && id !== '847528987831304192' && economyData ? collection.set(id, {
+                return netbalance > 10000 && id !== '847528987831304192' && profiledata ? collection.set(id, {
                     id,
                     netbalance
                 })
@@ -194,7 +205,7 @@ module.exports = {
 
         
 
-        const collector = leaderboard_msg.createMessageComponentCollector({ time: 30 * 1000 });
+        const collector = leaderboard_msg.createMessageComponentCollector({ idle: 30 * 1000 });
 
         collector.on('collect', async (i) => {
             if(i.user.id != message.author.id) {

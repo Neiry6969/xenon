@@ -193,6 +193,7 @@ module.exports = [
     },
     {
         command: "mine",
+
         cooldown: 120,
         description: "Mine for some materials.",
         shortdesc: "Mine for some materials.",
@@ -209,7 +210,7 @@ module.exports = [
     {
         command: 'craft',
         aliases: ['make'],
-        cooldown: 10,
+        cooldown: 5,
         category: 'item interaction',
         description: 'Craft a craftable item.',
         shortdesc: 'Craft a craftable item.',
