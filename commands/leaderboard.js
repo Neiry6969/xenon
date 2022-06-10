@@ -104,7 +104,7 @@ module.exports = {
                 } catch (error) {
                     console.log(error)
                 }
-
+                let itemsworth
                 if(!inventoryData) {
                     itemsworth = 0;
                 } else {
