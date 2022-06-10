@@ -1,33 +1,21 @@
-const profileModel = require('../../models/profileSchema');
-const userModel = require('../../models/userSchema');
-const inventoryModel = require('../../models/inventorySchema')
+const economyModel = require('../../models/economySchema');
+const inventoryModel = require('../../models/inventorySchema');
+const userModel = require('../../models/userSchema')
+const statsModel = require('../../models/statsSchema')
 
 module.exports = async(client, discord, member) => {
-    profileData = await profileModel.findOne({ userId: member.id });
-    if(!profileData) {
-        let profile = await profileModel.create({
+    userData = await economyModel.findOne({ userId: member.id });
+    if(!userData) {
+        let user = await economyModel.create({
             userId: member.id,
-            serverId: member.guild.id,
-            coins: 0,
-            bank: 0,
-            bankspace: 1000,
-            expbankspace: 0,
-            experiencepoints: 0,
-            level: 0,
-            dailystreak: 0,
-            prestige: 0,
-            commands: 0,
-            deaths: 0,
-            premium: 0,
         });
     
-        profile.save();
+        user.save();
     }
 
-
-    userData = await userModel.findOne({ userId: member.id });
-    if(!userData) {
-        let user = await profileModel.create({
+    profileData = await userModel.findOne({ userId: member.id });
+    if(!profileData) {
+        let user = await userModel.create({
             userId: member.id,
         });
     
@@ -36,10 +24,19 @@ module.exports = async(client, discord, member) => {
 
     inventoryData = await inventoryModel.findOne({ userId: member.id });
     if(!inventoryData) {
-        let inventory = await inventoryModel.create({
+        let user = await inventoryModel.create({
             userId: member.id,
         });
     
-        inventory.save();
+        user.save();
+    }
+
+    statsData = await statsModel.findOne({ userId: member.id });
+    if(!statsData) {
+        let user = await statsModel.create({
+            userId: member.id,
+        });
+    
+        user.save();
     }
 }

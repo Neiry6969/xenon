@@ -1,5 +1,5 @@
-const inventoryModel = require('../models/inventorySchema');
-const profileModel = require('../models/profileSchema');
+const economyModel = require("../models/economySchema");
+const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
 const lowest = ['shrimp', 'crab', 'fish']
@@ -35,7 +35,10 @@ module.exports = {
     cooldown: 35,
     maxArgs: 0,
     description: "fish for some food.",
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
+        const params = {
+            userId: message.author.id
+        }
         const fishingrod = allItems.find((val) => (val.item.toLowerCase()) === "fishingrod")
 
         const iftable = args[0]?.toLowerCase()
@@ -58,7 +61,7 @@ module.exports = {
 
             const embed = {
                 color: 'RANDOM',
-                title: `Fish Table ${fishingrod.icon}`,
+                title: `Fishing Table ${fishingrod.icon}`,
                 description: `**Fail** ──── \`60%\`\n\n**Lowest** ──── \`20%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.99%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.01%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
             };
@@ -66,84 +69,58 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         } else {
             const result = fish()
-            const params = {
-                userId: message.author.id,
-            }
-    
-            inventoryModel.findOne(params, async(err, data) => {
-
-                if(data) {
-                    if(
-                        !data.inventory[fishingrod.item] || data.inventory[fishingrod.item] === 0 || !data
-                    ) {
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `Fish Error ${fishingrod.icon}`,
-                            description: `You need atleast \`1\` ${fishingrod.item} ${fishingrod.icon} to go fishing. Use this command again when you have one.`,
-                            timestamp: new Date(),
-                        };
-                
-                        return message.reply({ embeds: [embed] });
-                    } else {
-                        if(result === `You weren't able to catch anything.`) {
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `${message.author.username} went for a fish ${fishingrod.icon}`,
-                                description: result,
-                                timestamp: new Date(),
-                            };
-                    
-                            return message.reply({ embeds: [embed] });
-                        } else {
-                            const item = allItems.find((val) => (val.item.toLowerCase()) === result)
-                            const hasItem = Object.keys(data.inventory).includes(item.item);
-                            if(!hasItem) {
-                                data.inventory[item.item] = 1;
-                            } else {
-                                data.inventory[item.item] = data.inventory[item.item] + 1;
-                            }
-                            await inventoryModel.findOneAndUpdate(params, data);
-                            
-                            const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
-                            const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
-
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        expbankspace: expbankspace_amount,
-                                        experiencepoints: experiencepoints_amount,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-                            
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `${message.author.username} went for a fish ${fishingrod.icon}`,
-                                description: `You were able to catch something! You got a \`${item.item}\` ${item.icon}`,
-                                timestamp: new Date(),
-                            };
-                    
-                            return message.reply({ embeds: [embed] });
-                        }
-                        
-                    }
-                } else {
+            if(
+                !inventoryData.inventory[fishingrod.item] || inventoryData.inventory[fishingrod.item] === 0 || !userData
+            ) {
+                const embed = {
+                    color: 'RANDOM',
+                    title: `Fishing Error ${fishingrod.icon}`,
+                    description: `You need atleast \`1\` ${fishingrod.item} ${fishingrod.icon} to go fishing. Use this command again when you have one.`,
+                    timestamp: new Date(),
+                };
+        
+                return message.reply({ embeds: [embed] });
+            } else {
+                if(result === `You weren't able to catch anything.`) {
                     const embed = {
-                        color: '#FF0000',
-                        title: `Fish Error ${fishingrod.icon}`,
-                        description: `You need atleast \`1\` ${fishingrod.icon} \`${fishingrod.item}\` to go fishing. Use this command again when you have one.`,
+                        color: 'RANDOM',
+                        title: `${message.author.username} went for a fish ${fishingrod.icon}`,
+                        description: result,
                         timestamp: new Date(),
                     };
             
-                   return message.reply({ embeds: [embed] });
+                    return message.reply({ embeds: [embed] });
+                } else {
+                    const item = allItems.find((val) => (val.item.toLowerCase()) === result)
+                    const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
+                    if(!hasItem) {
+                        inventoryData.inventory[item.item] = 1;
+                    } else {
+                        inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + 1;
+                    }
+
+                    const expbankspace_amount = Math.floor(Math.random() * 1000) + 100;
+                    const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+                    userData.bank.expbankspace = userData.bank.expbankspace + expbankspace_amount
+                    userData.experiencepoints = userData.experiencepoints + experiencepoints_amount
+                    userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
+                    await inventoryModel.findOneAndUpdate(params, inventoryData);
+                    await economyModel.findOneAndUpdate(params, userData);
+            
+                    
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${message.author.username} went for a fish ${fishingrod.icon}`,
+                        description: `You were able to catch something! You got a \`${item.item}\` ${item.icon}`,
+                        timestamp: new Date(),
+                    };
+            
+                    return message.reply({ embeds: [embed] });
                 }
-            })
+                
+            }
+
+    
         }
         
     }

@@ -1,5 +1,5 @@
-const inventoryModel = require('../models/inventorySchema');
-const profileModel = require('../models/profileSchema');
+const economyModel = require("../models/economySchema");
+const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
 const lowest = ['bread', 'carrot', 'lettuce']
@@ -36,7 +36,11 @@ module.exports = {
     cooldown: 35,
     maxArgs: 0,
     description: "harvest for some food.",
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
+        const params = {
+            userId: message.author.id
+        }
+        
         const hoe = allItems.find((val) => (val.item.toLowerCase()) === "hoe")
 
         const iftable = args[0]?.toLowerCase()
@@ -68,84 +72,59 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         } else {
             const result = harvest()
-            const params = {
-                userId: message.author.id,
-            }
-    
-            inventoryModel.findOne(params, async(err, data) => {
-
-                if(data) {
-                    if(
-                        !data.inventory[hoe.item] || data.inventory[hoe.item] === 0 || !data
-                    ) {
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `Harvest Error ${hoe.icon}`,
-                            description: `You need atleast \`1\` ${hoe.item} ${hoe.icon} to go harvesting. Use this command again when you have one.`,
-                            timestamp: new Date(),
-                        };
-                
-                        return message.reply({ embeds: [embed] });
-                    } else {
-                        if(result === `You weren't able to harvest anything.`) {
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `${message.author.username} went for a harvest ${hoe.icon}`,
-                                description: result,
-                                timestamp: new Date(),
-                            };
-                    
-                            return message.reply({ embeds: [embed] });
-                        } else {
-                            const item = allItems.find((val) => (val.item.toLowerCase()) === result)
-                            const hasItem = Object.keys(data.inventory).includes(item.item);
-                            if(!hasItem) {
-                                data.inventory[item.item] = 1;
-                            } else {
-                                data.inventory[item.item] = data.inventory[item.item] + 1;
-                            }
-                            await inventoryModel.findOneAndUpdate(params, data);
-                            
-                            const expbankspace_amount = Math.floor(Math.random() * 1000) + 69;
-                            const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
-
-                            const response = await profileModel.findOneAndUpdate(
-                                {
-                                    userId: message.author.id,
-                                },
-                                {
-                                    $inc: {
-                                        expbankspace: expbankspace_amount,
-                                        experiencepoints: experiencepoints_amount,
-                                    },
-                                },
-                                {
-                                    upsert: true,
-                                }
-                            );
-                            
-                            const embed = {
-                                color: 'RANDOM',
-                                title: `${message.author.username} went for a harvest ${hoe.icon}`,
-                                description: `You were able to harvest something! You got a \`${item.item}\` ${item.icon}`,
-                                timestamp: new Date(),
-                            };
-                    
-                            return message.reply({ embeds: [embed] });
-                        }
-                        
-                    }
-                } else {
+            if(
+                !inventoryData.inventory[hoe.item] || inventoryData.inventory[hoe.item] === 0 || !userData
+            ) {
+                const embed = {
+                    color: 'RANDOM',
+                    title: `Harvest Error ${hoe.icon}`,
+                    description: `You need atleast \`1\` ${hoe.item} ${hoe.icon} to go harvesting. Use this command again when you have one.`,
+                    timestamp: new Date(),
+                };
+        
+                return message.reply({ embeds: [embed] });
+            } else {
+                if(result === `You weren't able to harvest anything.`) {
                     const embed = {
-                        color: '#FF0000',
-                        title: `Harvest Error ${hoe.icon}`,
-                        description: `You need atleast \`1\` ${hoe.icon} \`${hoe.item}\` to go harvesting. Use this command again when you have one.`,
+                        color: 'RANDOM',
+                        title: `${message.author.username} went for a harvest ${hoe.icon}`,
+                        description: result,
                         timestamp: new Date(),
                     };
             
-                   return message.reply({ embeds: [embed] });
+                    return message.reply({ embeds: [embed] });
+                } else {
+                    const item = allItems.find((val) => (val.item.toLowerCase()) === result)
+                    const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
+                    if(!hasItem) {
+                        inventoryData.inventory[item.item] = 1;
+                    } else {
+                        inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + 1;
+                    }
+
+                    const expbankspace_amount = Math.floor(Math.random() * 1000) + 100;
+                    const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+                    userData.bank.expbankspace = userData.bank.expbankspace + expbankspace_amount
+                    userData.experiencepoints = userData.experiencepoints + experiencepoints_amount
+                    userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
+                    await inventoryModel.findOneAndUpdate(params, inventoryData);
+                    await economyModel.findOneAndUpdate(params, userData);
+            
+                    
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${message.author.username} went for a harvest ${hoe.icon}`,
+                        description: `You were able to harvest something! You got a \`${item.item}\` ${item.icon}`,
+                        timestamp: new Date(),
+                    };
+            
+                    return message.reply({ embeds: [embed] });
+                
                 }
-            })
+
+    
+            }
+        
         }
         
     }

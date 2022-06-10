@@ -7,7 +7,7 @@ module.exports = {
     aliases: [],
     cooldown: 5,
     description: 'Commands for the bot.',
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const getcommand = args[0]?.toLocaleString();
 
         if(!getcommand) {
@@ -99,7 +99,7 @@ module.exports = {
             
                 const help_msg = await message.channel.send({ embeds: [embed], components: [row] });
 
-                const collector = help_msg.createMessageComponentCollector({ idle: 20 * 1000 });
+                const collector = help_msg.createMessageComponentCollector({ time: 20 * 1000 });
 
                 collector.on('collect', async (button) => {
                     if(button.user.id != message.author.id) {

@@ -1,22 +1,31 @@
-const profileModel = require("../models/profileSchema");
+const economyModel = require("../models/economySchema");
+const inventoryModel = require("../models/inventorySchema");;
 const letternumbers = require('../reference/letternumber');
 
 module.exports = {
     name: "withdraw",
     aliases: ["with"],
     cooldown: 5,
-    description: "withdraw coins into your bank.",
-    async execute(message, args, cmd, client, Discord, profileData) {
-        const expectedsyntax = `**Expected Syntax:** \`xe with [amount]\``;
+    description: "Withdraw coins into your wallet.",
+    async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         let amount = args[0]?.toLowerCase();
+        const bankcoins = userData.bank.coins;
+        const walletcoins = userData.wallet;
 
-        const ifletternum = !!letternumbers.find((val) => val.letter === amount?.slice(-1))
+        const expectedsyntax = `**Expected Syntax:** \`xe withdraw [amount]\``
 
-        if(amount === 'max' || amount === 'all') {
-            amount = profileData.bank;
+        if(!amount) {
+            const embed = {
+                color: '#FF0000',
+                title: `Withdrawal failed`,
+                description: `Specify the amount you want to withdraw.\n${expectedsyntax}`,
+            };
+            return message.reply({ embeds: [embed] })
+        } if(amount === 'max' || amount === 'all') {
+            amount = bankcoins;
         } else if(amount === 'half') {
-            amount = Math.floor(profileData.bank / 2)
-        } else if(ifletternum === true) {
+            amount = Math.floor(walletcoins / 2)
+        } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
             if(parseInt(amount.slice(0, -1))) {
                 const number = parseFloat(amount.slice(0, -1));
                 const numbermulti = letternumbers.find((val) => val.letter === amount.slice(-1)).number;
@@ -31,66 +40,39 @@ module.exports = {
         amount = parseInt(amount)
 
 
-        if(profileData.bank <= 0) {
-            return message.reply("You bank seems to be empty, therefore you can't withdraw anything. Awkward...");
-        } else if(amount === 0){
-            return message.reply("You withdraw nothing, so nothing changed. Are you good?");
-        } else if(!amount) {
-            const embed = {
-                color: '#FF0000',
-                title: `Withdraw Error`,
-                description: `Specify the amount you want to withdraw.\n${expectedsyntax}`,
-            };
-            return message.reply({ embeds: [embed] })
+
+        if(amount === 0){
+            return message.reply("You withdrawn nothing, so nothing changed. Are you good?");
         } else if(amount < 0 || amount % 1 != 0) {
-            return message.reply("Withdraw amount must be a whole number.");
-        } else if(amount > profileData.bank) {
+            return message.reply("Withdrawal amount must be a whole number.");
+        } else if(amount > bankcoins) {
             return message.reply(`You don't have that amount of coins to withdraw.`);
         } 
-        
-        const newWallet = profileData.coins + amount;
-        const newBank = profileData.bank - amount;
+
+        const new_bank = bankcoins - amount;
+        const new_wallet = walletcoins + amount;
         try {
-            await profileModel.findOneAndUpdate(
-                {
-                    userId: message.author.id,
-                },
-                {
-                    $inc: {
-                        coins: amount,
-                        bank: -amount,
-                    },
-                }
-            );
+            const params = {
+                userId: message.author.id
+            }
+            userData.wallet = new_wallet
+            userData.bank.coins = new_bank
+
+            await economyModel.findOneAndUpdate(params, userData);
 
             const embed = {
                 color: 'RANDOM',
+                title: `Withdrawal`,
                 author: {
-                    name: `_____________`,
+                    name: `${message.author.username}#${message.author.discriminator}`,
                     icon_url: `${message.author.displayAvatarURL()}`,
                 },
-                fields: [
-                    {
-                        name: 'Withdrawn',
-                        value: `\`❀ ${amount.toLocaleString()}\``,
-                    },
-                    {
-                        name: 'Current Bank Balance',
-                        value: `\`❀ ${newBank.toLocaleString()}\``,
-                        inline: true,
-                    },
-                    {
-                        name: 'Current Wallet Balance',
-                        value: `\`❀ ${newWallet.toLocaleString()}\``,
-                        inline: true,
-                    },
-                    
-                ],
+                description: `Withdrawn: \`❀ ${amount.toLocaleString()}\`\nCurrent Bank Balance: \`❀ ${new_bank.toLocaleString()}\`\nCurrent Wallet Balance: \`❀ ${new_wallet.toLocaleString()}\``,
                 timestamp: new Date(),
             };
-            message.reply({ embeds: [embed] });
+            return message.reply({ embeds: [embed] });
         } catch (err) {
             console.log(err);
-        }
+        } 
     },
 };

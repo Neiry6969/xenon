@@ -5,7 +5,7 @@ module.exports = {
     aliases: ['inv'],
     cooldown: 5,
     description: "invite the bot to your server.",
-    execute(message, args, cmd, client, Discord, profileData) {
+    execute(message, args, cmd, client) {
         const row = new MessageActionRow()
             .addComponents(
                 new MessageButton()

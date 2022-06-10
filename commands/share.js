@@ -1,8 +1,11 @@
 const { MessageActionRow, MessageButton } = require('discord.js')
+const fs = require('fs')
 
-const profileModel = require("../models/profileSchema");
+const economyModel = require("../models/economySchema");
+const inventoryModel = require("../models/inventorySchema");;
 const letternumbers = require('../reference/letternumber');
-const userModel = require('../models/userSchema')
+const interactionproccesses = require('../interactionproccesses.json')
+
 
 module.exports = {
     name: "share",
@@ -11,7 +14,11 @@ module.exports = {
     minArgs: 0,
     maxArgs: 1,
     description: "share coins with other users.",
-    async execute(message, args, cmd, client, Discord, profileData) {
+    async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
+
+        const params = {
+            userId: message.author.id
+        }
         let target;
 
         if(message.mentions.users.first()) {
@@ -45,8 +52,8 @@ module.exports = {
             return message.reply({ embeds: [embed] });
         } 
         
-        if(profileData.coins <= 0) {
-            if (profileData.bank <= 0) {
+        if(userData.wallet <= 0) {
+            if (userData.bank.coins <= 0) {
                 return message.reply(`You got no coins in your wallet or your bank to share, your broke :c.`);
             } else {
                 return message.reply(`You got no coins in your wallet to share, maybe withdraw some?`);
@@ -63,9 +70,9 @@ module.exports = {
         }
 
         if(amount === 'max' || amount === 'all') {
-            amount = profileData.coins;
+            amount = userData.wallet;
         } else if(amount === 'half') {
-            amount = Math.floor(profileData.coins / 2)
+            amount = Math.floor(userData.wallet / 2)
         } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
             if(parseInt(amount.slice(0, -1))) {
                 const number = parseFloat(amount.slice(0, -1));
@@ -90,28 +97,13 @@ module.exports = {
             return message.reply({ embeds: [embed] })
         } else if(amount < 0 || amount % 1 != 0) {
             return message.reply("Share amount must be a whole number.");
-        } else if(amount > profileData.coins) {
-            if(amount < profileData.bank + profileData.coins) {
+        } else if(amount > userData.wallet) {
+            if(amount < userData.bank.coins + userData.wallet) {
                 return message.reply(`You don't have that amount of coins to give from your wallet, maybe withdraw some?`);
             } else {
                 return message.reply(`You don't have that amount of coins to give from your wallet or your bank.`);
             }
         } 
-
-        const local_response = await profileModel.findOneAndUpdate(
-            {userId: message.author.id},
-            {
-                $inc: {
-                    coins: -amount,
-                },
-            },
-            {
-                upsert: true,
-            }
-        )
-
-        
-  
 
         let confirm = new MessageButton()
             .setCustomId('confirm')
@@ -141,19 +133,42 @@ module.exports = {
         };
         const share_msg = await message.reply({ embeds: [embed], components: [row] });
 
-        const collector = share_msg.createMessageComponentCollector({ time: 60 * 1000 });
+        const collector = share_msg.createMessageComponentCollector({ time: 20 * 1000 });
 
-        await userModel.updateOne(
-            { userId: message.author.id },
-            {
-                $set: {
-                    awaitinginteraction: true
+        const target_profileData = await economyModel.findOne({ userId: target.id });
+        let target_profileData_coins;
+        if(!target_profileData) {
+            profile = await economyModel.create({
+                userId: target.id,
+                wallet: amount
+            });
+            profile.save();
+            target_profileData_coins = amount
+        } else {
+            await economyModel.findOneAndUpdate(
+                {userId: target.id},
+                {
+                    $inc: {
+                        wallet: amount,
+                    },
+                },
+                {
+                    upsert: true,
                 }
-            },
-            {
-                upsert: true,
-            }
-        )
+            );
+            target_profileData_coins = target_profileData.wallet + amount
+        }
+
+        interactionproccesses[message.author.id] = {
+            interaction: true,
+            proccessingcoins: true
+        }
+        fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+        userData.interactionproccesses.interaction = true
+        userData.interactionproccesses.proccessingcoins = true
+        userData.wallet = userData.wallet - amount
+        await economyModel.updateOne(params, userData);
+
 
         collector.on('collect', async (button) => {
             if(button.user.id != message.author.id) {
@@ -166,59 +181,15 @@ module.exports = {
             
             button.deferUpdate()
             if(button.customId === "confirm") {
-                await userModel.updateOne(
-                    { userId: message.author.id },
-                    {
-                        $set: {
-                            awaitinginteraction: false
-                        }
-                    },
-                    {
-                        upsert: true,
-                    }
-                )
-                const target_profileData = await profileModel.findOne({ userId: target.id });
-    
-                if(!target_profileData) {
-                    let profile = await profileModel.create({
-                        userId: target.id,
-                        serverId: message.guild.id,
-                        coins: amount,
-                        bank: 0,
-                        bankspace: 1000,
-                        expbankspace: 0,
-                        experiencepoints: 0,
-                        level: 0,
-                        dailystreak: 0,
-                        prestige: 0,
-                        commands: 0,
-                        deaths: 0,
-                        premium: 0,
-                    });
-                    profile.save();
-                } else {
-                    const target_response = await profileModel.findOneAndUpdate(
-                        {userId: target.id},
-                        {
-                            $inc: {
-                                coins: amount,
-                            },
-                        },
-                        {
-                            upsert: true,
-                        }
-                    );
+                interactionproccesses[message.author.id] = {
+                    interaction: false,
+                    proccessingcoins: false
                 }
+                fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+                userData.interactionproccesses.interaction = false
+                userData.interactionproccesses.proccessingcoins = false
 
-                let target_profileData_coins;
-
-                if(!target_profileData) {
-                    target_profileData_coins = amount
-                } else {
-                    target_profileData_coins = target_profileData.coins + amount
-                }
-                
-
+                await economyModel.updateOne(params, userData);
                 const embed = {
                     color: '#00FF00',
                     author: {
@@ -230,7 +201,7 @@ module.exports = {
                     fields: [
                         {
                             name: `${message.author.username}`,
-                            value: `**Wallet:** -\`❀ ${amount.toLocaleString()}\`\n**New Wallet:** \`${(profileData.coins - amount).toLocaleString()}\``,
+                            value: `**Wallet:** -\`❀ ${amount.toLocaleString()}\`\n**New Wallet:** \`${(userData.wallet - amount).toLocaleString()}\``,
                             inline: true,
                         },
                         {
@@ -256,28 +227,27 @@ module.exports = {
                 })
             
             } else if(button.customId === "cancel") {
-                await userModel.updateOne(
-                    { userId: message.author.id },
-                    {
-                        $set: {
-                            awaitinginteraction: false
-                        }
-                    },
-                    {
-                        upsert: true,
-                    }
-                )
-                const local_response = await profileModel.findOneAndUpdate(
-                    {userId: message.author.id},
+                await economyModel.findOneAndUpdate(
+                    {userId: target.id},
                     {
                         $inc: {
-                            coins: amount,
+                            wallet: -amount,
                         },
                     },
                     {
                         upsert: true,
                     }
-                )
+                );
+                interactionproccesses[message.author.id] = {
+                    interaction: false,
+                    proccessingcoins: false
+                }
+                fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+                userData.interactionproccesses.interaction = false
+                userData.interactionproccesses.proccessingcoins = false
+                userData.wallet = userData.wallet + amount
+                await economyModel.updateOne(params, userData);
+
                 const embed = {
                     color: '#FF0000',
                     author: {
@@ -308,29 +278,26 @@ module.exports = {
             if(collected.size > 0) {
 
             } else {
-                await userModel.updateOne(
-                    { userId: message.author.id },
-                    {
-                        $set: {
-                            awaitinginteraction: false
-                        }
-                    },
-                    {
-                        upsert: true,
-                    }
-                )
-
-                const local_response = await profileModel.findOneAndUpdate(
-                    {userId: message.author.id},
+                await economyModel.findOneAndUpdate(
+                    {userId: target.id},
                     {
                         $inc: {
-                            coins: amount,
+                            wallet: -amount,
                         },
                     },
                     {
                         upsert: true,
                     }
-                )
+                );
+                interactionproccesses[message.author.id] = {
+                    interaction: false,
+                    proccessingcoins: false
+                }
+                fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
+                userData.interactionproccesses.interaction = false
+                userData.interactionproccesses.proccessingcoins = false
+                userData.wallet = userData.wallet + amount
+                await economyModel.updateOne(params, userData);
                 const embed = {
                     color: '#FF0000',
                     author: {

@@ -7,76 +7,72 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        commands: {
-            type: Object,
-            default: {},
-        },
-        gamblingstats: {
-            type: Object,
-            default: {},
-        },
         job: {
             type: Object,
             default: {
-                name: 'none',
-                hoursworked: 0,
+                name: null,
+                totalhoursworked: 0,
+                currentjobhoursworked: 0,
                 streak: 0,
-                lastworked: Date.now(),
+                lastworked: null,
                 hoursworkedday: 0,
             }
         },
-        followers: {
-            type: Array,
-            default: [],
-        },
-        following: {
-            type: Array,
-            default: [],
-        },
-        biodesc: {
-            type: String,
-            default: "",
-        },
-        bioimage: {
-            type: String,
-            default: ""
-        },
-        interactionstats: {
-            type: Object,
-            default: {},
-        },
-        awaitinginteraction: {
-            required: true,
-            type: Boolean, 
-            default: false,
-        },
-        badges: {
-            type: Object,
-            default: {},
-        },
-        stealinteractions: {
-            type: Object,
-            default: {},
-        },
-        titles: {
-            type: Array,
-            default: ['Newbie'],
-        },
-        title: {
-            type: String,
-            default: "Newbie"
-        },
         showcase: {
             type: Object,
-            default: {},
+            default: {
+                slots: 0,
+                items: {
+                    type: Object,
+                    default: {}
+                }
+            },
         },
         pet: {
             type: Object,
-            default: {},
+            default: {
+                species: null,
+                name: null,
+                hygiene: {
+                    percent: null,
+                    lastinteract: null
+                },
+                hunger:  {
+                    percent: null,
+                    lastinteract: null
+                },
+                experience: {
+                    percent: null,
+                    lastinteract: null
+                },
+                toys: { 
+                    type: Object,
+                    default: {}
+                }
+            },
         },
-        blacklisted: {
-            type: Boolean,
-            default: false,
+        moderation: {
+            type: Object,
+            default: {
+                blacklist: {
+                    date: null,
+                    status: false,
+                    reason: null,
+                    unblacklistdate: null,
+                    resposiblemod: null
+                },
+                ban: {
+                    date: null,
+                    status: false,
+                    reason: null,
+                    unblacklistdate: null,
+                    resposiblemod: null
+                },
+                logs: {
+                    type: Array,
+                    default: []
+                }
+            },
         },
         knowledge: {
             type: Number,
@@ -86,18 +82,25 @@ const userSchema = new mongoose.Schema(
             type: Object,
             default: {},
         },
-        crafting: {
+        usersocial: {
             type: Object,
-            default: {},
+            default: {
+                thumbnailurl: "",
+                followers: {
+                    type: Array,
+                    default: [],
+                },
+                following: {
+                    type: Array,
+                    default: [],
+                },
+                desc: {
+                    type: String,
+                    default: ""
+                },
+            }
         },
-        cooldowns: {
-            type: Object,
-            default: {},
-        },
-        dailystreak: {
-            type: Date,
-        },
-    }, 
+    },
     { minimize: false }
 )
 
