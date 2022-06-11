@@ -106,22 +106,30 @@ module.exports = {
                     console.log(error)
                 }
 
-               if(!ginventoryData) {
-                   itemsworth = 0;
-               } else {
-                    Object.keys(ginventoryData?.inventory)
-                    .forEach((key) => {
-                        if(ginventoryData?.inventory[key] === 0) {
-                            return;
-                        } else {
-                            const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+                if(!ginventoryData) {
+                    itemsworth = 0;
+                } else {
+                        Object.keys(ginventoryData?.inventory)
+                        .forEach((key) => {
+                            if(ginventoryData?.inventory[key] === 0) {
+                                return;
+                            } else {
+                                const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                            itemsworth = itemsworth + (item.value * ginventoryData?.inventory[key]);
-                        }
+                                itemsworth = itemsworth + (item.value * ginventoryData?.inventory[key]);
+                            }
 
-                    })
-               }
-               const totalbalance = economyData.bank.coins + economyData.wallet
+                        })
+                }
+
+                let totalbalance;
+                
+                if(!economyData.wallet) {
+                    totalbalance = 0
+                } else {
+                    totalbalance = economyData.bank.coins + economyData.wallet
+                }
+               
                const networth = itemsworth + totalbalance
 
                 if(networth === NaN) {
