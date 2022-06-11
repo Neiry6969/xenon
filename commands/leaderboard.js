@@ -41,27 +41,27 @@ module.exports = {
                 const id = member.id;
                 let itemsworth = 0;
 
-                let inventoryData;
+                let ginventoryData;
                 try {   
-                    inventoryData = await inventoryModel.findOne({ userId: id });
-                    if(!inventoryData) {
-                        inventoryData = null;
+                    ginventoryData = await inventoryModel.findOne({ userId: id });
+                    if(!ginventoryData) {
+                        ginventoryData = null;
                     }
                 } catch (error) {
                     console.log(error)
                 }
 
-               if(!inventoryData) {
+               if(!ginventoryData) {
                    itemsworth = 0;
                } else {
-                    Object.keys(inventoryData?.inventory)
+                    Object.keys(ginventoryData?.inventory)
                     .forEach((key) => {
-                        if(inventoryData?.inventory[key] === 0) {
+                        if(ginventoryData?.inventory[key] === 0) {
                             return;
                         } else {
                             const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                            itemsworth = itemsworth + (item.value * inventoryData?.inventory[key]);
+                            itemsworth = itemsworth + (item.value * ginventoryData?.inventory[key]);
                         }
 
                     })
@@ -71,7 +71,7 @@ module.exports = {
                     itemsworth = null
                 }
 
-                return itemsworth > 10000 && id !== '847528987831304192' && inventoryData ? collection1.set(id, {
+                return itemsworth > 10000 && id !== '847528987831304192' && ginventoryData ? collection1.set(id, {
                     id,
                     itemsworth
                 })
@@ -84,8 +84,19 @@ module.exports = {
         await Promise.all(
             message.guild.members.cache.map(async(member) => {
                 const id = member.id;
-                let economyData;
+                let itemsworth = 0;
 
+                let ginventoryData;
+                try {   
+                    ginventoryData = await inventoryModel.findOne({ userId: id });
+                    if(!ginventoryData) {
+                        ginventoryData = null;
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+
+                let economyData;
                 try {   
                     economyData = await economyModel.findOne({ userId: id });
                     if(!economyData) {
@@ -95,44 +106,34 @@ module.exports = {
                     console.log(error)
                 }
 
-                let inventoryData;
-                try {   
-                    inventoryData = await inventoryModel.findOne({ userId: id });
-                    if(!inventoryData) {
-                        inventoryData = null;
-                    }
-                } catch (error) {
-                    console.log(error)
-                }
-                let itemsworth
-                if(!inventoryData) {
-                    itemsworth = 0;
-                } else {
-                    Object.keys(inventoryData?.inventory)
+               if(!ginventoryData) {
+                   itemsworth = 0;
+               } else {
+                    Object.keys(ginventoryData?.inventory)
                     .forEach((key) => {
-                        if(inventoryData?.inventory[key] === 0) {
+                        if(ginventoryData?.inventory[key] === 0) {
                             return;
                         } else {
                             const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                            itemsworth = itemsworth + (item.value * inventoryData?.inventory[key]);
+                            itemsworth = itemsworth + (item.value * ginventoryData?.inventory[key]);
                         }
 
                     })
-                }
-
-                let networth = economyData?.wallet + economyData?.bank.coins + itemsworth
+               }
+               const totalbalance = economyData.bank.coins + economyData.wallet
+               const networth = itemsworth + totalbalance
 
                 if(networth === NaN) {
                     networth = null
                 }
-                
 
-                return networth > 10000 && id !== '847528987831304192' && economyData ? collection0.set(id, {
+                return networth > 10000 && id !== '847528987831304192' && economyData && ginventoryData ? collection0.set(id, {
                     id,
                     networth
                 })
                 : null
+                
             })
 
         )
