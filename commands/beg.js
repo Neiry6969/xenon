@@ -4,6 +4,20 @@ const beg_data = require('../data/beg_data');
 const allItems = require('../data/all_items')
 const { MessageEmbed } = require("discord.js");
 
+const jsoncooldowns = require('../cooldowns.json');
+const fs = require('fs')
+function premiumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
+    }
+}
+
 function randomizer(precent) {
     const randomnum = Math.floor(Math.random() * 10000);
 
@@ -18,6 +32,7 @@ module.exports = {
     name: "beg",
     aliases: [],
     cooldown: 45,
+    cdmsg: `There is no one you can beg to right now, making money by begging isn't this easy!`,
     description: "check the user balance.",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const searchidexrandom = Math.floor(Math.random() * beg_data.length)
@@ -100,6 +115,14 @@ module.exports = {
         await inventoryModel.findOneAndUpdate(params, inventoryData);
 
         message.reply({ embeds: [embed] })
+        let cooldown = 45;
+        if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+            cooldown = premiumcooldowncalc(cooldown)
+        }
+        const cooldown_amount = (cooldown) * 1000;
+        const timpstamp = Date.now() + cooldown_amount
+        jsoncooldowns[message.author.id].beg = timpstamp
+        fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
 
     },
 }

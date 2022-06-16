@@ -3,6 +3,20 @@ const inventoryModel = require("../models/inventorySchema");;
 
 const letternumbers = require('../reference/letternumber');
 
+const jsoncooldowns = require('../cooldowns.json');
+const fs = require('fs')
+function premiumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
+    }
+}
+
 const winningicons = [
     '<:excalibur:966537260034043974>',
     '<:creatorscrown:965024171463688323>',
@@ -219,6 +233,14 @@ module.exports = {
             const slots3 = slot(slot3_num);
             const resultslots = [slots1, slots2, slots3];
 
+            let cooldown = 10;
+            if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+                cooldown = premiumcooldowncalc(cooldown)
+            }
+            const cooldown_amount = (cooldown) * 1000;
+            const timpstamp = Date.now() + cooldown_amount
+            jsoncooldowns[message.author.id].slots = timpstamp
+            fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
 
             const embed = {
                 color: '#000000',

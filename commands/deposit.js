@@ -1,6 +1,20 @@
 const economyModel = require("../models/economySchema");
-const inventoryModel = require("../models/inventorySchema");;
+const inventoryModel = require("../models/inventorySchema");
 const letternumbers = require('../reference/letternumber');
+
+const jsoncooldowns = require('../cooldowns.json');
+const fs = require('fs')
+function premiumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
+    }
+}
 
 module.exports = {
     name: "deposit",
@@ -102,6 +116,14 @@ module.exports = {
                 description: `Deposited: \`❀ ${amount.toLocaleString()}\`\nCurrent Bank Balance: \`❀ ${new_bank.toLocaleString()}\`\nCurrent Wallet Balance: \`❀ ${new_wallet.toLocaleString()}\``,
                 timestamp: new Date(),
             };
+            let cooldown = 5;
+            if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+                cooldown = premiumcooldowncalc(cooldown)
+            }
+            const cooldown_amount = (cooldown) * 1000;
+            const timpstamp = Date.now() + cooldown_amount
+            jsoncooldowns[message.author.id].deposit = timpstamp
+            fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
             return message.reply({ embeds: [embed] });
         } catch (err) {
             console.log(err);

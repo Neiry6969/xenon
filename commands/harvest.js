@@ -2,6 +2,20 @@ const economyModel = require("../models/economySchema");
 const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
+const jsoncooldowns = require('../cooldowns.json');
+const fs = require('fs')
+function premiumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
+    }
+}
+
 const lowest = ['bread', 'carrot', 'lettuce']
 const lowmid = ['tomato', 'corn', 'eggplant']
 const highmid = ['potato', 'onion', 'avocado']
@@ -92,7 +106,7 @@ module.exports = {
                         timestamp: new Date(),
                     };
             
-                    return message.reply({ embeds: [embed] });
+                    message.reply({ embeds: [embed] });
                 } else {
                     const item = allItems.find((val) => (val.item.toLowerCase()) === result)
                     const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
@@ -118,13 +132,20 @@ module.exports = {
                         timestamp: new Date(),
                     };
             
-                    return message.reply({ embeds: [embed] });
+                    message.reply({ embeds: [embed] });
                 
                 }
 
-    
+                let cooldown = 35;
+                if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+                    cooldown = premiumcooldowncalc(cooldown)
+                }
+                const cooldown_amount = (cooldown) * 1000;
+                const timpstamp = Date.now() + cooldown_amount
+                jsoncooldowns[message.author.id].harvest = timpstamp
+                fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
             }
-        
+            
         }
         
     }

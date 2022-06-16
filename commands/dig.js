@@ -2,6 +2,20 @@ const economyModel = require("../models/economySchema");
 const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
+const jsoncooldowns = require('../cooldowns.json');
+const fs = require('fs')
+function premiumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
+    }
+}
+
 const lowest = ['worm', 'rat', 'rock']
 const lowmid = ['snail', 'lizard', 'chestofwooden']
 const highmid = ['scorpion']
@@ -68,57 +82,65 @@ module.exports = {
     
             return message.reply({ embeds: [embed] });
         } else {
-                const result = dig()
-                if(
-                    !inventoryData.inventory[shovel.item] || inventoryData.inventory[shovel.item] === 0 || !userData
-                ) {
+            const result = dig()
+            if(
+                !inventoryData.inventory[shovel.item] || inventoryData.inventory[shovel.item] === 0 || !userData
+            ) {
+                const embed = {
+                    color: 'RANDOM',
+                    title: `Dig Error ${shovel.icon}`,
+                    description: `You need atleast \`1\` ${shovel.item} ${shovel.icon} to go digging. Use this command again when you have one.`,
+                    timestamp: new Date(),
+                };
+        
+                return message.reply({ embeds: [embed] });
+            } else {
+                if(result === `You weren't able to dig anything, just bad luck.`) {
                     const embed = {
                         color: 'RANDOM',
-                        title: `Dig Error ${shovel.icon}`,
-                        description: `You need atleast \`1\` ${shovel.item} ${shovel.icon} to go digging. Use this command again when you have one.`,
+                        title: `${message.author.username} went for a dig ${shovel.icon}`,
+                        description: result,
                         timestamp: new Date(),
                     };
             
-                    return message.reply({ embeds: [embed] });
+                    message.reply({ embeds: [embed] });
                 } else {
-                    if(result === `You weren't able to dig anything, just bad luck.`) {
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `${message.author.username} went for a dig ${shovel.icon}`,
-                            description: result,
-                            timestamp: new Date(),
-                        };
-                
-                        return message.reply({ embeds: [embed] });
+                    const item = allItems.find((val) => (val.item.toLowerCase()) === result)
+                    const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
+                    if(!hasItem) {
+                        inventoryData.inventory[item.item] = 1;
                     } else {
-                        const item = allItems.find((val) => (val.item.toLowerCase()) === result)
-                        const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
-                        if(!hasItem) {
-                            inventoryData.inventory[item.item] = 1;
-                        } else {
-                            inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + 1;
-                        }
-
-                        const expbankspace_amount = Math.floor(Math.random() * 1000) + 100;
-                        const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
-                        userData.bank.expbankspace = userData.bank.expbankspace + expbankspace_amount
-                        userData.experiencepoints = userData.experiencepoints + experiencepoints_amount
-                        userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
-                        await inventoryModel.findOneAndUpdate(params, inventoryData);
-                        await economyModel.findOneAndUpdate(params, userData);
-                
-                        const embed = {
-                            color: 'RANDOM',
-                            title: `${message.author.username} went for a dig ${shovel.icon}`,
-                            description: `You pulled something out of the ground! You got a \`${item.item}\` ${item.icon}`,
-                            timestamp: new Date(),
-                        };
-                
-                        return message.reply({ embeds: [embed] });
+                        inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + 1;
                     }
-                    
+
+                    const expbankspace_amount = Math.floor(Math.random() * 1000) + 100;
+                    const experiencepoints_amount = Math.floor(expbankspace_amount / 100);
+                    userData.bank.expbankspace = userData.bank.expbankspace + expbankspace_amount
+                    userData.experiencepoints = userData.experiencepoints + experiencepoints_amount
+                    userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
+                    await inventoryModel.findOneAndUpdate(params, inventoryData);
+                    await economyModel.findOneAndUpdate(params, userData);
+            
+                    const embed = {
+                        color: 'RANDOM',
+                        title: `${message.author.username} went for a dig ${shovel.icon}`,
+                        description: `You pulled something out of the ground! You got a \`${item.item}\` ${item.icon}`,
+                        timestamp: new Date(),
+                    };
+            
+                    message.reply({ embeds: [embed] });
                 }
-    
+                let cooldown = 35;
+                if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+                    cooldown = premiumcooldowncalc(cooldown)
+                }
+                const cooldown_amount = (cooldown) * 1000;
+                const timpstamp = Date.now() + cooldown_amount
+                jsoncooldowns[message.author.id].dig = timpstamp
+                fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
+            }
+            
+           
         }
     }
 }

@@ -1,7 +1,22 @@
 const { MessageEmbed } = require('discord.js');
 
+
 const economyModel = require("../models/economySchema");
 const allItems = require('../data/all_items');
+
+const jsoncooldowns = require('../cooldowns.json');
+const fs = require('fs')
+function premiumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
+    }
+}
 
 module.exports = {
     name: "balance",
@@ -9,6 +24,7 @@ module.exports = {
     cooldown: 3,
     minArgs: 0,
     maxArgs: 1,
+    cdmsg: `You can't be checking you balance so fast, chilldown!`,
     description: "Check a user's balance.",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const user = message.author;
@@ -176,6 +192,14 @@ module.exports = {
 
         message.reply({ embeds: [embed] })
 
+        let cooldown = 3;
+        if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+            cooldown = premiumcooldowncalc(cooldown)
+        }
+        const cooldown_amount = (cooldown) * 1000;
+        const timpstamp = Date.now() + cooldown_amount
+        jsoncooldowns[message.author.id].balance = timpstamp
+        fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
     },
 
 }

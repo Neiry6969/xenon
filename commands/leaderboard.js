@@ -4,6 +4,20 @@ const economyModel = require("../models/economySchema");
 const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
+const jsoncooldowns = require('../cooldowns.json');
+const fs = require('fs')
+function premiumcooldowncalc(defaultcooldown) {
+    if(defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2
+    } else if(defaultcooldown <= 15) {
+        return defaultcooldown - 5
+    } else if(defaultcooldown <= 120) {
+        return defaultcooldown - 10
+    } else {
+        return defaultcooldown
+    }
+}
+
 function rankingicons(rank) {
     if(rank === 1) {
         return '<:goldencrown:974761077269233664>'
@@ -22,6 +36,15 @@ module.exports = {
     cooldown: 15,
     description: "Check the leaderboard.",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
+        let cooldown = 15;
+        if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+            cooldown = premiumcooldowncalc(cooldown)
+        }
+        const cooldown_amount = (cooldown) * 1000;
+        const timpstamp = Date.now() + cooldown_amount
+        jsoncooldowns[message.author.id].rich = timpstamp
+        fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
+        
         const collection = new Collection();
         const collection0 = new Collection();
         const collection1 = new Collection();
@@ -355,6 +378,8 @@ module.exports = {
                 components: leaderboard_msg.components
             })
         });
+
+        
     }
     
 }
