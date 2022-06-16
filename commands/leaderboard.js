@@ -86,57 +86,49 @@ module.exports = {
                 const id = member.id;
                 let itemsworth = 0;
 
-                let ginventoryData;
+                let profiledata;
                 try {   
-                    ginventoryData = await inventoryModel.findOne({ userId: id });
-                    if(!ginventoryData) {
-                        ginventoryData = null;
+                    profiledata = await economyModel.findOne({ userId: id });
+                    if(!profiledata) {
+                        profiledata = null;
                     }
                 } catch (error) {
                     console.log(error)
                 }
 
-                let economyData;
+                let inventorydata;
                 try {   
-                    economyData = await economyModel.findOne({ userId: id });
-                    if(!economyData) {
-                        economyData = null;
+                    inventorydata = await inventoryModel.findOne({ userId: id });
+                    if(!inventorydata) {
+                        inventorydata = null;
                     }
                 } catch (error) {
                     console.log(error)
                 }
 
-                if(!ginventoryData) {
-                    itemsworth = 0;
-                } else {
-                        Object.keys(ginventoryData?.inventory)
-                        .forEach((key) => {
-                            if(ginventoryData?.inventory[key] === 0) {
-                                return;
-                            } else {
-                                const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+               if(!inventorydata) {
+                   itemsworth = 0;
+               } else {
+                    Object.keys(inventorydata.inventory)
+                    .forEach((key) => {
+                        if(inventorydata.inventory[key] === 0) {
+                            return;
+                        } else {
+                            const item = allItems.find((val) => (val.item.toLowerCase()) === key);
 
-                                itemsworth = itemsworth + (item.value * ginventoryData?.inventory[key]);
-                            }
+                            itemsworth = itemsworth + (item.value * inventorydata.inventory[key]);
+                        }
 
-                        })
-                }
+                    })
+               }
 
-                let totalbalance;
-                
-                if(!economyData.wallet) {
-                    totalbalance = 0
-                } else {
-                    totalbalance = economyData.bank.coins + economyData.wallet
-                }
-               
-               const networth = itemsworth + totalbalance
+                const networth = profileData.coins + profileData.bank + itemsworth;
 
                 if(networth === NaN) {
                     networth = null
                 }
 
-                return networth > 10000 && id !== '847528987831304192' && economyData && ginventoryData ? collection0.set(id, {
+                return networth > 10000 && id !== '847528987831304192' && profiledata && inventorydata ? collection0.set(id, {
                     id,
                     networth
                 })
