@@ -150,13 +150,15 @@ module.exports = {
                 } else {
                     data.inventory[item.item] = data.inventory[item.item] + amount;
                 }
+                
+                inventoryData.inventory[item.item] - data.inventory[item.item] - amount;
+                await inventoryModel.findOneAndUpdate(params, inventoryData);
                 await inventoryModel.findOneAndUpdate(params_target, data);
                 interactionproccesses[message.author.id] = {
                     interaction: true,
                     proccessingcoins: true
                 }
                 fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-                await inventoryModel.findOneAndUpdate(params, inventoryData);
         
         
                 let confirm = new MessageButton()
