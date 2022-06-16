@@ -49,7 +49,7 @@ module.exports = {
     aliases: ['harv'],
     cooldown: 35,
     maxArgs: 0,
-    description: "harvest for some food.",
+    cdmsg: "None of your crops grew",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id

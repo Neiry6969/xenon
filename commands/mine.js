@@ -94,7 +94,7 @@ module.exports = {
     name: 'mine',
     cooldown: 120,
     maxArgs: 0,
-    description: "Mine for some materials.",
+    cdmsg: "I am not going let you mine anymore, you need rest!",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id,

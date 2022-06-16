@@ -48,7 +48,7 @@ module.exports = {
     name: 'dig',
     cooldown: 35,
     maxArgs: 0,
-    description: "Dig for some treasures.",
+    cdmsg: "You are too tired to be digging so much",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id

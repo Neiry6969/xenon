@@ -19,7 +19,7 @@ module.exports = {
     name: 'daily',
     aliases: ['dai'],
     cooldown: 86400,
-    description: "Collect your daily rewards.",
+    cdmsg: "You already collected your daily rewards today",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id

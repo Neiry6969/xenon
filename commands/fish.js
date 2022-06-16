@@ -48,7 +48,7 @@ module.exports = {
     name: 'fish',
     cooldown: 35,
     maxArgs: 0,
-    description: "fish for some food.",
+    cdmsg: "Theres no fish in these waters right now!",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id

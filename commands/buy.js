@@ -24,7 +24,7 @@ module.exports = {
     name: 'buy',
     aliases: ['purchase'],
     cooldown: 5,
-    description: "buy items.",
+    cdmsg: "You already bought something earlier why are you buying things so fast?",
     minArgs: 0,
     maxArgs: 1,
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {

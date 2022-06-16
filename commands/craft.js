@@ -24,7 +24,6 @@ module.exports = {
     name: 'craft',
     aliases: ['make'],
     cooldown: 10,
-    description: "Craft items.",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const expectedsyntax = `\`xe craft [item] [amount]\``;
         let amount = args[1]?.toLowerCase();

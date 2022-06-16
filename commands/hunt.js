@@ -53,7 +53,7 @@ module.exports = {
     name: 'hunt',
     cooldown: 35,
     maxArgs: 0,
-    description: "hunt for some animals.",
+    cdmsg: "All the animals are weary of you so they hid very well",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id

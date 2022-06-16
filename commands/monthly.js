@@ -19,7 +19,7 @@ module.exports = {
     name: 'monthly',
     aliases: ['month'],
     cooldown: 2678400,
-    description: "Collect your monthly rewards.",
+    cdmsg: "You already collected your monthly rewards month",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id

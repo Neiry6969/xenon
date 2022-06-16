@@ -19,7 +19,7 @@ module.exports = {
     name: 'weekly',
     aliases: ['week'],
     cooldown: 604800,
-    description: "Collect your weekly rewards.",
+    cdmsg: "You already collected your weekly rewards week",
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
         const params = {
             userId: message.author.id
