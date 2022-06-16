@@ -84,18 +84,24 @@ module.exports = {
         await Promise.all(
             message.guild.members.cache.map(async(member) => {
                 const id = member.id;
-                let itemsworth = 0;
 
-                let profiledata;
+                let economyData;
                 try {   
-                    profiledata = await economyModel.findOne({ userId: id });
-                    if(!profiledata) {
-                        profiledata = null;
+                    economyData = await economyModel.findOne({ userId: id });
+                    if(!economyData) {
+                        economyData = null;
                     }
                 } catch (error) {
                     console.log(error)
                 }
 
+                let netbalance = economyData?.wallet + economyData?.bank.coins
+
+                if(netbalance === NaN) {
+                    netbalance = null
+                }
+
+                let itemsworth = 0;
                 let inventorydata;
                 try {   
                     inventorydata = await inventoryModel.findOne({ userId: id });
@@ -122,13 +128,13 @@ module.exports = {
                     })
                }
 
-                const networth = profileData.coins + profileData.bank + itemsworth;
+                const networth = netbalance + itemsworth;
 
                 if(networth === NaN) {
                     networth = null
                 }
 
-                return networth > 10000 && id !== '847528987831304192' && profiledata && inventorydata ? collection0.set(id, {
+                return networth > 10000 && id !== '847528987831304192' && economyData && inventorydata ? collection0.set(id, {
                     id,
                     networth
                 })
