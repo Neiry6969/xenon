@@ -47,9 +47,12 @@ module.exports = {
 
         
         if(target) {
+            const emptyembed = {
+                description: "This user has nothing in their inventory move along."
+            }
             inventoryModel.findOne({ userId: target.id }, async(err, data) => {
                 if(!data) {
-                    return message.reply("This user has nothing in their inventory move along.")
+                    return message.reply({ embeds: [emptyembed] })
                 } 
     
                 const mappedData = Object.keys(data.inventory)
@@ -66,7 +69,7 @@ module.exports = {
                     .filter(Boolean)
                 
                 if(mappedData.length === 0) {
-                    return message.reply("This user has nothing in their inventory move along.");
+                    return message.reply({ embeds: [emptyembed] });
                 } else {    
                     const inventory = Object.values(data.inventory).filter(Boolean);
                     const invlength = inventory.length;
@@ -396,7 +399,11 @@ module.exports = {
 
             })
         } else {
-            if(!inventoryData.inventory) return message.reply("You got nothing in your inventory.");
+            const emptyembed = {
+                description: "You got nothing in your inventory."
+            }
+
+            if(!inventoryData.inventory) return message.reply({ embeds: [emptyembed] });
 
             const mappedData = Object.keys(inventoryData.inventory)
                 .sort()
@@ -412,7 +419,7 @@ module.exports = {
                 .filter(Boolean)
 
             if(mappedData.length === 0) {
-                return message.reply("You got nothing in your inventory.");
+                return message.reply({ embeds: [emptyembed] });
             } else {
                 const inventory = Object.values(inventoryData.inventory).filter(Boolean);
                 const invlength = inventory.length;

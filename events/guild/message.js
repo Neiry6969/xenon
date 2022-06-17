@@ -3,6 +3,7 @@ const economyModel = require('../../models/economySchema');
 const inventoryModel = require('../../models/inventorySchema');
 const userModel = require('../../models/userSchema')
 const statsModel = require('../../models/statsSchema')
+const guildModel = require('../../models/guildSchema')
 
 const { Collection, MessageEmbed } = require('discord.js')
 const fs = require('fs')
@@ -82,6 +83,23 @@ module.exports = async(Discord, client, message) => {
         console.log(error)
     }
 
+    let guildData;
+    try {   
+        guildData = await guildModel.findOne({ serverId: message.guild.id });
+        if(!guildData) {
+            let guild = await guildModel.create({
+                guildId: message.guild.id,
+            });
+        
+            guild.save();
+
+            guildData = guild;
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+
     let profileData;
     try {   
         profileData = await userModel.findOne({ userId: userID });
@@ -148,7 +166,6 @@ module.exports = async(Discord, client, message) => {
         return;
     }
 
-    
     const message_content = message.content?.toLowerCase()
     const args = message_content.toLowerCase().slice(prefix.length).split(/ +/);
     const cmd = args.shift().toLowerCase();
@@ -159,6 +176,20 @@ module.exports = async(Discord, client, message) => {
     if(!client.commands.find(a => a.aliases && a.aliases.includes(cmd)) && !client.commands.get(cmd)) {
         return;
     } 
+
+
+    if(guildData.disabledcmds[command.name] === true) {
+        const disabledcmdembed = new MessageEmbed()
+            .setColor('RED')
+            .setDescription(`<a:cross:987458395823018044> **This command has been disabled in** \`${message.guild.name}\`\nGuild ID: \`${message.guild.id}\`\nCommand: \`${command.name}\``)
+        const disabledcmd_msg = await message.reply({ embeds: [disabledcmdembed] });
+
+        setTimeout(() => {
+            disabledcmd_msg.delete()
+        }, 4000)
+
+        return;
+    }
 
     async function backgroundupdates() {
         const params = {
