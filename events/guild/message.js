@@ -247,8 +247,8 @@ module.exports = async(Discord, client, message) => {
                 message.reply({ embeds: [cooldownembed] })
             } else {
                 try {
+                    backgroundupdates()
                     return command.execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData);
-                    
                 } catch (error) {
                     message.reply("There was an error running this command.");
                     console.log(error);
