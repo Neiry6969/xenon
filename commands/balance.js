@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 
 const economyModel = require("../models/economySchema");
+const inventoryModel = require("../models/inventorySchema");
 const allItems = require('../data/all_items');
 
 const jsoncooldowns = require('../cooldowns.json');
@@ -66,9 +67,9 @@ module.exports = {
 
             let targetinvData;
             try {   
-                targetinvData = await economyModel.findOne({ userId: target.id });
+                targetinvData = await inventoryModel.findOne({ userId: target.id });
                 if(!targetinvData) {
-                    let targetuser = await economyModel.create({
+                    let targetuser = await inventoryModel.create({
                         userId: target.id,
                     });
 
