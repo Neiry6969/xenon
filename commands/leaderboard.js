@@ -52,7 +52,7 @@ module.exports = {
         const embed = new MessageEmbed()
                 .setColor('RANDOM')
                 .setTitle(`${message.guild.name} Currency Leaderboard`)
-                .setDescription(`**Loading**, fetching cached users. This might take a while...`)
+                .setDescription(`**Loading**, fetching cached users. This might take a while... <a:loading:987196796549861376>`)
                 .setTimestamp()
 
         
