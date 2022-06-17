@@ -323,6 +323,11 @@ module.exports = {
                     })
                 
                 } else if(button.customId === "cancel") {
+                    interactionproccesses[message.author.id] = {
+                        interaction: false,
+                        proccessingcoins: false
+                    }
+                    fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
                     item.craftitems.forEach(async value => {
                         inventoryData.inventory[value.i] = inventoryData.inventory[value.i] + value.q * amount
                     })
