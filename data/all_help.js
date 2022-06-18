@@ -222,4 +222,12 @@ module.exports = [
         description: 'Configure settings for a guild.',
         shortdesc: 'Configure settings for a guild.',
     },
+    {
+        command: "rob",
+        aliases: ['steal'],
+        cooldown: 40,
+        category: 'interaction',
+        description: "Rob a user's wallet.",
+        shortdesc: "Rob a user's wallet.",
+    }
 ]
