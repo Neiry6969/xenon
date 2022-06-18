@@ -123,12 +123,11 @@ module.exports = {
                         const percent = (placesearched_items.itempecrent / 100).toFixed(2)
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         userData.wallet = userData.wallet + coins
-
-                        const hasItem = Object.keys(userData.inventory).includes(item.item);
+                        const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
                         if(!hasItem) {
-                            userData.inventory[item.item] = 1;
+                            inventoryData.inventory[item.item] = 1;
                         } else {
-                            userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                            inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + 1;
                         }
     
                         const embed = {
@@ -193,18 +192,17 @@ module.exports = {
                 userData.bank.expbankspace = userData.bank.expbankspace + Math.floor(Math.random() * 69)
                 userData.experiencepoints = userData.experiencepoints + experiencepoints_amount;
 
-
                 if(placesearched_items.items) {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
                         const percent = (placesearched_items.itempecrent / 100).toFixed(2)
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         userData.wallet = userData.wallet + coins;
 
-                        const hasItem = Object.keys(userData.inventory).includes(item.item);
+                        const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
                         if(!hasItem) {
-                            userData.inventory[item.item] = 1;
+                            inventoryData.inventory[item.item] = 1;
                         } else {
-                            userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                            inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + 1;
                         }
     
                         const embed = {
@@ -272,16 +270,19 @@ module.exports = {
 
 
                 if(placesearched_items.items) {
+                
                     const percent = (placesearched_items.itempecrent / 100).toFixed(2)
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         userData.wallet = userData.wallet + coins;
 
-                        const hasItem = Object.keys(userData.inventory).includes(item.item);
+                        console.log(item)
+
+                        const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
                         if(!hasItem) {
-                            userData.inventory[item.item] = 1;
+                            inventoryData.inventory[item.item] = 1;
                         } else {
-                            userData.inventory[item.item] = userData.inventory[item.item] + 1;
+                            inventoryData.inventory[item.item] = inventoryData.inventory[item.item] + 1;
                         }
     
                         const embed = {
