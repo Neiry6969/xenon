@@ -85,7 +85,7 @@ module.exports = async(Discord, client, message) => {
 
     let guildData;
     try {   
-        guildData = await guildModel.findOne({ serverId: message.guild.id });
+        guildData = await guildModel.findOne({ guildId: message.guild.id });
         if(!guildData) {
             let guild = await guildModel.create({
                 guildId: message.guild.id,
