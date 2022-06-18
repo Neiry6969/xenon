@@ -190,7 +190,7 @@ module.exports = {
                 fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
                 eembed
                     .setColor('RED')
-                    .setDescription(`**You tried to rob \`${target.username}\` <@${target.id}> but failed! You really suck!**\nYou paided them: \`❀ 5,000\``)
+                    .setDescription(`**You tried to rob \`${target.username}\` <@${target.id}> but failed! You really suck!**\nYou paided them: \`❀ 5,000\` 💀📉`)
                 return message.reply({ embeds: [eembed] })
 
             }
