@@ -214,4 +214,12 @@ module.exports = [
         description: 'Craft a craftable item.',
         shortdesc: 'Craft a craftable item.',
     },
+    {
+        command: 'guildconfiguration',
+        aliases: ['serverconfig', 'guildconfig'],
+        cooldown: 5,
+        category: 'guild',
+        description: 'Configure settings for a guild.',
+        shortdesc: 'Configure settings for a guild.',
+    },
 ]

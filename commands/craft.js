@@ -249,8 +249,6 @@ module.exports = {
                 proccessingcoins: true
             }
             fs.writeFile('./interactionproccesses.json', JSON.stringify(interactionproccesses), (err) => {if(err) {console.log(err)}})
-            userData.interactionproccesses.interaction = true
-            userData.interactionproccesses.proccessingcoins = true
             item.craftitems.forEach(async value => {
                 inventoryData.inventory[value.i] = inventoryData.inventory[value.i] - value.q * amount
             })

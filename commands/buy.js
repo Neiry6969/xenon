@@ -28,6 +28,14 @@ module.exports = {
     minArgs: 0,
     maxArgs: 1,
     async execute(message, args, cmd, client, Discord, userData, inventoryData, statsData, profileData) {
+        let cooldown = 5;
+        if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
+            cooldown = premiumcooldowncalc(cooldown)
+        }
+        const cooldown_amount = (cooldown) * 1000;
+        const timpstamp = Date.now() + cooldown_amount
+        jsoncooldowns[message.author.id].buy = timpstamp
+        fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
         const params = {
             userId: message.author.id
         }
@@ -277,14 +285,7 @@ module.exports = {
                 }
             });
 
-            let cooldown = 5;
-            if(message.guild.id === '852261411136733195' || message.guild.id === '978479705906892830' || userData.premium.rank >= 1) {
-                cooldown = premiumcooldowncalc(cooldown)
-            }
-            const cooldown_amount = (cooldown) * 1000;
-            const timpstamp = Date.now() + cooldown_amount
-            jsoncooldowns[message.author.id].buy = timpstamp
-            fs.writeFile('./cooldowns.json', JSON.stringify(jsoncooldowns), (err) => {if(err) {console.log(err)}})
+            
         } else {
              const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
             if(!hasItem) {
