@@ -47,7 +47,7 @@ module.exports = {
         } if(amount === 'max' || amount === 'all') {
             amount = bankcoins;
         } else if(amount === 'half') {
-            amount = Math.floor(walletcoins / 2)
+            amount = Math.floor(bankcoins / 2)
         } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
             if(parseInt(amount.slice(0, -1))) {
                 const number = parseFloat(amount.slice(0, -1));
