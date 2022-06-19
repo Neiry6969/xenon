@@ -108,8 +108,7 @@ module.exports = {
         }   
 
         sellamount = parseInt(sellamount)
-
-        if(!inventoryData[item.item] || inventoryData[item.item] <= 0) {
+        if(!inventoryData.inventory[item.item] || inventoryData.inventory[item.item] <= 0) {
             return message.reply("You don't any of this item to sell.");
         }
 
