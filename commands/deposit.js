@@ -59,6 +59,9 @@ module.exports = {
             } 
         } else if(amount === 'half') {
             amount = Math.floor(walletcoins / 2)
+            if(amount > availableBankspace) {
+                amount = availableBankspace
+            } 
         } else if(letternumbers.find((val) => val.letter === amount.slice(-1))) {
             if(parseInt(amount.slice(0, -1))) {
                 const number = parseFloat(amount.slice(0, -1));
