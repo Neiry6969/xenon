@@ -100,6 +100,10 @@ const userSchema = new mongoose.Schema(
                 },
             }
         },
+        activeitems: {
+            type: Object,
+            default: {},
+        }
     },
     { minimize: false }
 )

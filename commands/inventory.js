@@ -61,8 +61,8 @@ module.exports = {
                         if(data.inventory[key] === 0) {
                             return;
                         } else {
-                            const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === key).icon;
-                            return `${itemIcon} ${key} ── \`${data.inventory[key].toLocaleString()}\``;
+                            const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+                            return `${item.icon} \`${key}\` ── \`${data.inventory[key].toLocaleString()}\``;
                         }
                     }
                     )
@@ -411,8 +411,8 @@ module.exports = {
                     if(inventoryData.inventory[key] === 0) {
                         return;
                     } else {
-                        const itemIcon = allItems.find((val) => (val.item.toLowerCase()) === key).icon;
-                        return `${itemIcon} ${key} ── \`${inventoryData.inventory[key].toLocaleString()}\``;
+                        const item = allItems.find((val) => (val.item.toLowerCase()) === key);
+                        return `${item.icon} \`${key}\` ── \`${inventoryData.inventory[key].toLocaleString()}\``;
                     }
                 }
                 )

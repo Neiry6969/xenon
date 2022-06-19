@@ -121,7 +121,7 @@ module.exports = {
                 embed = {
                     color: '#AF97FE',
                     title: `Xenon Shop`,
-                    description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                    description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                     footer: {
                         text: `Page: ${page} | ${lastpage} | xe shop [item]`
                     }
@@ -163,7 +163,7 @@ module.exports = {
                 embed = {
                     color: '#AF97FE',
                     title: `Xenon Shop`,
-                    description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                    description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                     thumbnail: {
                         url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                     },
@@ -200,7 +200,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },
@@ -219,7 +219,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },
@@ -244,7 +244,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },
@@ -263,7 +263,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },
@@ -288,7 +288,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },
@@ -307,7 +307,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },
@@ -332,7 +332,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },
@@ -351,7 +351,7 @@ module.exports = {
                             embed = {
                                 color: '#AF97FE',
                                 title: `Xenon Shop`,
-                                description: `\`xe buy [item]\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
+                                description: `\`xe buy [item]\`\n\`xe shop rarity\`\n\n${shopList.slice(display_start, display_end).join("\n\n")}`,
                                 thumbnail: {
                                     url: 'https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif',
                                 },

@@ -180,7 +180,7 @@ module.exports = {
                         .setDisabled()
                     search_msg.edit({ embeds: [embed], components: [row] })
                 }
-
+                await inventoryModel.findOneAndUpdate(params, inventoryData);
                 await economyModel.findOneAndUpdate(params, userData);
             
             } else if(button.customId === displayedplaces[1].place) {
@@ -257,6 +257,8 @@ module.exports = {
                         .setDisabled()
                     search_msg.edit({ embeds: [embed], components: [row] })
                 }
+                await inventoryModel.findOneAndUpdate(params, inventoryData);
+
                 await economyModel.findOneAndUpdate(params, userData);
 
             } else if(button.customId === displayedplaces[2].place) {
@@ -275,8 +277,6 @@ module.exports = {
                     if(itemtruefalse(placesearched_items.itempecrent) === true) {
                         const item = allItems.find((val) => (val.item.toLowerCase()) === placesearched_items.items);
                         userData.wallet = userData.wallet + coins;
-
-                        console.log(item)
 
                         const hasItem = Object.keys(inventoryData.inventory).includes(item.item);
                         if(!hasItem) {
@@ -335,6 +335,8 @@ module.exports = {
                         .setDisabled()
                     search_msg.edit({ embeds: [embed], components: [row] })
                 }
+                await inventoryModel.findOneAndUpdate(params, inventoryData);
+
                 await economyModel.findOneAndUpdate(params, userData);
             }
         })
