@@ -1782,7 +1782,6 @@ module.exports = [
     {
         item: "lifesaver",
         name: "Life Saver",
-        aliases: [],
         icon: "<:lifesaver:978754575098085426>",
         price: 40000,
         sell: 20000,
@@ -1792,5 +1791,19 @@ module.exports = [
         description: "Holly life saver that saves you when you die. Automatically used from you inventory when you die.",
         rarity: "common",
         type: "support" 
+    },
+    {
+        item: "robbersnotes",
+        name: "Robber's Notes",
+        icon: "<:robbersnotes:988095453826547724>",
+        price: 75000,
+        sell: 35000,
+        trade: 'unset',
+        value: 75000,
+        imageUrl: "https://media.discordapp.net/attachments/965028200390475858/988096227444932668/8-82431_pixel-paper-annoying-dog-gif-transparent-clipart-removebg-preview.png?width=457&height=427",
+        description: "A wishlist made a professional robber. Using this reveals all the wallets that can be robbed.",
+        rarity: "common",
+        type: "support" 
     }
+
 ]

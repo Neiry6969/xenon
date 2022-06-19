@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js')
+const { MessageActionRow, MessageButton, MessageEmbed, Collection } = require('discord.js')
 
 const economyModel = require("../models/economySchema");
 const inventoryModel = require("../models/inventorySchema");
@@ -16,6 +16,18 @@ function premiumcooldowncalc(defaultcooldown) {
         return defaultcooldown - 10
     } else {
         return defaultcooldown
+    }
+}
+
+function rankingicons(rank) {
+    if(rank === 1) {
+        return '<:goldencrown:974761077269233664>'
+    } else if(rank === 2) {
+        return '<:silvercrown:974760964702490634>'
+    } else if(rank === 3) {
+        return '<:bronzecrown:974755534345490443>'
+    } else {
+        return '<a:fineribbon:968642962831589427>'
     }
 }
 
@@ -141,6 +153,7 @@ module.exports = {
                     'chestofangelic',
                     'chestofjade',
                     'chestofwooden',
+                    'robbersnotes',
                 ]
                 
                 if(item.item === 'premiumcard') {
@@ -203,6 +216,56 @@ module.exports = {
                             };
 
                             return message.reply({ embeds: [embed] });
+                    } else if(item.item === 'robbersnotes') {
+                        const collection = new Collection();
+                        const embed = new MessageEmbed()
+                            .setColor('RANDOM')
+                            .setTitle(`${message.guild.name} Robbable Users`)
+                            .setDescription(`**Loading**, fetching cached users. This might take a while... <a:loading:987196796549861376>`)
+                            .setTimestamp()
+            
+                    
+                        const robbable_msg = await message.channel.send({ embeds: [embed]});
+
+                        await Promise.all(
+                            message.guild.members.cache.map(async(member) => {
+                                const id = member.id;
+                                let economyData;
+                                
+                                try {   
+                                    economyData = await economyModel.findOne({ userId: id });
+                                    if(!economyData) {
+                                        economyData = null;
+                                    }
+                                } catch (error) {
+                                    console.log(error)
+                                }
+                
+                                let netbalance = economyData?.wallet
+                                if(netbalance === NaN) {
+                                    netbalance = null
+                                }
+                
+                                return netbalance > 10000 && id !== '847528987831304192' && economyData ? collection.set(id, {
+                                    id,
+                                    netbalance
+                                })
+                                : null
+                            })
+                        )
+                           
+                        let data = collection.sort((a, b) => b.netbalance - a.netbalance).first(10)
+                
+                        let rleaderboard = data.map((v, i) => {
+                            return `${rankingicons(i + 1)} \`❀ ${v.netbalance?.toLocaleString()}\` ${client.users.cache.get(v.id).tag}`
+                        }).join('\n')
+
+                        inventoryData.inventory[item.item] = inventoryData.inventory[item.item] - 1;
+                        await inventoryModel.findOneAndUpdate(params, inventoryData);
+
+                        embed
+                            .setDescription(`${rleaderboard}`)
+                        return robbable_msg.edit({ embeds: [embed] });
                     } else if(item.item === 'donut' || item.item === 'kfcchicken' || item.item === 'bread' || item.item === 'tomato') {
                         inventoryData.inventory[item.item] = inventoryData.inventory[item.item] - 1;
 
