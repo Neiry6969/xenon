@@ -1,4 +1,4 @@
-const { mongodb_srv, discord_token } = require("../config.json");
+const { mongodb_srv, discord_token } = require("./config.json");
 const colors = require("colors");
 
 const {
