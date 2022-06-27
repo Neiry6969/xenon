@@ -30,12 +30,12 @@ const client = new Client({
 client.commands = new Collection();
 
 const functions = fs
-    .readdirSync("./src/functions")
+    .readdirSync("./functions")
     .filter((file) => file.endsWith(".js"));
 const eventFiles = fs
-    .readdirSync("./src/events")
+    .readdirSync("./events")
     .filter((file) => file.endsWith(".js"));
-const commandFolders = fs.readdirSync("./src/commands");
+const commandFolders = fs.readdirSync("./commands");
 
 process.on("uncaughtException", (err) => {
     console.log(err);
@@ -50,7 +50,7 @@ process.on("unhandledRejection", (err) => {
         require(`./functions/${file}`)(client);
     }
 
-    client.handleEvents(eventFiles, "./src/events");
-    client.handleCommands(commandFolders, "./src/commands");
+    client.handleEvents(eventFiles, "./events");
+    client.handleCommands(commandFolders, "./commands");
     client.login(discord_token);
 })();
