@@ -152,43 +152,38 @@ module.exports = {
             console.log(error);
         }
 
-        // if (!interactionproccesses[userID]?.interaction) {
-        //     interactionproccesses[userID] = {
-        //         interaction: false,
-        //         proccessingcoins: false,
-        //     };
-        // }
+        if (!interactionproccesses[userID]?.interaction) {
+            interactionproccesses[userID] = {
+                interaction: false,
+                proccessingcoins: false,
+            };
+        }
 
-        // if (
-        //     interactionproccesses[userID].interaction === true ||
-        //     interactionproccesses[userID].proccessingcoins === true
-        // )
-        //     return;
+        if (
+            interactionproccesses[userID].interaction === true ||
+            interactionproccesses[userID].proccessingcoins === true
+        )
+            return;
 
-        // if (
-        //     profileData.moderation.blacklist.status === true ||
-        //     profileData.moderation.ban.status === true ||
-        //     userData.interactionproccesses.interaction === true
-        // ) {
-        //     return;
-        // }
+        if (
+            profileData.moderation.blacklist.status === true ||
+            profileData.moderation.ban.status === true ||
+            userData.interactionproccesses.interaction === true
+        ) {
+            return;
+        }
 
-        // if (guildData.disabledcmds[commandname] === true) {
-        //     const disabledcmdembed = new MessageEmbed()
-        //         .setColor("RED")
-        //         .setDescription(
-        //             `<a:cross:987458395823018044> **This command has been disabled in** \`${interaction.guild.name}\`\nGuild ID: \`${interaction.guild.id}\`\nCommand: \`${commandname}\``
-        //         );
-        //     const disabledcmd_msg = await interaction.reply({
-        //         embeds: [disabledcmdembed],
-        //     });
-
-        //     setTimeout(() => {
-        //         disabledcmd_msg.delete();
-        //     }, 4000);
-
-        //     return;
-        // }
+        if (guildData.disabledcmds[commandname] === true) {
+            const disabledcmdembed = new MessageEmbed()
+                .setColor("RED")
+                .setDescription(
+                    `<a:cross:987458395823018044> **This command has been disabled in** \`${interaction.guild.name}\`\nGuild ID: \`${interaction.guild.id}\`\nCommand: \`${commandname}\``
+                );
+            return interaction.reply({
+                embeds: [disabledcmdembed],
+                ephemeral: true,
+            });
+        }
 
         async function backgroundupdates() {
             const params = {
@@ -220,6 +215,7 @@ module.exports = {
 
         async function executecmd() {
             try {
+                backgroundupdates();
                 if (!jsoncoodowns.hasOwnProperty(userID)) {
                     jsoncoodowns[userID] = {};
                 }

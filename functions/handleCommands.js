@@ -27,21 +27,40 @@ module.exports = (client) => {
         const rest = new REST({ version: "9" }).setToken(discord_token);
 
         (async () => {
-            try {
-                console.log(
-                    "Started refreshing application (/) commands.".blue
-                );
+            const mode = "global";
+            if (mode === "global") {
+                try {
+                    console.log(
+                        "Started refreshing application (/) commands.".blue
+                    );
 
-                await rest.put(
-                    Routes.applicationGuildCommands(clientId, guildId),
-                    { body: client.commandArray }
-                );
+                    await rest.put(Routes.applicationCommands(clientId), {
+                        body: client.commandArray,
+                    });
 
-                console.log(
-                    "Successfully reloaded application (/) commands.".blue
-                );
-            } catch (error) {
-                console.error(error);
+                    console.log(
+                        "Successfully reloaded application (/) commands.".blue
+                    );
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                try {
+                    console.log(
+                        "Started refreshing application (/) commands.".yellow
+                    );
+
+                    await rest.put(
+                        Routes.applicationGuildCommands(clientId, guildId),
+                        { body: client.commandArray }
+                    );
+
+                    console.log(
+                        "Successfully reloaded application (/) commands.".yellow
+                    );
+                } catch (error) {
+                    console.error(error);
+                }
             }
         })();
     };
