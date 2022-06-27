@@ -31,7 +31,8 @@ module.exports = (client) => {
             if (mode === "global") {
                 try {
                     console.log(
-                        "Started refreshing application (/) commands.".blue
+                        "Started refreshing application (/) commands. [global]"
+                            .blue
                     );
 
                     await rest.put(Routes.applicationCommands(clientId), {
@@ -39,7 +40,8 @@ module.exports = (client) => {
                     });
 
                     console.log(
-                        "Successfully reloaded application (/) commands.".blue
+                        "Successfully reloaded application (/) commands. [global]"
+                            .blue
                     );
                 } catch (error) {
                     console.error(error);
@@ -47,7 +49,8 @@ module.exports = (client) => {
             } else {
                 try {
                     console.log(
-                        "Started refreshing application (/) commands.".yellow
+                        "Started refreshing application (/) commands. [development]"
+                            .yellow
                     );
 
                     await rest.put(
@@ -56,7 +59,8 @@ module.exports = (client) => {
                     );
 
                     console.log(
-                        "Successfully reloaded application (/) commands.".yellow
+                        "Successfully reloaded application (/) commands. [development]"
+                            .yellow
                     );
                 } catch (error) {
                     console.error(error);
