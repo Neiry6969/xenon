@@ -2,7 +2,6 @@ const { MessageActionRow, MessageButton } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const inventoryModel = require("../../models/inventorySchema");
-const allItems = require("../../data/all_items");
 
 const jsoncooldowns = require("../../cooldowns.json");
 const fs = require("fs");
@@ -34,8 +33,11 @@ module.exports = {
         userData,
         inventoryData,
         statsData,
-        profileData
+        profileData,
+        itemData
     ) {
+        const allItems = itemData;
+
         const options = {
             user: interaction.options.getUser("user"),
         };
@@ -111,6 +113,11 @@ module.exports = {
                     let display_end = page * itemsperpage;
 
                     if (lastpage === 1) {
+                        let pagebutton = new MessageButton()
+                            .setCustomId("page")
+                            .setLabel(`${page}/${lastpage}`)
+                            .setStyle("SECONDARY")
+                            .setDisabled();
                         let leftfarbutton = new MessageButton()
                             .setCustomId("leftfar")
                             .setLabel("<<")
@@ -138,6 +145,7 @@ module.exports = {
                         let row = new MessageActionRow().addComponents(
                             leftfarbutton,
                             leftbutton,
+                            pagebutton,
                             rightbutton,
                             rightfarbutton
                         );
@@ -154,7 +162,7 @@ module.exports = {
                                 .join("\n")}`,
 
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/inventory`,
                             },
                         };
 
@@ -163,6 +171,11 @@ module.exports = {
                             components: [row],
                         });
                     } else {
+                        let pagebutton = new MessageButton()
+                            .setCustomId("page")
+                            .setLabel(`${page}/${lastpage}`)
+                            .setStyle("SECONDARY")
+                            .setDisabled();
                         let leftfarbutton = new MessageButton()
                             .setCustomId("leftfar")
                             .setLabel("<<")
@@ -188,6 +201,7 @@ module.exports = {
                         let row = new MessageActionRow().addComponents(
                             leftfarbutton,
                             leftbutton,
+                            pagebutton,
                             rightbutton,
                             rightfarbutton
                         );
@@ -204,7 +218,7 @@ module.exports = {
                                 .join("\n")}`,
 
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/inventory`,
                             },
                         };
 
@@ -233,6 +247,7 @@ module.exports = {
                                 page = page + 1;
                                 display_start = (page - 1) * itemsperpage;
                                 display_end = page * itemsperpage;
+                                pagebutton.setLabel(`${page}/${lastpage}`);
 
                                 if (page === lastpage) {
                                     leftbutton.setDisabled(false);
@@ -252,7 +267,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -278,7 +293,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -291,6 +306,7 @@ module.exports = {
                                 page = lastpage;
                                 display_start = (page - 1) * itemsperpage;
                                 display_end = page * itemsperpage;
+                                pagebutton.setLabel(`${page}/${lastpage}`);
 
                                 if (page === lastpage) {
                                     leftbutton.setDisabled(false);
@@ -310,7 +326,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -336,7 +352,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -349,6 +365,7 @@ module.exports = {
                                 page = page - 1;
                                 display_start = (page - 1) * itemsperpage;
                                 display_end = page * itemsperpage;
+                                pagebutton.setLabel(`${page}/${lastpage}`);
 
                                 if (page === 1) {
                                     leftbutton.setDisabled();
@@ -368,7 +385,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -393,7 +410,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -406,6 +423,7 @@ module.exports = {
                                 page = 1;
                                 display_start = (page - 1) * itemsperpage;
                                 display_end = page * itemsperpage;
+                                pagebutton.setLabel(`${page}/${lastpage}`);
 
                                 if (page === 1) {
                                     leftbutton.setDisabled();
@@ -425,7 +443,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -450,7 +468,7 @@ module.exports = {
                                             .join("\n")}`,
 
                                         footer: {
-                                            text: `Page: ${page} | ${lastpage}`,
+                                            text: `/inventory`,
                                         },
                                     };
 
@@ -520,6 +538,11 @@ module.exports = {
                 let display_end = page * itemsperpage;
 
                 if (lastpage === 1) {
+                    let pagebutton = new MessageButton()
+                        .setCustomId("page")
+                        .setLabel(`${page}/${lastpage}`)
+                        .setStyle("SECONDARY")
+                        .setDisabled();
                     let leftfarbutton = new MessageButton()
                         .setCustomId("leftfar")
                         .setLabel("<<")
@@ -547,6 +570,7 @@ module.exports = {
                     let row = new MessageActionRow().addComponents(
                         leftfarbutton,
                         leftbutton,
+                        pagebutton,
                         rightbutton,
                         rightfarbutton
                     );
@@ -563,7 +587,7 @@ module.exports = {
                             .join("\n")}`,
 
                         footer: {
-                            text: `Page: ${page} | ${lastpage}`,
+                            text: `/inventory`,
                         },
                     };
 
@@ -572,6 +596,11 @@ module.exports = {
                         components: [row],
                     });
                 } else {
+                    let pagebutton = new MessageButton()
+                        .setCustomId("page")
+                        .setLabel(`${page}/${lastpage}`)
+                        .setStyle("SECONDARY")
+                        .setDisabled();
                     let leftfarbutton = new MessageButton()
                         .setCustomId("leftfar")
                         .setLabel("<<")
@@ -597,6 +626,7 @@ module.exports = {
                     let row = new MessageActionRow().addComponents(
                         leftfarbutton,
                         leftbutton,
+                        pagebutton,
                         rightbutton,
                         rightfarbutton
                     );
@@ -613,7 +643,7 @@ module.exports = {
                             .join("\n")}`,
 
                         footer: {
-                            text: `Page: ${page} | ${lastpage}`,
+                            text: `/inventory`,
                         },
                     };
 
@@ -642,6 +672,7 @@ module.exports = {
                             page = page + 1;
                             display_start = (page - 1) * itemsperpage;
                             display_end = page * itemsperpage;
+                            pagebutton.setLabel(`${page}/${lastpage}`);
 
                             if (page === lastpage) {
                                 leftbutton.setDisabled(false);
@@ -661,7 +692,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 
@@ -687,7 +718,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 
@@ -700,6 +731,7 @@ module.exports = {
                             page = lastpage;
                             display_start = (page - 1) * itemsperpage;
                             display_end = page * itemsperpage;
+                            pagebutton.setLabel(`${page}/${lastpage}`);
 
                             if (page === lastpage) {
                                 leftbutton.setDisabled(false);
@@ -719,7 +751,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 
@@ -745,7 +777,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 
@@ -758,6 +790,7 @@ module.exports = {
                             page = page - 1;
                             display_start = (page - 1) * itemsperpage;
                             display_end = page * itemsperpage;
+                            pagebutton.setLabel(`${page}/${lastpage}`);
 
                             if (page === 1) {
                                 rightbutton.setDisabled(false);
@@ -777,7 +810,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 
@@ -803,7 +836,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 
@@ -816,6 +849,7 @@ module.exports = {
                             page = 1;
                             display_start = (page - 1) * itemsperpage;
                             display_end = page * itemsperpage;
+                            pagebutton.setLabel(`${page}/${lastpage}`);
 
                             if (page === 1) {
                                 rightbutton.setDisabled(false);
@@ -835,7 +869,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 
@@ -861,7 +895,7 @@ module.exports = {
                                         .join("\n")}`,
 
                                     footer: {
-                                        text: `Page: ${page} | ${lastpage}`,
+                                        text: `/inventory`,
                                     },
                                 };
 

@@ -1,7 +1,7 @@
 const economyModel = require("../../models/economySchema");
 const inventoryModel = require("../../models/inventorySchema");
 const beg_data = require("../../data/beg_data");
-const allItems = require("../../data/all_items");
+
 const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
@@ -41,8 +41,10 @@ module.exports = {
         userData,
         inventoryData,
         statsData,
-        profileData
+        profileData,
+        itemData
     ) {
+        const allItems = itemData;
         const searchidexrandom = Math.floor(Math.random() * beg_data.length);
         const beginteraction = beg_data[searchidexrandom];
         const resultsuccess = randomizer(beginteraction.successrate);

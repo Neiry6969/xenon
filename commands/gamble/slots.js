@@ -153,7 +153,7 @@ module.exports = {
         if (inventoryData.inventory["finecrown"] >= 1) {
             maxwallet = 500000000;
         }
-        let slotsamount = options.amount;
+        let slotsamount = options.amount?.toLowerCase();
         const maxslotsamount = 500000;
 
         if (userData.wallet >= maxwallet) {

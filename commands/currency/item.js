@@ -1,8 +1,6 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const allItems = require("../../data/all_items");
-
 const jsoncooldowns = require("../../cooldowns.json");
 const fs = require("fs");
 function premiumcooldowncalc(defaultcooldown) {
@@ -29,7 +27,16 @@ module.exports = {
         }),
     cdmsg: `You can't be checking items so fast, slow it buddy!`,
     cooldown: 5,
-    async execute(interaction, client, userData, inventoryData) {
+    async execute(
+        interaction,
+        client,
+        userData,
+        inventoryData,
+        statsData,
+        profileData,
+        itemData
+    ) {
+        const allItems = itemData;
         const options = {
             item: interaction.options.getString("item"),
         };
@@ -57,7 +64,7 @@ module.exports = {
 
         const errorembed = new MessageEmbed().setColor("#FF5C5C");
 
-        const getItem = options.item;
+        const getItem = options.item?.toLowerCase();
 
         if (getItem.length < 3) {
             errorembed.setDescription(

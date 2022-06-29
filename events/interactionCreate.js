@@ -3,6 +3,7 @@ const inventoryModel = require("../models/inventorySchema");
 const userModel = require("../models/userSchema");
 const statsModel = require("../models/statsSchema");
 const guildModel = require("../models/guildSchema");
+const itemModel = require("../models/itemSchema");
 
 const { Collection, MessageEmbed } = require("discord.js");
 const fs = require("fs");
@@ -62,6 +63,8 @@ function time_split(time) {
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
+        const errorembed = new MessageEmbed().setColor("#FF5C5C");
+
         if (!interaction.isCommand()) return;
 
         const commandname = interaction.commandName;
@@ -152,6 +155,8 @@ module.exports = {
             console.log(error);
         }
 
+        const itemData = await itemModel.find({});
+
         if (!interactionproccesses[userID]?.interaction) {
             interactionproccesses[userID] = {
                 interaction: false,
@@ -162,15 +167,20 @@ module.exports = {
         if (
             interactionproccesses[userID].interaction === true ||
             interactionproccesses[userID].proccessingcoins === true
-        )
-            return;
-
+        ) {
+            errorembed.setDescription(`You have an ongoing command.`);
+            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        }
         if (
             profileData.moderation.blacklist.status === true ||
             profileData.moderation.ban.status === true ||
             userData.interactionproccesses.interaction === true
         ) {
-            return;
+            errorembed.setDescription(
+                `You are a blacklisted user, you cannot use commands untill you are unblacklisted.\nIf you believe this is a mistake please go here: [https://discord.gg/B5vjnwakdk](https://discord.gg/B5vjnwakdk)`
+            );
+
+            return interaction.reply({ embeds: [errorembed], ephemeral: true });
         }
 
         if (guildData.disabledcmds[commandname] === true) {
@@ -314,7 +324,8 @@ module.exports = {
                             userData,
                             inventoryData,
                             statsData,
-                            profileData
+                            profileData,
+                            itemData
                         );
                     } catch (error) {
                         console.error(error);

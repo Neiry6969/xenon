@@ -1,8 +1,6 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const allItems = require("../../data/all_items");
-
 const jsoncooldowns = require("../../cooldowns.json");
 const fs = require("fs");
 function premiumcooldowncalc(defaultcooldown) {
@@ -22,7 +20,16 @@ module.exports = {
         .setName("shop")
         .setDescription("See what items are being sold in the xenon shop."),
     cooldown: 5,
-    async execute(interaction, client, userData, inventoryData) {
+    async execute(
+        interaction,
+        client,
+        userData,
+        inventoryData,
+        statsData,
+        profileData,
+        itemData
+    ) {
+        const allItems = itemData;
         let cooldown = 5;
         if (
             interaction.guild.id === "852261411136733195" ||
@@ -90,6 +97,11 @@ module.exports = {
         let display_end = page * itemsperpage;
 
         if (lastpage === 1) {
+            let pagebutton = new MessageButton()
+                .setCustomId("page")
+                .setLabel(`${page}/${lastpage}`)
+                .setStyle("SECONDARY")
+                .setDisabled();
             let leftfarbutton = new MessageButton()
                 .setCustomId("leftfar")
                 .setLabel("<<")
@@ -105,18 +117,17 @@ module.exports = {
             let rightfarbutton = new MessageButton()
                 .setCustomId("rightfar")
                 .setLabel(">>")
-                .setStyle("PRIMARY")
-                .setDisabled();
+                .setStyle("PRIMARY");
 
             let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("PRIMARY")
-                .setDisabled();
+                .setStyle("PRIMARY");
 
             let row = new MessageActionRow().addComponents(
                 leftfarbutton,
                 leftbutton,
+                pagebutton,
                 rightbutton,
                 rightfarbutton
             );
@@ -128,12 +139,17 @@ module.exports = {
                     .slice(display_start, display_end)
                     .join("\n\n")}`,
                 footer: {
-                    text: `Page: ${page} | ${lastpage}`,
+                    text: `/shop`,
                 },
             };
 
             return interaction.reply({ embeds: [embed], components: [row] });
         } else {
+            let pagebutton = new MessageButton()
+                .setCustomId("page")
+                .setLabel(`${page}/${lastpage}`)
+                .setStyle("SECONDARY")
+                .setDisabled();
             let leftfarbutton = new MessageButton()
                 .setCustomId("leftfar")
                 .setLabel("<<")
@@ -159,6 +175,7 @@ module.exports = {
             let row = new MessageActionRow().addComponents(
                 leftfarbutton,
                 leftbutton,
+                pagebutton,
                 rightbutton,
                 rightfarbutton
             );
@@ -173,7 +190,7 @@ module.exports = {
                     url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                 },
                 footer: {
-                    text: `Page: ${page} | ${lastpage}`,
+                    text: `/shop`,
                 },
             };
 
@@ -202,6 +219,7 @@ module.exports = {
                     page = page + 1;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
+                    pagebutton.setLabel(`${page}/${lastpage}`);
 
                     if (page === lastpage) {
                         leftbutton.setDisabled(false);
@@ -219,7 +237,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 
@@ -243,7 +261,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 
@@ -256,6 +274,7 @@ module.exports = {
                     page = lastpage;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
+                    pagebutton.setLabel(`${page}/${lastpage}`);
 
                     if (page === lastpage) {
                         leftbutton.setDisabled(false);
@@ -273,7 +292,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 
@@ -297,7 +316,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 
@@ -310,6 +329,7 @@ module.exports = {
                     page = page - 1;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
+                    pagebutton.setLabel(`${page}/${lastpage}`);
 
                     if (page === 1) {
                         rightbutton.setDisabled(false);
@@ -327,7 +347,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 
@@ -351,7 +371,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 
@@ -364,6 +384,7 @@ module.exports = {
                     page = 1;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
+                    pagebutton.setLabel(`${page}/${lastpage}`);
 
                     if (page === 1) {
                         rightbutton.setDisabled(false);
@@ -381,7 +402,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 
@@ -405,7 +426,7 @@ module.exports = {
                                 url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
                             },
                             footer: {
-                                text: `Page: ${page} | ${lastpage}`,
+                                text: `/shop`,
                             },
                         };
 

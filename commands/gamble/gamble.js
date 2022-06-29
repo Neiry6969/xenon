@@ -80,7 +80,7 @@ module.exports = {
         if (inventoryData.inventory["finecrown"] >= 1) {
             maxwallet = 500000000;
         }
-        let betamount = options.amount;
+        let betamount = options.amount?.toLowerCase();
         const maxbetamount = 500000;
 
         if (userData.wallet >= maxwallet) {

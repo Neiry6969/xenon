@@ -6,8 +6,6 @@ const inventoryModel = require("../../models/inventorySchema");
 const statsModel = require("../../models/statsSchema");
 const userModel = require("../../models/userSchema");
 
-const allItems = require("../../data/all_items");
-
 const jsoncooldowns = require("../../cooldowns.json");
 const fs = require("fs");
 function premiumcooldowncalc(defaultcooldown) {
@@ -131,8 +129,10 @@ module.exports = {
         userData,
         inventoryData,
         statsData,
-        profileData
+        profileData,
+        itemData
     ) {
+        const allItems = itemData;
         const options = {
             user: interaction.options.getUser("user"),
         };

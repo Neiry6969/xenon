@@ -18,7 +18,7 @@ function premiumcooldowncalc(defaultcooldown) {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("invite")
-        .setDescription("Check the bot's latency status."),
+        .setDescription("Invite the bot to your server."),
 
     cooldown: 5,
     async execute(interaction, client, userData) {

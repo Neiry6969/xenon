@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const economyModel = require("../../models/economySchema");
 const inventoryModel = require("../../models/inventorySchema");
-const allItems = require("../../data/all_items");
+
 const searchplaces = require("../../data/search_places");
 
 const jsoncooldowns = require("../../cooldowns.json");
@@ -55,8 +55,10 @@ module.exports = {
         userData,
         inventoryData,
         statsData,
-        profileData
+        profileData,
+        itemData
     ) {
+        const allItems = itemData;
         let cooldown = 30;
         if (
             interaction.guild.id === "852261411136733195" ||

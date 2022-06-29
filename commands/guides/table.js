@@ -1,7 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const allItems = require("../../data/all_items");
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("table")
@@ -22,20 +20,22 @@ module.exports = {
                     { name: "item rarity", value: "item rarity" }
                 )
         ),
-    cooldown: 3,
+    cooldown: 0,
     async execute(
         interaction,
         client,
         userData,
         inventoryData,
         statsData,
-        profileData
+        profileData,
+        itemData
     ) {
+        const allItems = itemData;
         const options = {
             guide: interaction.options.getString("guide"),
         };
 
-        const option = options.guide;
+        const option = options.guide?.toLowerCase();
 
         if (option === "dig") {
             const shovel = allItems.find(
