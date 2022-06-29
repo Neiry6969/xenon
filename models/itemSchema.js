@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
     item: {
@@ -13,6 +13,8 @@ const itemSchema = new mongoose.Schema({
     icon: {
         type: String,
     },
+    value: {},
+
     price: {},
     sell: {},
     trade: {},
@@ -29,17 +31,16 @@ const itemSchema = new mongoose.Schema({
         type: String,
     },
     lootbox: {
-        type: Array
+        type: Array,
     },
     crafttools: {
-        type: Array
+        type: Array,
     },
     craftitems: {
-        type: Array
+        type: Array,
     },
-})
+});
 
-
-const model = mongoose.model('ItemModels', itemSchema);
+const model = mongoose.model("ItemModels", itemSchema);
 
 module.exports = model;
