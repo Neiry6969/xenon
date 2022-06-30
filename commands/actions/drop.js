@@ -631,6 +631,8 @@ module.exports = {
                         dropinfo.usersbuyobject[interaction.user.id] + buycount;
                 }
 
+                dropinfo.amountbought = dropinfo.amountbought + buycount;
+
                 await economyModel.findOneAndUpdate(params, userData);
                 await inventoryModel.findOneAndUpdate(params, inventoryData);
                 await dropModel.findOneAndUpdate(
