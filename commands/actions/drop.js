@@ -206,11 +206,16 @@ module.exports = {
 
         buydropbutton.setEmoji(dropitem.icon);
 
-        if (userbought === dropinfo.maxperuser || amountleft === 0) {
+        if (userbought === dropinfo.maxperuser) {
           buydropbutton.setDisabled(true);
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
-        }
+        } else if (amountleft === 0) {
+          dropinfo_map = dropinfo_map + `\n\`Too sad, the stocks ran out!\``
+          buydropbutton.setDisabled(true);
+          addbutton.setDisabled(true);
+          minusbutton.setDisabled(true);
+        } 
 
         if (buycount <= 1) {
           buycount = 1;
