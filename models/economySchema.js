@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const economySchema = new mongoose.Schema(
     {
@@ -9,7 +9,7 @@ const economySchema = new mongoose.Schema(
         },
         wallet: {
             type: Number,
-            default: 0
+            default: 0,
         },
         bank: {
             type: Object,
@@ -18,28 +18,28 @@ const economySchema = new mongoose.Schema(
                 bankspace: 1000,
                 expbankspace: 0,
                 otherbankspace: 0,
-            }
+            },
         },
         experiencepoints: {
             type: Number,
-            default: 0
+            default: 0,
         },
         level: {
             type: Number,
-            default: 0
+            default: 0,
         },
         prestige: {
             type: Number,
-            default: 0
-        }, 
+            default: 0,
+        },
         streaks: {
             type: Object,
             default: {
                 daily: {
                     lastclaimed: null,
-                    strk: 0
-                }
-            }
+                    strk: 0,
+                },
+            },
         },
         deaths: {
             type: Number,
@@ -50,14 +50,14 @@ const economySchema = new mongoose.Schema(
             default: {
                 expiredate: {
                     type: Date,
-                    default: null
+                    default: null,
                 },
                 activatedate: {
                     type: Date,
-                    default: null
+                    default: null,
                 },
                 rank: 0,
-            }
+            },
         },
         badges: {
             type: Object,
@@ -69,31 +69,30 @@ const economySchema = new mongoose.Schema(
                 currenttitle: "Newbie",
                 titles: {
                     type: Array,
-                    default: ["Newbie"]
-                }
-            }
+                    default: ["Newbie"],
+                },
+            },
         },
         interactionproccesses: {
-            type: Object, 
+            type: Object,
             default: {
                 interaction: false,
-                proccessingcoins: false
+                proccessingcoins: false,
             },
         },
         cooldowns: {
             type: Object,
             default: {},
         },
-        createdAt: { 
+        createdAt: {
             required: true,
-            type: Date, 
-            default: Date.now 
-        }, 
+            type: Date,
+            default: Date.now,
+        },
     },
     { minimize: false }
-)
+);
 
-
-const model = mongoose.model('EconomyModels', economySchema);
+const model = mongoose.model("EconomyModels", economySchema);
 
 module.exports = model;

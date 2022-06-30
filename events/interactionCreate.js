@@ -173,8 +173,7 @@ module.exports = {
         }
         if (
             profileData.moderation.blacklist.status === true ||
-            profileData.moderation.ban.status === true ||
-            userData.interactionproccesses.interaction === true
+            profileData.moderation.ban.status === true
         ) {
             errorembed.setDescription(
                 `You are a blacklisted user, you cannot use commands untill you are unblacklisted.\nIf you believe this is a mistake please go here: [https://discord.gg/B5vjnwakdk](https://discord.gg/B5vjnwakdk)`
