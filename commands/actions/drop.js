@@ -206,7 +206,7 @@ module.exports = {
 
         buydropbutton.setEmoji(dropitem.icon);
 
-        if (userbought === dropinfo.maxdrop || amountleft === 0) {
+        if (userbought === dropinfo.maxperuser || amountleft === 0) {
           buydropbutton.setDisabled(true);
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
@@ -251,7 +251,7 @@ module.exports = {
 
         buydropbutton.setEmoji(dropitem.icon);
 
-        if (userbought === dropinfo.maxdrop || amountleft === 0) {
+        if (userbought === dropinfo.maxperuser || amountleft === 0) {
           buydropbutton.setDisabled(true);
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
@@ -291,7 +291,7 @@ module.exports = {
 
         buydropbutton.setEmoji(dropitem.icon);
 
-        if (userbought === dropinfo.maxdrop || amountleft === 0) {
+        if (userbought === dropinfo.maxperuser || amountleft === 0) {
           buydropbutton.setDisabled(true);
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
