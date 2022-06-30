@@ -216,13 +216,13 @@ module.exports = {
                     .setLabel("-")
                     .setStyle("SECONDARY");
                 
-                if(userbought === dropinfo.maxdrop || amountleft === 0) {
+                if(userbought === dropinfo.maxperuser || amountleft === 0) {
                   buydropbutton.setDisabled(true)
                   addbutton.setDisabled(true)
                   minusbutton.setDisabled(true)
                 } 
 
-                row.setComponents([buydropbutton, minusbutton, addbutton]);
+                row.setComponents([buydropbutton, addbutton, minusbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
