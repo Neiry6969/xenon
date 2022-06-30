@@ -1,6 +1,7 @@
 const inventoryModel = require("../../models/inventorySchema");
 const dropModel = require("../../models/dropSchema");
 const economyModel = require("../../models/economySchema");
+const inventoryModel = require("../../models/inventorySchema");
 
 const jsoncooldowns = require("../../cooldowns.json");
 const interactionproccesses = require("../../interactionproccesses.json");
@@ -171,6 +172,7 @@ module.exports = {
                     components: drop_msg.components,
                 });
             } else if (i.customId === "dropmenu") {
+          
                 const selecteddrop = i.values[0];
                 const dropinfo = await dropModel.findOne({
                     item: selecteddrop,
@@ -187,6 +189,14 @@ module.exports = {
                     dropitem.item
                 }\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${dropinfo.maxperuser.toLocaleString()}\``;
 
+                let userbought = dropinfo.usersbuyobject[interaction.user.id]
+                
+                if(!dropinfo.usersbuyobject[interaction.user.id]) {
+                    userbought = 0
+                    dropinfo.usersbuyobject[interaction.user.id] = 0
+                    
+                    await dropModel.findOneAndUpdate({ item: selecteddrop }, dropinfo)
+                }
                 let buydropbutton = new MessageButton()
                     .setCustomId("buydropbutton")
                     .setLabel("Buy Drop")
@@ -200,6 +210,8 @@ module.exports = {
                     embeds: [drops_embed],
                     components: [row, row2],
                 });
+                
+                
             }
         });
 
