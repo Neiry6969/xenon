@@ -142,7 +142,7 @@ module.exports = {
       idle: 30 * 1000
     });
 
-    let buycount = 0;
+    let buycount = 1;
     let dropinfo_map;
     let selecteddrop;
 
@@ -212,8 +212,8 @@ module.exports = {
           minusbutton.setDisabled(true);
         }
 
-        if (buycount <= 0) {
-          buycount = 0;
+        if (buycount <= 1) {
+          buycount = 1;
           minusbutton.setDisabled(true);
         } else {
           minusbutton.setDisabled(false);
@@ -275,8 +275,8 @@ module.exports = {
           minusbutton.setDisabled(true);
         }
 
-        if (buycount <= 0) {
-          buycount = 0;
+        if (buycount <= 1) {
+          buycount = 1;
           minusbutton.setDisabled(true);
         } else {
           minusbutton.setDisabled(false);
@@ -301,8 +301,6 @@ module.exports = {
           components: [row, row2]
         });
       } else if (i.customId === "minusbutton") {
-        buycount = buycount - 1;
-
         const dropinfo = await dropModel.findOne({
           item: selecteddrop
         });
@@ -338,8 +336,8 @@ module.exports = {
           minusbutton.setDisabled(true);
         }
 
-        if (buycount <= 0) {
-          buycount = 0;
+        if (buycount <= 1) {
+          buycount = 1;
           minusbutton.setDisabled(true);
         } else {
           minusbutton.setDisabled(false);
@@ -364,6 +362,7 @@ module.exports = {
           components: [row, row2]
         });
       } else if (i.customId === "buydropbutton") {
+        let problem = false;
         buydropbutton.setDisabled(true);
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
@@ -399,13 +398,11 @@ module.exports = {
         buydropbutton.setEmoji(dropitem.icon);
 
         if (userbought === dropinfo.maxperuser || amountleft === 0) {
-          
-
           dropinfo_map = dropinfo_map + `\n\`Too sad, the stocks ran out!\``
         } else {
           dropinfo_map = dropinfo_map + `\n\`You sucessfully bought ${buycount.toLocaleString()} stocks! Good buisness!\``
         }
-
+        
         
         row.setComponents([buydropbutton, addbutton, minusbutton]);
 
@@ -422,6 +419,8 @@ module.exports = {
             }
           }
         );
+        
+        drops_embed.setDescription(dropinfo_map)
         drop_msg.components[0].components.forEach((c) => {
           c.setDisabled();
         });
@@ -429,6 +428,7 @@ module.exports = {
           c.setDisabled();
         });
         drop_msg.edit({
+          embeds: [drops_embed]
           components: drop_msg.components
         });
       }
