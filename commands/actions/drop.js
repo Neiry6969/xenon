@@ -183,20 +183,23 @@ module.exports = {
                 );
 
                 const amountleft = dropinfo.maxdrop - dropinfo.amountbought;
-                const dropinfo_map = `${dropitem.icon} **${
-                    dropitem.name
-                }**\nID: \`${
-                    dropitem.item
-                }\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${dropinfo.maxperuser.toLocaleString()}\``;
-
-                let userbought = dropinfo.usersbuyobject[interaction.user.id]
-                
+               
+                let userbought = dropinfo.usersbuyobject[interaction.user.id];
                 if(!dropinfo.usersbuyobject[interaction.user.id]) {
                     userbought = 0
                     dropinfo.usersbuyobject[interaction.user.id] = 0
                     
                     await dropModel.findOneAndUpdate({ item: selecteddrop }, dropinfo)
                 }
+                
+                 const dropinfo_map = `${dropitem.icon} **${
+                    dropitem.name
+                }**\nID: \`${
+                    dropitem.item
+                }\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\``;
+
+                
+                
                 let buydropbutton = new MessageButton()
                     .setCustomId("buydropbutton")
                     .setLabel("Buy Drop")
