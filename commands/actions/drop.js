@@ -363,6 +363,74 @@ module.exports = {
           embeds: [drops_embed],
           components: [row, row2]
         });
+      } else if (i.customId === "buydropbutton") {
+        buydropbutton.setDisabled(true);
+          addbutton.setDisabled(true);
+          minusbutton.setDisabled(true);
+        const dropinfo = await dropModel.findOne({
+          item: selecteddrop
+        });
+
+        const dropitem = allItems.find(
+          (val) => val.item.toLowerCase() === dropinfo.item
+        );
+
+        const amountleft = dropinfo.maxdrop - dropinfo.amountbought;
+
+        let userbought = dropinfo.usersbuyobject[interaction.user.id];
+        if (!dropinfo.usersbuyobject[interaction.user.id]) {
+          userbought = 0;
+          dropinfo.usersbuyobject[interaction.user.id] = 0;
+
+          await dropModel.findOneAndUpdate({ item: selecteddrop }, dropinfo);
+        }
+
+        if (amountleft === 1) {
+          buycount = 1
+        }
+        if (buycount > amountleft) {
+          buycount = amountleft;
+        }
+
+        dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
+          dropitem.item
+        }\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\n**You want to buy:** \`${buycount.toLocaleString()}\``;
+
+        buydropbutton.setEmoji(dropitem.icon);
+
+        if (userbought === dropinfo.maxperuser || amountleft === 0) {
+          
+
+          dropinfo_map = dropinfo_map + `\n\`Too sad, the stocks ran out!\``
+        } else {
+          dropinfo_map = dropinfo_map + `\n\`You sucessfully bought ${buycount.toLocaleString()} stocks! Good buisness!\``
+        }
+
+        
+        row.setComponents([buydropbutton, addbutton, minusbutton]);
+
+        interactionproccesses[interaction.user.id] = {
+          interaction: false,
+          proccessingcoins: false
+        };
+        fs.writeFile(
+          "./interactionproccesses.json",
+          JSON.stringify(interactionproccesses),
+          (err) => {
+            if (err) {
+              console.log(err);
+            }
+          }
+        );
+        drop_msg.components[0].components.forEach((c) => {
+          c.setDisabled();
+        });
+        drop_msg.components[1].components.forEach((c) => {
+          c.setDisabled();
+        });
+        drop_msg.edit({
+          components: drop_msg.components
+        });
       }
     });
 
