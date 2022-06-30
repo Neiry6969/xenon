@@ -212,9 +212,25 @@ module.exports = {
           minusbutton.setDisabled(true);
         }
 
-        if(amountleft === 1) {
+        if (amountleft === 1) {
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
+        }
+
+        if (buycount <= 0) {
+          buycount = 0;
+          minusbutton.setDisabled(true);
+        }
+
+        const leftforuser = dropinfo.maxperuser - userbought;
+        if (leftforuser <= buycount) {
+          buycount = leftforuser;
+          addbutton.setDisabled(true);
+        }
+
+        if (amountleft <= buycount) {
+          buycount = amountleft;
+          addbutton.setDisabled(true);
         }
 
         row.setComponents([buydropbutton, addbutton, minusbutton]);
@@ -257,6 +273,27 @@ module.exports = {
           minusbutton.setDisabled(true);
         }
 
+        if (amountleft === 1) {
+          addbutton.setDisabled(true);
+          minusbutton.setDisabled(true);
+        }
+
+        if (buycount <= 0) {
+          buycount = 0;
+          minusbutton.setDisabled(true);
+        }
+
+        const leftforuser = dropinfo.maxperuser - userbought;
+        if (leftforuser <= buycount) {
+          buycount = leftforuser;
+          addbutton.setDisabled(true);
+        }
+
+        if (amountleft <= buycount) {
+          buycount = amountleft;
+          addbutton.setDisabled(true);
+        }
+
         row.setComponents([buydropbutton, addbutton, minusbutton]);
 
         drops_embed.setDescription(dropinfo_map);
@@ -295,6 +332,27 @@ module.exports = {
           buydropbutton.setDisabled(true);
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
+        }
+
+        if (amountleft === 1) {
+          addbutton.setDisabled(true);
+          minusbutton.setDisabled(true);
+        }
+
+        if (buycount <= 0) {
+          buycount = 0;
+          minusbutton.setDisabled(true);
+        }
+
+        const leftforuser = dropinfo.maxperuser - userbought;
+        if (leftforuser <= buycount) {
+          buycount = leftforuser;
+          addbutton.setDisabled(true);
+        }
+
+        if (amountleft <= buycount) {
+          buycount = amountleft;
+          addbutton.setDisabled(true);
         }
 
         row.setComponents([buydropbutton, addbutton, minusbutton]);
