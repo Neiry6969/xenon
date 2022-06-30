@@ -191,6 +191,9 @@ module.exports = {
                     await dropModel.findOneAndUpdate({ item: selecteddrop }, dropinfo)
                 }
                 
+                let buycount = 0
+
+                
                  const dropinfo_map = `${dropitem.icon} **${
                     dropitem.name
                 }**\nID: \`${
@@ -198,14 +201,28 @@ module.exports = {
                 }\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\``;
 
                 
-                
                 let buydropbutton = new MessageButton()
                     .setCustomId("buydropbutton")
                     .setLabel("Buy Drop")
                     .setEmoji(dropitem.icon)
                     .setStyle("PRIMARY");
+                let addbutton = new MessageButton()
+                    .setCustomId("addbutton")
+                    .setLabel("+")
+                    .setStyle("SECONDARY");
+                
+                let minusbutton = new MessageButton()
+                    .setCustomId("minusbutton")
+                    .setLabel("-")
+                    .setStyle("SECONDARY");
+                
+                if(userbought === dropinfo.maxdrop || amountleft === 0) {
+                    buydropbutton.setDisabled(true)
+`                   minusbutton.setDisabled(true)
+                    plusbutton.setDisabled(true)
+                }
 
-                row.setComponents(buydropbutton);
+                row.setComponents([buydropbutton, minusbutton, plusbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
