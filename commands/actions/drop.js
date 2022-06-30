@@ -1,7 +1,6 @@
 const inventoryModel = require("../../models/inventorySchema");
 const dropModel = require("../../models/dropSchema");
 const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
 
 const jsoncooldowns = require("../../cooldowns.json");
 const interactionproccesses = require("../../interactionproccesses.json");
