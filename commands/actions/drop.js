@@ -428,7 +428,7 @@ module.exports = {
           c.setDisabled();
         });
         drop_msg.edit({
-          embeds: [drops_embed]
+          embeds: [drops_embed],
           components: drop_msg.components
         });
       }
