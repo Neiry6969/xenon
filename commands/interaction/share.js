@@ -279,9 +279,7 @@ module.exports = {
                     fields: [
                         {
                             name: `${interaction.user.username}`,
-                            value: `**New Wallet:** \`❀ ${(
-                                userData.wallet - amount
-                            ).toLocaleString()}\``,
+                            value: `**New Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
                             inline: true,
                         },
                         {
