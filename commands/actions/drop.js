@@ -268,14 +268,10 @@ module.exports = {
           buydropbutton.setDisabled(true);
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
-        }
-
-        if (amountleft === 1) {
+        } else if (amountleft === 1) {
           addbutton.setDisabled(true);
           minusbutton.setDisabled(true);
-        }
-
-        if (buycount <= 1) {
+        } else if (buycount <= 1) {
           buycount = 1;
           minusbutton.setDisabled(true);
         } else {
