@@ -1,6 +1,7 @@
 const inventoryModel = require("../../models/inventorySchema");
 const dropModel = require("../../models/dropSchema");
 const economyModel = require("../../models/economySchema");
+const itemModel = require("../../models//itemSchema");
 
 const jsoncooldowns = require("../../cooldowns.json");
 const interactionproccesses = require("../../interactionproccesses.json");
@@ -73,16 +74,57 @@ module.exports = {
             return interaction.reply({ embeds: [errorembed], ephemeral: true });
         }
 
+        drops.forEach(async (v) => {
+            const dropendtime = new Date(v.dropendtime);
+            const datenow = new Date();
+            const timeleft = dropendtime - datenow / 1000;
+
+            if (timeleft <= 0) {
+                const fetchitem = await itemModel.findOne({ item: v.item });
+                let drophistory = fetchitem.drophistory;
+
+                if (!drophistory) {
+                    drophistory = [];
+                }
+
+                const dropdata = {
+                    amountbought: v.amountbought,
+                    maxdrop: v.maxdrop,
+                    dropstart: v.dropstarttime,
+                    dropend: v.dropendtime,
+                };
+
+                drophistory.push(dropdata);
+                fetchitem.drophistory = drophistory;
+
+                await itemModel.findOneAndUpdate({ item: v.item }, fetchitem);
+                await dropModel.findOneAndDelete({ _id: v._id });
+            } else {
+                return;
+            }
+        });
+
         const mappedData = drops
             .map((v) => {
-                const amountleft = v.maxdrop - v.amountbought;
-                const item = allItems.find(
-                    (val) => val.item.toLowerCase() === v.item
-                );
-                return `${item.icon} **${item.name}**\nID: \`${
-                    item.item
-                }\`\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${v.maxperuser.toLocaleString()}\``;
+                const dropendtime = new Date(v.dropendtime);
+                const datenow = new Date();
+                const timeleft = dropendtime - datenow / 1000;
+
+                if (timeleft <= 0) {
+                    return;
+                } else {
+                    const amountleft = v.maxdrop - v.amountbought;
+                    const item = allItems.find(
+                        (val) => val.item.toLowerCase() === v.item
+                    );
+                    return `${item.icon} **${item.name}**\nID: \`${
+                        item.item
+                    }\`\nDrop Ending At: <t:${v.dropendtime}:f> <t:${
+                        v.dropendtime
+                    }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${v.maxperuser.toLocaleString()}\``;
+                }
             })
+            .filter(Boolean)
             .join("\n\n");
 
         const mappedDropOptions = drops.map((v) => {
@@ -295,7 +337,11 @@ module.exports = {
                 }
                 dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
                     dropitem.item
-                }\`\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\``;
+                }\`\nDrop Ending At: <t:${dropinfo.dropendtime}:f> <t:${
+                    dropinfo.dropendtime
+                }:R>\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\` (\`❀ ${(
+                    buycount * dropinfo.price
+                ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
 
@@ -396,10 +442,13 @@ module.exports = {
                 } else {
                     addbutton.setDisabled(false);
                 }
-
                 dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
                     dropitem.item
-                }\`\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\``;
+                }\`\nDrop Ending At: <t:${dropinfo.dropendtime}:f> <t:${
+                    dropinfo.dropendtime
+                }:R>\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\` (\`❀ ${(
+                    buycount * dropinfo.price
+                ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
 
@@ -507,7 +556,11 @@ module.exports = {
 
                 dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
                     dropitem.item
-                }\`\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\``;
+                }\`\nDrop Ending At: <t:${dropinfo.dropendtime}:f> <t:${
+                    dropinfo.dropendtime
+                }:R>\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\` (\`❀ ${(
+                    buycount * dropinfo.price
+                ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
 
@@ -642,7 +695,11 @@ module.exports = {
 
                 dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
                     dropitem.item
-                }\`\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\``;
+                }\`\nDrop Ending At: <t:${dropinfo.dropendtime}:f> <t:${
+                    dropinfo.dropendtime
+                }:R>\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\` (\`❀ ${(
+                    buycount * dropinfo.price
+                ).toLocaleString()}\`)`;
 
                 if (extrastring) {
                     dropinfo_map = dropinfo_map + extrastring;

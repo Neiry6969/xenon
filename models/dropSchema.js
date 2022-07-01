@@ -26,6 +26,14 @@ const dropSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        dropendtime: {
+            type: Number,
+            required: true,
+        },
+        dropstarttime: {
+            type: Number,
+            required: true,
+        },
     },
     { minimize: false }
 );

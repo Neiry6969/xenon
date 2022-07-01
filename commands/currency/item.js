@@ -152,6 +152,17 @@ module.exports = {
                 .join("\n");
         }
 
+        let drophistory;
+        if (item.drophistory) {
+            drophistory = item.drophistory
+                .map((value) => {
+                    return `<a:drop:992514722232541207> \`${value.amountbought.toLocaleString()}/${value.maxdrop.toLocaleString()}\` on: <t:${
+                        value.dropstart
+                    }:d> to: <t:${value.dropend}:d>`;
+                })
+                .join("\n");
+        }
+
         const embed = new MessageEmbed()
             .setColor("RANDOM")
             .setTitle(
@@ -204,32 +215,55 @@ module.exports = {
             });
         }
 
+        let row = new MessageActionRow();
+
         if (lootboxitems) {
             let itemsbutton = new MessageButton()
                 .setCustomId("itemsbutton")
                 .setLabel("Possible Items")
                 .setStyle("PRIMARY");
 
-            let row = new MessageActionRow().addComponents(itemsbutton);
-
-            interactioncontents = { embeds: [embed], components: [row] };
+            row.addComponents(itemsbutton);
         }
 
+        if (drophistory) {
+            let drophistorybutton = new MessageButton()
+                .setCustomId("drophistorybutton")
+                .setLabel("Drop History")
+                .setStyle("SUCCESS")
+                .setEmoji("<a:drop:992514722232541207>");
+
+            row.addComponents(drophistorybutton);
+        }
+
+        if (lootboxitems || drophistory) {
+            interactioncontents = { embeds: [embed], components: [row] };
+        }
         await interaction.reply(interactioncontents);
 
         const item_msg = await interaction.fetchReply();
 
-        if (lootboxitems) {
-            const ephemeralitemsembed = new MessageEmbed()
+        if (lootboxitems || drophistory) {
+            const ephemerallootboxitems_embed = new MessageEmbed()
                 .setTitle(`**Possible Items** [Possible Quantities]`)
                 .setDescription(lootboxitems);
+
+            const ephemeraldrophistory_embed = new MessageEmbed()
+                .setTitle(`**Drop History**`)
+                .setDescription(drophistory);
+
             const collector = item_msg.createMessageComponentCollector({
                 time: 10 * 1000,
             });
             collector.on("collect", async (interaction) => {
                 if (interaction.customId === "itemsbutton") {
                     await interaction.reply({
-                        embeds: [ephemeralitemsembed],
+                        embeds: [ephemerallootboxitems_embed],
+                        ephemeral: true,
+                    });
+                } else if (interaction.customId === "drophistorybutton") {
+                    await interaction.reply({
+                        embeds: [ephemeraldrophistory_embed],
                         ephemeral: true,
                     });
                 }

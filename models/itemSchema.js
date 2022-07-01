@@ -39,6 +39,9 @@ const itemSchema = new mongoose.Schema({
     craftitems: {
         type: Array,
     },
+    drophistory: {
+        type: Array,
+    },
 });
 
 const model = mongoose.model("ItemModels", itemSchema);
