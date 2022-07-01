@@ -208,8 +208,6 @@ module.exports = {
                     inventoryData.inventory[item.item] + buyamount;
             }
             userData.wallet = userData.wallet - totalprice;
-            userData.interactionproccesses.interaction = true;
-            userData.interactionproccesses.proccessingcoins = true;
 
             await economyModel.findOneAndUpdate(params, userData);
             await inventoryModel.findOneAndUpdate(params, inventoryData);
@@ -269,9 +267,6 @@ module.exports = {
                             }
                         }
                     );
-                    userData.interactionproccesses.interaction = false;
-                    userData.interactionproccesses.proccessingcoins = false;
-                    await economyModel.findOneAndUpdate(params, userData);
 
                     const amountowned = inventoryData.inventory[item.item];
                     const embed = {
@@ -308,8 +303,6 @@ module.exports = {
                     inventoryData.inventory[item.item] =
                         inventoryData.inventory[item.item] - buyamount;
                     userData.wallet = userData.wallet + totalprice;
-                    userData.interactionproccesses.interaction = false;
-                    userData.interactionproccesses.proccessingcoins = false;
                     await inventoryModel.findOneAndUpdate(
                         params,
                         inventoryData
@@ -358,8 +351,6 @@ module.exports = {
                     inventoryData.inventory[item.item] =
                         inventoryData.inventory[item.item] - buyamount;
                     userData.wallet = userData.wallet + totalprice;
-                    userData.interactionproccesses.interaction = false;
-                    userData.interactionproccesses.proccessingcoins = false;
 
                     await inventoryModel.findOneAndUpdate(
                         params,
