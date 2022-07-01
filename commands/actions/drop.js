@@ -642,7 +642,7 @@ module.exports = {
                     amountcanbuy = 0;
                     extrastring = `\n\`Too sad, the stocks ran out!\``;
                 } else {
-                    extrastring = `\n\`You sucessfully bought ${buycount.toLocaleString()} stocks! Good buisness!\`\n\`Total: ❀ ${(
+                    extrastring = `\n\`You sucessfully bought ${buycount.toLocaleString()} stocks! Good business!\`\n\`Total: ❀ ${(
                         buycount * dropinfo.price
                     ).toLocaleString()}\``;
                 }
