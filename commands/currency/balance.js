@@ -158,7 +158,7 @@ module.exports = {
                     `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()} / ${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``
                 )
                 .setAuthor({
-                    name: `${target.username}#${target.discriminator}`,
+                    name: target.tag,
                     iconURL: target.displayAvatarURL(),
                 })
                 .addFields({
