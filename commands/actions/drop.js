@@ -121,7 +121,9 @@ module.exports = {
                         item.item
                     }\`\nDrop Ending At: <t:${v.dropendtime}:f> <t:${
                         v.dropendtime
-                    }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${v.maxperuser.toLocaleString()}\``;
+                    }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${v.usersbuyobject[
+                        interaction.user.id
+                    ].toLocaleString()}/${v.maxperuser.toLocaleString()}\``;
                 }
             })
             .filter(Boolean)
@@ -147,7 +149,7 @@ module.exports = {
             .setCustomId("dropmenu")
             .setMinValues(0)
             .setMaxValues(1)
-            // .setDisabled(true)
+            .setPlaceholder("Select a drop to view")
             .addOptions(mappedDropOptions);
 
         let buydropbutton = new MessageButton()
@@ -163,9 +165,13 @@ module.exports = {
             .setCustomId("minusbutton")
             .setLabel("-")
             .setStyle("SECONDARY");
+        let backbutton = new MessageButton()
+            .setCustomId("backbutton")
+            .setLabel("Back")
+            .setStyle("SECONDARY");
 
-        let row = new MessageActionRow().addComponents(dropmenu);
-        let row2 = new MessageActionRow().addComponents(endinteractionbutton);
+        let row = new MessageActionRow().setComponents(dropmenu);
+        let row2 = new MessageActionRow().setComponents(endinteractionbutton);
 
         const drops_embed = new MessageEmbed()
             .setColor("RANDOM")
@@ -240,6 +246,16 @@ module.exports = {
 
                 return drop_msg.edit({
                     components: drop_msg.components,
+                });
+            } else if (i.customId === "backbutton") {
+                let buycount = 1;
+                row.setComponents(dropmenu);
+                row2.setComponents(endinteractionbutton);
+                drops_embed.setColor("RANDOM").setDescription(mappedData);
+
+                drop_msg.edit({
+                    embeds: [drops_embed],
+                    components: [row, row2],
                 });
             } else if (i.customId === "dropmenu") {
                 selecteddrop = i.values[0];
@@ -344,6 +360,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row2.addComponents(backbutton);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -451,6 +468,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row2.addComponents(backbutton);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -563,6 +581,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row2.addComponents(backbutton);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -706,6 +725,7 @@ module.exports = {
                 }
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row2.addComponents(backbutton);
 
                 drops_embed.setDescription(dropinfo_map);
                 drop_msg.components[0].components.forEach((c) => {

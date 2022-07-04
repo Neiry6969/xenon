@@ -25,6 +25,13 @@ function premiumcooldowncalc(defaultcooldown) {
         return defaultcooldown;
     }
 }
+function ifhasamountitem(reqm, hasa) {
+    if (hasa >= reqm) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -167,7 +174,7 @@ module.exports = {
                 .setCustomId("dropmenu")
                 .setMinValues(0)
                 .setMaxValues(1)
-                // .setDisabled(true)
+                .setPlaceholder("Select an item to craft")
                 .addOptions(mappedCraftOptions);
 
             let endinteractionbutton = new MessageButton()
@@ -175,15 +182,44 @@ module.exports = {
                 .setLabel("End Interaction")
                 .setStyle("SECONDARY");
 
-            let row = new MessageActionRow().addComponents(
+            let backbutton = new MessageButton()
+                .setCustomId("backbutton")
+                .setLabel("Back")
+                .setStyle("SECONDARY");
+            let minusbutton = new MessageButton()
+                .setCustomId("minubutton")
+                .setLabel("-")
+                .setStyle("SUCCESS");
+            let addbutton = new MessageButton()
+                .setCustomId("addbutton")
+                .setLabel("+")
+                .setStyle("SUCCESS");
+            let setmaxbutton = new MessageButton()
+                .setCustomId("setmaxbutton")
+                .setLabel("Set Max")
+                .setStyle("SUCCESS");
+            let sethalfbutton = new MessageButton()
+                .setCustomId("sethalfbutton")
+                .setLabel("Set Half")
+                .setStyle("SUCCESS");
+            let setminbutton = new MessageButton()
+                .setCustomId("setminbutton")
+                .setLabel("Set Min")
+                .setStyle("SUCCESS");
+            let craftbutton = new MessageButton()
+                .setCustomId("craftbutton")
+                .setLabel("Craft Item")
+                .setStyle("PRIMARY");
+
+            let row = new MessageActionRow().setComponents([
                 leftfarbutton,
                 leftbutton,
                 pagebutton,
                 rightbutton,
-                rightfarbutton
-            );
-            let row2 = new MessageActionRow().addComponents(craftmenu);
-            let row3 = new MessageActionRow().addComponents(
+                rightfarbutton,
+            ]);
+            let row2 = new MessageActionRow().setComponents(craftmenu);
+            let row3 = new MessageActionRow().setComponents(
                 endinteractionbutton
             );
 
@@ -212,19 +248,23 @@ module.exports = {
                 }
             );
             const collector = craft_msg.createMessageComponentCollector({
-                time: 20 * 1000,
+                idle: 30 * 1000,
             });
 
-            collector.on("collect", async (button) => {
-                if (button.user.id != interaction.user.id) {
-                    return button.reply({
+            let craftcounter;
+            let crafttools;
+            let craftitems;
+            let item;
+            collector.on("collect", async (i) => {
+                if (i.user.id != interaction.user.id) {
+                    return i.reply({
                         content: "This is not for you.",
                         ephemeral: true,
                     });
                 }
 
-                button.deferUpdate();
-                if (button.customId === "endinteraction") {
+                i.deferUpdate();
+                if (i.customId === "endinteraction") {
                     interactionproccesses[interaction.user.id] = {
                         interaction: false,
                         proccessingcoins: false,
@@ -252,7 +292,28 @@ module.exports = {
                     return craft_msg.edit({
                         components: craft_msg.components,
                     });
-                } else if (button.customId === "right") {
+                } else if (i.customId === "backbutton") {
+                    row.setComponents([
+                        leftfarbutton,
+                        leftbutton,
+                        pagebutton,
+                        rightbutton,
+                        rightfarbutton,
+                    ]);
+                    row2.setComponents(craftmenu);
+                    row3.setComponents(endinteractionbutton);
+
+                    craft_msg_embed.setDescription(
+                        `${craftingtable_map
+                            .slice(display_start, display_end)
+                            .join("\n\n")}`
+                    );
+
+                    await craft_msg.edit({
+                        embeds: [craft_msg_embed],
+                        components: [row2, row, row3],
+                    });
+                } else if (i.customId === "right") {
                     page = page + 1;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
@@ -296,7 +357,7 @@ module.exports = {
                         embeds: [craft_msg_embed],
                         components: [row2, row, row3],
                     });
-                } else if (button.customId === "rightfar") {
+                } else if (i.customId === "rightfar") {
                     page = lastpage;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
@@ -339,7 +400,7 @@ module.exports = {
                         embeds: [craft_msg_embed],
                         components: [row2, row, row3],
                     });
-                } else if (button.customId === "left") {
+                } else if (i.customId === "left") {
                     page = page - 1;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
@@ -382,7 +443,7 @@ module.exports = {
                         embeds: [craft_msg_embed],
                         components: [row2, row, row3],
                     });
-                } else if (button.customId === "leftfar") {
+                } else if (i.customId === "leftfar") {
                     page = 1;
                     display_start = (page - 1) * itemsperpage;
                     display_end = page * itemsperpage;
@@ -425,6 +486,111 @@ module.exports = {
                         embeds: [craft_msg_embed],
                         components: [row2, row, row3],
                     });
+                } else if (i.customId === "dropmenu") {
+                    craftcounter = 1;
+                    item = pageslice.find(
+                        (val) => val.item.toLowerCase() === i.values[0]
+                    );
+                    craftbutton.setEmoji(item.icon);
+                    row2.setComponents([craftbutton, addbutton, minusbutton]);
+                    row.setComponents([
+                        setminbutton,
+                        sethalfbutton,
+                        setmaxbutton,
+                    ]);
+                    row3.setComponents([endinteractionbutton, backbutton]);
+
+                    let missingitems = false;
+                    if (item.crafttools) {
+                        crafttools = item.crafttools
+                            .map((value) => {
+                                const toolitem = allItems.find(
+                                    ({ item }) => item === value.i
+                                );
+                                let hasamount =
+                                    inventoryData.inventory[toolitem.item];
+                                if (!inventoryData.inventory[toolitem.item]) {
+                                    hasamount = 0;
+                                }
+                                if (
+                                    ifhasamountitem(value.q, hasamount) ===
+                                    false
+                                ) {
+                                    missingitems = true;
+                                }
+                                let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
+                                    toolitem.icon
+                                } \`${toolitem.item}\``;
+                                if (
+                                    ifhasamountitem(value.q, hasamount) === true
+                                ) {
+                                    message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
+                                        toolitem.icon
+                                    } \`${toolitem.item}\``;
+                                }
+                                return message;
+                            })
+                            .join("\n");
+                    }
+                    if (item.craftitems) {
+                        craftitems = item.craftitems
+                            .map((value) => {
+                                const craftitem = allItems.find(
+                                    ({ item }) => item === value.i
+                                );
+                                let hasamount =
+                                    inventoryData.inventory[craftitem.item];
+                                if (!inventoryData.inventory[craftitem.item]) {
+                                    hasamount = 0;
+                                }
+                                if (
+                                    ifhasamountitem(value.q, hasamount) ===
+                                    false
+                                ) {
+                                    missingitems = true;
+                                }
+                                let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
+                                    craftitem.icon
+                                } \`${craftitem.item}\``;
+                                if (
+                                    ifhasamountitem(value.q, hasamount) === true
+                                ) {
+                                    message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
+                                        craftitem.icon
+                                    } \`${craftitem.item}\``;
+                                }
+                                return message;
+                            })
+                            .join("\n");
+                    }
+
+                    let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\n\n${
+                        item.icon
+                    } **${item.name}**\nID: \`${
+                        item.item
+                    }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}`;
+
+                    if (missingitems === true) {
+                        craftcounter = 0;
+                        row2.components.forEach((c) => {
+                            c.setDisabled();
+                        });
+                        row.components.forEach((c) => {
+                            c.setDisabled();
+                        });
+                        displaytext =
+                            displaytext +
+                            `\n\n\`\`\`You do not meet the requirements to craft even one of this item\`\`\``;
+                        craft_msg_embed.setColor("RED");
+                    }
+                    craft_msg_embed.setColor("RANDOM");
+
+                    craft_msg_embed.setDescription(displaytext);
+
+                    await craft_msg.edit({
+                        embeds: [craft_msg_embed],
+                        components: [row2, row, row3],
+                    });
                 }
             });
 
@@ -451,7 +617,7 @@ module.exports = {
                 craft_msg.components[2].components.forEach((c) => {
                     c.setDisabled();
                 });
-                craft_msg.edit({
+                return craft_msg.edit({
                     components: craft_msg.components,
                 });
             });
@@ -553,13 +719,7 @@ module.exports = {
         //     const params = {
         //         userId: message.author.id,
         //     };
-        //     function ifhasamountitem(reqm, hasa) {
-        //         if (hasa >= reqm) {
-        //             return true;
-        //         } else {
-        //             return false;
-        //         }
-        //     }
+
         //     let missingitems = false;
         //     let crafttools;
         //     if (item.crafttools) {
@@ -716,7 +876,7 @@ module.exports = {
         //         .setCustomId("cancel")
         //         .setLabel("Cancel")
         //         .setStyle("DANGER");
-        //     let row = new MessageActionRow().addComponents(confirm, cancel);
+        //     let row = new MessageActionRow().setComponents(confirm, cancel);
         //     const embed = {
         //         color: "RANDOM",
         //         title: `Confirm craft`,
