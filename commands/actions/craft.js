@@ -640,21 +640,11 @@ module.exports = {
                         }
                     }
                 );
-                console.log(craft_msg.components)
-                 craft_msg.components[0].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-                    craft_msg.components[1].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-
-                    craft_msg.components[2].components.forEach((c) => {
-                        c.setDisabled();
-                    });
+              
                
 
                return craft_msg.edit({
-                    components: craft_msg.components,
+                    components: null,
                 });
             });
         } catch (error) {
