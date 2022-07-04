@@ -300,6 +300,9 @@ module.exports = {
                     craftitems = null;
                     item = null;
                     missingitems = false;
+                    
+                    craft_msg_embed.setColor("RANDOM");
+
 
                     row.setComponents([
                         leftfarbutton,
@@ -589,6 +592,13 @@ module.exports = {
                             displaytext +
                             `\n\n\`\`\`You do not meet the requirements to craft even one of this item\`\`\``;
                         craft_msg_embed.setColor("RED");
+                    } else {
+                        row2.components.forEach((c) => {
+                            c.setDisabled(true);
+                        });
+                        row.components.forEach((c) => {
+                            c.setDisabled(true);
+                        });
                     }
                     
 
