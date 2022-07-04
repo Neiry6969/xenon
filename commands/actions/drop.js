@@ -109,6 +109,14 @@ module.exports = {
                 const dropendtime = new Date(v.dropendtime);
                 const datenow = new Date();
                 const timeleft = dropendtime - datenow / 1000;
+                
+                let amountbought_user;
+                
+                if(v.usersbuyobject[interaction.user.id].length > 0) {
+                    amountbought_user = v.usersbuyobject[interaction.user.id]
+                } else {
+                    amountbought_user = 0
+                }
 
                 if (timeleft <= 0) {
                     return;
@@ -121,9 +129,7 @@ module.exports = {
                         item.item
                     }\`\nDrop Ending At: <t:${v.dropendtime}:f> <t:${
                         v.dropendtime
-                    }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${v.usersbuyobject[
-                        interaction.user.id
-                    ]?.toLocaleString()}/${v.maxperuser.toLocaleString()}\``;
+                    }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${amountbought_user.toLocaleString()}/${v.maxperuser.toLocaleString()}\``;
                 }
             })
             .filter(Boolean)
