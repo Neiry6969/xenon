@@ -211,15 +211,15 @@ module.exports = {
                 .setLabel("Craft Item")
                 .setStyle("PRIMARY");
 
-            let row = new MessageActionRow().setComponents([
+            let row = new MessageActionRow().addComponents([
                 leftfarbutton,
                 leftbutton,
                 pagebutton,
                 rightbutton,
                 rightfarbutton,
             ]);
-            let row2 = new MessageActionRow().setComponents([craftmenu]);
-            let row3 = new MessageActionRow().setComponents([endinteractionbutton]);
+            let row2 = new MessageActionRow().addComponents([craftmenu]);
+            let row3 = new MessageActionRow().addComponents([endinteractionbutton]);
 
             craft_msg_embed.setDescription(
                 `${craftingtable_map
