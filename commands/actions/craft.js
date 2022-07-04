@@ -654,14 +654,14 @@ module.exports = {
 //                 sethalfbutton.setDisabled();
 //                 setminbutton.setDisabled();
 //                 craftbutton.setDisabled();
-                 ``row.components[0].components.forEach((c) => {
+                 ``row.components.forEach((c) => {
                         c.setDisabled();
                     });
-                    row3.components[1].components.forEach((c) => {
+                    row3.components.forEach((c) => {
                         c.setDisabled();
                     });
 
-                    row2.components[2].components.forEach((c) => {
+                    row2.components.forEach((c) => {
                         c.setDisabled();
                     });
              
