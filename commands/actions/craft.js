@@ -667,5 +667,6 @@ module.exports = {
                 embeds: [craft_msg_embed],
             });
         }
-
+  }
+}
         
