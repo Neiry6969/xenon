@@ -255,6 +255,8 @@ module.exports = {
             let crafttools;
             let craftitems;
             let item;
+            let missingitems = false;
+
             collector.on("collect", async (i) => {
                 if (i.user.id != interaction.user.id) {
                     return i.reply({
@@ -293,6 +295,12 @@ module.exports = {
                         components: craft_msg.components,
                     });
                 } else if (i.customId === "backbutton") {
+                    craftcounter = null;
+                    crafttools = null;
+                    craftitems = null;
+                    item = null;
+                    missingitems = false;
+
                     row.setComponents([
                         leftfarbutton,
                         leftbutton,
@@ -500,7 +508,6 @@ module.exports = {
                     ]);
                     row3.setComponents([endinteractionbutton, backbutton]);
 
-                    let missingitems = false;
                     if (item.crafttools) {
                         crafttools = item.crafttools
                             .map((value) => {
