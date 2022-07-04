@@ -641,33 +641,32 @@ module.exports = {
                     }
                 );
                 
-//                 leftfarbutton.setDisabled();
-//                 leftbutton.setDisabled();
-//                 rightfarbutton.setDisabled();
-//                 rightbutton.setDisabled();
-//                 craftmenu.setDisabled();
-//                 endinteractionbutton.setDisabled();
-//                 backbutton.setDisabled();
-//                 minusbutton.setDisabled();
-//                 addbutton.setDisabled();
-//                 setmaxbutton.setDisabled();
-//                 sethalfbutton.setDisabled();
-//                 setminbutton.setDisabled();
-//                 craftbutton.setDisabled();
-                 ``row.components.forEach((c) => {
-                        c.setDisabled();
-                    });
-                    row3.components.forEach((c) => {
-                        c.setDisabled();
-                    });
-
-                    row2.components.forEach((c) => {
-                        c.setDisabled();
-                    });
+                leftfarbutton.setDisabled();
+                leftbutton.setDisabled();
+                rightfarbutton.setDisabled();
+                rightbutton.setDisabled();
+                craftmenu.setDisabled();
+                endinteractionbutton.setDisabled();
+                backbutton.setDisabled();
+                minusbutton.setDisabled();
+                addbutton.setDisabled();
+                setmaxbutton.setDisabled();
+                sethalfbutton.setDisabled();
+                setminbutton.setDisabled();
+                craftbutton.setDisabled();
+                 `row.setComponents([
+                    leftfarbutton,
+                    leftbutton,
+                    pagebutton,
+                    rightbutton,
+                    rightfarbutton,
+                ]);
+                row2.setComponents([craftmenu]);
+                row3.setComponents([endinteractionbutton]);
              
 
                 return craft_msg.edit({
-                    components: craft_msg.components,
+                    components: [row2, row, row3],
                 });
             });
         } catch (error) {
