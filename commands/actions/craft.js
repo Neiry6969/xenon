@@ -654,19 +654,10 @@ module.exports = {
                 sethalfbutton.setDisabled();
                 setminbutton.setDisabled();
                 craftbutton.setDisabled();
-                 `row.setComponents([
-                    leftfarbutton,
-                    leftbutton,
-                    pagebutton,
-                    rightbutton,
-                    rightfarbutton,
-                ]);
-                row2.setComponents([craftmenu]);
-                row3.setComponents([endinteractionbutton]);
-             
+               
 
-                return craft_msg.edit({
-                    components: [row2, row, row3],
+               return craft_msg.edit({
+                    components: craft_msg.components,
                 });
             });
         } catch (error) {
