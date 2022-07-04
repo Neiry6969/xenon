@@ -82,12 +82,8 @@ module.exports = {
                 "https://media.discordapp.net/attachments/965028200390475858/992588652465111120/image-removebg-preview_17.png"
             )
             .setTitle("Crafting Table")
-            .setDescription(
-                `Finding the crafting book, hm I wonder where I left it... <a:loading:987196796549861376>`
-            );
+           
 
-        await interaction.reply({ embeds: [craft_msg_embed] });
-        const craft_msg = await interaction.fetchReply();
 
         try {
             const craftingtable_map = itemData
@@ -226,11 +222,15 @@ module.exports = {
                     .slice(display_start, display_end)
                     .join("\n\n")}`
             );
-
-            await craft_msg.edit({
+            
+            
+        await craft_msg.reply({
                 embeds: [craft_msg_embed],
                 components: [row2, row, row3],
             });
+        const craft_msg = await interaction.fetchReply();
+
+           
 
             interactionproccesses[interaction.user.id] = {
                 interaction: true,
