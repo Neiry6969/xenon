@@ -123,7 +123,7 @@ module.exports = {
                         v.dropendtime
                     }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${v.usersbuyobject[
                         interaction.user.id
-                    ].toLocaleString()}/${v.maxperuser.toLocaleString()}\``;
+                    ]?.toLocaleString()}/${v.maxperuser.toLocaleString()}\``;
                 }
             })
             .filter(Boolean)
