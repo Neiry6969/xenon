@@ -9,7 +9,6 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const economyModel = require("../../models/economySchema");
 const inventoryModel = require("../../models/inventorySchema");
-const allItems = require("../..//data/all_items");
 const letternumbers = require("../../reference/letternumber");
 const interactionproccesses = require("../../interactionproccesses.json");
 
@@ -224,7 +223,7 @@ module.exports = {
             );
             
             
-        await craft_msg.reply({
+        await interaction.reply({
                 embeds: [craft_msg_embed],
                 components: [row2, row, row3],
             });
