@@ -256,6 +256,8 @@ module.exports = {
             let craftitems;
             let item;
             let missingitems = false;
+            let maxcraftamount;
+            let halfcraftamount;
 
             collector.on("collect", async (i) => {
                 if (i.user.id != interaction.user.id) {
@@ -300,6 +302,8 @@ module.exports = {
                     craftitems = null;
                     item = null;
                     missingitems = false;
+                    maxcraftamount = null;
+                    halfcraftamount = null;
                     
                     craft_msg_embed.setColor("RANDOM");
 
@@ -581,8 +585,8 @@ module.exports = {
                         );
                     });
                     
-                    const maxcraftamount = Math.min(...craftitemamountmap);
-                    const halfcraftamount = Math.floor(maxcraftamount / 2);
+                    maxcraftamount = Math.min(...craftitemamountmap);
+                    halfcraftamount = Math.floor(maxcraftamount / 2);
                     setmaxbutton.setLabel(`Set Max (${maxcraftamount.toLocaleString()})`)
                     setminbutton.setLabel(`Set Max (0)`)
                     sethalfbutton.setLabel(`Set Half (${halfcraftamount.toLocaleString()})`)
