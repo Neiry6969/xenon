@@ -218,10 +218,8 @@ module.exports = {
                 rightbutton,
                 rightfarbutton,
             ]);
-            let row2 = new MessageActionRow().setComponents(craftmenu);
-            let row3 = new MessageActionRow().setComponents(
-                endinteractionbutton
-            );
+            let row2 = new MessageActionRow().setComponents([craftmenu]);
+            let row3 = new MessageActionRow().setComponents([endinteractionbutton]);
 
             craft_msg_embed.setDescription(
                 `${craftingtable_map
