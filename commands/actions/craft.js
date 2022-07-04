@@ -641,19 +641,29 @@ module.exports = {
                     }
                 );
                 
-                leftfarbutton.setDisabled();
-                leftbutton.setDisabled();
-                rightfarbutton.setDisabled();
-                rightbutton.setDisabled();
-                craftmenu.setDisabled();
-                endinteractionbutton.setDisabled();
-                backbutton.setDisabled();
-                minusbutton.setDisabled();
-                addbutton.setDisabled();
-                setmaxbutton.setDisabled();
-                sethalfbutton.setDisabled();
-                setminbutton.setDisabled();
-                craftbutton.setDisabled();
+//                 leftfarbutton.setDisabled();
+//                 leftbutton.setDisabled();
+//                 rightfarbutton.setDisabled();
+//                 rightbutton.setDisabled();
+//                 craftmenu.setDisabled();
+//                 endinteractionbutton.setDisabled();
+//                 backbutton.setDisabled();
+//                 minusbutton.setDisabled();
+//                 addbutton.setDisabled();
+//                 setmaxbutton.setDisabled();
+//                 sethalfbutton.setDisabled();
+//                 setminbutton.setDisabled();
+//                 craftbutton.setDisabled();
+                 ``row.components[0].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+                    row3.components[1].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+
+                    row2.components[2].components.forEach((c) => {
+                        c.setDisabled();
+                    });
              
 
                 return craft_msg.edit({
