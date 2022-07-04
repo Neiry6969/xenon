@@ -640,7 +640,7 @@ module.exports = {
                         }
                     }
                 );
-                
+                console.log(craft_msg.components)
                  craft_msg.components[0].components.forEach((c) => {
                         c.setDisabled();
                     });
