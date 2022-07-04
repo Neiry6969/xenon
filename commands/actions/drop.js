@@ -112,7 +112,7 @@ module.exports = {
                 
                 let amountbought_user;
                 
-                if(v.usersbuyobject[interaction.user.id].length > 0) {
+                if(v.usersbuyobject[interaction.user.id]) {
                     amountbought_user = v.usersbuyobject[interaction.user.id]
                 } else {
                     amountbought_user = 0
