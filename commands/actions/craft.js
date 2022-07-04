@@ -594,10 +594,10 @@ module.exports = {
                         craft_msg_embed.setColor("RED");
                     } else {
                         row2.components.forEach((c) => {
-                            c.setDisabled(true);
+                            c.setDisabled(false);
                         });
                         row.components.forEach((c) => {
-                            c.setDisabled(true);
+                            c.setDisabled(false);
                         });
                     }
                     
