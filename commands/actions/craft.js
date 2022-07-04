@@ -295,7 +295,7 @@ module.exports = {
                         components: craft_msg.components,
                     });
                 } else if (i.customId === "backbutton") {
-                    craftcounter = null;
+                    craftcounter = 0;
                     crafttools = null;
                     craftitems = null;
                     item = null;
@@ -576,7 +576,7 @@ module.exports = {
                     } **${item.name}**\nID: \`${
                         item.item
                     }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}`;
-
+                    craft_msg_embed.setColor("RANDOM");
                     if (missingitems === true) {
                         craftcounter = 0;
                         row2.components.forEach((c) => {
@@ -590,7 +590,7 @@ module.exports = {
                             `\n\n\`\`\`You do not meet the requirements to craft even one of this item\`\`\``;
                         craft_msg_embed.setColor("RED");
                     }
-                    craft_msg_embed.setColor("RANDOM");
+                    
 
                     craft_msg_embed.setDescription(displaytext);
 
