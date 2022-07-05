@@ -541,8 +541,12 @@ module.exports = {
           });
 
           maxcraftamount = Math.min(...craftitemamountmap);
+
+          if(isNaN(maxcraftamount)) {
+            maxcraftamount = 0;
+          }
           halfcraftamount = Math.floor(maxcraftamount / 2);
-          setmaxbutton.setLabel(`Set Max (\`${maxcraftamount.toLocaleString()}\`)`);
+          setmaxbutton.setLabel(`Set Max (${maxcraftamount.toLocaleString()})`);
           setminbutton.setLabel(`Set Max (0)`);
           sethalfbutton.setLabel(
             `Set Half (${halfcraftamount.toLocaleString()})`
@@ -640,6 +644,14 @@ module.exports = {
             sethalfbutton.setDisabled(false);
           }
 
+          if (craftcounter <= 1) {
+            minusbutton.setDisabled();
+            setminbutton.setDisabled();
+          } else {
+            minusbutton.setDisabled(false);
+            setminbutton.setDisabled(false);
+          }
+
           let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\nMax: \`${maxcraftamount.toLocaleString()}\`\n\n${
             item.icon
           } **${item.name}**\nID: \`${
@@ -691,6 +703,14 @@ module.exports = {
           } else {
             minusbutton.setDisabled(false);
             setminbutton.setDisabled(false);
+          }
+
+          if (craftcounter === maxcraftamount) {
+            addbutton.setDisabled();
+            setmaxbutton.setDisabled();
+          } else {
+            addbutton.setDisabled(false);
+            setmaxbutton.setDisabled(false);
           }
 
           if (craftcounter === halfcraftamount) {
