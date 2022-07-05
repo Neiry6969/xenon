@@ -231,7 +231,7 @@ module.exports = {
 
                         const collector =
                             inv_msg.createMessageComponentCollector({
-                                time: 20 * 1000,
+                                idle: 20 * 1000,
                             });
 
                         collector.on("collect", async (button) => {
@@ -655,7 +655,7 @@ module.exports = {
                     const inv_msg = await interaction.fetchReply();
 
                     const collector = inv_msg.createMessageComponentCollector({
-                        time: 20 * 1000,
+                        idle: 20 * 1000,
                     });
 
                     collector.on("collect", async (button) => {
