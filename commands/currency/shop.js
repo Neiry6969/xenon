@@ -202,7 +202,7 @@ module.exports = {
             const shop_msg = await interaction.fetchReply();
 
             const collector = shop_msg.createMessageComponentCollector({
-                time: 20 * 1000,
+                idle: 20 * 1000,
             });
 
             collector.on("collect", async (button) => {
