@@ -171,7 +171,7 @@ module.exports = {
         .setLabel("Back")
         .setStyle("SECONDARY");
       let minusbutton = new MessageButton()
-        .setCustomId("minubutton")
+        .setCustomId("minusbutton")
         .setLabel("-")
         .setStyle("SUCCESS");
       let addbutton = new MessageButton()
