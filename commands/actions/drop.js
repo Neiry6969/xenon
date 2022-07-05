@@ -366,7 +366,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -474,7 +474,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -587,7 +587,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -731,7 +731,7 @@ module.exports = {
                 }
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 drop_msg.components[0].components.forEach((c) => {
