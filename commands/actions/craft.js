@@ -594,6 +594,15 @@ module.exports = {
                         item.item
                     }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}`;
                     craft_msg_embed.setColor("RANDOM");
+
+                    if(craftcounter <= 1) {
+                      minusbutton.setDisabled()
+
+                    } else {
+                      minusbutton.setDisabled(false)
+
+                    }
+
                     if (missingitems === true) {
                         craftcounter = 0;
                         row2.components.forEach((c) => {
@@ -606,7 +615,14 @@ module.exports = {
                             displaytext +
                             `\n\n\`\`\`You do not meet the requirements to craft even one of this item\`\`\``;
                         craft_msg_embed.setColor("RED");
+                    } else if (maxcraftamount === 1) {
+                      minusbutton.setDisabled()
+                      addbutton.setDisabled()
+                      row.components.forEach((c) => {
+                        c.setDisabled();
+                    });
                     } else {
+                      
                         row2.components.forEach((c) => {
                             c.setDisabled(false);
                         });
@@ -622,6 +638,38 @@ module.exports = {
                         embeds: [craft_msg_embed],
                         components: [row2, row, row3],
                     });
+                } else if (i.customId === "addbutton") {
+                  craftcounter = craftcounter + 1
+
+                  if(craftcounter === maxcraftamount) {
+                    addbutton.setDisabled()
+                    setmaxbutton.setDisabled()
+                  } else {
+                    addbutton.setDisabled(false)
+                    setmaxbutton.setDisabled(false)
+                  }
+
+                  if(craftcounter === halfcraftamount) {
+                    sethalfbutton.setDisabled()
+                  } else {
+                    sethalfbutton.setDisabled(false)
+
+                  }
+
+                  let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\n\n${
+                      item.icon
+                  } **${item.name}**\nID: \`${
+                      item.item
+                  }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}`;
+                  craft_msg_embed.setColor("RANDOM");
+
+                  craft_msg_embed.setDescription(displaytext);
+
+
+                  await craft_msg.edit({
+                    embeds: [craft_msg_embed],
+                    components: [row2, row, row3],
+                });
                 }
             });
 
@@ -655,16 +703,7 @@ module.exports = {
                     });
             });
         } catch (error) {
-            craft_msg_embed
-                .setDescription(
-                    `There was an unexpected error that occurred, error has been sent to developers.`
-                )
-                .setColor("RED");
-
             console.log(error);
-            return await craft_msg.edit({
-                embeds: [craft_msg_embed],
-            });
         }
   }
 }
