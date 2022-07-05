@@ -593,7 +593,7 @@ module.exports = {
                     setminbutton.setLabel(`Set Max (0)`)
                     sethalfbutton.setLabel(`Set Half (${halfcraftamount.toLocaleString()})`)
 
-                    let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\n\n${
+                    let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\nMax: ${maxcraftamount.toLocaleString()}\n\n${
                         item.icon
                     } **${item.name}**\nID: \`${
                         item.item
@@ -696,7 +696,74 @@ module.exports = {
 
                   }
 
-                  let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\n\n${
+                  let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\nMax: ${maxcraftamount.toLocaleString()}\n\n${
+                      item.icon
+                  } **${item.name}**\nID: \`${
+                      item.item
+                  }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}`;
+                  craft_msg_embed.setColor("RANDOM");
+
+                  craft_msg_embed.setDescription(displaytext);
+
+
+                  await craft_msg.edit({
+                    embeds: [craft_msg_embed],
+                    components: [row2, row, row3],
+                });
+                } else if(i.customId === "minusbutton") {
+                  craftcounter = craftcounter - 1
+
+                  craftitems = item.craftitems
+                            .map((value) => {
+                                const craftitem = allItems.find(
+                                    ({ item }) => item === value.i
+                                );
+                                let craftitemamount_counter = value.q * craftcounter;
+
+                                let hasamount =
+                                    inventoryData.inventory[craftitem.item];
+                                if (!inventoryData.inventory[craftitem.item]) {
+                                    hasamount = 0;
+                                }
+                                if (
+                                    ifhasamountitem(value.q, hasamount) ===
+                                    false
+                                ) {
+                                    craftitemamount_counter = 0
+
+                                    missingitems = true;
+                                }
+
+                                let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
+                                    craftitem.icon
+                                } \`${craftitem.item}\``;
+                                if (
+                                    ifhasamountitem(value.q, hasamount) === true
+                                ) {
+                                    message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
+                                        craftitem.icon
+                                    } \`${craftitem.item}\` (x${craftitemamount_counter.toLocaleString()})`;
+                                }
+                                return message;
+                            })
+                            .join("\n");
+
+                  if(craftcounter <= 1) {
+                    minusbutton.setDisabled()
+                    setminbutton.setDisabled()
+                  } else {
+                    minusbutton.setDisabled(false)
+                    setminbutton.setDisabled(false)
+                  }
+
+                  if(craftcounter === halfcraftamount) {
+                    sethalfbutton.setDisabled()
+                  } else {
+                    sethalfbutton.setDisabled(false)
+
+                  }
+
+                  let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\nMax: ${maxcraftamount.toLocaleString()}\n\n${
                       item.icon
                   } **${item.name}**\nID: \`${
                       item.item
