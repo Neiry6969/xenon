@@ -549,6 +549,8 @@ module.exports = {
                                 const craftitem = allItems.find(
                                     ({ item }) => item === value.i
                                 );
+                                let craftitemamount_counter = value.q * craftcounter;
+
                                 let hasamount =
                                     inventoryData.inventory[craftitem.item];
                                 if (!inventoryData.inventory[craftitem.item]) {
@@ -558,8 +560,11 @@ module.exports = {
                                     ifhasamountitem(value.q, hasamount) ===
                                     false
                                 ) {
+                                    craftitemamount_counter = 0
+
                                     missingitems = true;
                                 }
+
                                 let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
                                     craftitem.icon
                                 } \`${craftitem.item}\``;
@@ -568,7 +573,7 @@ module.exports = {
                                 ) {
                                     message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
                                         craftitem.icon
-                                    } \`${craftitem.item}\``;
+                                    } \`${craftitem.item}\` (x${craftitemamount_counter.toLocaleString()})`;
                                 }
                                 return message;
                             })
@@ -640,6 +645,41 @@ module.exports = {
                     });
                 } else if (i.customId === "addbutton") {
                   craftcounter = craftcounter + 1
+
+                  craftitems = item.craftitems
+                            .map((value) => {
+                                const craftitem = allItems.find(
+                                    ({ item }) => item === value.i
+                                );
+                                let craftitemamount_counter = value.q * craftcounter;
+
+                                let hasamount =
+                                    inventoryData.inventory[craftitem.item];
+                                if (!inventoryData.inventory[craftitem.item]) {
+                                    hasamount = 0;
+                                }
+                                if (
+                                    ifhasamountitem(value.q, hasamount) ===
+                                    false
+                                ) {
+                                    craftitemamount_counter = 0
+
+                                    missingitems = true;
+                                }
+
+                                let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
+                                    craftitem.icon
+                                } \`${craftitem.item}\``;
+                                if (
+                                    ifhasamountitem(value.q, hasamount) === true
+                                ) {
+                                    message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
+                                        craftitem.icon
+                                    } \`${craftitem.item}\` (x${craftitemamount_counter.toLocaleString()})`;
+                                }
+                                return message;
+                            })
+                            .join("\n");
 
                   if(craftcounter === maxcraftamount) {
                     addbutton.setDisabled()
