@@ -957,7 +957,7 @@ module.exports = {
               inventoryData.inventory[craftitem.item] = amountleft
 
 
-              let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
+              let message = `\`${amountleft.toLocaleString()}/${value.q.toLocaleString()}\` ${
                 craftitem.icon
               } \`${craftitem.item}\``;
               if (ifhasamountitem(value.q, amountleft) === true) {
@@ -965,7 +965,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${amountleft.toLocaleString()})`;
+                }\` (x${craftitemamount_counter.toLocaleString()})`;
               }
               return message;
             })
