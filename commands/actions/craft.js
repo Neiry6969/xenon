@@ -530,7 +530,7 @@ module.exports = {
                     craftitem.icon
                   } \`${
                     craftitem.item
-                  }\` (x${craftitemamount_counter.toLocaleString()})`;
+                  }\` (\`- ${craftitemamount_counter.toLocaleString()}\`)`;
                 }
                 return message;
               })
@@ -628,7 +628,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${craftitemamount_counter.toLocaleString()})`;
+                }\` (\`- ${craftitemamount_counter.toLocaleString()}\`)`;
               }
               return message;
             })
@@ -695,7 +695,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${craftitemamount_counter.toLocaleString()})`;
+                }\` (\`- ${craftitemamount_counter.toLocaleString()}\`)`;
               }
               return message;
             })
@@ -762,7 +762,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${craftitemamount_counter.toLocaleString()})`;
+                }\` (\`- ${craftitemamount_counter.toLocaleString()}\`)`;
               }
               return message;
             })
@@ -829,7 +829,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${craftitemamount_counter.toLocaleString()})`;
+                }\` (\`- ${craftitemamount_counter.toLocaleString()}\`)`;
               }
               return message;
             })
@@ -896,7 +896,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${craftitemamount_counter.toLocaleString()})`;
+                }\` (\`- ${craftitemamount_counter.toLocaleString()}\`)`;
               }
               return message;
             })
@@ -965,7 +965,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${craftitemamount_counter.toLocaleString()})`;
+                }\` (\`- ${craftitemamount_counter.toLocaleString()}\`)`;
               }
               return message;
             })
