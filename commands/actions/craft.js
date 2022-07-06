@@ -67,6 +67,10 @@ module.exports = {
       }
     });
 
+    const params = {
+      userId: interaction.user.id
+    }
+
     const craft_msg_embed = new MessageEmbed()
       .setColor("#000000")
       .setAuthor({
@@ -241,7 +245,7 @@ module.exports = {
       let halfcraftamount;
 
       collector.on("collect", async (i) => {
-        if (i.user.id != interaction.user.id) {
+        if (i.user.id !== interaction.user.id) {
           return i.reply({
             content: "This is not for you.",
             ephemeral: true
@@ -949,11 +953,15 @@ module.exports = {
                 missingitems = true;
               }
 
+              const amountleft = inventoryData.inventory[craftitem.item] - (craftcounter * value.q);
+              inventoryData.inventory[craftitem.item] = amountleft
+
+
               let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
                 craftitem.icon
               } \`${craftitem.item}\``;
               if (ifhasamountitem(value.q, hasamount) === true) {
-                message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
+                message = `[\`${amountleft.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
                   craftitem.icon
                 } \`${
                   craftitem.item
@@ -1017,6 +1025,8 @@ module.exports = {
           craft_msg.components[2].components.forEach((c) => {
             c.setDisabled();
           });
+
+          await inventoryModel.findOneAndUpdate(params, inventoryData);
 
           return craft_msg.edit({
             embeds: [craft_msg_embed],
