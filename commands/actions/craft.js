@@ -989,8 +989,8 @@ module.exports = {
             item.icon
           } **${item.name}**\nID: \`${
             item.item
-          }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}\n\n\`\`\`⚒️ Craft was successful!\nItem: ${item.item}\nQuantity: ${craftcounter.toLocaleString()}\`\`\``;
-          craft_msg_embed.setColor("RANDOM");
+          }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}\n\n\`\`\`fix\n⚒️ Craft was successful!\n\nItem: ${item.item}\nQuantity: ${craftcounter.toLocaleString()}\`\`\``;
+          craft_msg_embed.setColor("#94fc03");
 
           craft_msg_embed.setDescription(displaytext);
 
