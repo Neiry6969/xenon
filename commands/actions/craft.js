@@ -1,4 +1,4 @@
-https://media.discordapp.net/attachments/847859352878579742/994062867005456485/card.webp?width=752&height=377const {
+const {
   MessageActionRow,
   MessageButton,
   MessageSelectMenu,
