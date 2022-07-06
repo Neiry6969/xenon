@@ -965,7 +965,7 @@ module.exports = {
                   craftitem.icon
                 } \`${
                   craftitem.item
-                }\` (x${craftitemamount_counter.toLocaleString()})`;
+                }\` (x${amountleft.toLocaleString()})`;
               }
               return message;
             })
