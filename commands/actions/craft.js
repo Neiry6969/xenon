@@ -1025,6 +1025,16 @@ module.exports = {
           craft_msg.components[2].components.forEach((c) => {
             c.setDisabled();
           });
+          
+          const hasItem = Object.keys(inventoryData.inventory).includes(
+              item.item
+          );
+          if (!hasItem) {
+              inventoryData.inventory[item.item] = craftcounter;
+          } else {
+              inventoryData.inventory[item.item] =
+                  inventoryData.inventory[item.item] + craftcounter;
+          }
 
           await inventoryModel.findOneAndUpdate(params, inventoryData);
 
