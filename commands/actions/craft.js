@@ -551,7 +551,7 @@ module.exports = {
           }
           halfcraftamount = Math.floor(maxcraftamount / 2);
           setmaxbutton.setLabel(`Set Max (${maxcraftamount.toLocaleString()})`);
-          setminbutton.setLabel(`Set Min (0)`);
+          setminbutton.setLabel(`Set Min (1)`);
           sethalfbutton.setLabel(
             `Set Half (${halfcraftamount.toLocaleString()})`
           );
