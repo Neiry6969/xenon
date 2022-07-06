@@ -960,7 +960,7 @@ module.exports = {
               let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
                 craftitem.icon
               } \`${craftitem.item}\``;
-              if (ifhasamountitem(value.q, hasamount) === true) {
+              if (ifhasamountitem(value.q, amountleft) === true) {
                 message = `[\`${amountleft.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
                   craftitem.icon
                 } \`${
