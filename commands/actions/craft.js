@@ -1,4 +1,4 @@
-const {
+https://media.discordapp.net/attachments/847859352878579742/994062867005456485/card.webp?width=752&height=377const {
   MessageActionRow,
   MessageButton,
   MessageSelectMenu,
@@ -932,6 +932,95 @@ module.exports = {
           await craft_msg.edit({
             embeds: [craft_msg_embed],
             components: [row2, row, row3]
+          });
+        } else if (i.customId === "craftbutton") {
+          craftitems = item.craftitems
+            .map((value) => {
+              const craftitem = allItems.find(({ item }) => item === value.i);
+              let craftitemamount_counter = value.q * craftcounter;
+
+              let hasamount = inventoryData.inventory[craftitem.item];
+              if (!inventoryData.inventory[craftitem.item]) {
+                hasamount = 0;
+              }
+              if (ifhasamountitem(value.q, hasamount) === false) {
+                craftitemamount_counter = 0;
+
+                missingitems = true;
+              }
+
+              let message = `\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\` ${
+                craftitem.icon
+              } \`${craftitem.item}\``;
+              if (ifhasamountitem(value.q, hasamount) === true) {
+                message = `[\`${hasamount.toLocaleString()}/${value.q.toLocaleString()}\`](https://www.google.com/) ${
+                  craftitem.icon
+                } \`${
+                  craftitem.item
+                }\` (x${craftitemamount_counter.toLocaleString()})`;
+              }
+              return message;
+            })
+            .join("\n");
+
+          if (craftcounter <= 1) {
+            minusbutton.setDisabled();
+            setminbutton.setDisabled();
+          } else {
+            minusbutton.setDisabled(false);
+            setminbutton.setDisabled(false);
+          }
+
+          if (craftcounter === maxcraftamount) {
+            addbutton.setDisabled();
+            setmaxbutton.setDisabled();
+          } else {
+            addbutton.setDisabled(false);
+            setmaxbutton.setDisabled(false);
+          }
+
+          if (craftcounter === halfcraftamount) {
+            sethalfbutton.setDisabled();
+          } else {
+            sethalfbutton.setDisabled(false);
+          }
+
+          let displaytext = `**Craft Counter:** \`${craftcounter.toLocaleString()}\`\nMax: \`${maxcraftamount.toLocaleString()}\`\n\n${
+            item.icon
+          } **${item.name}**\nID: \`${
+            item.item
+          }\`\n\n**Craft Tools:**\n${crafttools}\n\n**Craft Items:**\n${craftitems}\n\n\`\`\`⚒️ Craft was successful!\nItem: ${item.item}\nQuantity: ${craftcounter.toLocaleString()}\`\`\``;
+          craft_msg_embed.setColor("RANDOM");
+
+          craft_msg_embed.setDescription(displaytext);
+
+          interactionproccesses[interaction.user.id] = {
+            interaction: false,
+            proccessingcoins: false
+          };
+          fs.writeFile(
+            "./interactionproccesses.json",
+            JSON.stringify(interactionproccesses),
+            (err) => {
+              if (err) {
+                console.log(err);
+              }
+            }
+          );
+          craft_msg.components[0].components.forEach((c) => {
+            c.setDisabled();
+          });
+          craft_msg.components[1].components.forEach((c) => {
+            c.setDisabled();
+          });
+
+          craft_msg.components[2].components.forEach((c) => {
+            c.setDisabled();
+          });
+
+          return craft_msg.edit({
+            embeds: [craft_msg_embed],
+            components: craft_msg.components
           });
         }
       });
