@@ -54,18 +54,3 @@ process.on("unhandledRejection", (err) => {
     client.handleCommands(commandFolders, "./commands");
     client.login(discord_token);
 })();
-
-const express = require("express");
-const Topgg = require("@top-gg/sdk");
-
-const app = express();
-
-const webhook = new Topgg.Webhook("YLRjLv55U3bJs9UAtpMQeRwqRMuwPd");
-app.post(
-    "/dblwebhook",
-    webhook.listener((vote) => {
-        console.log(vote);
-    })
-);
-
-app.listen(6969);
