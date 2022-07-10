@@ -168,7 +168,7 @@ module.exports = {
             });
         } else if (inventoryData.inventory[item.item] < useamount) {
             errorembed.setDescription(
-                `You don't have enough coins in your wallet to buy that many of that item.\n\n\nItem: ${
+                `You don't have enough coins in your wallet to buy that many of that item.\n\nItem: ${
                     item.icon
                 } \`${
                     item.item
