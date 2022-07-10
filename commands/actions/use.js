@@ -172,7 +172,9 @@ module.exports = {
                     item.icon
                 } \`${
                     item.item
-                }\`\n**Quantity:** \`${useamount.toLocaleString()}\``
+                }\`\nQuantity: \`${useamount.toLocaleString()}\`\n**You Have:** \`${inventoryData.inventory[
+                    item.item
+                ].toLocaleString()}\``
             );
 
             return interaction.reply({
