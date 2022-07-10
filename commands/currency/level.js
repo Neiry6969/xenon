@@ -245,7 +245,7 @@ module.exports = {
                         },
                         {
                             name: "Balance",
-                            value: `Wallet: \`❀ 0\`\nBank: \`❀ 0\`\nBankspace: \`1000\`\nTotal Balance: \`❀ 0\``,
+                            value: `Wallet: \`❀ 0\`\nBank: \`❀ 0\`\nBankspace: \`1000\`\nBankmessage Space:\`0\`\nTotal Balance: \`❀ 0\``,
                             inline: true,
                         },
                         {
@@ -316,7 +316,7 @@ module.exports = {
                             },
                             {
                                 name: "Balance",
-                                value: `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
+                                value: `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nBankmessage Space:\`${targetData.bank.bankmessagespace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
                                 inline: true,
                             },
                             {
@@ -344,6 +344,7 @@ module.exports = {
                 userData.bank.otherbankspace;
             const walletcoins = userData.wallet;
             const bankcoins = userData.bank.coins;
+            const bankmessagespace = userData.bank.bankmessagespace;
             const total_balance = walletcoins + bankcoins;
 
             let itemsworth = 0;
@@ -396,7 +397,7 @@ module.exports = {
                     },
                     {
                         name: "Balance",
-                        value: `Wallet: \`❀ ${walletcoins.toLocaleString()}\`\nBank: \`❀ ${bankcoins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
+                        value: `Wallet: \`❀ ${walletcoins.toLocaleString()}\`\nBank: \`❀ ${bankcoins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nBankmessage Space: \`${bankmessagespace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
                         inline: true,
                     },
                     {

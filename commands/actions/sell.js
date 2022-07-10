@@ -5,7 +5,6 @@ const fs = require("fs");
 
 const economyModel = require("../../models/economySchema");
 const inventoryModel = require("../../models/inventorySchema");
-const allItems = require("../../data/all_items");
 const letternumbers = require("../../reference/letternumber");
 const interactionproccesses = require("../../interactionproccesses.json");
 

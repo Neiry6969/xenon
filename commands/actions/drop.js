@@ -109,6 +109,14 @@ module.exports = {
                 const dropendtime = new Date(v.dropendtime);
                 const datenow = new Date();
                 const timeleft = dropendtime - datenow / 1000;
+                
+                let amountbought_user;
+                
+                if(v.usersbuyobject[interaction.user.id]) {
+                    amountbought_user = v.usersbuyobject[interaction.user.id]
+                } else {
+                    amountbought_user = 0
+                }
 
                 if (timeleft <= 0) {
                     return;
@@ -121,9 +129,7 @@ module.exports = {
                         item.item
                     }\`\nDrop Ending At: <t:${v.dropendtime}:f> <t:${
                         v.dropendtime
-                    }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${v.usersbuyobject[
-                        interaction.user.id
-                    ].toLocaleString()}/${v.maxperuser.toLocaleString()}\``;
+                    }:R>\nPrice: \`❀ ${v.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${v.maxdrop.toLocaleString()}\`\nMax Per User: \`${amountbought_user.toLocaleString()}/${v.maxperuser.toLocaleString()}\``;
                 }
             })
             .filter(Boolean)
@@ -360,7 +366,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -468,7 +474,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -581,7 +587,7 @@ module.exports = {
                 ).toLocaleString()}\`)`;
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 await drop_msg.edit({
@@ -661,9 +667,9 @@ module.exports = {
                     amountcanbuy = 0;
                     extrastring = `\n\`Too sad, the stocks ran out!\``;
                 } else {
-                    extrastring = `\n\`You sucessfully bought ${buycount.toLocaleString()} stocks! Good business!\`\n\`Total: ❀ ${(
+                    extrastring = `\n\`\`\`fix\n⬇️ You sucessfully bought some stocks of this drop! Great business!\n\nItem: ${dropinfo.item}\nQuantity: ${buycount.toLocaleString()}\nTotal: ❀ ${(
                         buycount * dropinfo.price
-                    ).toLocaleString()}\``;
+                    ).toLocaleString()}\`\`\``;
                 }
 
                 interactionproccesses[interaction.user.id] = {
@@ -725,7 +731,7 @@ module.exports = {
                 }
 
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
-                row2.addComponents(backbutton);
+                row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
                 drop_msg.components[0].components.forEach((c) => {

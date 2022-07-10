@@ -121,7 +121,7 @@ module.exports = {
         if (buyamount === "max" || buyamount === "all") {
             if (userData.wallet < item.value) {
                 errorembed.setDescription(
-                    `You need atleast \`❀ ${item.value}\` in your wallet to buy a ${item.icon} \`${item.item}\``
+                    `You need at least \`❀ ${item.value}\` in your wallet to buy a ${item.icon} \`${item.item}\``
                 );
                 return interaction.reply({
                     embeds: [errorembed],
