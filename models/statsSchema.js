@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const statsSchema = new mongoose.Schema(
     {
@@ -9,25 +9,33 @@ const statsSchema = new mongoose.Schema(
         },
         commands: {
             type: Number,
-            default: 0
+            default: 0,
         },
         commandsObject: {
             type: Object,
-            default: {}
+            default: {},
         },
         gamblestats: {
             type: Object,
-            default: {}
+            default: {},
         },
         interactionstats: {
             type: Object,
-            default: {}
+            default: {},
+        },
+        interactionstats: {
+            type: Object,
+            default: {
+                firstvoted: null,
+                lastvoted: null,
+                votedmonthly: null,
+                totalvotes: null,
+            },
         },
     },
     { minimize: false }
-)
+);
 
-
-const model = mongoose.model('StatsModels', statsSchema);
+const model = mongoose.model("StatsModels", statsSchema);
 
 module.exports = model;

@@ -66,7 +66,7 @@ module.exports = {
         }
         const cooldown_amount = cooldown * 1000;
         const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].buy = timpstamp;
+        jsoncooldowns[interaction.user.id].use = timpstamp;
         fs.writeFile(
             "./cooldowns.json",
             JSON.stringify(jsoncooldowns),
