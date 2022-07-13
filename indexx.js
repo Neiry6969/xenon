@@ -1,17 +1,19 @@
-const express = require("express");
 const Topgg = require("@top-gg/sdk");
-
+const express = require("express");
 const app = express();
+const cors = require("cors");
 
-const webhook = new Topgg.Webhook(
-    "t3xA6XrFdjkV59VjneBMCZCH825KuXF2MHNfHStwS6smwCyR74"
-);
+app.use(cors());
+
+const webhook = new Topgg.Webhook("ajsdnad329jdidmsnakd8");
 
 app.post(
-    "/webhook",
+    "/dblwebhook",
     webhook.listener((vote) => {
         console.log(vote.user);
     })
 );
 
-app.listen(8080);
+app.listen(8080, function () {
+    console.log("Server is running...");
+});
