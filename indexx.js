@@ -8,7 +8,7 @@ const webhook = new Topgg.Webhook(
 );
 
 app.post(
-    "/dblwebhook",
+    "/webhook",
     webhook.listener((vote) => {
         console.log(vote.user);
     })
