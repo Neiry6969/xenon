@@ -66,7 +66,7 @@ module.exports = {
             return `\` > \` ${item.icon} \`${
                 item.item
             }\` \`x${element.quantity.toLocaleString()}\``;
-        });
+        }).join("\n");
 
         const topggbutton = new MessageButton()
             .setLabel("top.gg")
