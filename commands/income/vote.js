@@ -56,7 +56,7 @@ module.exports = {
         );
 
         const topggvoterewards_coins = 50000;
-        const topggvoterewards_items = [{ item: "chestofcommon", quantity: 5 }];
+        const topggvoterewards_items = [{ item: "chestofcommon", quantity: 5 }, { item: "bankmessage", quantity: 5 }];
 
         const voterewards_items_map = topggvoterewards_items.map((element) => {
             const item = allItems.find(
