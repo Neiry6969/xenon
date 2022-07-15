@@ -86,7 +86,6 @@ module.exports = {
         const topggvotetimestampready = topgglastvotedtimestamp + 43200000
         
        
-
         const voterewards_items_map = topggvoterewards_items.map((element) => {
             const item = allItems.find(
                 (val) => val.item.toLowerCase() === element.item
@@ -103,7 +102,12 @@ module.exports = {
             .setEmoji("<:topgg:995813492424716399>")
             .setURL("https://top.gg/bot/847528987831304192")
             .setDisabled(false);
-        
+       
+
+        const row = new MessageActionRow().addComponents(topggbutton);
+            
+        console.log(topgglastvotedtimestamp > nowtimestamp, topgglastvotedtimestamp, nowtimestamp)
+            
         if(topgglastvotedtimestamp > nowtimestamp) {
             const timeleft = topgglastvotedtimestamp - nowtimestamp;
             const formattime = time_split(timeleft)
@@ -112,8 +116,6 @@ module.exports = {
                 .setDisabled()
 
         }
-
-        const row = new MessageActionRow().addComponents(topggbutton);
 
         const votembed = new MessageEmbed()
             .setTitle("Voting Rewards For Xenon")
