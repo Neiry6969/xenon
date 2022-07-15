@@ -82,10 +82,7 @@ module.exports = {
 
         const topggvoterewards_coins = 50000;
         const topggvoterewards_items = [{ item: "chestofcommon", quantity: 5 }, { item: "bankmessage", quantity: 5 }];
-        let topgglastvotedtimestamp;
-        if(isNaN(profileData.eventcooldowns.vote_topgg)) {
-            topgglastvotedtimestamp = 0
-        }
+        const topgglastvotedtimestamp = profileData.eventcooldowns.vote_topgg;
         const topggvotetimestampready = topgglastvotedtimestamp + 43200000
         
   
