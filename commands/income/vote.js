@@ -100,7 +100,7 @@ module.exports = {
             .setLabel("top.gg")
             .setStyle("LINK")
             .setEmoji("<:topgg:995813492424716399>")
-            .setURL("https://top.gg/bot/847528987831304192")
+            .setURL("https://top.gg/bot/847528987831304192/vote")
             .setDisabled(false);
        
 
@@ -118,7 +118,7 @@ module.exports = {
         const votembed = new MessageEmbed()
             .setTitle("Voting Rewards For Xenon")
             .setDescription(
-                `[**top.gg** <:topgg:995813492424716399>](https://top.gg/bot/847528987831304192)\n\` > \` \`❀ ${topggvoterewards_coins.toLocaleString()}\`\n${voterewards_items_map}`
+                `[**top.gg** <:topgg:995813492424716399>](https://top.gg/bot/847528987831304192/vote)\n\` > \` \`❀ ${topggvoterewards_coins.toLocaleString()}\`\n${voterewards_items_map}`
             );
 
         return interaction.reply({ embeds: [votembed], components: [row] });
