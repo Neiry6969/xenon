@@ -1,0 +1,532 @@
+const {
+    MessageActionRow,
+    MessageButton,
+    MessageEmbed,
+    Message,
+} = require("discord.js");
+const { SlashCommandBuilder } = require("@discordjs/builders");
+
+const economyModel = require("../../models/economySchema");
+const inventoryModel = require("../../models/inventorySchema");
+const letternumbers = require("../../reference/letternumber");
+const interactionproccesses = require("../../interactionproccesses.json");
+
+const jsoncooldowns = require("../../cooldowns.json");
+const fs = require("fs");
+function premiumcooldowncalc(defaultcooldown) {
+    if (defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2;
+    } else if (defaultcooldown <= 15) {
+        return defaultcooldown - 5;
+    } else if (defaultcooldown <= 120) {
+        return defaultcooldown - 10;
+    } else {
+        return defaultcooldown;
+    }
+}
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName("eventheist")
+        .setDescription(
+            "An event for everyone to join together and heist your bank."
+        )
+        .addStringOption((oi) => {
+            return oi
+                .setName("amount")
+                .setRequired(true)
+                .setDescription(
+                    "A constant number: `123`, a short form: `2k`, a keyword: `max or half`"
+                );
+        }),
+    cooldown: 25,
+    async execute(
+        interaction,
+        client,
+        userData,
+        inventoryData,
+        statsData,
+        profileData
+    ) {
+        const params = {
+            userId: interaction.user.id,
+        };
+
+        const options = {
+            amount: interaction.options.getString("amount"),
+        };
+
+        let amount = options.amount?.toLowerCase();
+        const errorembed = new MessageEmbed().setColor("#FF5C5C");
+
+        let cooldown = 25;
+        if (
+            interaction.guild.id === "852261411136733195" ||
+            interaction.guild.id === "978479705906892830" ||
+            userData.premium.rank >= 1
+        ) {
+            cooldown = premiumcooldowncalc(cooldown);
+        }
+        const cooldown_amount = cooldown * 1000;
+        const timpstamp = Date.now() + cooldown_amount;
+        jsoncooldowns[interaction.user.id].eventheist = timpstamp;
+        fs.writeFile(
+            "./cooldowns.json",
+            JSON.stringify(jsoncooldowns),
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        );
+
+        const minreqcoins = 500000;
+        const minjoincoins = 5000;
+
+        if (userData.bank.coins <= 0) {
+            if (userData.wallet <= 0) {
+                errorembed.setDescription(
+                    `You have no coins in your bank to host an event-heist.\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``
+                );
+                return interaction.reply({
+                    embeds: [errorembed],
+                    ephemeral: true,
+                });
+            } else {
+                errorembed.setDescription(
+                    `You have no coins in your bank to host an event-heist, maybe deposit some?\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``
+                );
+                return interaction.reply({
+                    embeds: [errorembed],
+                    ephemeral: true,
+                });
+            }
+        }
+
+        if (amount === "max" || amount === "all") {
+            amount = userData.bank.coins;
+        } else if (amount === "half") {
+            amount = Math.floor(userData.bank.coins / 2);
+        } else if (
+            letternumbers.find((val) => val.letter === amount.slice(-1))
+        ) {
+            if (parseInt(amount.slice(0, -1))) {
+                const number = parseFloat(amount.slice(0, -1));
+                const numbermulti = letternumbers.find(
+                    (val) => val.letter === amount.slice(-1)
+                ).number;
+                amount = number * numbermulti;
+            } else {
+                amount = null;
+            }
+        } else {
+            amount = parseInt(amount);
+        }
+
+        if (amount < minreqcoins) {
+            errorembed.setDescription(
+                `That amount you provided is lower than the minimum event-heist hosting amount, pick a larger amount so payouts can be juicy.\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``
+            );
+            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        } else if (!amount || amount < 0 || amount % 1 != 0) {
+            errorembed.setDescription(
+                "Event-heist amount must be a whole number."
+            );
+            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        } else if (amount > userData.bank.coins) {
+            if (amount < userData.bank.coins + userData.wallet) {
+                errorembed.setDescription(
+                    `You don't have that amount coins in your bank to host an event-heist, maybe deposit some?\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``
+                );
+                return interaction.reply({
+                    embeds: [errorembed],
+                    ephemeral: true,
+                });
+            } else {
+                errorembed.setDescription(
+                    `You don't have that amount coins in your bank or your wallet to host an event-heist.\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``
+                );
+                return interaction.reply({
+                    embeds: [errorembed],
+                    ephemeral: true,
+                });
+            }
+        }
+
+        async function eventheist() {
+            const eventheist_arry = [];
+            let eventheistjoinedno = 0;
+            let joineventheist = new MessageButton()
+                .setCustomId("joineventheist")
+                .setLabel(
+                    `Join Event Heist (- ❀ ${minjoincoins.toLocaleString()})`
+                )
+                .setStyle(`SUCCESS`);
+            let eventheistjoined = new MessageButton()
+                .setCustomId("eventheistjoined")
+                .setLabel(`Users: ${eventheistjoinedno.toLocaleString()}`)
+                .setStyle("SECONDARY")
+                .setDisabled();
+
+            let erow = new MessageActionRow().addComponents(
+                joineventheist,
+                eventheistjoined
+            );
+
+            const eventheist_embed = new MessageEmbed()
+                .setTitle(
+                    `<a:alarm:997584331302260909> Event Heist Starting! <a:alarm:997584331302260909>`
+                )
+                .setDescription(
+                    `\`Alright hungry people, join up! This heist is about to get crazy!\`\n\n**Ending in:** \`2 minutes\`\n\n**Information**\nHost: <@${
+                        interaction.user.id
+                    }> (\`${interaction.user.tag}\`)\nId: \`${
+                        interaction.user.id
+                    }\`\n**Amount:** \`❀ ${amount.toLocaleString()}\`\n\`\`\`diff\n- You need to pay ❀ ${minjoincoins.toLocaleString()} from your wallet\n\`\`\``
+                );
+
+            const eventheistlobby_msg = await interaction.channel.send({
+                embeds: [eventheist_embed],
+                components: [erow],
+            });
+
+            const collector =
+                eventheistlobby_msg.createMessageComponentCollector({
+                    time: 120 * 1000,
+                });
+
+            collector.on("collect", async (button) => {
+                if (button.user.id === interaction.user.id) {
+                    return button.reply({
+                        content:
+                            "You can't join your own event-heist, sorry not sorry.",
+                        ephemeral: true,
+                    });
+                }
+
+                if (button.customId === "joineventheist") {
+                    let getUserData;
+                    try {
+                        getUserData = await economyModel.findOne({
+                            userId: button.user.id,
+                        });
+                        if (!getUserData) {
+                            let user = await economyModel.create({
+                                userId: button.user.id,
+                            });
+
+                            user.save();
+
+                            getUserData = user;
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
+
+                    if (getUserData.wallet < minjoincoins) {
+                        errorembed.setDescription(
+                            `You need at least \`❀ ${minjoincoins.toLocaleString()}\` in your wallet to join this event-heist!`
+                        );
+                        return button.reply({
+                            embeds: [errorembed],
+                            ephemeral: true,
+                        });
+                    } else if (eventheist_arry.includes(button.user.id)) {
+                        errorembed.setDescription(
+                            `You already joined this heist bruh!`
+                        );
+                        return button.reply({
+                            embeds: [errorembed],
+                            ephemeral: true,
+                        });
+                    } else {
+                        eventheist_arry.push(button.user.id);
+                        getUserData.wallet = getUserData.wallet - minjoincoins;
+                        await economyModel.findOneAndUpdate(
+                            {
+                                userId: button.user.id,
+                            },
+                            getUserData
+                        );
+
+                        eventheistjoinedno = eventheist_arry.length;
+
+                        eventheistjoined.setLabel(
+                            `Users: ${eventheistjoinedno.toLocaleString()}`
+                        );
+                        const joinedembed = new MessageEmbed().setDescription(
+                            `You successfully paided \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
+                        );
+
+                        await eventheistlobby_msg.edit({
+                            embeds: [eventheist_embed],
+                            components: [erow],
+                        });
+
+                        return button.reply({
+                            embeds: [joinedembed],
+                            ephemeral: true,
+                        });
+                    }
+                }
+            });
+
+            collector.on("end", async (collected) => {
+                interactionproccesses[interaction.user.id] = {
+                    interaction: false,
+                    proccessingcoins: false,
+                };
+                fs.writeFile(
+                    "./interactionproccesses.json",
+                    JSON.stringify(interactionproccesses),
+                    (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }
+                );
+
+                eventheist_embed.setTitle(`Event Heist Ended...`);
+                joineventheist.setDisabled();
+                if (eventheist_arry.length <= 0) {
+                    eventheist_embed.setDescription(
+                        `<@${interaction.user.id}>, your event-heist wasn't popular at all sadly.`
+                    );
+                } else {
+                    eventheist_embed.setDescription(
+                        `Alright let us start the heist!\nUsers: \`${eventheist_arry.length.toLocaleString()}\``
+                    );
+                    survivors = [];
+                    dead = [];
+                    eventheist_arry.forEach((id) => {
+                        const result = Math.floor(Math.random() * 2);
+
+                        if (result === 0) {
+                            return survivors.push(id);
+                        } else {
+                            return dead.push(id);
+                        }
+                    });
+
+                    const eachcoins = Math.floor(amount / survivors.length);
+                    userData.bank.coins = userData.bank.coins - amount;
+                    await economyModel.findOneAndUpdate(params, userData);
+                    survivors.forEach(async (id) => {
+                        const fetchedData = await economyModel.findOne({
+                            userId: id,
+                        });
+                        fetchedData.wallet = fetchedData.wallet + eachcoins;
+
+                        const earningembed = new MessageEmbed()
+                            .setTitle(
+                                "You survived the event-heist! <:nezuko_yas:995045946087968850>"
+                            )
+                            .setDescription(
+                                `Host: <@${interaction.user.id}> (\`${
+                                    interaction.user.tag
+                                }\`)\nId: \`${
+                                    interaction.user.id
+                                }\`\n**Your Payout:** \`❀ ${eachcoins.toLocaleString()}\`\nEvent-heist Total: \`❀ ${amount.toLocaleString()}\``
+                            );
+
+                        client.users.fetch(id, false).then((user) => {
+                            user.send({ embeds: [earningembed] });
+                        });
+
+                        return await economyModel.findOneAndUpdate(
+                            {
+                                userId: id,
+                            },
+                            fetchedData
+                        );
+                    });
+
+                    const resultembed = new MessageEmbed()
+                        .setTitle("Event Heist Results~")
+                        .setDescription(
+                            `**Each user that survived took home:** \`❀ ${eachcoins.toLocaleString()}\`\n<:nezuko_yas:995045946087968850> Users That Survived: \`${survivors.length.toLocaleString()}\`\n<:ghost:978412292012146688> Users That Died: \`${dead.length.toLocaleString()}\``
+                        );
+
+                    if (survivors.length <= 0) {
+                        userData.bank.coins = userData.bank.coins + amount;
+                        await economyModel.findOneAndUpdate(params, userData);
+                        resultembed.setDescription(
+                            `All the users that attended to this event either failed or died, therefore <@${
+                                interaction.user.id
+                            }> magically burned all the coins!\nCoins: \`❀ ${amount.toLocaleString()}\`\n\`just joking :)\``
+                        );
+                    }
+                    interaction.channel.send({ embeds: [resultembed] });
+                }
+
+                await eventheistlobby_msg.edit({
+                    embeds: [eventheist_embed],
+                    components: [erow],
+                });
+            });
+        }
+
+        interactionproccesses[interaction.user.id] = {
+            interaction: true,
+            proccessingcoins: true,
+        };
+        fs.writeFile(
+            "./interactionproccesses.json",
+            JSON.stringify(interactionproccesses),
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        );
+
+        let confirm = new MessageButton()
+            .setCustomId("confirm")
+            .setLabel("Confirm")
+            .setStyle("PRIMARY");
+
+        let cancel = new MessageButton()
+            .setCustomId("cancel")
+            .setLabel("Cancel")
+            .setStyle("DANGER");
+
+        let row = new MessageActionRow().addComponents(confirm, cancel);
+
+        const embed = {
+            color: "RANDOM",
+            author: {
+                name: `_____________`,
+                icon_url: `${interaction.user.displayAvatarURL()}`,
+            },
+            title: `Confirm action`,
+            description: `<@${
+                interaction.user.id
+            }>, are you sure you want to host an event-heist of \`❀ ${amount.toLocaleString()}\`?`,
+            timestamp: new Date(),
+        };
+        await interaction.reply({
+            embeds: [embed],
+            components: [row],
+        });
+
+        const eventheist_msg = await interaction.fetchReply();
+
+        const collector = eventheist_msg.createMessageComponentCollector({
+            time: 20 * 1000,
+        });
+
+        collector.on("collect", async (button) => {
+            if (button.user.id != interaction.user.id) {
+                return button.reply({
+                    content: "This is not for you.",
+                    ephemeral: true,
+                });
+            }
+
+            button.deferUpdate();
+
+            if (button.customId === "confirm") {
+                const embed = {
+                    color: "RANDOM",
+                    author: {
+                        name: `_____________`,
+                        icon_url: `${interaction.user.displayAvatarURL()}`,
+                    },
+                    title: `Action confirmed`,
+                    description: `<@${
+                        interaction.user.id
+                    }>, alrighty, lets get this started!\nEvent Heist Amount: \`❀ ${amount.toLocaleString()}\`?`,
+                    timestamp: new Date(),
+                };
+
+                eventheist();
+
+                confirm.setDisabled().setStyle("SUCCESS");
+
+                cancel.setDisabled().setStyle("SECONDARY");
+
+                eventheist_msg.edit({
+                    embeds: [embed],
+                    components: [row],
+                });
+            } else if (button.customId === "cancel") {
+                interactionproccesses[interaction.user.id] = {
+                    interaction: false,
+                    proccessingcoins: false,
+                };
+                fs.writeFile(
+                    "./interactionproccesses.json",
+                    JSON.stringify(interactionproccesses),
+                    (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }
+                );
+
+                const embed = {
+                    color: "#FF0000",
+                    author: {
+                        name: `_____________`,
+                        icon_url: `${interaction.user.displayAvatarURL()}`,
+                    },
+                    title: `Confirm action`,
+                    description: `<@${
+                        interaction.user.id
+                    }>, are you sure you want to host an event-heist of \`❀ ${amount.toLocaleString()}\`?\nI guess not...`,
+                    timestamp: new Date(),
+                };
+
+                confirm.setDisabled().setStyle("SECONDARY");
+
+                cancel.setDisabled();
+
+                eventheist_msg.edit({
+                    embeds: [embed],
+                    components: [row],
+                });
+            }
+        });
+
+        collector.on("end", async (collected) => {
+            if (collected.size > 0) {
+            } else {
+                interactionproccesses[interaction.user.id] = {
+                    interaction: false,
+                    proccessingcoins: false,
+                };
+                fs.writeFile(
+                    "./interactionproccesses.json",
+                    JSON.stringify(interactionproccesses),
+                    (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }
+                );
+
+                const embed = {
+                    color: "#FF0000",
+                    author: {
+                        name: `_____________`,
+                        icon_url: `${interaction.user.displayAvatarURL()}`,
+                    },
+                    title: `Confirm action`,
+                    description: `<@${
+                        interaction.user.id
+                    }>, are you sure you want to host an event-heist of \`❀ ${amount.toLocaleString()}\`?\nI guess not...`,
+                    timestamp: new Date(),
+                };
+
+                confirm.setDisabled().setStyle("SECONDARY");
+
+                cancel.setDisabled().setStyle("SECONDARY");
+
+                eventheist_msg.edit({
+                    embeds: [embed],
+                    components: [row],
+                });
+            }
+        });
+    },
+};
