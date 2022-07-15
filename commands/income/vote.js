@@ -108,7 +108,7 @@ module.exports = {
                         
         if(topggvotetimestampready > nowtimestamp) {
             const timeleft = topggvotetimestampready - nowtimestamp;
-            const formattime = time_split(timeleft)
+            const formattime = time_split(timeleft / 1000)
             topggbutton
                 .setLabel(formattime)
                 .setDisabled()
