@@ -103,7 +103,11 @@ const userSchema = new mongoose.Schema(
         activeitems: {
             type: Object,
             default: {},
-        }
+        },
+        eventcooldowns: {
+            type: Object,
+            default: {},
+        },
     },
     { minimize: false }
 )
