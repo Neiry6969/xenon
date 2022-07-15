@@ -105,11 +105,9 @@ module.exports = {
        
 
         const row = new MessageActionRow().addComponents(topggbutton);
-            
-        console.log(topgglastvotedtimestamp > nowtimestamp, topgglastvotedtimestamp, nowtimestamp)
-            
-        if(topgglastvotedtimestamp > nowtimestamp) {
-            const timeleft = topgglastvotedtimestamp - nowtimestamp;
+                        
+        if(topggvotetimestampready > nowtimestamp) {
+            const timeleft = topggvotetimestampready - nowtimestamp;
             const formattime = time_split(timeleft)
             topggbutton
                 .setLabel(formattime)
