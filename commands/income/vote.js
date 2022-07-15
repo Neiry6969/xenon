@@ -18,6 +18,29 @@ function premiumcooldowncalc(defaultcooldown) {
     }
 }
 
+function time_split(time) {
+    if (time < 60) {
+        return `${time}s`;
+    } else if (time >= 60 && time < 3600) {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes}m ${seconds}s`;
+    } else if (time >= 3600 && time < 86400) {
+        const hours = Math.floor(time / 3600);
+        const minutes = Math.floor((time % 3600) / 60);
+        const seconds = Math.floor((time % 3600) % 60);
+        return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (time >= 86400) {
+        const days = Math.floor(time / 86400);
+        const hours = Math.floor((time % 86400) / 3600);
+        const minutes = Math.floor(((time % 86400) % 3600) / 60);
+        const seconds = Math.floor(((time % 86400) % 3600) % 60);
+        return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    } else {
+        return `${time}s`;
+    }
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("vote")
@@ -54,9 +77,15 @@ module.exports = {
                 }
             }
         );
+            
+        const nowtimestamp = Date.now()
 
         const topggvoterewards_coins = 50000;
         const topggvoterewards_items = [{ item: "chestofcommon", quantity: 5 }, { item: "bankmessage", quantity: 5 }];
+        const topgglastvotedtimestamp = userData.eventcooldowns.vote_topgg
+        const topggvotetimestampready = topgglastvotedtimestamp + 43200000
+        
+       
 
         const voterewards_items_map = topggvoterewards_items.map((element) => {
             const item = allItems.find(
@@ -74,6 +103,15 @@ module.exports = {
             .setEmoji("<:topgg:995813492424716399>")
             .setURL("https://top.gg/bot/847528987831304192")
             .setDisabled(false);
+        
+        if(topgglastvotedtimestamp > nowtimestamp) {
+            const timeleft = topgglastvotedtimestamp - nowtimestamp;
+            const formattime = time_split(timeleft)
+            topggbutton
+                .setLabel(formattime)
+                .setDisabled()
+
+        }
 
         const row = new MessageActionRow().addComponents(topggbutton);
 
