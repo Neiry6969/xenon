@@ -179,7 +179,7 @@ module.exports = {
                     `<a:alarm:997584331302260909> Event Heist Starting! <a:alarm:997584331302260909>`
                 )
                 .setDescription(
-                    `\`Alright hungry people, join up! This heist is about to get crazy!\`\n\n**Ending in:** <t:heistendstimestamp:R>\n\n**Information**\nHost: <@${
+                    `\`Alright hungry people, join up! This heist is about to get crazy!\`\n\n**Ending in:** <t:${heistendstimestamp}:R>\n\n**Information**\nHost: <@${
                         interaction.user.id
                     }> (\`${interaction.user.tag}\`)\nId: \`${
                         interaction.user.id
