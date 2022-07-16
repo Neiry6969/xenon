@@ -154,6 +154,7 @@ module.exports = {
         }
 
         async function eventheist() {
+            const heistendstimestamp = (Date.now() + 120000) / 1000
             const eventheist_arry = [];
             let eventheistjoinedno = 0;
             let joineventheist = new MessageButton()
@@ -178,7 +179,7 @@ module.exports = {
                     `<a:alarm:997584331302260909> Event Heist Starting! <a:alarm:997584331302260909>`
                 )
                 .setDescription(
-                    `\`Alright hungry people, join up! This heist is about to get crazy!\`\n\n**Ending in:** \`2 minutes\`\n\n**Information**\nHost: <@${
+                    `\`Alright hungry people, join up! This heist is about to get crazy!\`\n\n**Ending in:** <t:heistendstimestamp:R>\n\n**Information**\nHost: <@${
                         interaction.user.id
                     }> (\`${interaction.user.tag}\`)\nId: \`${
                         interaction.user.id
@@ -294,7 +295,7 @@ module.exports = {
                     );
                 } else {
                     eventheist_embed.setDescription(
-                        `Alright let us start the heist!\nUsers: \`${eventheist_arry.length.toLocaleString()}\``
+                        `Alright, let us get on with the heist!\nUsers: \`${eventheist_arry.length.toLocaleString()}\``
                     );
                     survivors = [];
                     dead = [];
