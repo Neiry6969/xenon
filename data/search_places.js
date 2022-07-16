@@ -11,7 +11,7 @@ module.exports = [
         message: `You found ❀ \`COINS\`, at vector house you better run because security is coming`,
         coins: 25000,
         items: 'moon',
-        itempecrent: 350,
+        itempecrent: 99,
     },
     {
         place: 'studio',
