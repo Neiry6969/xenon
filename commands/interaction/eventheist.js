@@ -154,7 +154,7 @@ module.exports = {
         }
 
         async function eventheist() {
-            const heistendstimestamp = (Date.now() + 120000) / 1000
+            const heistendstimestamp = Math.floor((Date.now() + 120000) / 1000)
             const eventheist_arry = [];
             let eventheistjoinedno = 0;
             let joineventheist = new MessageButton()
