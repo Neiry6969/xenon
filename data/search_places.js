@@ -1,13 +1,13 @@
 module.exports = [
     {
-        place: 'Disney World',
+        place: 'disney world',
         message: `You found wallet that had ❀ \`COINS\`, who left their wallet here?`,
         coins: 10000,
         items: 'cellphone',
         itempecrent: 3300,
     },
     {
-        place: 'Vector-tude Fortress',
+        place: 'vector-tude fortress',
         message: `You found ❀ \`COINS\`, at vector house you better run because security is coming`,
         coins: 25000,
         items: 'moon',
