@@ -15,7 +15,7 @@ module.exports = [
     },
     {
         place: 'vector-tude fortress',
-        message: `You found ❀ \`COINS\`, at vector house you better run because security is coming`,
+        message: `You found ❀ \`COINS\` at vector's house. You better run because security is coming! BUT WHERE WAS THE BIG PRIZE!`,
         coins: 15000,
         items: 'moon',
         itempecrent: 99,
