@@ -68,6 +68,7 @@ module.exports = {
             )
             .setThumbnail(client.user.displayAvatarURL());
 
+        
         return interaction.reply({ embeds: [infoembed], components: [row] });
     },
 };
