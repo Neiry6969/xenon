@@ -7,9 +7,16 @@ module.exports = [
         itempecrent: 3300,
     },
     {
+        place: 'local bank',
+        message: `You looked at the ATM machine so hard that it laughed out ❀ \`COINS\`. Are you a criminal now?`,
+        coins: 10000,
+        items: 'bankmessage',
+        itempecrent: 1000,
+    },
+    {
         place: 'vector-tude fortress',
         message: `You found ❀ \`COINS\`, at vector house you better run because security is coming`,
-        coins: 25000,
+        coins: 15000,
         items: 'moon',
         itempecrent: 99,
     },
@@ -23,14 +30,14 @@ module.exports = [
     {
         place: 'beach',
         message: `You searched the sandy beaches and found ❀ \`COINS\`, what a find!`,
-        coins: 50069,
+        coins: 5069,
     },
     {
         place: 'valley',
         message: `The valley had ❀ \`COINS\` and you just picked it up`,
         coins: 2500,
         items: 'painting',
-        itempecrent: 1000,
+        itempecrent: 690,
     },
     {
         place: 'alley',
