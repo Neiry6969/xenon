@@ -1,5 +1,12 @@
 module.exports = [
     {
+        place: 'communist farmland',
+        message: `You found ❀ \`COINS\`, I guess it is yours to keep now...`,
+        coins: 69,
+        items: 'potato',
+        itempecrent: 5696,
+    },
+    {
         place: 'disney world',
         message: `You found wallet that had ❀ \`COINS\`, who left their wallet here?`,
         coins: 10000,
