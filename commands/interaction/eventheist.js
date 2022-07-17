@@ -665,7 +665,6 @@ module.exports = {
         });
 
         collector.on("end", async (collected) => {
-            console.log(collected);
             if (collected.size > 0) {
             } else {
                 if (confirmed === true) {
