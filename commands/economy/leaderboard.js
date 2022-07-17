@@ -470,11 +470,10 @@ module.exports = {
         });
 
         collector.on("end", (collected) => {
-            leaderboard_msg.components[0].components.forEach((c) => {
-                c.setDisabled();
-            });
+            leaderboardmenu.setDisabled();
             leaderboard_msg.edit({
-                components: leaderboard_msg.components,
+                embeds: [embed],
+                components: [row],
             });
         });
     },

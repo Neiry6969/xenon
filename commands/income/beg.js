@@ -1,6 +1,7 @@
 const economyModel = require("../../models/economySchema");
 const inventoryModel = require("../../models/inventorySchema");
 const beg_data = require("../../data/beg_data");
+const { death_handler } = require("../../utils/currencyevents");
 
 const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -98,42 +99,17 @@ module.exports = {
                 }
             }
         } else if (resultdeath === true) {
-            userData.deaths = userData.deaths + 1;
-            const lostcoins = userData.wallet;
-            const dmdeathembed = new MessageEmbed().setColor("#FFA500");
-
             embed
                 .setDescription(beginteraction.deathdescription)
                 .setColor("RED");
 
-            const hasLife = Object.keys(inventoryData.inventory).includes(
-                "lifesaver"
+            death_handler(
+                client,
+                interaction.user.id,
+                userData,
+                inventoryData,
+                "begging"
             );
-            if (!hasLife || inventoryData.inventory["lifesaver"] <= 0) {
-                userData.wallet = userData.wallet - userData.wallet;
-                dmdeathembed
-                    .setTitle(`You died, rip. <:ghost:978412292012146688>`)
-                    .setDescription(
-                        `You didn't have any items to save you from this death. You lost your whole wallet.\n\nDeath: \`begging\`\nCoins Lost: \`❀ ${lostcoins.toLocaleString()}\``
-                    );
-            } else {
-                inventoryData.inventory["lifesaver"] =
-                    inventoryData.inventory["lifesaver"] - 1;
-                dmdeathembed
-                    .setColor("#edfaf1")
-                    .setTitle(
-                        `You were saved from death's grasps because of a lifesaver!`
-                    )
-                    .setDescription(
-                        `Since you had a <:lifesaver:978754575098085426> \`lifesaver\` in your inventory, death was scared and ran away, but after the <:lifesaver:978754575098085426> \`lifesaver\` disappeared. Whew, close shave!\n\nDeath: \`begging\`\nAvoided Coin Loss: \`❀ ${lostcoins.toLocaleString()}\`\nLifes Left: <:lifesaver:978754575098085426> \`${inventoryData.inventory[
-                            "lifesaver"
-                        ].toLocaleString()}\``
-                    );
-            }
-
-            client.users.fetch(interaction.user.id, false).then((user) => {
-                user.send({ embeds: [dmdeathembed] });
-            });
         } else {
             embed.setDescription(beginteraction.faildescription);
         }

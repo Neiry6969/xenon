@@ -10,6 +10,7 @@ const economyModel = require("../../models/economySchema");
 const inventoryModel = require("../../models/inventorySchema");
 const letternumbers = require("../../reference/letternumber");
 const interactionproccesses = require("../../interactionproccesses.json");
+const { death_handler } = require("../../utils/currencyevents");
 
 const jsoncooldowns = require("../../cooldowns.json");
 const fs = require("fs");
@@ -154,7 +155,7 @@ module.exports = {
         }
 
         async function eventheist() {
-            const heistendstimestamp = Math.floor((Date.now() + 120000) / 1000)
+            const heistendstimestamp = Math.floor((Date.now() + 120000) / 1000);
             const eventheist_arry = [];
             let eventheistjoinedno = 0;
             let joineventheist = new MessageButton()
@@ -255,9 +256,11 @@ module.exports = {
                         eventheistjoined.setLabel(
                             `Users: ${eventheistjoinedno.toLocaleString()}`
                         );
-                        const joinedembed = new MessageEmbed().setDescription(
-                            `You successfully paided \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
-                        );
+                        const joinedembed = new MessageEmbed()
+                            .setColor("#9cffa1")
+                            .setDescription(
+                                `You successfully paided \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
+                            );
 
                         await eventheistlobby_msg.edit({
                             embeds: [eventheist_embed],
@@ -289,63 +292,220 @@ module.exports = {
 
                 eventheist_embed.setTitle(`Event Heist Ended...`);
                 joineventheist.setDisabled();
-                if (eventheist_arry.length <= 0) {
+
+                if (eventheist_arry.length < 3) {
                     eventheist_embed.setDescription(
-                        `<@${interaction.user.id}>, your event-heist wasn't popular at all sadly.`
+                        `<@${interaction.user.id}>, your event-heist wasn't popular at all sadly.\nYou need at least \`3\` users to join.`
                     );
                 } else {
                     eventheist_embed.setDescription(
                         `Alright, let us get on with the heist!\nUsers: \`${eventheist_arry.length.toLocaleString()}\``
                     );
-                    survivors = [];
-                    dead = [];
+                    const survivors = [];
+                    const failed = [];
+                    const caught = [];
+                    const dead = [];
+
                     eventheist_arry.forEach((id) => {
                         const result = Math.floor(Math.random() * 2);
 
                         if (result === 0) {
                             return survivors.push(id);
                         } else {
+                            return failed.push(id);
+                        }
+                    });
+
+                    if (
+                        survivors.length === 0 ||
+                        survivors.length <
+                            Math.floor(eventheist_arry.length / 3)
+                    ) {
+                        const allowedsurvied =
+                            survivors.length -
+                            Math.floor(eventheist_arry.length / 3);
+
+                        for (let i = 0; i < allowedsurvied; i++) {
+                            const survivedno = Math.floor(
+                                Math.random() * failed.length
+                            );
+                            const id = failed[survivedno];
+                            failed.pull(id);
+                            survivors.push(id);
+                            console.log(id);
+                        }
+                    }
+
+                    failed.forEach((id) => {
+                        const result = Math.floor(Math.random() * 2);
+
+                        if (result === 0) {
+                            return caught.push(id);
+                        } else {
                             return dead.push(id);
                         }
                     });
 
                     const eachcoins = Math.floor(amount / survivors.length);
-                    userData.bank.coins = userData.bank.coins - amount;
-                    await economyModel.findOneAndUpdate(params, userData);
-                    survivors.forEach(async (id) => {
-                        const fetchedData = await economyModel.findOne({
-                            userId: id,
-                        });
-                        fetchedData.wallet = fetchedData.wallet + eachcoins;
 
-                        const earningembed = new MessageEmbed()
-                            .setTitle(
-                                "You survived the event-heist! <:nezuko_yas:995045946087968850>"
-                            )
-                            .setDescription(
-                                `Host: <@${interaction.user.id}> (\`${
-                                    interaction.user.tag
-                                }\`)\nId: \`${
-                                    interaction.user.id
-                                }\`\n**Your Payout:** \`❀ ${eachcoins.toLocaleString()}\`\nEvent-heist Total: \`❀ ${amount.toLocaleString()}\``
-                            );
-
-                        client.users.fetch(id, false).then((user) => {
-                            user.send({ embeds: [earningembed] });
-                        });
-
-                        return await economyModel.findOneAndUpdate(
-                            {
-                                userId: id,
-                            },
-                            fetchedData
+                    const surviorsembed = new MessageEmbed()
+                        .setTitle("<:nezuko_yas:995045946087968850> Survivors")
+                        .setDescription(
+                            `Showing results~ <a:loading:987196796549861376>`
                         );
+                    const caughtembed = new MessageEmbed()
+                        .setTitle("<:nezuko_gun:995045376551833611> Caught")
+                        .setDescription(
+                            `Showing results~ <a:loading:987196796549861376>`
+                        );
+                    const deadembed = new MessageEmbed()
+                        .setTitle("<:ghost:978412292012146688> Died")
+                        .setDescription(
+                            `Showing results~ <a:loading:987196796549861376>`
+                        );
+                    let survivorsusermsg;
+                    let caughtsusermsg;
+                    let deadusermsg;
+
+                    const survivors_msg = await interaction.channel.send({
+                        embeds: [surviorsembed],
+                    });
+                    survivors.forEach(async (id) => {
+                        const smsgs = [
+                            "tampled over everyone in the bank to get out",
+                            "shot everyone they saw and walked out the front door of the bank",
+                            "scammed the police into letting them out of the bank",
+                            "snuck out the back door",
+                            "sunck out with the hostages",
+                        ];
+                        const selected_smsg =
+                            smsgs[Math.floor(Math.random() * smsgs.length)];
+                        const user = await client.users
+                            .fetch(id)
+                            .catch(console.error);
+
+                        if (survivorsusermsg === undefined) {
+                            survivorsusermsg = `+ ${user.tag} ${selected_smsg}`;
+                        } else {
+                            survivorsusermsg =
+                                survivorsusermsg +
+                                `\n+ ${user.tag} ${selected_smsg}`;
+                        }
+                        surviorsembed.setDescription(
+                            `\`\`\`diff\n${survivorsusermsg}\n\`\`\``
+                        );
+
+                        await economyModel.findOneAndUpdate(
+                            { userId: user.id },
+                            {
+                                $inc: {
+                                    wallet: eachcoins,
+                                },
+                            }
+                        );
+                        return survivors_msg.edit({ embeds: [surviorsembed] });
                     });
 
+                    const caught_msg = await interaction.channel.send({
+                        embeds: [caughtembed],
+                    });
+                    if (caught.length > 0) {
+                        caught.forEach(async (id) => {
+                            const smsgs = [
+                                "was scared and turned themselves in",
+                                "ran into a cop",
+                                "failed to get out",
+                                "was stuck at the entrance looking for the exit",
+                                "tried sneaking out but was caught",
+                            ];
+                            const selected_smsg =
+                                smsgs[Math.floor(Math.random() * smsgs.length)];
+                            const user = await client.users
+                                .fetch(id)
+                                .catch(console.error);
+
+                            if (caughtsusermsg === undefined) {
+                                caughtsusermsg = `> ${user.tag} ${selected_smsg}`;
+                            } else {
+                                caughtsusermsg =
+                                    caughtsusermsg +
+                                    `\n> ${user.tag} ${selected_smsg}`;
+                            }
+                            caughtembed.setDescription(
+                                `\`\`\`${caughtsusermsg}\n\`\`\``
+                            );
+                            return caught_msg.edit({
+                                embeds: [caughtembed],
+                            });
+                        });
+                    } else {
+                        caughtsusermsg = `\`\`\`No one was caught\`\`\``;
+                        caughtembed.setDescription(caughtsusermsg);
+                        caught_msg.edit({ embeds: [caughtembed] });
+                    }
+
+                    const dead_msg = await interaction.channel.send({
+                        embeds: [deadembed],
+                    });
+                    if (dead.length > 0) {
+                        const smsgs = [
+                            "was shot by someone in the commotion",
+                            "was destroyed by a cop",
+                            "slipped on a banana",
+                            "jumped by a hostage",
+                            "hit in the head by a steal baton",
+                            "killed because they died an explosion",
+                        ];
+                        const selected_smsg =
+                            smsgs[Math.floor(Math.random() * smsgs.length)];
+                        dead.forEach(async (id) => {
+                            const user = await client.users
+                                .fetch(id)
+                                .catch(console.error);
+
+                            if (deadusermsg === undefined) {
+                                deadusermsg = `- ${user.tag} ${selected_smsg}`;
+                            } else {
+                                deadusermsg =
+                                    deadusermsg +
+                                    `\n- ${user.tag} ${selected_smsg}`;
+                            }
+
+                            deadembed.setDescription(
+                                `\`\`\`diff\n${deadusermsg}\n\`\`\``
+                            );
+
+                            const fetchUserData = await economyModel.findOne({
+                                userId: user.id,
+                            });
+                            const fetctInvData = await inventoryModel.findOne({
+                                userId: user.id,
+                            });
+
+                            death_handler(
+                                client,
+                                user.id,
+                                fetchUserData,
+                                fetctInvData,
+                                "event-heist"
+                            );
+                            return dead_msg.edit({
+                                embeds: [deadembed],
+                            });
+                        });
+                    } else {
+                        deadusermsg = `\`\`\`No one died\`\`\``;
+                        deadembed.setDescription(deadusermsg);
+                        dead_msg.edit({ embeds: [deadembed] });
+                    }
+
+                    userData.bank.coins = userData.bank.coins - amount;
+                    await economyModel.findOneAndUpdate(params, userData);
+
                     const resultembed = new MessageEmbed()
-                        .setTitle("Event Heist Results~")
+                        .setTitle("Event-heist Results~")
                         .setDescription(
-                            `**Each user that survived took home:** \`❀ ${eachcoins.toLocaleString()}\`\n<:nezuko_yas:995045946087968850> Users That Survived: \`${survivors.length.toLocaleString()}\`\n<:ghost:978412292012146688> Users That Died: \`${dead.length.toLocaleString()}\``
+                            `\`${eventheist_arry.length.toLocaleString()} attended the event-heist\`\n**Each survivor took home a payout of: \`❀ ${eachcoins.toLocaleString()}\`**\n\n<:nezuko_yas:995045946087968850> Survivors: \`${survivors.length.toLocaleString()}\`\n<:nezuko_gun:995045376551833611> Caught: \`${caught.length.toLocaleString()}\`\n<:ghost:978412292012146688> Died: \`${dead.length.toLocaleString()}\``
                         );
 
                     if (survivors.length <= 0) {
@@ -357,9 +517,8 @@ module.exports = {
                             }> magically burned all the coins!\nCoins: \`❀ ${amount.toLocaleString()}\`\n\`just joking :)\``
                         );
                     }
-                    interaction.channel.send({ embeds: [resultembed] });
+                    return interaction.channel.send({ embeds: [resultembed] });
                 }
-
                 await eventheistlobby_msg.edit({
                     embeds: [eventheist_embed],
                     components: [erow],
@@ -490,6 +649,7 @@ module.exports = {
         });
 
         collector.on("end", async (collected) => {
+            console.log(collected);
             if (collected.size > 0) {
             } else {
                 interactionproccesses[interaction.user.id] = {

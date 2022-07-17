@@ -9,7 +9,7 @@ const StatsModel = require("../models/statsSchema");
 
 const interactionproccesses = require("../interactionproccesses.json");
 
-class Currency {
+class Useitem {
     static async bankmessage(
         interaction,
         userBalance,
@@ -514,4 +514,4 @@ class Currency {
     }
 }
 
-module.exports = Currency;
+module.exports = Useitem;
