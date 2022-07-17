@@ -1,5 +1,33 @@
 module.exports = [
     {
+        title: "Farmer",
+        mincoins: 500,
+        maxcoins: 8000,
+        itemsprecent: 60 * 100,
+        items: ["donut", 'kfcchicken', 'bottleofcola', 'waterbottle', 'bread', 'onion', 'eggplant', 'tomato', 'carrot', 'lettuce', 'bread'],
+        description: `Poor thing, hope ❀ \`COINS\` will help you.`, 
+        faildescription: "No ones home beggar.",  
+        deathdescription: `The farmer thought you were here to steal his crops so he came with a rake and murdered you after a round of hide and seek.`,
+        itemdescription: "My crops have been doing so well so you can have this ITEM",
+        multicoins: 1,
+        successrate: 78 * 100,
+        deathrate: 40 * 100,
+    },
+    {
+        title: "Vending machine",
+        mincoins: 500,
+        maxcoins: 600,
+        itemsprecent: 30 * 100,
+        items: ["donut", 'kfcchicken', 'bottleofcola', 'waterbottle', 'lifesaver', 'onion'],
+        description: `Somehow through a secret opening opened and ❀ \`COINS\` came out. The display said stfu.`, 
+        faildescription: "Why are you begging a vending machine?",  
+        deathdescription: `The vending machine tipped over because of your constant begging.`,
+        itemdescription: "ITEM also just popped out",
+        multicoins: 1,
+        successrate: 69 * 100,
+        deathrate: 30 * 100,
+    },
+    {
         title: "Fiona",
         mincoins: 500,
         maxcoins: 1000,
@@ -14,7 +42,7 @@ module.exports = [
         deathrate: 50 * 100,
     },
     {
-        title: "Your Best Friend",
+        title: "Your best friend (also your only friend)",
         mincoins: 500,
         maxcoins: 1000,
         itemsprecent: 0.01 * 100,
@@ -84,18 +112,3 @@ module.exports = [
         deathrate: 30 * 100,
     },
 ]
-
-// {
-//     title: "",
-//     coins: ,
-//     items: [
-//         {
-//             name: "",
-//             precent: ""
-//         }
-//     ],
-//     description: "",  
-//     faildescription: "",
-//     multicoins: ,
-//     deathrate: ,
-// }
