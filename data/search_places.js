@@ -1,5 +1,19 @@
 module.exports = [
     {
+        place: 'random person',
+        message: `You patted the random person from head to toe and scavenged ❀ \`COINS\`. He was really confused, I think you should tell him.`,
+        coins: 10000,
+        items: 'airpods',
+        itempecrent: 169,
+    },
+    {
+        place: 'haunted mansion',
+        message: `While exploring because you were curious and had balls of steel, so you found ❀ \`COINS\` in a not shady room filled with odd shapped boxes. Huh? What was that? The door closed?`,
+        coins: 9000,
+        items: 'ghost',
+        itempecrent: 170,
+    },
+    {
         place: 'communist farmland',
         message: `You found ❀ \`COINS\`, I guess it is yours to keep now...`,
         coins: 69,
