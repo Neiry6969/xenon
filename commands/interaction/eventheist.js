@@ -517,7 +517,7 @@ module.exports = {
                             }> magically burned all the coins!\nCoins: \`❀ ${amount.toLocaleString()}\`\n\`just joking :)\``
                         );
                     }
-                    return interaction.channel.send({ embeds: [resultembed] });
+                    interaction.channel.send({ embeds: [resultembed] });
                 }
                 await eventheistlobby_msg.edit({
                     embeds: [eventheist_embed],
