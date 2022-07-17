@@ -1,17 +1,45 @@
 module.exports = [
+     {
+        place: 'god',
+        message: `You went to god and complained about life and he sent you away with ❀ \`COINS\`.`,
+        coins: 8000,
+        items: 'lifesaver',
+        itempecrent: 200,
+     },
+     {
+        place: 'big stone',
+        message: `Your curiousness led you to lifting the stone and you found ❀ \`COINS\`. Wow, I wonder who put it there?`,
+        coins: 4000,
+        items: 'finecoin',
+        itempecrent: 200,
+     },
+     {
+        place: 'store',
+        message: `You went in the store and walked out with ❀ \`COINS\`. Was this the power of coupons?`,
+        coins: 4000,
+        items: 'fineribbon',
+        itempecrent: 1000,
+     },
+     {
+        place: 'heaven',
+        message: `You stumbled because of your clumsiness and ended up in heaven. You didn't believe it, but you still found ❀ \`COINS\`! HEAVEN IS RICH!`,
+        coins: 10000,
+        items: 'chestofangelic',
+        itempecrent: 30,
+    },
     {
         place: 'random person',
         message: `You patted the random person from head to toe and scavenged ❀ \`COINS\`. He was really confused, I think you should tell him.`,
         coins: 10000,
         items: 'airpods',
-        itempecrent: 169,
+        itempecrent: 59,
     },
     {
         place: 'haunted mansion',
         message: `While exploring because you were curious and had balls of steel, so you found ❀ \`COINS\` in a not shady room filled with odd shapped boxes. Huh? What was that? The door closed?`,
         coins: 9000,
         items: 'ghost',
-        itempecrent: 170,
+        itempecrent: 50,
     },
     {
         place: 'communist farmland',
