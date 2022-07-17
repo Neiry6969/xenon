@@ -49,6 +49,7 @@ module.exports = {
         statsData,
         profileData
     ) {
+        let confirmed = false;
         const params = {
             userId: interaction.user.id,
         };
@@ -519,6 +520,20 @@ module.exports = {
                     }
                     interaction.channel.send({ embeds: [resultembed] });
                 }
+                interactionproccesses[interaction.user.id] = {
+                    interaction: false,
+                    proccessingcoins: false,
+                };
+                fs.writeFile(
+                    "./interactionproccesses.json",
+                    JSON.stringify(interactionproccesses),
+                    (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }
+                );
+
                 await eventheistlobby_msg.edit({
                     embeds: [eventheist_embed],
                     components: [erow],
@@ -586,6 +601,7 @@ module.exports = {
             button.deferUpdate();
 
             if (button.customId === "confirm") {
+                confirmed = true;
                 const embed = {
                     color: "RANDOM",
                     author: {
@@ -652,19 +668,21 @@ module.exports = {
             console.log(collected);
             if (collected.size > 0) {
             } else {
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
+                if (confirmed === true) {
+                    interactionproccesses[interaction.user.id] = {
+                        interaction: false,
+                        proccessingcoins: false,
+                    };
+                    fs.writeFile(
+                        "./interactionproccesses.json",
+                        JSON.stringify(interactionproccesses),
+                        (err) => {
+                            if (err) {
+                                console.log(err);
+                            }
                         }
-                    }
-                );
+                    );
+                }
 
                 const embed = {
                     color: "#FF0000",
