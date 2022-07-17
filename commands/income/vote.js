@@ -81,7 +81,7 @@ module.exports = {
         const nowtimestamp = Date.now()
 
         const topggvoterewards_coins = 50000;
-        const topggvoterewards_items = [{ item: "chestofcommon", quantity: 5 }, { item: "bankmessage", quantity: 5 }];
+        const topggvoterewards_items = [{ item: "chestofcommon", quantity: 5 }, { item: "bankmessage", quantity: 5 }, { item: "ticketofvoting", quantity: 1 }];
         const topgglastvotedtimestamp = profileData.eventcooldowns.vote_topgg;
         const topggvotetimestampready = topgglastvotedtimestamp + 43200000
         
