@@ -56,6 +56,7 @@ module.exports = {
         profileData,
         itemData
     ) {
+        let endinteraction = false;
         const allItems = itemData;
         const options = {
             user: interaction.options.getUser("user"),
@@ -238,6 +239,7 @@ module.exports = {
                     button.deferUpdate();
 
                     if (button.customId === "confirm") {
+                        endinteraction = true;
                         interactionproccesses[interaction.user.id] = {
                             interaction: false,
                             proccessingcoins: false,
@@ -280,6 +282,7 @@ module.exports = {
                             components: [row],
                         });
                     } else if (button.customId === "cancel") {
+                        endinteraction = true;
                         interactionproccesses[interaction.user.id] = {
                             interaction: false,
                             proccessingcoins: false,
@@ -345,7 +348,7 @@ module.exports = {
                 });
 
                 collector.on("end", async (collected) => {
-                    if (collected.size > 0) {
+                    if (endinteraction === true) {
                     } else {
                         interactionproccesses[interaction.user.id] = {
                             interaction: false,

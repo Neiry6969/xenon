@@ -58,6 +58,7 @@ module.exports = {
         profileData,
         itemData
     ) {
+        let endinteraction = false;
         const allItems = itemData;
         let cooldown = 30;
         if (
@@ -137,6 +138,7 @@ module.exports = {
             button.deferUpdate();
 
             if (button.customId === displayedplaces[0].place) {
+                endinteraction = true;
                 placesearched = displayedplaces[0].place;
                 const placesearched_items = searchplaces.find(
                     (val) => val.place.toLowerCase() === placesearched
@@ -217,6 +219,7 @@ module.exports = {
                 await inventoryModel.findOneAndUpdate(params, inventoryData);
                 await economyModel.findOneAndUpdate(params, userData);
             } else if (button.customId === displayedplaces[1].place) {
+                endinteraction = true;
                 placesearched = displayedplaces[1].place;
                 const placesearched_items = searchplaces.find(
                     (val) => val.place.toLowerCase() === placesearched
@@ -300,6 +303,7 @@ module.exports = {
 
                 await economyModel.findOneAndUpdate(params, userData);
             } else if (button.customId === displayedplaces[2].place) {
+                endinteraction = true;
                 placesearched = displayedplaces[2].place;
                 const placesearched_items = searchplaces.find(
                     (val) => val.place.toLowerCase() === placesearched
@@ -385,7 +389,7 @@ module.exports = {
         });
 
         collector.on("end", (collected) => {
-            if (collected.size > 0) {
+            if (endinteraction === true) {
                 return;
             } else {
                 const embed = {

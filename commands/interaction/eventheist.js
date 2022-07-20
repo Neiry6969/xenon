@@ -49,7 +49,7 @@ module.exports = {
         statsData,
         profileData
     ) {
-        let confirmed = false;
+        let endinteraction = false;
         const params = {
             userId: interaction.user.id,
         };
@@ -601,7 +601,7 @@ module.exports = {
             button.deferUpdate();
 
             if (button.customId === "confirm") {
-                confirmed = true;
+                endinteraction = true;
                 const embed = {
                     color: "RANDOM",
                     author: {
@@ -626,6 +626,7 @@ module.exports = {
                     components: [row],
                 });
             } else if (button.customId === "cancel") {
+                endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,
                     proccessingcoins: false,
@@ -665,7 +666,7 @@ module.exports = {
         });
 
         collector.on("end", async (collected) => {
-            if (collected.size > 0) {
+            if (endinteraction === true) {
             } else {
                 if (confirmed === true) {
                     interactionproccesses[interaction.user.id] = {

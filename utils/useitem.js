@@ -17,6 +17,7 @@ class Useitem {
         useItem,
         useAmount
     ) {
+        let endinteraction = false;
         const params = {
             userId: interaction.user.id,
         };
@@ -96,6 +97,7 @@ class Useitem {
             button.deferUpdate();
 
             if (button.customId === "confirm") {
+                endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,
                     proccessingcoins: false,
@@ -148,6 +150,7 @@ class Useitem {
                     components: [row],
                 });
             } else if (button.customId === "cancel") {
+                endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,
                     proccessingcoins: false,
@@ -191,7 +194,7 @@ class Useitem {
         });
 
         collector.on("end", async (collected) => {
-            if (collected.size > 0) {
+            if (endinteraction === true) {
             } else {
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,
@@ -236,6 +239,8 @@ class Useitem {
     }
 
     static async preniumcard(interaction, userBalance, userInventory, useItem) {
+        let endinteraction = false;
+
         const params = {
             userId: interaction.user.id,
         };
@@ -316,6 +321,7 @@ class Useitem {
             button.deferUpdate();
 
             if (button.customId === "confirm") {
+                endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,
                     proccessingcoins: false,
@@ -349,6 +355,7 @@ class Useitem {
                     components: [row],
                 });
             } else if (button.customId === "cancel") {
+                endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,
                     proccessingcoins: false,
@@ -390,7 +397,7 @@ class Useitem {
         });
 
         collector.on("end", async (collected) => {
-            if (collected.size > 0) {
+            if (endinteraction === true) {
             } else {
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,

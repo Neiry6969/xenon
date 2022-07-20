@@ -48,6 +48,7 @@ module.exports = {
         statsData,
         profileData
     ) {
+        let endinteraction = true;
         const options = {
             user: interaction.options.getUser("user"),
             amount: interaction.options.getString("amount"),
@@ -247,6 +248,7 @@ module.exports = {
 
             button.deferUpdate();
             if (button.customId === "confirm") {
+                endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
                     interaction: false,
                     proccessingcoins: false,
@@ -299,6 +301,7 @@ module.exports = {
                     components: [row],
                 });
             } else if (button.customId === "cancel") {
+                endinteraction = true;
                 await economyModel.findOneAndUpdate(
                     { userId: target.id },
                     {
@@ -355,7 +358,7 @@ module.exports = {
         });
 
         collector.on("end", async (collected) => {
-            if (collected.size > 0) {
+            if (endinteraction === true) {
             } else {
                 await economyModel.findOneAndUpdate(
                     { userId: target.id },

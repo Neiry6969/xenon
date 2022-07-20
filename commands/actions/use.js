@@ -49,6 +49,7 @@ module.exports = {
         profileData,
         itemData
     ) {
+        let endinteraction = false;
         const allItems = itemData;
 
         const options = {
@@ -151,7 +152,7 @@ module.exports = {
 
         if (!useamount || useamount < 0) {
             errorembed.setDescription(
-                "You can only use a whole number of an item."
+                `You can only use a whole number of an item.\n\nItem: ${item.icon} \`${item.item}\``
             );
 
             return interaction.reply({
