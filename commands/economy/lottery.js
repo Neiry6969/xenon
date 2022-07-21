@@ -152,7 +152,7 @@ module.exports = {
                 embeds: [errorembed],
                 ephemeral: true,
             });
-        } else if (amount < 10000) {
+        } else if (amount > 10000) {
             errorembed.setDescription(
                 `You can't buy more than \`10,000\` **lottery tickets** in one go, bruh.`
             );
