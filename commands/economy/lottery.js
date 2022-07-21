@@ -104,10 +104,9 @@ module.exports = {
                     ephemeral: true,
                 });
             } else {
+                amount = Math.floor(userData.wallet / lotteryticket_cost);
                 if(amount > 1000) {
                     amount = 1000
-                } else {
-                    amount = Math.floor(userData.wallet / lotteryticket_cost);
                 }
             }
         } else if (!amount) {
