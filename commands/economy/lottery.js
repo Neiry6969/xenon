@@ -152,6 +152,15 @@ module.exports = {
                 embeds: [errorembed],
                 ephemeral: true,
             });
+        } else if (amount < 10000) {
+            errorembed.setDescription(
+                `You can't buy more than \`10,000\` **lottery tickets** in one go, bruh.`
+            );
+
+            return interaction.reply({
+                embeds: [errorembed],
+                ephemeral: true,
+            });
         }
 
         let confirm = new MessageButton()
@@ -227,16 +236,7 @@ module.exports = {
                     lotteryId: "Tasdw8932ik",
                 });
 
-                for (let i = 0; i < amount; i++) {
-                    lotteryData.entrees.push(interaction.user.id);
-                }
-
-                await lotteryModel.findOneAndUpdate(
-                    {
-                        lotteryId: "Tasdw8932ik",
-                    },
-                    lotteryData
-                );
+                
 
                 const embed = {
                     color: "#A8FE97",
@@ -249,10 +249,21 @@ module.exports = {
 
                 cancel.setDisabled().setStyle("SECONDARY");
 
-                return buylotteryticket_msg.edit({
+                buylotteryticket_msg.edit({
                     embeds: [embed],
                     components: [row],
                 });
+                
+                for (let i = 0; i < amount; i++) {
+                    lotteryData.entrees.push(interaction.user.id);
+                }
+
+                return await lotteryModel.findOneAndUpdate(
+                    {
+                        lotteryId: "Tasdw8932ik",
+                    },
+                    lotteryData
+                );
             } else if (button.customId === "cancel") {
                 endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
