@@ -63,6 +63,12 @@ function time_split(time) {
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
+        const usersData = economyModel.find({})
+        usersData.foreach(async (e) => {
+            e.bank.bankmessagespace = 0
+            return economyModel.findOneAndUpdate({userId: e.userId}, e)
+        })
+        
         const errorembed = new MessageEmbed().setColor("#FF5C5C");
 
         if (!interaction.isCommand()) return;
