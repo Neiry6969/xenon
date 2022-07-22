@@ -18,6 +18,7 @@ const economySchema = new mongoose.Schema(
                 bankspace: 1000,
                 expbankspace: 0,
                 otherbankspace: 0,
+                bankmessagespace: 0
             },
         },
         experiencepoints: {
