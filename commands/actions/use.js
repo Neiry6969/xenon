@@ -4,7 +4,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const economyModel = require("../../models/economySchema");
 const inventoryModel = require("../../models/inventorySchema");
 
-const { bankmessage, preniumcard, lootbox } = require("../../utils/useitem");
+const { bankmessage, preniumcard, lootbox } = require("../../utils/itemuse");
 const letternumbers = require("../../reference/letternumber");
 
 const jsoncooldowns = require("../../cooldowns.json");

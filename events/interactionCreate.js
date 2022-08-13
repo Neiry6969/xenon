@@ -9,7 +9,7 @@ const { Collection, MessageEmbed } = require("discord.js");
 const fs = require("fs");
 
 const interactionproccesses = require("../interactionproccesses.json");
-const jsoncoodowns = require("../cooldowns.json");
+const jsoncooldowns = require("../cooldowns.json");
 
 function calcexpfull(level) {
     if (level < 50) {
@@ -225,12 +225,12 @@ module.exports = {
         async function executecmd() {
             try {
                 backgroundupdates();
-                if (!jsoncoodowns.hasOwnProperty(userID)) {
-                    jsoncoodowns[userID] = {};
+                if (!jsoncooldowns.hasOwnProperty(userID)) {
+                    jsoncooldowns[userID] = {};
                 }
                 fs.writeFile(
                     "./cooldowns.json",
-                    JSON.stringify(jsoncoodowns),
+                    JSON.stringify(jsoncooldowns),
                     (err) => {
                         if (err) {
                             console.log(err);
@@ -238,7 +238,7 @@ module.exports = {
                     }
                 );
 
-                let readytimestamp = jsoncoodowns[userID][commandname];
+                let readytimestamp = jsoncooldowns[userID][commandname];
 
                 if (!readytimestamp) {
                     readytimestamp = 0;
