@@ -245,7 +245,7 @@ module.exports = {
                         },
                         {
                             name: "Balance",
-                            value: `Wallet: \`❀ 0\`\nBank: \`❀ 0\`\nBankspace: \`1000\`\nBankmessage Space:\`0\`\nTotal Balance: \`❀ 0\``,
+                            value: `Wallet: \`❀ 0\`\nBank: \`❀ 0\`\nBankspace: \`1000\`\nBankmessage Space: \`0\`\nTotal Balance: \`❀ 0\``,
                             inline: true,
                         },
                         {
@@ -316,7 +316,7 @@ module.exports = {
                             },
                             {
                                 name: "Balance",
-                                value: `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nBankmessage Space:\`${targetData.bank.bankmessagespace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
+                                value: `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nBankmessage Space: \`${targetData.bank.bankmessagespace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
                                 inline: true,
                             },
                             {

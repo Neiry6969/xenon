@@ -63,6 +63,8 @@ function time_split(time) {
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
+   
+        
         const errorembed = new MessageEmbed().setColor("#FF5C5C");
 
         if (!interaction.isCommand()) return;

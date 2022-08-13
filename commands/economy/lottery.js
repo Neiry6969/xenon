@@ -105,6 +105,9 @@ module.exports = {
                 });
             } else {
                 amount = Math.floor(userData.wallet / lotteryticket_cost);
+                if(amount > 1000) {
+                    amount = 1000
+                }
             }
         } else if (!amount) {
             amount = 1;
@@ -146,6 +149,15 @@ module.exports = {
         } else if (userData.wallet < totalprice) {
             errorembed.setDescription(
                 `You don't have enough coins in your wallet to buy that many of lottery tickets.\n\n**Quantity:** \`${amount.toLocaleString()}\`\n**Purchase Cost:** \`❀ ${totalprice.toLocaleString()}\`\n**Current Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``
+            );
+
+            return interaction.reply({
+                embeds: [errorembed],
+                ephemeral: true,
+            });
+        } else if (amount > 1000) {
+            errorembed.setDescription(
+                `You can't buy more than \`1,000\` **lottery tickets** in one go, bruh.`
             );
 
             return interaction.reply({
@@ -227,16 +239,7 @@ module.exports = {
                     lotteryId: "Tasdw8932ik",
                 });
 
-                for (let i = 0; i < amount; i++) {
-                    lotteryData.entrees.push(interaction.user.id);
-                }
-
-                await lotteryModel.findOneAndUpdate(
-                    {
-                        lotteryId: "Tasdw8932ik",
-                    },
-                    lotteryData
-                );
+                
 
                 const embed = {
                     color: "#A8FE97",
@@ -249,10 +252,21 @@ module.exports = {
 
                 cancel.setDisabled().setStyle("SECONDARY");
 
-                return buylotteryticket_msg.edit({
+                buylotteryticket_msg.edit({
                     embeds: [embed],
                     components: [row],
                 });
+                
+                for (let i = 0; i < amount; i++) {
+                    lotteryData.entrees.push(interaction.user.id);
+                }
+
+                return await lotteryModel.findOneAndUpdate(
+                    {
+                        lotteryId: "Tasdw8932ik",
+                    },
+                    lotteryData
+                );
             } else if (button.customId === "cancel") {
                 endinteraction = true;
                 interactionproccesses[interaction.user.id] = {
