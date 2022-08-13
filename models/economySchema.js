@@ -18,7 +18,7 @@ const economySchema = new mongoose.Schema(
                 bankspace: 1000,
                 expbankspace: 0,
                 otherbankspace: 0,
-                bankmessagespace: 0
+                bankmessagespace: 0,
             },
         },
         experiencepoints: {
@@ -73,17 +73,6 @@ const economySchema = new mongoose.Schema(
                     default: ["Newbie"],
                 },
             },
-        },
-        interactionproccesses: {
-            type: Object,
-            default: {
-                interaction: false,
-                proccessingcoins: false,
-            },
-        },
-        cooldowns: {
-            type: Object,
-            default: {},
         },
         createdAt: {
             required: true,
