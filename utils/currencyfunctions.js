@@ -2,7 +2,8 @@ const { MessageEmbed } = require("discord.js");
 
 const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
-const { fetchAllitemsData } = require("./itemfunctions");
+const ItemModel = require("../models/itemSchema");
+const { fetchAllitemsData, fetchItemData } = require("./itemfunctions");
 
 class Currencyfunctions {
     static async fetchEconomyData(userId) {
@@ -80,6 +81,112 @@ class Currencyfunctions {
         };
 
         return inventoryData_object;
+    }
+
+    static async addCoins(userId, coins) {
+        let economyData;
+        try {
+            economyData = await EconomyModel.findOne({ userId: userId });
+            if (!economyData) {
+                let economy = await EconomyModel.create({
+                    userId: userId,
+                });
+
+                economy.save();
+
+                economyData = economy;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        economyData.wallet = economyData.wallet + coins;
+        return await EconomyModel.findOneAndUpdate(
+            { userId: economyData.userId },
+            economyData
+        );
+    }
+
+    static async removeCoins(userId, coins) {
+        let economyData;
+        try {
+            economyData = await EconomyModel.findOne({ userId: userId });
+            if (!economyData) {
+                let economy = await EconomyModel.create({
+                    userId: userId,
+                });
+
+                economy.save();
+
+                economyData = economy;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        economyData.wallet = economyData.wallet - coins;
+        return await EconomyModel.findOneAndUpdate(
+            { userId: economyData.userId },
+            economyData
+        );
+    }
+
+    static async addItem(userId, item, quantity) {
+        const itemData = await fetchItemData(item);
+        let inventoryData;
+        try {
+            inventoryData = await InventoryModel.findOne({ userId: userId });
+            if (!inventoryData) {
+                let inventory = await InventoryModel.create({
+                    userId: userId,
+                });
+
+                inventory.save();
+
+                inventoryData = inventory;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        const hasItem = Object.keys(inventoryData.inventory).includes(
+            itemData.item
+        );
+        if (!hasItem) {
+            inventoryData.inventory[itemData.item] = quantity;
+        } else {
+            inventoryData.inventory[itemData.item] =
+                inventoryData.inventory[itemData.item] + quantity;
+        }
+        return await InventoryModel.findOneAndUpdate(
+            { userId: inventoryData.userId },
+            inventoryData
+        );
+    }
+    static async removeItem(userId, item, quantity) {
+        const itemData = await fetchItemData(item);
+        let inventoryData;
+        try {
+            inventoryData = await InventoryModel.findOne({ userId: userId });
+            if (!inventoryData) {
+                let inventory = await InventoryModel.create({
+                    userId: userId,
+                });
+
+                inventory.save();
+
+                inventoryData = inventory;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        inventoryData.inventory[itemData.item] =
+            inventoryData.inventory[itemData.item] - quantity;
+        return await InventoryModel.findOneAndUpdate(
+            { userId: inventoryData.userId },
+            inventoryData
+        );
     }
 }
 

@@ -1,6 +1,16 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+
 const jsoncooldowns = require("../../cooldowns.json");
 const fs = require("fs");
 function premiumcooldowncalc(defaultcooldown) {
@@ -27,68 +37,28 @@ module.exports = {
         }),
     cdmsg: `You can't be checking items so fast, slow it buddy!`,
     cooldown: 5,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        const allItems = itemData;
+    async execute(interaction) {
         const options = {
             item: interaction.options.getString("item"),
         };
 
-        let cooldown = 5;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
+        if (options.item.length < 3) {
+            const error_messsage = `\`You need give more than just 2 characters for me to find the item\``;
+            return errorReply(interaction, error_messsage);
         }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].shop = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
 
-        const errorembed = new MessageEmbed().setColor("#FF5C5C");
+        const itemData = await fetchItemData(options.item);
 
-        const getItem = options.item?.toLowerCase();
-
-        if (getItem.length < 3) {
-            errorembed.setDescription(
-                `\`${getItem}\` is not even an existing item.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (getItem.length > 250) {
-            errorembed.setDescription(
-                `Couldn't find that item because you typed passed the limit of 250 characters.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        if (!itemData) {
+            const error_messsage = `\`That is not an existing item\``;
+            return errorReply(interaction, error_messsage);
         }
-        const itemssearch = allItems.filter((value) => {
-            return value.item.includes(getItem);
-        });
 
-        const item = itemssearch[0];
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = await fetchEconomyData(interaction.user.id);
+        const allItems = await fetchAllitemsData();
 
-        if (item === undefined) {
-            errorembed.setDescription(
-                `\`${getItem}\` is not even an existing item.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        }
         function ifhasamountitem(reqm, hasa) {
             if (hasa >= reqm) {
                 return true;
@@ -98,18 +68,18 @@ module.exports = {
         }
 
         let crafttools;
-        if (item.crafttools) {
-            crafttools = item.crafttools
+        if (itemData.crafttools) {
+            crafttools = itemData.crafttools
                 .map((value) => {
                     const toolitem = allItems.find(
                         ({ item }) => item === value.i
                     );
 
+                    const ownedquantity =
+                        inventoryData.inventory[toolitem.item] || 0;
+
                     return `${
-                        ifhasamountitem(
-                            value.q,
-                            inventoryData.inventory[toolitem.item]
-                        ) === true
+                        ifhasamountitem(value.q, ownedquantity) === true
                             ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)`
                             : `\`${value.q.toLocaleString()}\``
                     } ${toolitem.icon} \`${toolitem.item}\``;
@@ -118,18 +88,18 @@ module.exports = {
         }
 
         let craftitems;
-        if (item.craftitems) {
-            craftitems = item.craftitems
+        if (itemData.craftitems) {
+            craftitems = itemData.craftitems
                 .map((value) => {
                     const craftitem = allItems.find(
                         ({ item }) => item === value.i
                     );
 
+                    const ownedquantity =
+                        inventoryData.inventory[craftitem.item] || 0;
+
                     return `${
-                        ifhasamountitem(
-                            value.q,
-                            inventoryData.inventory[craftitem.item]
-                        ) === true
+                        ifhasamountitem(value.q, ownedquantity) === true
                             ? `[\`${value.q.toLocaleString()}\`](https://www.google.com/)`
                             : `\`${value.q.toLocaleString()}\``
                     } ${craftitem.icon} \`${craftitem.item}\``;
@@ -138,23 +108,23 @@ module.exports = {
         }
 
         let lootboxitems;
-        if (item.lootbox) {
-            lootboxitems = item.lootbox
+        if (itemData.lootbox) {
+            lootboxitems = itemData.lootbox
                 .map((value) => {
-                    const craftitem = allItems.find(
+                    const lootboxitem = allItems.find(
                         ({ item }) => item === value.i
                     );
 
-                    return `${craftitem.icon} \`${
-                        craftitem.item
+                    return `${lootboxitem.icon} \`${
+                        lootboxitem.item
                     }\` [\`${value.minq.toLocaleString()} - ${value.maxq.toLocaleString()}\`]`;
                 })
                 .join("\n");
         }
 
         let drophistory;
-        if (item.drophistory) {
-            drophistory = item.drophistory
+        if (itemData.drophistory) {
+            drophistory = itemData.drophistory
                 .map((value) => {
                     return `<a:drop:992514722232541207> \`${value.amountbought.toLocaleString()}/${value.maxdrop.toLocaleString()}\` on: <t:${
                         value.dropstart
@@ -164,38 +134,39 @@ module.exports = {
         }
 
         const embed = new MessageEmbed()
-            .setColor("RANDOM")
+            .setColor("#2f3136")
             .setTitle(
-                `**${item.icon} ${item.name}** (${
-                    inventoryData.inventory[item.item]
-                        ? inventoryData.inventory[item.item].toLocaleString()
+                `**${itemData.icon} ${itemData.name}** (${
+                    inventoryData.inventory[itemData.item]
+                        ? inventoryData.inventory[
+                              itemData.item
+                          ].toLocaleString()
                         : "0"
                 } Owned)`
             )
-            .setThumbnail(item.imageUrl)
-            .setDescription(`> ${item.description}`)
+            .setThumbnail(itemData.imageUrl)
+            .setDescription(`> ${itemData.description}`)
             .addFields(
                 {
-                    name: "_ _",
-                    value: `**BUY:** \`❀ ${item.price?.toLocaleString()}\`\n**SELL:** \`❀ ${item.sell?.toLocaleString()}\`\n**TRADE:** \`❀ ${item.trade?.toLocaleString()}\``,
-                },
-                {
                     name: "ID",
-                    value: `\`${item.item}\``,
+                    value: `\`${itemData.item}\``,
                     inline: true,
                 },
                 {
                     name: "Rarity",
-                    value: `\`${item.rarity}\``,
+                    value: `\`${itemData.rarity}\``,
                     inline: true,
                 },
                 {
                     name: "Type",
-                    value: `\`${item.type}\``,
+                    value: `\`${itemData.type}\``,
                     inline: true,
+                },
+                {
+                    name: "_ _",
+                    value: `**BUY:** \`❀ ${itemData.price?.toLocaleString()}\`\n**SELL:** \`❀ ${itemData.sell?.toLocaleString()}\`\n**TRADE:** \`❀ ${itemData.trade?.toLocaleString()}\``,
                 }
-            )
-            .setTimestamp();
+            );
 
         let interactioncontents = { embeds: [embed] };
 
@@ -279,5 +250,26 @@ module.exports = {
                 });
             });
         }
+
+        let cooldown = 5;
+        if (
+            interaction.guild.id === "852261411136733195" ||
+            interaction.guild.id === "978479705906892830" ||
+            economyData.data.premium.rank >= 1
+        ) {
+            cooldown = premiumcooldowncalc(cooldown);
+        }
+        const cooldown_amount = cooldown * 1000;
+        const timpstamp = Date.now() + cooldown_amount;
+        jsoncooldowns[interaction.user.id].shop = timpstamp;
+        fs.writeFile(
+            "./cooldowns.json",
+            JSON.stringify(jsoncooldowns),
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        );
     },
 };
