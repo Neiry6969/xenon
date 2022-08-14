@@ -15,7 +15,6 @@ const economySchema = new mongoose.Schema(
             type: Object,
             default: {
                 coins: 0,
-                bankspace: 1000,
                 expbankspace: 0,
                 otherbankspace: 0,
                 bankmessagespace: 0,
@@ -30,19 +29,6 @@ const economySchema = new mongoose.Schema(
             default: 0,
         },
         prestige: {
-            type: Number,
-            default: 0,
-        },
-        streaks: {
-            type: Object,
-            default: {
-                daily: {
-                    lastclaimed: null,
-                    strk: 0,
-                },
-            },
-        },
-        deaths: {
             type: Number,
             default: 0,
         },
@@ -61,8 +47,8 @@ const economySchema = new mongoose.Schema(
             },
         },
         badges: {
-            type: Object,
-            default: {},
+            type: Array,
+            default: [],
         },
         titles: {
             type: Object,

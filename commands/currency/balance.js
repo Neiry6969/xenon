@@ -5,20 +5,7 @@ const {
     fetchInventoryData,
     fetchEconomyData,
 } = require("../../utils/currencyfunctions");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const { setCooldown } = require("../../utils/mainfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -52,7 +39,9 @@ module.exports = {
 
         balance_embed
             .setDescription(
-                `Wallet: \`❀ ${economyData.data.wallet.toLocaleString()}\`\nBank: \`❀ ${economyData.data.bank.coins.toLocaleString()} / ${economyData.netbankspace.toLocaleString()}\` \`${bankspace_filled}%\``
+                `Wallet: \`❀ ${economyData.data.wallet.toLocaleString()}\`\nBank: \`❀ ${economyData.data.bank.coins.toLocaleString()} / ${economyData.netbankspace.toLocaleString()}\` \`${
+                    isNaN(bankspace_filled) ? `${0}` : `${bankspace_filled}`
+                }%\``
             )
             .setAuthor({
                 name: `${user.tag}`,
@@ -65,25 +54,6 @@ module.exports = {
 
         interaction.reply({ embeds: [balance_embed] });
 
-        let cooldown = 3;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id]["balance"] = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        return setCooldown(interaction, "balance", 3, economyData.data);
     },
 };

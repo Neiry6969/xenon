@@ -1,19 +1,13 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    fetchStatsData,
+} = require("../../utils/currencyfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
+const { fetchAllitemsData } = require("../../utils/itemfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -29,27 +23,7 @@ module.exports = {
         profileData,
         itemData
     ) {
-        const allItems = itemData;
-        let cooldown = 5;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].shop = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        const allItems = await fetchAllitemsData();
 
         const shopmaparray = allItems
             .map((value) => {
@@ -96,6 +70,10 @@ module.exports = {
         let display_start = (page - 1) * itemsperpage;
         let display_end = page * itemsperpage;
 
+        const shop_embed = new MessageEmbed()
+            .setColor(`#2f3136`)
+            .setTitle(`Xenon Shop™`);
+
         if (lastpage === 1) {
             let pagebutton = new MessageButton()
                 .setCustomId("page")
@@ -131,19 +109,16 @@ module.exports = {
                 rightbutton,
                 rightfarbutton
             );
-
-            embed = {
-                color: "#AF97FE",
-                title: `Xenon Shop`,
-                description: `${shopList
+            shop_embed.setDescription(
+                `\`/item\` - View details of an item\n\n${shopList
                     .slice(display_start, display_end)
-                    .join("\n\n")}`,
-                footer: {
-                    text: `/shop`,
-                },
-            };
+                    .join("\n\n")}`
+            );
 
-            return interaction.reply({ embeds: [embed], components: [row] });
+            return interaction.reply({
+                embeds: [shop_embed],
+                components: [row],
+            });
         } else {
             let pagebutton = new MessageButton()
                 .setCustomId("page")
@@ -180,22 +155,14 @@ module.exports = {
                 rightfarbutton
             );
 
-            embed = {
-                color: "#AF97FE",
-                title: `Xenon Shop`,
-                description: `${shopList
+            shop_embed.setDescription(
+                `\`/item\` - View details of an item\n\n${shopList
                     .slice(display_start, display_end)
-                    .join("\n\n")}`,
-                thumbnail: {
-                    url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                },
-                footer: {
-                    text: `/shop`,
-                },
-            };
+                    .join("\n\n")}`
+            );
 
-            await interaction.reply({
-                embeds: [embed],
+            interaction.reply({
+                embeds: [shop_embed],
                 components: [row],
             });
 
@@ -227,22 +194,14 @@ module.exports = {
                         rightbutton.setDisabled();
                         rightfarbutton.setDisabled();
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
+                                .join("\n\n")}`
+                        );
 
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     } else {
@@ -251,22 +210,13 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
-
+                                .join("\n\n")}`
+                        );
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     }
@@ -282,22 +232,14 @@ module.exports = {
                         rightbutton.setDisabled();
                         rightfarbutton.setDisabled();
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
+                                .join("\n\n")}`
+                        );
 
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     } else {
@@ -306,22 +248,13 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
-
+                                .join("\n\n")}`
+                        );
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     }
@@ -337,22 +270,14 @@ module.exports = {
                         leftbutton.setDisabled();
                         leftfarbutton.setDisabled();
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
+                                .join("\n\n")}`
+                        );
 
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     } else {
@@ -361,22 +286,14 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
+                                .join("\n\n")}`
+                        );
 
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     }
@@ -392,22 +309,14 @@ module.exports = {
                         leftbutton.setDisabled();
                         leftfarbutton.setDisabled();
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
+                                .join("\n\n")}`
+                        );
 
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     } else {
@@ -416,22 +325,14 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        embed = {
-                            color: "#AF97FE",
-                            title: `Xenon Shop`,
-                            description: `${shopList
+                        shop_embed.setDescription(
+                            `\`/item\` - View details of an item\n\n${shopList
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`,
-                            thumbnail: {
-                                url: "https://images-ext-2.discordapp.net/external/QDfae-evLkOcmuA0mS8rMJZpgngH-PKH-TgWwk56jHQ/https/pedanticperspective.files.wordpress.com/2014/11/cash-register.gif",
-                            },
-                            footer: {
-                                text: `/shop`,
-                            },
-                        };
+                                .join("\n\n")}`
+                        );
 
                         await shop_msg.edit({
-                            embeds: [embed],
+                            embeds: [shop_embed],
                             components: [row],
                         });
                     }

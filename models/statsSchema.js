@@ -26,11 +26,21 @@ const statsSchema = new mongoose.Schema(
         interactionstats: {
             type: Object,
             default: {
-                firstvoted: null,
                 lastvoted: null,
-                votedmonthly: null,
-                totalvotes: null,
             },
+        },
+        streaks: {
+            type: Object,
+            default: {
+                daily: {
+                    lastclaimed: null,
+                    strk: 0,
+                },
+            },
+        },
+        deaths: {
+            type: Number,
+            default: 0,
         },
     },
     { minimize: false }

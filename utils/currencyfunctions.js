@@ -2,7 +2,8 @@ const { MessageEmbed } = require("discord.js");
 
 const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
-const ItemModel = require("../models/itemSchema");
+const UserModel = require("../models/userSchema");
+const StatsModel = require("../models/statsSchema");
 const { fetchAllitemsData, fetchItemData } = require("./itemfunctions");
 
 class Currencyfunctions {
@@ -25,7 +26,7 @@ class Currencyfunctions {
 
         const networth = economyData.wallet + economyData.bank.coins;
         const netbankspace =
-            economyData.bank.bankspace +
+            economyData.bank.bankmessagespace +
             economyData.bank.expbankspace +
             economyData.bank.otherbankspace;
 
@@ -57,7 +58,8 @@ class Currencyfunctions {
         }
 
         let networth = 0;
-
+        let uniqueitems = 0;
+        let items = 0;
         if (inventoryData.inventory) {
             Object.keys(inventoryData.inventory).forEach((key) => {
                 if (inventoryData.inventory[key] === 0) {
@@ -66,10 +68,12 @@ class Currencyfunctions {
                     const itemData = allitemsData.find(
                         (value) => value.item === key
                     );
-
+                    uniqueitems = uniqueitems + 1;
+                    items = items + inventoryData.inventory[key];
                     networth =
                         networth +
                         itemData.value * inventoryData.inventory[key];
+
                     return;
                 }
             });
@@ -78,9 +82,59 @@ class Currencyfunctions {
         const inventoryData_object = {
             data: inventoryData,
             networth: networth,
+            uniqueitems: uniqueitems,
+            items: items,
         };
 
         return inventoryData_object;
+    }
+
+    static async fetchStatsData(userId) {
+        let statsData;
+        try {
+            statsData = await StatsModel.findOne({ userId: userId });
+            if (!statsData) {
+                let stats = await StatsModel.create({
+                    userId: userId,
+                });
+
+                stats.save();
+
+                statsData = stats;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        const statsData_object = {
+            data: statsData,
+        };
+
+        return statsData_object;
+    }
+
+    static async fetchUserData(userId) {
+        let userData;
+        try {
+            userData = await UserModel.findOne({ userId: userId });
+            if (!userData) {
+                let user = await UserModel.create({
+                    userId: userId,
+                });
+
+                user.save();
+
+                userData = user;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        const userData_object = {
+            data: userData,
+        };
+
+        return userData_object;
     }
 
     static async addCoins(userId, coins) {

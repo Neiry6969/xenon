@@ -9,21 +9,8 @@ const {
     fetchItemData,
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -251,25 +238,6 @@ module.exports = {
             });
         }
 
-        let cooldown = 5;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            economyData.data.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].shop = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        setCooldown(interaction, "item", 5, economyData.data);
     },
 };

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
     {
@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
+
         job: {
             type: Object,
             default: {
@@ -16,7 +17,7 @@ const userSchema = new mongoose.Schema(
                 streak: 0,
                 lastworked: null,
                 hoursworkedday: 0,
-            }
+            },
         },
         showcase: {
             type: Object,
@@ -24,8 +25,8 @@ const userSchema = new mongoose.Schema(
                 slots: 0,
                 items: {
                     type: Object,
-                    default: {}
-                }
+                    default: {},
+                },
             },
         },
         pet: {
@@ -35,20 +36,20 @@ const userSchema = new mongoose.Schema(
                 name: null,
                 hygiene: {
                     percent: null,
-                    lastinteract: null
+                    lastinteract: null,
                 },
-                hunger:  {
+                hunger: {
                     percent: null,
-                    lastinteract: null
+                    lastinteract: null,
                 },
                 experience: {
                     percent: null,
-                    lastinteract: null
+                    lastinteract: null,
                 },
-                toys: { 
+                toys: {
                     type: Object,
-                    default: {}
-                }
+                    default: {},
+                },
             },
         },
         moderation: {
@@ -59,24 +60,24 @@ const userSchema = new mongoose.Schema(
                     status: false,
                     reason: null,
                     unblacklistdate: null,
-                    resposiblemod: null
+                    resposiblemod: null,
                 },
                 ban: {
                     date: null,
                     status: false,
                     reason: null,
                     unblacklistdate: null,
-                    resposiblemod: null
+                    resposiblemod: null,
                 },
                 logs: {
                     type: Array,
-                    default: []
-                }
+                    default: [],
+                },
             },
         },
         knowledge: {
             type: Number,
-            default: 0
+            default: 0,
         },
         settings: {
             type: Object,
@@ -96,9 +97,9 @@ const userSchema = new mongoose.Schema(
                 },
                 desc: {
                     type: String,
-                    default: ""
+                    default: "",
                 },
-            }
+            },
         },
         activeitems: {
             type: Object,
@@ -110,9 +111,8 @@ const userSchema = new mongoose.Schema(
         },
     },
     { minimize: false }
-)
+);
 
-
-const model = mongoose.model('UserModels', userSchema);
+const model = mongoose.model("UserModels", userSchema);
 
 module.exports = model;

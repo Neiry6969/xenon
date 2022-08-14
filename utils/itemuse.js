@@ -30,7 +30,7 @@ class Useitem {
             50000 * useamount;
         const newbankspacetotal =
             expandedspace +
-            userBalance.bank.bankspace +
+            userBalance.bank.bankmessagespace +
             userBalance.bank.expbankspace +
             userBalance.bank.otherbankspace;
         const averageexpansion = Math.floor(expandedspace / useamount);
@@ -78,7 +78,8 @@ class Useitem {
             }
         );
 
-        userBalance.bank.bankspace = userBalance.bank.bankspace + expandedspace;
+        userBalance.bank.bankmessagespace =
+            userBalance.bank.bankmessagespace + expandedspace;
         userBalance.bank.bankmessagespace =
             userBalance.bank.bankmessagespace + expandedspace;
         userInventory.inventory[item.item] =
@@ -165,8 +166,8 @@ class Useitem {
                     }
                 );
 
-                userBalance.bank.bankspace =
-                    userBalance.bank.bankspace - expandedspace;
+                userBalance.bank.bankmessagespace =
+                    userBalance.bank.bankmessagespace - expandedspace;
                 userBalance.bank.bankmessagespace =
                     userBalance.bank.bankmessagespace - expandedspace;
                 userInventory.inventory[item.item] =
@@ -209,8 +210,8 @@ class Useitem {
                         }
                     }
                 );
-                userBalance.bank.bankspace =
-                    userBalance.bank.bankspace - expandedspace;
+                userBalance.bank.bankmessagespace =
+                    userBalance.bank.bankmessagespace - expandedspace;
                 userBalance.bank.bankmessagespace =
                     userBalance.bank.bankmessagespace - expandedspace;
                 userInventory.inventory[item.item] =

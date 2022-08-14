@@ -1,24 +1,12 @@
 const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-const statsModel = require("../../models/statsSchema");
-const userModel = require("../../models/userSchema");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    fetchStatsData,
+} = require("../../utils/currencyfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 
 function calcexpfull(level) {
     if (level < 50) {
@@ -31,7 +19,6 @@ function calcexpfull(level) {
         return level * 100;
     }
 }
-
 function bardisplay(percent) {
     if (percent <= 20) {
         const bar =
@@ -123,297 +110,79 @@ module.exports = {
                 .setDescription("Specify a user's level stats you want to see");
         }),
     cooldown: 5,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        const allItems = itemData;
+    async execute(interaction) {
         const options = {
             user: interaction.options.getUser("user"),
         };
 
-        let cooldown = 5;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].profile = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        let user = options.user || interaction.user;
 
-        const target = options.user;
+        const level_embed = new MessageEmbed()
+            .setTitle("Level")
+            .setColor(`#2f3136`);
 
-        if (target) {
-            const target_id = target.id;
-            let targetData;
-            try {
-                targetData = await economyModel.findOne({ userId: target_id });
+        const economyData = await fetchEconomyData(user.id);
+        const inventoryData = await fetchInventoryData(user.id);
+        const statsData = await fetchStatsData(user.id);
+        const uniqueitems = inventoryData.uniqueitems;
+        const items = inventoryData.items;
+        const networth = economyData.networth + inventoryData.networth;
+        const expbankspace = economyData.data.bank.expbankspace;
+        const otherbankspace = economyData.data.bank.otherbankspace;
+        const bankmessagespace = economyData.data.bank.bankmessagespace;
+        const premiumrank = economyData.data.premium.rank;
+        const badges = economyData.data.premium.rank;
+        const level = economyData.data.level;
+        const experiencepoints = economyData.data.experiencepoints;
+        const walletcoins = economyData.data.wallet;
+        const bankcoins = economyData.data.bank.coins;
+        const dailystreak = statsData.data.streaks.daily.strk;
+        const deaths = statsData.data.deaths;
+        const createdat = economyData.data.createdAt;
+        const totalcommands = statsData.data.commands;
 
-                let targetinvData;
-                try {
-                    targetinvData = await inventoryModel.findOne({
-                        userId: target.id,
-                    });
-                    if (!targetinvData) {
-                        let targetuser = await inventoryModel.create({
-                            userId: target.id,
-                        });
-
-                        targetinvData = targetuser;
-
-                        targetuser.save();
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-
-                let targetprofileData;
-                try {
-                    targetprofileData = await userModel.findOne({
-                        userId: target.id,
-                    });
-                    if (!targetprofileData) {
-                        let targetuser = await userModel.create({
-                            userId: target.id,
-                        });
-
-                        targetprofileData = targetuser;
-
-                        targetuser.save();
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-
-                let targetstatsData;
-                try {
-                    targetstatsData = await statsModel.findOne({
-                        userId: target.id,
-                    });
-                    if (!targetstatsData) {
-                        let targetuser = await statsModel.create({
-                            userId: target.id,
-                        });
-
-                        targetstatsData = targetuser;
-
-                        targetuser.save();
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
-
-                const embed = new MessageEmbed()
-                    .setColor("RANDOM")
-                    .setTitle("Profile")
-                    .setAuthor({
-                        name: `${target.username}#${target.discriminator}`,
-                        iconURL: target.displayAvatarURL(),
-                    });
-
-                if (!targetData) {
-                    const targetdata = await economyModel.create({
-                        userId: target.id,
-                    });
-
-                    targetdata.save();
-
-                    embed.setDescription(`**Prestige:** \`0\``).addFields(
-                        {
-                            name: "Level",
-                            value: `Level: \`0\`\nExperience: \`0 | ${calcexpfull(
-                                0
-                            ).toLocaleString()}\`\n${bardisplay(0)}`,
-                            inline: true,
-                        },
-                        {
-                            name: "Balance",
-                            value: `Wallet: \`❀ 0\`\nBank: \`❀ 0\`\nBankspace: \`1000\`\nBankmessage Space: \`0\`\nTotal Balance: \`❀ 0\``,
-                            inline: true,
-                        },
-                        {
-                            name: "Inv",
-                            value: `Unique Items: \`0\`\nTotal Items: \`0\`\nItems Worth: \`❀ 0\``,
-                        },
-                        {
-                            name: "Other (MISC)",
-                            value: `Daily Streak: <a:Lssl:806961744885973062>\`0\`\nCommands Issued: \`0\`\nDeaths: <:ghost:978412292012146688> \`0\``,
-                        }
-                    );
-                } else {
-                    const total_balance =
-                        targetData.wallet + targetData.bank.coins;
-                    const bankspace =
-                        targetData.bank.bankspace +
-                        targetData.bank.expbankspace +
-                        targetData.bank.otherbankspace;
-                    let itemsworth = 0;
-                    let items = 0;
-                    let uniqueitems = 0;
-
-                    if (!targetinvData.inventory) {
-                        itemsworth = 0;
-                        items = 0;
-                        uniqueitems = 0;
-                    } else {
-                        Object.keys(targetinvData.inventory).forEach((key) => {
-                            if (targetinvData.inventory[key] === 0) {
-                                return;
-                            } else {
-                                const item = allItems.find(
-                                    (val) => val.item.toLowerCase() === key
-                                );
-
-                                itemsworth =
-                                    itemsworth +
-                                    item.value * targetinvData.inventory[key];
-                                uniqueitems = uniqueitems + 1;
-                                items = items + targetinvData.inventory[key];
-                            }
-                        });
-                    }
-                    let badges_map;
-                    embed
-                        .setDescription(
-                            `${
-                                targetData.premium.rank > 0
-                                    ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${targetData.premium.rank}\`\n`
-                                    : ""
-                            }${
-                                badges_map ? `**Badges:**  ${badges_map}\n` : ""
-                            }**Prestige:** \`${targetData.prestige.toLocaleString()}\``
-                        )
-                        .addFields(
-                            {
-                                name: "Level",
-                                value: `Level: \`${targetData.level.toLocaleString()}\`\nExperience: \`${targetData.experiencepoints.toLocaleString()} | ${calcexpfull(
-                                    targetData.level
-                                ).toLocaleString()}\`\n${bardisplay(
-                                    parseInt(
-                                        (targetData.experiencepoints /
-                                            calcexpfull(targetData.level)) *
-                                            100
-                                    )
-                                )}`,
-                                inline: true,
-                            },
-                            {
-                                name: "Balance",
-                                value: `Wallet: \`❀ ${targetData.wallet.toLocaleString()}\`\nBank: \`❀ ${targetData.bank.coins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nBankmessage Space: \`${targetData.bank.bankmessagespace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
-                                inline: true,
-                            },
-                            {
-                                name: "Inv",
-                                value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
-                            },
-                            {
-                                name: "Other (MISC)",
-                                value: `Daily Streak: <a:Lssl:806961744885973062> \`${targetData.streaks.daily.strk.toLocaleString()}\`\nCommands Issued: \`${targetstatsData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${targetData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(
-                                    targetData.createdAt / 1000
-                                ).getTime()}:D>`,
-                            }
-                        );
-                }
-
-                return interaction.reply({ embeds: [embed] });
-            } catch (error) {
-                console.log(error);
-            }
-        } else {
-            const premiumrank = userData.premium.rank;
-            const bankspace =
-                userData.bank.bankspace +
-                userData.bank.expbankspace +
-                userData.bank.otherbankspace;
-            const walletcoins = userData.wallet;
-            const bankcoins = userData.bank.coins;
-            const bankmessagespace = userData.bank.bankmessagespace;
-            const total_balance = walletcoins + bankcoins;
-
-            let itemsworth = 0;
-            let items = 0;
-            let uniqueitems = 0;
-
-            if (inventoryData.inventory) {
-                Object.keys(inventoryData.inventory).forEach((key) => {
-                    if (inventoryData.inventory[key] === 0) {
-                        return;
-                    } else {
-                        const item = allItems.find(
-                            (val) => val.item.toLowerCase() === key
-                        );
-
-                        itemsworth =
-                            itemsworth +
-                            item.value * inventoryData.inventory[key];
-                        uniqueitems = uniqueitems + 1;
-                        items = items + inventoryData.inventory[key];
-                    }
-                });
-            }
-
-            const embed = {
-                color: "RANDOM",
-                title: `${interaction.user.username}'s Profile`,
-                author: {
-                    name: `_____________`,
-                    icon_url: `${interaction.user.displayAvatarURL()}`,
-                },
-                description: `${
+        level_embed
+            .setAuthor({
+                name: `${user.tag}`,
+                iconURL: user.displayAvatarURL(),
+            })
+            .setDescription(
+                `${
                     premiumrank > 0
                         ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${premiumrank}\`\n`
                         : ""
-                }**Badges:**\n**Prestige:** \`${userData.prestige.toLocaleString()}\``,
-                fields: [
-                    {
-                        name: "Level",
-                        value: `Level: \`${userData.level.toLocaleString()}\`\nExperience: \`${userData.experiencepoints.toLocaleString()} | ${calcexpfull(
-                            userData.level
-                        ).toLocaleString()}\`\n${bardisplay(
-                            parseInt(
-                                (userData.experiencepoints /
-                                    calcexpfull(userData.level)) *
-                                    100
-                            )
-                        )}`,
-                        inline: true,
-                    },
-                    {
-                        name: "Balance",
-                        value: `Wallet: \`❀ ${walletcoins.toLocaleString()}\`\nBank: \`❀ ${bankcoins.toLocaleString()}\`\nBankspace: \`${bankspace.toLocaleString()}\`\nBankmessage Space: \`${bankmessagespace.toLocaleString()}\`\nTotal Balance: \`❀ ${total_balance.toLocaleString()}\``,
-                        inline: true,
-                    },
-                    {
-                        name: "Inventory",
-                        value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${itemsworth.toLocaleString()}\``,
-                    },
-                    {
-                        name: "Other (MISC)",
-                        value: `Daily Streak: <:streakflame:978108608254459954> \`${userData.streaks.daily.strk.toLocaleString()}\`\nCommands Issued: \`${statsData.commands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${userData.deaths.toLocaleString()}\`\nCreated At: <t:${new Date(
-                            userData.createdAt / 1000
-                        ).getTime()}:D>`,
-                    },
-                ],
-                timestamp: new Date(),
-            };
-            return interaction.reply({ embeds: [embed] });
-        }
+                }${
+                    badges.length > 0 ? "**Badges:**\n" : ""
+                }\n**Prestige:** \`${economyData.data.prestige.toLocaleString()}\``
+            )
+            .setFields(
+                {
+                    name: "Level",
+                    value: `Level: \`${level.toLocaleString()}\`\nExperience: \`${experiencepoints.toLocaleString()} | ${calcexpfull(
+                        level
+                    ).toLocaleString()}\`\n${bardisplay(
+                        parseInt((experiencepoints / calcexpfull(level)) * 100)
+                    )}`,
+                    inline: true,
+                },
+                {
+                    name: "Balance",
+                    value: `Wallet: \`❀ ${walletcoins.toLocaleString()}\`\nBank: \`❀ ${bankcoins.toLocaleString()}\`\nNetworth: \`❀ ${economyData.networth.toLocaleString()}\`\nTotal Bankspace: \`${economyData.netbankspace.toLocaleString()}\`\nBankmessage Space: \`${bankmessagespace.toLocaleString()}\`\nExperience Space: \`${expbankspace.toLocaleString()}\`\nOther Space: \`${otherbankspace.toLocaleString()}\``,
+                    inline: true,
+                },
+                {
+                    name: "Inventory",
+                    value: `Unique Items: \`${uniqueitems.toLocaleString()}\`\nTotal Items: \`${items.toLocaleString()}\`\nItems Worth: \`❀ ${inventoryData.networth.toLocaleString()}\``,
+                },
+                {
+                    name: "Other (MISC)",
+                    value: `Daily Streak: <a:streakflame:1008505222747922503> \`${dailystreak.toLocaleString()}\`\nCommands Issued: \`${totalcommands.toLocaleString()}\`\nDeaths: <:ghost:978412292012146688> \`${deaths.toLocaleString()}\`\nCreated At: <t:${new Date(
+                        createdat / 1000
+                    ).getTime()}:D>`,
+                }
+            );
+
+        interaction.reply({ embeds: [level_embed] });
+        setCooldown(interaction, "level", 5, economyData.data);
     },
 };
