@@ -233,7 +233,7 @@ module.exports = {
             const newwallet = economyData.wallet - slotsamount;
 
             slots_embed
-                .setColor(`#ff87a7`)
+                .setColor(`#ff9497`)
                 .setAuthor({
                     name: `${interaction.user.tag}`,
                     iconURL: interaction.user.displayAvatarURL(),

@@ -1,25 +1,21 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const fs = require("fs");
-
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+    addItem,
+    removeItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
-const interactionproccesses = require("../../interactionproccesses.json");
-
-const jsoncooldowns = require("../../cooldowns.json");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -35,180 +31,97 @@ module.exports = {
         })
         .addStringOption((oi) => {
             return oi
-                .setName("amount")
+                .setName("quantity")
                 .setDescription(
                     "A constant number: `123`, a short form: `2k`, a keyword: `max or half`"
                 );
         }),
     cdmsg: "You already bought something earlier why are you buying things so fast?",
     cooldown: 10,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
+    async execute(interaction) {
         let endinteraction = false;
-        const allItems = itemData;
+        let error_message;
+
         const options = {
             item: interaction.options.getString("item"),
-            amount: interaction.options.getString("amount"),
+            quantity: interaction.options.getString("quantity"),
         };
 
-        let cooldown = 10;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].sell = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        let quantity = options.quantity?.toLowerCase();
+        const itemData = await fetchItemData(options.item);
 
-        const params = {
-            userId: interaction.user.id,
-        };
-        const getItem = options.item?.toLowerCase();
-
-        let sellamount = options.amount?.toLowerCase();
-
-        const errorembed = new MessageEmbed().setColor("#FF5C5C");
-
-        if (getItem.length < 3) {
-            errorembed.setDescription(
-                `\`${getItem}\` is not even an existing item.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (getItem.length > 250) {
-            errorembed.setDescription(
-                `Couldn't find that item because you typed passed the limit of 250 characters.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        }
-        const itemssearch = allItems.filter((value) => {
-            return value.item.includes(getItem);
-        });
-
-        const item = itemssearch[0];
-
-        if (item === undefined) {
-            errorembed.setDescription(
-                `\`${getItem}\` is not even an existing item.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        if (!itemData) {
+            error_message = `\`That is not an existing item\``;
+            return errorReply(interaction, error_message);
         }
 
-        if (item.sell === "unable to be sold") {
-            errorembed.setDescription(
-                `This item is unable to be sold since it is a collectable.\n**Item:** ${item.icon} \`${item.item}\`\n**Item Type:** \`${item.type}\``
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
+
+        if (itemData.sell === "unable to be sold") {
+            error_message = `This item is unable to be sold.\n\n**Item:** ${item.icon} \`${itemData.item}\`\n**Item Type:** \`${item.type}\``;
+            return errorReply(interaction, error_message);
         }
 
-        if (sellamount === "max" || sellamount === "all") {
+        if (quantity === "max" || quantity === "all") {
             if (
-                inventoryData.inventory[item.item] === 0 ||
-                !inventoryData.inventory[item.item]
+                inventoryData.inventory[itemData.item] === 0 ||
+                !inventoryData.inventory[itemData.item]
             ) {
-                errorembed.setDescription(
-                    `You don't own any of this item, how are you going to sell it?`
-                );
-
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+                error_message = `You don't own any of this item, how are you going to sell it?`;
+                return errorReply(interaction, error_message);
             } else {
-                sellamount = inventoryData.inventory[item.item];
+                quantity = inventoryData.inventory[itemData.item];
             }
-        } else if (!sellamount) {
-            sellamount = 1;
+        } else if (!quantity) {
+            quantity = 1;
         } else if (
-            letternumbers.find((val) => val.letter === sellamount.slice(-1))
+            letternumbers.find((val) => val.letter === quantity.slice(-1))
         ) {
-            if (parseInt(sellamount.slice(0, -1))) {
-                const number = parseFloat(sellamount.slice(0, -1));
+            if (parseInt(quantity.slice(0, -1))) {
+                const number = parseFloat(quantity.slice(0, -1));
                 const numbermulti = letternumbers.find(
-                    (val) => val.letter === sellamount.slice(-1)
+                    (val) => val.letter === quantity.slice(-1)
                 ).number;
-                sellamount = number * numbermulti;
+                quantity = number * numbermulti;
             } else {
-                sellamount = null;
+                quantity = null;
             }
         } else {
-            sellamount = parseInt(sellamount);
+            quantity = parseInt(quantity);
         }
 
-        sellamount = parseInt(sellamount);
+        quantity = parseInt(quantity);
         if (
-            !inventoryData.inventory[item.item] ||
-            inventoryData.inventory[item.item] <= 0
+            !inventoryData.inventory[itemData.item] ||
+            inventoryData.inventory[itemData.item] <= 0
         ) {
-            errorembed.setDescription("You don't any of this item to sell.");
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "You don't any of this item to sell.";
+            return errorReply(interaction, error_message);
         }
 
-        if (!sellamount || sellamount < 0) {
-            errorembed.setDescription(
-                "You can only sell a whole number of items."
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (sellamount === 0) {
-            errorembed.setDescription(
-                "So you want to sell nothing, why bother?"
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (inventoryData.inventory[item.item] < sellamount) {
-            errorembed.setDescription(
-                `You don't have enough of that item to sell that much.\n\n**Item:** ${
-                    item.icon
-                } \`${item.item}\`\n**Quantity Owned:** \`${data.inventory[
-                    item.item
-                ].toLocaleString()}\``
-            );
+        if (!quantity || quantity < 0) {
+            error_message = "You can only sell a whole number of items.";
+            return errorReply(interaction, error_message);
+        } else if (quantity === 0) {
+            error_message = "So you want to sell nothing, why bother?";
 
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            return errorReply(interaction, error_message);
+        } else if (inventoryData.inventory[itemData.item] < quantity) {
+            error_message = `You don't have enough of that item to sell that much.\n\n**Item:** ${
+                itemData.icon
+            } \`${itemData.item}\`\n\n**Units Owned:** \`${data.inventory[
+                itemData.item
+            ].toLocaleString()}\``;
+
+            return errorReply(interaction, error_message);
         }
 
-        const saleprice = sellamount * item.sell;
+        const saleprice = quantity * itemData.sell;
 
         if (saleprice >= 10000) {
-            interactionproccesses[interaction.user.id] = {
-                interaction: true,
-                proccessingcoins: true,
-            };
-            fs.writeFile(
-                "./interactionproccesses.json",
-                JSON.stringify(interactionproccesses),
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                }
-            );
-            inventoryData.inventory[item.item] =
-                inventoryData.inventory[item.item] - sellamount;
-            userData.wallet = userData.wallet + saleprice;
-            userData.interactionproccesses.interaction = true;
-            userData.interactionproccesses.proccessingcoins = true;
-
-            await inventoryModel.findOneAndUpdate(params, inventoryData);
-            await economyModel.findOneAndUpdate(params, userData);
-
             let confirm = new MessageButton()
                 .setCustomId("confirm")
                 .setLabel("Confirm")
@@ -221,18 +134,19 @@ module.exports = {
 
             let row = new MessageActionRow().addComponents(confirm, cancel);
 
-            const embed = {
-                color: "RANDOM",
-                title: `Confirm transaction`,
-                description: `<@${
-                    interaction.user.id
-                }>, are you sure you want to sell ${item.icon} \`${
-                    item.item
-                }\` x\`${sellamount.toLocaleString()}\`\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (\`❀ ${item.sell.toLocaleString()}\` for each)`,
-                timestamp: new Date(),
-            };
+            const sell_embed = new MessageEmbed()
+                .setColor("#2f3136")
+                .setTitle(`Action Confirmation  - Sell`)
+                .setDescription(
+                    `<@${interaction.user.id}>, are you sure you want to sell ${
+                        itemData.icon
+                    } \`${
+                        itemData.item
+                    }\` \`x ${quantity.toLocaleString()}\`\n\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (Each: \`❀ ${itemData.sell.toLocaleString()}\`)`
+                );
+
             await interaction.reply({
-                embeds: [embed],
+                embeds: [sell_embed],
                 components: [row],
             });
             const sell_msg = await interaction.fetchReply();
@@ -240,6 +154,7 @@ module.exports = {
                 time: 20 * 1000,
             });
 
+            setProcessingLock(interaction, true);
             collector.on("collect", async (button) => {
                 if (button.user.id != interaction.user.id) {
                     return button.reply({
@@ -252,159 +167,92 @@ module.exports = {
 
                 if (button.customId === "confirm") {
                     endinteraction = true;
-                    interactionproccesses[interaction.user.id] = {
-                        interaction: false,
-                        proccessingcoins: false,
-                    };
-                    fs.writeFile(
-                        "./interactionproccesses.json",
-                        JSON.stringify(interactionproccesses),
-                        (err) => {
-                            if (err) {
-                                console.log(err);
-                            }
-                        }
+                    await removeItem(
+                        economyData.userId,
+                        itemData.item,
+                        quantity
                     );
-                    userData.interactionproccesses.interaction = false;
-                    userData.interactionproccesses.proccessingcoins = false;
-                    userData.bank.expbankspace =
-                        userData.bank.expbankspace +
-                        Math.floor(Math.random() * 69);
-                    await economyModel.findOneAndUpdate(params, userData);
+                    await addCoins(economyData.userId, saleprice);
+                    const newquantityowned =
+                        inventoryData.inventory[itemData.item] - quantity;
 
-                    const embed = {
-                        color: "#00FF00",
-                        title: `Sell Receipt`,
-                        description: `**Item:** ${item.icon} \`${
-                            item.item
-                        }\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sold For:** \`❀ ${saleprice.toLocaleString()}\`\n**Each Sold For:** \`❀ ${item.sell.toLocaleString()}\`\n**Now You Have:** \`${inventoryData.inventory[
-                            item.item
-                        ].toLocaleString()}\``,
-                    };
+                    sell_embed
+                        .setColor(`#95ff87`)
+                        .setTitle(`Receipt - Sell`)
+                        .setDescription(
+                            `**Item:** ${itemData.icon} \`${
+                                itemData.item
+                            }\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (Each: \`❀ ${itemData.price.toLocaleString()}\`)`
+                        )
+                        .setFooter({
+                            text: `New Owned Quantity: ${newquantityowned.toLocaleString()}`,
+                        });
 
                     confirm.setDisabled().setStyle("SUCCESS");
-
                     cancel.setDisabled().setStyle("SECONDARY");
 
-                    return sell_msg.edit({
-                        embeds: [embed],
+                    sell_embed.edit({
+                        embeds: [sell_embed],
                         components: [row],
                     });
+
+                    setProcessingLock(interaction, false);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
-                    interactionproccesses[interaction.user.id] = {
-                        interaction: false,
-                        proccessingcoins: false,
-                    };
-                    fs.writeFile(
-                        "./interactionproccesses.json",
-                        JSON.stringify(interactionproccesses),
-                        (err) => {
-                            if (err) {
-                                console.log(err);
-                            }
-                        }
-                    );
-                    inventoryData.inventory[item.item] =
-                        inventoryData.inventory[item.item] + sellamount;
-                    userData.wallet = userData.wallet - saleprice;
-                    userData.interactionproccesses.interaction = false;
-                    userData.interactionproccesses.proccessingcoins = false;
 
-                    await economyModel.findOneAndUpdate(params, userData);
-
-                    const embed = {
-                        color: "#FF0000",
-                        title: `Sell cancelled`,
-                        description: `<@${
-                            interaction.user.id
-                        }>, confirm that want to sell the following:\n**Item:** ${
-                            item.icon
-                        } \`${
-                            item.item
-                        }\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (\`❀ ${item.sell.toLocaleString()}\` for each)\nI guess not. Come back later if you change your mind.`,
-                        timestamp: new Date(),
-                    };
+                    sell_embed
+                        .setTitle(`Action Cancelled - Sell`)
+                        .setColor(`#fdff87`);
 
                     confirm.setDisabled().setStyle("SECONDARY");
-
                     cancel.setDisabled();
 
-                    return sell_msg.edit({
-                        embeds: [embed],
+                    sell_msg.edit({
+                        embeds: [sell_embed],
                         components: [row],
                     });
+                    setProcessingLock(interaction, false);
                 }
             });
 
             collector.on("end", async (collected) => {
                 if (endinteraction === true) {
                 } else {
-                    interactionproccesses[interaction.user.id] = {
-                        interaction: false,
-                        proccessingcoins: false,
-                    };
-                    fs.writeFile(
-                        "./interactionproccesses.json",
-                        JSON.stringify(interactionproccesses),
-                        (err) => {
-                            if (err) {
-                                console.log(err);
-                            }
-                        }
-                    );
-                    inventoryData.inventory[item.item] =
-                        inventoryData.inventory[item.item] + sellamount;
-                    userData.wallet = userData.wallet - saleprice;
-                    userData.interactionproccesses.interaction = false;
-                    userData.interactionproccesses.proccessingcoins = false;
+                    setProcessingLock(interaction, false);
 
-                    await inventoryModel.findOneAndUpdate(
-                        params,
-                        inventoryData
-                    );
-                    await economyModel.findOneAndUpdate(params, userData);
-
-                    const embed = {
-                        color: "#FF0000",
-                        title: `Sell timeout`,
-                        description: `<@${
-                            interaction.user.id
-                        }>, confirm that want to sell the following:\n**Item:** ${
-                            item.icon
-                        } \`${
-                            item.item
-                        }\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (\`❀ ${item.sell.toLocaleString()}\` for each)\nI guess not. Come back later if you change your mind.`,
-                        timestamp: new Date(),
-                    };
+                    sell_embed
+                        .setTitle(`Action Timed Out - Sell`)
+                        .setColor(`#fdff87`);
 
                     confirm.setDisabled().setStyle("SECONDARY");
-
                     cancel.setDisabled().setStyle("SECONDARY");
 
                     return sell_msg.edit({
-                        embeds: [embed],
+                        embeds: [sell_embed],
                         components: [row],
                     });
                 }
             });
         } else {
-            inventoryData.inventory[item.item] =
-                inventoryData.inventory[item.item] - sellamount;
-            userData.wallet = userData.wallet + saleprice;
-            await inventoryModel.findOneAndUpdate(params, inventoryData);
-            await economyModel.findOneAndUpdate(params, userData);
+            await removeItem(economyData.userId, itemData.item, quantity);
+            await addCoins(economyData.userId, saleprice);
+            const newquantityowned =
+                inventoryData.inventory[itemData.item] + quantity;
+            const sell_embed = new MessageEmbed()
+                .setColor(`#95ff87`)
+                .setTitle(`Receipt - Sell`)
+                .setDescription(
+                    `**Item:** ${itemData.icon} \`${
+                        itemData.item
+                    }\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (Each: \`❀ ${itemData.price.toLocaleString()}\`)`
+                )
+                .setFooter({
+                    text: `New Owned Quantity: ${newquantityowned.toLocaleString()}`,
+                });
 
-            const embed = {
-                color: "#00FF00",
-                title: `Sell Receipt`,
-                description: `**Item:** ${item.icon} \`${
-                    item.item
-                }\`\n**Quantity:** \`${sellamount.toLocaleString()}\`\n**Sold For:** \`❀ ${saleprice.toLocaleString()}\`\n**Each Sold For:** \`❀ ${item.sell.toLocaleString()}\`\n**Now You Have:** \`${inventoryData.inventory[
-                    item.item
-                ].toLocaleString()}\``,
-            };
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [sell_embed] });
         }
+
+        return setCooldown(interaction, "sell", 5, economyData);
     },
 };

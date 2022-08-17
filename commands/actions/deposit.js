@@ -1,22 +1,21 @@
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-const letternumbers = require("../../reference/letternumber");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const { MessageEmbed } = require("discord.js");
+
+const EconomyModel = require("../../models/economySchema");
+const letternumbers = require("../../reference/letternumber");
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+    addItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -32,42 +31,34 @@ module.exports = {
         }),
     cdmsg: "Stop depositing so fast!",
     cooldown: 5,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData
-    ) {
+    async execute(interaction) {
         const options = {
             amount: interaction.options.getString("amount"),
         };
 
         let amount = options.amount?.toLowerCase();
-        const bankcoins = userData.bank.coins;
-        const walletcoins = userData.wallet;
-        const bankspace =
-            userData.bank.bankspace +
-            userData.bank.expbankspace +
-            userData.bank.otherbankspace;
-        const bank_percent_filled = ((bankcoins / bankspace) * 100).toFixed(2);
-        const availableBankspace = bankspace - bankcoins;
-
-        const errorembed = new MessageEmbed().setColor("RED");
+        let error_message;
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
+        const bankcoins = economyData.bank.coins;
+        const walletcoins = economyData.wallet;
+        const availableBankspace =
+            economyData_fetch.netbankspace - economyData.bank.coins;
+        const bankspace_filled = (
+            (economyData.bank.coins / economyData_fetch.netbankspace) *
+            100
+        ).toFixed(2);
 
         if (availableBankspace <= 0) {
-            errorembed.setDescription(
-                `Your bank can't hold anymore coins...\n**Current Bank Status:** \`❀ ${bankcoins.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\``
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = `Your bank can't hold anymore coins\n\n**Current Bank Status:** \`❀ ${bankcoins.toLocaleString()} / ${economyData_fetch.netbankspace.toLocaleString()}\` \`${bankspace_filled}%\``;
+            return errorReply(interaction, error_message);
         }
 
         if (walletcoins === 0) {
-            errorembed.setDescription(
-                "You got nothing in your wallet to deposit."
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "You got nothing in your wallet to deposit";
+            return errorReply(interaction, error_message);
         }
 
         if (amount === "max" || amount === "all") {
@@ -99,23 +90,18 @@ module.exports = {
         amount = parseInt(amount);
 
         if (amount === 0) {
-            errorembed.setDescription(
-                "You deposited nothing, so nothing changed. Are you good?"
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message =
+                "You deposited nothing, so nothing changed. Are you good?";
+            return errorReply(interaction, error_message);
         } else if (amount < 0 || amount % 1 != 0) {
-            errorembed.setDescription("Deposit amount must be a whole number.");
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "Deposit amount must be a whole number";
+            return errorReply(interaction, error_message);
         } else if (amount > walletcoins) {
-            errorembed.setDescription(
-                `You don't have that amount of coins to deposit.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "You don't have that amount of coins to deposit";
+            return errorReply(interaction, error_message);
         } else if (amount > availableBankspace) {
-            errorembed.setDescription(
-                `Your bank can't hold \`❀ ${amount.toLocaleString()}\` more coins. Run more commands to gain experience bankspace or buy bankinteractions to use.\n**Current Bank Status:** \`❀ ${profileData.bank.toLocaleString()}\` | \`${bankspace.toLocaleString()}\` \`${bank_percent_filled}%\`\n**Avaliable Bankspace:** \`❀ ${availableBankspace.toLocaleString()}\``
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = `Your bank can't hold that many more coins. Run more commands to gain experience bankspace or buy bankmessages to use.\n**Current Bank Status:** \`❀ ${economyData.bank.coins.toLocaleString()} / ${economyData_fetch.netbankspace.toLocaleString()}\` \`${bankspace_filled}%\`\n**Avaliable Bankspace:** \`❀ ${availableBankspace.toLocaleString()}\``;
+            return errorReply(interaction, error_message);
         }
 
         const new_bank = bankcoins + amount;
@@ -124,44 +110,30 @@ module.exports = {
             const params = {
                 userId: interaction.user.id,
             };
-            userData.wallet = new_wallet;
-            userData.bank.coins = new_bank;
+            economyData.wallet = new_wallet;
+            economyData.bank.coins = new_bank;
 
-            await economyModel.findOneAndUpdate(params, userData);
+            await EconomyModel.findOneAndUpdate(params, economyData);
 
-            const embed = {
-                color: "RANDOM",
-                title: `Deposit`,
-                author: {
-                    name: `${interaction.user.username}#${interaction.user.discriminator}`,
-                    icon_url: `${interaction.user.displayAvatarURL()}`,
-                },
-                description: `**Deposited:** \`❀ ${amount.toLocaleString()}\`\nCurrent Bank Balance: \`❀ ${new_bank.toLocaleString()}\`\nCurrent Wallet Balance: \`❀ ${new_wallet.toLocaleString()}\``,
-                timestamp: new Date(),
-            };
-            let cooldown = 5;
-            if (
-                interaction.guild.id === "852261411136733195" ||
-                interaction.guild.id === "978479705906892830" ||
-                userData.premium.rank >= 1
-            ) {
-                cooldown = premiumcooldowncalc(cooldown);
-            }
-            const cooldown_amount = cooldown * 1000;
-            const timpstamp = Date.now() + cooldown_amount;
-            jsoncooldowns[interaction.user.id].deposit = timpstamp;
-            fs.writeFile(
-                "./cooldowns.json",
-                JSON.stringify(jsoncooldowns),
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                }
-            );
-            return interaction.reply({ embeds: [embed] });
+            const deposit_embed = new MessageEmbed()
+                .setColor("#2f3136")
+                .setTitle(`Deposit`)
+                .setAuthor({
+                    name: interaction.user.tag,
+                    iconURL: interaction.user.displayAvatarURL(),
+                })
+                .setDescription(
+                    `**Deposited:** \`❀ ${amount.toLocaleString()}\`\nCurrent Bank Balance: \`❀ ${new_bank.toLocaleString()}\``
+                )
+                .setFooter({
+                    text: `New Wallet: ❀ ${new_wallet.toLocaleString()}`,
+                });
+
+            interaction.reply({ embeds: [deposit_embed] });
         } catch (err) {
             console.log(err);
         }
+
+        return setCooldown(interaction, "deposit", 5, economyData);
     },
 };

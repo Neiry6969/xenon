@@ -1,11 +1,3 @@
-const inventoryModel = require("../../models/inventorySchema");
-const dropModel = require("../../models/dropSchema");
-const economyModel = require("../../models/economySchema");
-const itemModel = require("../../models//itemSchema");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const interactionproccesses = require("../../interactionproccesses.json");
-const fs = require("fs");
 const {
     MessageEmbed,
     MessageSelectMenu,
@@ -13,65 +5,41 @@ const {
     MessageButton,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+    addItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const DropModel = require("../../models/dropSchema");
+const ItemModel = require("../../models/itemSchema");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("drops")
         .setDescription("Limited drop items."),
     cooldown: 5,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        const allItems = itemData;
+    async execute(interaction) {
+        let error_message;
+        const allItems = await fetchAllitemsData();
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
 
-        const params = {
-            userId: interaction.user.id,
-        };
-
-        let cooldown = 5;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].drop = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-        const errorembed = new MessageEmbed().setColor("#FF5C5C");
-
-        let drops = await dropModel.find({});
+        let drops = await DropModel.find({});
 
         if (drops.length === 0) {
-            errorembed.setDescription("There are no drops currently.");
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "There are no drops currently.";
+            return errorReply(interaction, error_message);
         }
 
         drops.forEach(async (v) => {
@@ -80,7 +48,7 @@ module.exports = {
             const timeleft = dropendtime - datenow / 1000;
 
             if (timeleft <= 0) {
-                const fetchitem = await itemModel.findOne({ item: v.item });
+                const fetchitem = await ItemModel.findOne({ item: v.item });
                 let drophistory = fetchitem.drophistory;
 
                 if (!drophistory) {
@@ -97,8 +65,8 @@ module.exports = {
                 drophistory.push(dropdata);
                 fetchitem.drophistory = drophistory;
 
-                await itemModel.findOneAndUpdate({ item: v.item }, fetchitem);
-                await dropModel.findOneAndDelete({ _id: v._id });
+                await ItemModel.findOneAndUpdate({ item: v.item }, fetchitem);
+                await DropModel.findOneAndDelete({ _id: v._id });
             } else {
                 return;
             }
@@ -109,13 +77,13 @@ module.exports = {
                 const dropendtime = new Date(v.dropendtime);
                 const datenow = new Date();
                 const timeleft = dropendtime - datenow / 1000;
-                
+
                 let amountbought_user;
-                
-                if(v.usersbuyobject[interaction.user.id]) {
-                    amountbought_user = v.usersbuyobject[interaction.user.id]
+
+                if (v.usersbuyobject[interaction.user.id]) {
+                    amountbought_user = v.usersbuyobject[interaction.user.id];
                 } else {
-                    amountbought_user = 0
+                    amountbought_user = 0;
                 }
 
                 if (timeleft <= 0) {
@@ -180,7 +148,7 @@ module.exports = {
         let row2 = new MessageActionRow().setComponents(endinteractionbutton);
 
         const drops_embed = new MessageEmbed()
-            .setColor("RANDOM")
+            .setColor("#2f3136")
             .setDescription(mappedData);
 
         await interaction.reply({
@@ -190,20 +158,6 @@ module.exports = {
 
         const drop_msg = await interaction.fetchReply();
 
-        interactionproccesses[interaction.user.id] = {
-            interaction: true,
-            proccessingcoins: true,
-        };
-        fs.writeFile(
-            "./interactionproccesses.json",
-            JSON.stringify(interactionproccesses),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-
         const collector = await drop_msg.createMessageComponentCollector({
             idle: 30 * 1000,
         });
@@ -211,14 +165,13 @@ module.exports = {
         let buycount = 1;
         let dropinfo_map;
         let selecteddrop;
-        let fecthusereconomy = await economyModel.findOne({
-            userId: interaction.user.id,
-        });
-        let userwallet = fecthusereconomy.wallet;
+        let fecthusereconomy = await fetchEconomyData(interaction.user.id);
+        let userwallet = fecthusereconomy.data.wallet;
         let amountcanbuy;
         let totalprice_amountcanbuy;
         let extrastring;
 
+        setProcessingLock(interaction, true);
         collector.on("collect", async (i) => {
             if (i.user.id != interaction.user.id) {
                 return i.reply({
@@ -230,19 +183,6 @@ module.exports = {
             i.deferUpdate();
 
             if (i.customId === "endinteraction") {
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
                 drop_msg.components[0].components.forEach((c) => {
                     c.setDisabled();
                 });
@@ -250,14 +190,14 @@ module.exports = {
                     c.setDisabled();
                 });
 
-                return drop_msg.edit({
+                drop_msg.edit({
                     components: drop_msg.components,
                 });
+                setProcessingLock(interaction, false);
             } else if (i.customId === "backbutton") {
-                let buycount = 1;
                 row.setComponents(dropmenu);
                 row2.setComponents(endinteractionbutton);
-                drops_embed.setColor("RANDOM").setDescription(mappedData);
+                drops_embed.setColor("#2f3136").setDescription(mappedData);
 
                 drop_msg.edit({
                     embeds: [drops_embed],
@@ -265,7 +205,7 @@ module.exports = {
                 });
             } else if (i.customId === "dropmenu") {
                 selecteddrop = i.values[0];
-                const dropinfo = await dropModel.findOne({
+                const dropinfo = await DropModel.findOne({
                     item: selecteddrop,
                 });
 
@@ -281,16 +221,14 @@ module.exports = {
                     userbought = 0;
                     dropinfo.usersbuyobject[interaction.user.id] = 0;
 
-                    await dropModel.findOneAndUpdate(
+                    await DropModel.findOneAndUpdate(
                         { item: selecteddrop },
                         dropinfo
                     );
                 }
 
-                fecthusereconomy = await economyModel.findOne({
-                    userId: interaction.user.id,
-                });
-                userwallet = fecthusereconomy.wallet;
+                fecthusereconomy = await fetchEconomyData(interaction.user.id);
+                userwallet = fecthusereconomy.data.wallet;
                 amountcanbuy = Math.floor(userwallet / dropinfo.price);
 
                 if (amountcanbuy > dropinfo.maxperuser) {
@@ -376,7 +314,7 @@ module.exports = {
             } else if (i.customId === "addbutton") {
                 buycount = buycount + 1;
 
-                const dropinfo = await dropModel.findOne({
+                const dropinfo = await DropModel.findOne({
                     item: selecteddrop,
                 });
 
@@ -393,7 +331,7 @@ module.exports = {
                     userbought = 0;
                     dropinfo.usersbuyobject[interaction.user.id] = 0;
 
-                    await dropModel.findOneAndUpdate(
+                    await DropModel.findOneAndUpdate(
                         { item: selecteddrop },
                         dropinfo
                     );
@@ -401,10 +339,8 @@ module.exports = {
 
                 buydropbutton.setEmoji(dropitem.icon);
 
-                fecthusereconomy = await economyModel.findOne({
-                    userId: interaction.user.id,
-                });
-                userwallet = fecthusereconomy.wallet;
+                fecthusereconomy = await fetchEconomyData(interaction.user.id);
+                userwallet = fecthusereconomy.data.wallet;
                 amountcanbuy = Math.floor(userwallet / dropinfo.price);
 
                 if (amountcanbuy > dropinfo.maxperuser) {
@@ -484,7 +420,7 @@ module.exports = {
             } else if (i.customId === "minusbutton") {
                 buycount = buycount - 1;
 
-                const dropinfo = await dropModel.findOne({
+                const dropinfo = await DropModel.findOne({
                     item: selecteddrop,
                 });
 
@@ -501,7 +437,7 @@ module.exports = {
                     userbought = 0;
                     dropinfo.usersbuyobject[interaction.user.id] = 0;
 
-                    await dropModel.findOneAndUpdate(
+                    await DropModel.findOneAndUpdate(
                         { item: selecteddrop },
                         dropinfo
                     );
@@ -509,10 +445,8 @@ module.exports = {
 
                 buydropbutton.setEmoji(dropitem.icon);
 
-                fecthusereconomy = await economyModel.findOne({
-                    userId: interaction.user.id,
-                });
-                userwallet = fecthusereconomy.wallet;
+                fecthusereconomy = await fetchEconomyData(interaction.user.id);
+                userwallet = fecthusereconomy.data.wallet;
                 amountcanbuy = Math.floor(userwallet / dropinfo.price);
 
                 if (amountcanbuy > dropinfo.maxperuser) {
@@ -598,7 +532,7 @@ module.exports = {
                 buydropbutton.setDisabled(true);
                 addbutton.setDisabled(true);
                 minusbutton.setDisabled(true);
-                const dropinfo = await dropModel.findOne({
+                const dropinfo = await DropModel.findOne({
                     item: selecteddrop,
                 });
 
@@ -615,7 +549,7 @@ module.exports = {
                     userbought = 0;
                     dropinfo.usersbuyobject[interaction.user.id] = 0;
 
-                    await dropModel.findOneAndUpdate(
+                    await DropModel.findOneAndUpdate(
                         { item: selecteddrop },
                         dropinfo
                     );
@@ -638,10 +572,8 @@ module.exports = {
 
                 buydropbutton.setEmoji(dropitem.icon);
 
-                fecthusereconomy = await economyModel.findOne({
-                    userId: interaction.user.id,
-                });
-                userwallet = fecthusereconomy.wallet;
+                fecthusereconomy = await fetchEconomyData(interaction.user.id);
+                userwallet = fecthusereconomy.data.wallet;
                 amountcanbuy = Math.floor(userwallet / dropinfo.price);
 
                 if (amountcanbuy > dropinfo.maxperuser) {
@@ -667,37 +599,14 @@ module.exports = {
                     amountcanbuy = 0;
                     extrastring = `\n\`Too sad, the stocks ran out!\``;
                 } else {
-                    extrastring = `\n\`\`\`fix\n⬇️ You sucessfully bought some stocks of this drop! Great business!\n\nItem: ${dropinfo.item}\nQuantity: ${buycount.toLocaleString()}\nTotal: ❀ ${(
+                    extrastring = `\n\`\`\`fix\n⬇️ You sucessfully bought some stocks of this drop! Great business!\n\nItem: ${
+                        dropinfo.item
+                    }\nQuantity: ${buycount.toLocaleString()}\nTotal: ❀ ${(
                         buycount * dropinfo.price
                     ).toLocaleString()}\`\`\``;
                 }
 
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
-
                 const totalprice = buycount * dropinfo.price;
-
-                const hasItem = Object.keys(inventoryData.inventory).includes(
-                    dropinfo.item
-                );
-                if (!hasItem) {
-                    inventoryData.inventory[dropinfo.item] = buycount;
-                } else {
-                    inventoryData.inventory[dropinfo.item] =
-                        inventoryData.inventory[dropinfo.item] + buycount;
-                }
-                userData.wallet = userData.wallet - totalprice;
 
                 const hasUser = Object.keys(dropinfo.usersbuyobject).includes(
                     interaction.user.id
@@ -711,9 +620,9 @@ module.exports = {
 
                 dropinfo.amountbought = dropinfo.amountbought + buycount;
 
-                await economyModel.findOneAndUpdate(params, userData);
-                await inventoryModel.findOneAndUpdate(params, inventoryData);
-                await dropModel.findOneAndUpdate(
+                await removeCoins(interaction.user.id, totalprice);
+                await addItem(interaction.user.id, dropinfo.item, buycount);
+                await DropModel.findOneAndUpdate(
                     { item: dropinfo.item },
                     dropinfo
                 );
@@ -733,7 +642,14 @@ module.exports = {
                 row.setComponents([buydropbutton, addbutton, minusbutton]);
                 row2.setComponents([endinteractionbutton, backbutton]);
 
-                drops_embed.setDescription(dropinfo_map);
+                drops_embed
+                    .setDescription(dropinfo_map)
+                    .setColor(`#95ff87`)
+                    .setFooter({
+                        text: `New Wallet: ❀ ${(
+                            userwallet - totalprice
+                        ).toLocaleString()}`,
+                    });
                 drop_msg.components[0].components.forEach((c) => {
                     c.setDisabled();
                 });
@@ -744,23 +660,14 @@ module.exports = {
                     embeds: [drops_embed],
                     components: drop_msg.components,
                 });
+
+                setProcessingLock(interaction, false);
             }
         });
 
         collector.on("end", (collected) => {
-            interactionproccesses[interaction.user.id] = {
-                interaction: false,
-                proccessingcoins: false,
-            };
-            fs.writeFile(
-                "./interactionproccesses.json",
-                JSON.stringify(interactionproccesses),
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                }
-            );
+            setProcessingLock(interaction, false);
+
             drop_msg.components[0].components.forEach((c) => {
                 c.setDisabled();
             });
@@ -771,5 +678,6 @@ module.exports = {
                 components: drop_msg.components,
             });
         });
+        return setCooldown(interaction, "drops", 5, economyData);
     },
 };

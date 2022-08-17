@@ -8,7 +8,7 @@ const statsSchema = new mongoose.Schema(
             unique: true,
         },
         commands: {
-            type: Onject,
+            type: Object,
             default: { total: 0, list: {} },
         },
         gamblestats: {

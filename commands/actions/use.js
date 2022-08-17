@@ -1,25 +1,22 @@
 const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-
-const { bankmessage, preniumcard, lootbox } = require("../../utils/itemuse");
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+    addItem,
+    removeItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const { lootbox, preniumcard, bankmessage } = require("../../utils/itemuse");
 const letternumbers = require("../../reference/letternumber");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -40,171 +37,97 @@ module.exports = {
         }),
     cdmsg: `Bruh chillax! The items aren't going anywhere.`,
     cooldown: 5,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        let endinteraction = false;
-        const allItems = itemData;
-
+    async execute(interaction) {
         const options = {
             item: interaction.options.getString("item"),
-            amount: interaction.options.getString("quantity"),
+            quantity: interaction.options.getString("quantity"),
         };
 
-        let cooldown = 5;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
+        let endinteraction = false;
+        let error_message;
+
+        let quantity = options.quantity?.toLowerCase();
+        const itemData = await fetchItemData(options.item);
+        if (!itemData) {
+            error_message = `\`That is not an existing item\``;
+            return errorReply(interaction, error_message);
         }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].use = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-        const params = {
-            userId: interaction.user.id,
-        };
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
 
-        const getItem = options.item?.toLowerCase();
-        let useamount = options.amount?.toLowerCase();
-
-        const errorembed = new MessageEmbed().setColor("#FF5C5C");
-
-        if (getItem.length < 3) {
-            errorembed.setDescription(
-                `\`${getItem}\` is not even an existing item.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (getItem.length > 250) {
-            errorembed.setDescription(
-                `Couldn't find that item because you typed passed the limit of 250 characters.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        }
-        const itemssearch = allItems.filter((value) => {
-            return value.item.includes(getItem);
-        });
-
-        const item = itemssearch[0];
-
-        if (item === undefined) {
-            errorembed.setDescription(
-                `\`${getItem}\` is not even an existing item.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        }
-
-        if (!inventoryData.inventory[item.item]) {
-            errorembed.setDescription(
-                `You don't own any of this item, how are you gonna use it?\n\nItem: ${item.icon} \`${item.item}\``
-            );
-            return interaction.reply({
-                embeds: [errorembed],
-                ephemeral: true,
-            });
-        } else if (useamount === "max" || useamount === "all") {
-            if (inventoryData.inventory[item.item] <= 0) {
-                errorembed.setDescription(
-                    `You don't own any of this item, how are you gonna use it?\n\nItem: ${item.icon} \`${item.item}\``
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+        if (!inventoryData.inventory[itemData.item]) {
+            error_message = `You don't own any of this item, how are you gonna use it?\n\nItem: ${itemData.icon} \`${itemData.item}\``;
+            return errorReply(interaction, error_message);
+        } else if (quantity === "max" || quantity === "all") {
+            if (inventoryData.inventory[itemData.item] <= 0) {
+                error_message = `You don't own any of this item, how are you gonna use it?\n\nItem: ${itemData.icon} \`${itemData.item}\``;
+                return errorReply(interaction, error_message);
             } else {
-                useamount = inventoryData.inventory[item.item];
+                quantity = inventoryData.inventory[itemData.item];
             }
-        } else if (!useamount) {
-            useamount = 1;
+        } else if (!quantity) {
+            quantity = 1;
         } else if (
-            letternumbers.find((val) => val.letter === useamount.slice(-1))
+            letternumbers.find((val) => val.letter === quantity.slice(-1))
         ) {
-            if (parseInt(useamount.slice(0, -1))) {
-                const number = parseFloat(useamount.slice(0, -1));
+            if (parseInt(quantity.slice(0, -1))) {
+                const number = parseFloat(quantity.slice(0, -1));
                 const numbermulti = letternumbers.find(
-                    (val) => val.letter === useamount.slice(-1)
+                    (val) => val.letter === quantity.slice(-1)
                 ).number;
-                useamount = number * numbermulti;
+                quantity = number * numbermulti;
             } else {
-                useamount = null;
+                quantity = null;
             }
         } else {
-            useamount = parseInt(useamount);
+            quantity = parseInt(quantity);
         }
 
-        useamount = parseInt(useamount);
+        quantity = parseInt(quantity);
 
-        if (!useamount || useamount < 0) {
+        if (!quantity || quantity < 0) {
+            error_message = `You can only use a whole number of an item.\n\nItem: ${itemData.icon} \`${itemData.item}\``;
+            return errorReply(interaction, error_message);
+        } else if (quantity === 0) {
+            error_message = "So you want to use nothing, why bother?";
+            return errorReply(interaction, error_message);
+        } else if (inventoryData.inventory[itemData.item] < quantity) {
             errorembed.setDescription(
-                `You can only use a whole number of an item.\n\nItem: ${item.icon} \`${item.item}\``
-            );
-
-            return interaction.reply({
-                embeds: [errorembed],
-                ephemeral: true,
-            });
-        } else if (useamount === 0) {
-            errorembed.setDescription(
-                "So you want to use nothing, why bother?"
-            );
-            return interaction.reply({
-                embeds: [errorembed],
-                ephemeral: true,
-            });
-        } else if (inventoryData.inventory[item.item] < useamount) {
-            errorembed.setDescription(
-                `You don't have enough coins in your wallet to buy that many of that item.\n\nItem: ${
-                    item.icon
+                `You don't have enough of that item to use that many of that item.\n\nItem: ${
+                    itemData.icon
                 } \`${
-                    item.item
-                }\`\nQuantity: \`${useamount.toLocaleString()}\`\n**You Have:** \`${inventoryData.inventory[
-                    item.item
+                    itemData.item
+                }\`\nQuantity: \`${quantity.toLocaleString()}\`\n**Units Owned:** \`${inventoryData.inventory[
+                    itemData.item
                 ].toLocaleString()}\``
             );
-
-            return interaction.reply({
-                embeds: [errorembed],
-                ephemeral: true,
-            });
+            return errorReply(interaction, error_message);
         }
 
-        if (item.item === "bankmessage") {
+        setCooldown(interaction, "use", 5, economyData);
+
+        if (itemData.item === "bankmessage") {
             return bankmessage(
                 interaction,
-                userData,
+                economyData,
                 inventoryData,
-                item,
-                useamount
+                itemData,
+                quantity
             );
-        } else if (item.item === "premiumcard") {
-            return preniumcard(interaction, userData, inventoryData, item);
-        } else if (item.type === "lootbox") {
-            return lootbox(interaction, inventoryData, item, useamount);
+        } else if (itemData.item === "premiumcard") {
+            return preniumcard(
+                interaction,
+                economyData,
+                inventoryData,
+                itemData
+            );
+        } else if (itemData.type === "lootbox") {
+            return lootbox(interaction, inventoryData, itemData, quantity);
         }
 
-        errorembed.setDescription(
-            `That item isn't usable sorry not sorry.\n\nItem: ${item.icon} \`${item.item}\``
-        );
-
-        return interaction.reply({
-            embeds: [errorembed],
-            ephemeral: true,
-        });
+        error_message = `That item isn't usable sorry not sorry.\n\nItem: ${itemData.icon} \`${itemData.item}\``;
+        return errorReply(interaction, error_message);
     },
 };

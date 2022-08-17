@@ -1,22 +1,21 @@
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-const letternumbers = require("../../reference/letternumber");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const EconomyModel = require("../../models/economySchema");
+const letternumbers = require("../../reference/letternumber");
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+    addItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -32,50 +31,24 @@ module.exports = {
         }),
     cdmsg: "Stop withdrawing so fast!",
     cooldown: 5,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData
-    ) {
+    async execute(interaction) {
         const options = {
             amount: interaction.options.getString("amount"),
         };
 
-        let cooldown = 5;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].withdraw = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-
-        const errorembed = new MessageEmbed().setColor("RED");
-
         let amount = options.amount?.toLowerCase();
-        const bankcoins = userData.bank.coins;
-        const walletcoins = userData.wallet;
+        let error_message;
+
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
+        const bankcoins = economyData.bank.coins;
+        const walletcoins = economyData.wallet;
 
         if (bankcoins === 0) {
-            errorembed.setDescription(
-                "You got nothing in your bank to withdraw."
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "You got nothing in your bank to withdraw.";
+            return errorReply(interaction, error_message);
         }
 
         if (amount === "max" || amount === "all") {
@@ -101,20 +74,16 @@ module.exports = {
         amount = parseInt(amount);
 
         if (amount === 0) {
-            errorembed.setDescription(
-                "You withdrawn nothing, so nothing changed. Are you good?"
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message =
+                "You withdrawn nothing, so nothing changed. Are you good?";
+
+            return errorReply(interaction, error_message);
         } else if (amount < 0 || amount % 1 != 0) {
-            errorembed.setDescription(
-                "Withdrawal amount must be a whole number."
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "Withdrawal amount must be a whole number.";
+            return errorReply(interaction, error_message);
         } else if (amount > bankcoins) {
-            errorembed.setDescription(
-                `You don't have that amount of coins to withdraw.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = `You don't have that amount of coins to withdraw.`;
+            return errorReply(interaction, error_message);
         }
 
         const new_bank = bankcoins - amount;
@@ -123,24 +92,30 @@ module.exports = {
             const params = {
                 userId: interaction.user.id,
             };
-            userData.wallet = new_wallet;
-            userData.bank.coins = new_bank;
+            economyData.wallet = new_wallet;
+            economyData.bank.coins = new_bank;
 
-            await economyModel.findOneAndUpdate(params, userData);
+            await EconomyModel.findOneAndUpdate(params, economyData);
 
-            const embed = {
-                color: "RANDOM",
-                title: `Withdrawal`,
-                author: {
-                    name: `${interaction.user.username}#${interaction.user.discriminator}`,
-                    icon_url: `${interaction.user.displayAvatarURL()}`,
-                },
-                description: `**Withdrawn:** \`❀ ${amount.toLocaleString()}\`\nCurrent Bank Balance: \`❀ ${new_bank.toLocaleString()}\`\nCurrent Wallet Balance: \`❀ ${new_wallet.toLocaleString()}\``,
-                timestamp: new Date(),
-            };
-            return interaction.reply({ embeds: [embed] });
+            const deposit_embed = new MessageEmbed()
+                .setColor("#2f3136")
+                .setTitle(`Withdrawal`)
+                .setAuthor({
+                    name: interaction.user.tag,
+                    iconURL: interaction.user.displayAvatarURL(),
+                })
+                .setDescription(
+                    `**Withdrawn:** \`❀ ${amount.toLocaleString()}\`\nCurrent Bank Balance: \`❀ ${new_bank.toLocaleString()}\``
+                )
+                .setFooter({
+                    text: `New Wallet: ❀ ${new_wallet.toLocaleString()}`,
+                });
+
+            interaction.reply({ embeds: [deposit_embed] });
         } catch (err) {
             console.log(err);
         }
+
+        return setCooldown(interaction, "withdraw", 5, economyData);
     },
 };

@@ -6,17 +6,19 @@ const InventoryModel = require("../models/inventorySchema");
 const ItemModel = require("../models/itemSchema");
 const UserModel = require("../models/userSchema");
 const StatsModel = require("../models/statsSchema");
-
 const interactionproccesses = require("../interactionproccesses.json");
+const { setProcessingLock } = require("../utils/mainfunctions");
+const { errorReply } = require("../utils/errorfunctions");
 
 class Useitem {
     static async bankmessage(
         interaction,
-        userBalance,
-        userInventory,
+        economyData,
+        inventoryData,
         useItem,
         useAmount
     ) {
+        let error_message;
         let endinteraction = false;
         const params = {
             userId: interaction.user.id,
@@ -30,17 +32,17 @@ class Useitem {
             50000 * useamount;
         const newbankspacetotal =
             expandedspace +
-            userBalance.bank.bankmessagespace +
-            userBalance.bank.expbankspace +
-            userBalance.bank.otherbankspace;
+            economyData.bank.bankmessagespace +
+            economyData.bank.expbankspace +
+            economyData.bank.otherbankspace;
         const averageexpansion = Math.floor(expandedspace / useamount);
 
         const confirmembed = new MessageEmbed()
-            .setColor("YELLOW")
+            .setColor("#2f3136")
             .setDescription(
-                `Are you sure you want to use \`${useamount.toLocaleString()}x\` ${
-                    item.icon
-                } \`${item.item}\``
+                `Are you sure you want to use ${item.icon} \`${
+                    item.item
+                }\`  \`x ${useamount.toLocaleString()}\` `
             );
 
         let confirm = new MessageButton()
@@ -64,29 +66,15 @@ class Useitem {
             time: 20 * 1000,
         });
 
-        interactionproccesses[interaction.user.id] = {
-            interaction: true,
-            proccessingcoins: true,
-        };
-        fs.writeFile(
-            "./interactionproccesses.json",
-            JSON.stringify(interactionproccesses),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-
-        userBalance.bank.bankmessagespace =
-            userBalance.bank.bankmessagespace + expandedspace;
-        userBalance.bank.bankmessagespace =
-            userBalance.bank.bankmessagespace + expandedspace;
-        userInventory.inventory[item.item] =
-            userInventory.inventory[item.item] - useamount;
-        await EconomyModel.findOneAndUpdate(params, userBalance);
-        await InventoryModel.findOneAndUpdate(params, userInventory);
-
+        economyData.bank.bankmessagespace =
+            economyData.bank.bankmessagespace + expandedspace;
+        economyData.bank.bankmessagespace =
+            economyData.bank.bankmessagespace + expandedspace;
+        inventoryData.inventory[item.item] =
+            inventoryData.inventory[item.item] - useamount;
+        await EconomyModel.findOneAndUpdate(params, economyData);
+        await InventoryModel.findOneAndUpdate(params, inventoryData);
+        setProcessingLock(interaction, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -99,22 +87,9 @@ class Useitem {
 
             if (button.customId === "confirm") {
                 endinteraction = true;
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
 
                 const embed = {
-                    color: "RANDOM",
+                    color: "#95ff87",
                     thumbnail: {
                         url: item.imageUrl,
                     },
@@ -143,88 +118,64 @@ class Useitem {
                 };
 
                 confirm.setDisabled().setStyle("SUCCESS");
-
                 cancel.setDisabled().setStyle("SECONDARY");
 
-                return use_msg.edit({
+                use_msg.edit({
                     embeds: [embed],
                     components: [row],
                 });
+                setProcessingLock(interaction, false);
             } else if (button.customId === "cancel") {
                 endinteraction = true;
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
 
-                userBalance.bank.bankmessagespace =
-                    userBalance.bank.bankmessagespace - expandedspace;
-                userBalance.bank.bankmessagespace =
-                    userBalance.bank.bankmessagespace - expandedspace;
-                userInventory.inventory[item.item] =
-                    userInventory.inventory[item.item] + useamount;
-                await EconomyModel.findOneAndUpdate(params, userBalance);
-                await InventoryModel.findOneAndUpdate(params, userInventory);
+                economyData.bank.bankmessagespace =
+                    economyData.bank.bankmessagespace - expandedspace;
+                economyData.bank.bankmessagespace =
+                    economyData.bank.bankmessagespace - expandedspace;
+                inventoryData.inventory[item.item] =
+                    inventoryData.inventory[item.item] + useamount;
+                await EconomyModel.findOneAndUpdate(params, economyData);
+                await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#fc0352")
+                    .setColor("#ff9497")
                     .setDescription(
-                        `Are you sure you want to use \`${useamount.toLocaleString()}x\` ${
+                        `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
-                        } \`${item.item}\`\n\nI guess not.`
+                        } \`${item.item}\``
                     );
 
                 confirm.setDisabled().setStyle("SECONDARY");
-
                 cancel.setDisabled();
 
-                return use_msg.edit({
+                use_msg.edit({
                     embeds: [confirmembed],
                     components: [row],
                 });
+                setProcessingLock(interaction, false);
             }
         });
 
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
-                userBalance.bank.bankmessagespace =
-                    userBalance.bank.bankmessagespace - expandedspace;
-                userBalance.bank.bankmessagespace =
-                    userBalance.bank.bankmessagespace - expandedspace;
-                userInventory.inventory[item.item] =
-                    userInventory.inventory[item.item] + useamount;
-                await EconomyModel.findOneAndUpdate(params, userBalance);
-                await InventoryModel.findOneAndUpdate(params, userInventory);
+                setProcessingLock(interaction, false);
+
+                economyData.bank.bankmessagespace =
+                    economyData.bank.bankmessagespace - expandedspace;
+                economyData.bank.bankmessagespace =
+                    economyData.bank.bankmessagespace - expandedspace;
+                inventoryData.inventory[item.item] =
+                    inventoryData.inventory[item.item] + useamount;
+                await EconomyModel.findOneAndUpdate(params, economyData);
+                await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#fc0352")
+                    .setColor("#ff9497")
                     .setDescription(
-                        `Are you sure you want to use \`${useamount.toLocaleString()}x\` ${
+                        `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
-                        } \`${item.item}\`\n\nI guess not.`
+                        } \`${item.item}\``
                     );
 
                 confirm.setDisabled().setStyle("SECONDARY");
@@ -239,33 +190,28 @@ class Useitem {
         });
     }
 
-    static async preniumcard(interaction, userBalance, userInventory, useItem) {
+    static async preniumcard(interaction, economyData, inventoryData, useItem) {
+        let error_message;
         let endinteraction = false;
 
         const params = {
             userId: interaction.user.id,
         };
 
-        const errorembed = new MessageEmbed().setColor("#fc0352");
-
         const item = useItem;
         const useamount = 1;
-        const userData = userBalance;
-        const inventoryData = userInventory;
 
-        if (userData.premium >= 1) {
-            errorembed.setDescription(
-                `You can't use a ${item.icon} \`${item.item}\`, since you are already a premium.`
-            );
-            message.reply({ embeds: [errorembed], ephemeral: true });
+        if (economyData.premium.rank >= 1) {
+            error_message = `You can't use a ${item.icon} \`${item.item}\`, since you are already a premium.`;
+            return errorReply(interaction, error_message);
         }
 
         const confirmembed = new MessageEmbed()
-            .setColor("YELLOW")
+            .setColor("#2f3136")
             .setDescription(
-                `Are you sure you want to use \`${useamount.toLocaleString()}x\` ${
-                    item.icon
-                } \`${item.item}\``
+                `Are you sure you want to use ${item.icon} \`${
+                    item.item
+                }\`  \`x ${useamount.toLocaleString()}\` `
             );
 
         let confirm = new MessageButton()
@@ -290,27 +236,14 @@ class Useitem {
             time: 20 * 1000,
         });
 
-        interactionproccesses[interaction.user.id] = {
-            interaction: true,
-            proccessingcoins: true,
-        };
-        fs.writeFile(
-            "./interactionproccesses.json",
-            JSON.stringify(interactionproccesses),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-
         inventoryData.inventory[item.item] =
             inventoryData.inventory[item.item] - 1;
-        userData.premium.rank = userData.premium.rank + 1;
+        economyData.premium.rank = economyData.premium.rank + 1;
 
-        await EconomyModel.findOneAndUpdate(params, userData);
+        await EconomyModel.findOneAndUpdate(params, economyData);
         await InventoryModel.findOneAndUpdate(params, inventoryData);
 
+        setProcessingLock(interaction, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -323,114 +256,76 @@ class Useitem {
 
             if (button.customId === "confirm") {
                 endinteraction = true;
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
 
                 const embed = {
-                    color: "RANDOM",
+                    color: "#2f3136",
                     thumbnail: {
                         url: item.imageUrl,
                     },
-                    description: `You used \`1x\` ${item.icon} \`${item.item}\` and became a \`rank 1\` prenium forever.\n**This is irreversible.**`,
+                    description: `You used \`1 x\` ${item.icon} \`${item.item}\` and became a \`rank 1\` prenium forever.\n**This is irreversible.**`,
 
                     timestamp: new Date(),
                 };
 
                 confirm.setDisabled().setStyle("SUCCESS");
-
                 cancel.setDisabled().setStyle("SECONDARY");
 
-                return use_msg.edit({
+                use_msg.edit({
                     embeds: [embed],
                     components: [row],
                 });
+                setProcessingLock(interaction, false);
             } else if (button.customId === "cancel") {
                 endinteraction = true;
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
 
                 inventoryData.inventory[item.item] =
                     inventoryData.inventory[item.item] + 1;
-                userData.premium.rank = userData.premium.rank - 1;
+                economyData.premium.rank = economyData.premium.rank - 1;
 
-                await EconomyModel.findOneAndUpdate(params, userData);
+                await EconomyModel.findOneAndUpdate(params, economyData);
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#fc0352")
+                    .setColor("#ff9497")
                     .setDescription(
-                        `Are you sure you want to use \`${useamount.toLocaleString()}x\` ${
+                        `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
-                        } \`${item.item}\`\n\nI guess not.`
+                        } \`${item.item}\``
                     );
 
                 confirm.setDisabled().setStyle("SECONDARY");
 
                 cancel.setDisabled();
 
-                return use_msg.edit({
+                use_msg.edit({
                     embeds: [confirmembed],
                     components: [row],
                 });
+                setProcessingLock(interaction, false);
             }
         });
 
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
+                setProcessingLock(interaction, false);
 
                 inventoryData.inventory[item.item] =
                     inventoryData.inventory[item.item] + 1;
-                userData.premium.rank = userData.premium.rank - 1;
+                economyData.premium.rank = economyData.premium.rank - 1;
 
-                await EconomyModel.findOneAndUpdate(params, userData);
+                await EconomyModel.findOneAndUpdate(params, economyData);
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#fc0352")
+                    .setColor("#ff9497")
                     .setDescription(
-                        `Are you sure you want to use \`${useamount.toLocaleString()}x\` ${
+                        `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
-                        } \`${item.item}\`\n\nI guess not.`
+                        } \`${item.item}\``
                     );
 
                 confirm.setDisabled().setStyle("SECONDARY");
-
                 cancel.setDisabled().setStyle("SECONDARY");
 
                 return use_msg.edit({
@@ -441,13 +336,12 @@ class Useitem {
         });
     }
 
-    static async lootbox(interaction, userInventory, useItem, useAmount) {
+    static async lootbox(interaction, inventoryData, useItem, useAmount) {
         const allItems = await ItemModel.find({});
         const params = {
             userId: interaction.user.id,
         };
 
-        const inventoryData = userInventory;
         const item = useItem;
         const useamount = useAmount;
         let itemsarray = [];
@@ -502,7 +396,7 @@ class Useitem {
                     ({ item }) => item === value.item
                 );
 
-                return `\`${value.quantity.toLocaleString()}x\` ${
+                return `\`${value.quantity.toLocaleString()} x\` ${
                     lootitem.icon
                 } \`${lootitem.item}\``;
             })

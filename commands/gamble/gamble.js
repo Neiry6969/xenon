@@ -169,7 +169,7 @@ module.exports = {
             const newwallet = economyData.wallet - amount;
 
             gamble_embed
-                .setColor(`#ff87a7`)
+                .setColor(`#ff9497`)
                 .setDescription(
                     `You Lost! <a:cat_cry:1008879262671044719>\n\n**You lost:** \`❀ ${amount.toLocaleString()}\``
                 )

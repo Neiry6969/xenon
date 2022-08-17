@@ -28,17 +28,18 @@ module.exports = {
         const options = {
             item: interaction.options.getString("item"),
         };
+        let error_message;
 
         if (options.item.length < 3) {
-            const error_messsage = `\`You need give more than just 2 characters for me to find the item\``;
-            return errorReply(interaction, error_messsage);
+            error_message = `\`You need give more than just 2 characters for me to find the item\``;
+            return errorReply(interaction, error_message);
         }
 
         const itemData = await fetchItemData(options.item);
 
         if (!itemData) {
-            const error_messsage = `\`That is not an existing item\``;
-            return errorReply(interaction, error_messsage);
+            error_message = `\`That is not an existing item\``;
+            return errorReply(interaction, error_message);
         }
 
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
@@ -129,7 +130,7 @@ module.exports = {
                               itemData.item
                           ].toLocaleString()
                         : "0"
-                } Owned)`
+                })`
             )
             .setThumbnail(itemData.imageUrl)
             .setDescription(`> ${itemData.description}`)

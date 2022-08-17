@@ -63,8 +63,6 @@ function time_split(time) {
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
-   
-        
         const errorembed = new MessageEmbed().setColor("#FF5C5C");
 
         if (!interaction.isCommand()) return;
@@ -173,16 +171,16 @@ module.exports = {
             errorembed.setDescription(`You have an ongoing command.`);
             return interaction.reply({ embeds: [errorembed], ephemeral: true });
         }
-        if (
-            profileData.moderation.blacklist.status === true ||
-            profileData.moderation.ban.status === true
-        ) {
-            errorembed.setDescription(
-                `You are a blacklisted user, you cannot use commands untill you are unblacklisted.\nIf you believe this is a mistake please go here: [https://discord.gg/B5vjnwakdk](https://discord.gg/B5vjnwakdk)`
-            );
+        // if (
+        //     profileData.moderation.blacklist.status === true ||
+        //     profileData.moderation.ban.status === true
+        // ) {
+        //     errorembed.setDescription(
+        //         `You are a blacklisted user, you cannot use commands untill you are unblacklisted.\nIf you believe this is a mistake please go here: [https://discord.gg/B5vjnwakdk](https://discord.gg/B5vjnwakdk)`
+        //     );
 
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        }
+        //     return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        // }
 
         if (guildData.disabledcmds[commandname] === true) {
             const disabledcmdembed = new MessageEmbed()
@@ -201,17 +199,17 @@ module.exports = {
                 userId: user.id,
             };
 
-            statsData.commands = statsData.commands + 1;
+            // statsData.commands = statsData.commands + 1;
 
-            const hasCommand = Object.keys(statsData.commandsObject).includes(
-                commandname
-            );
-            if (!hasCommand) {
-                statsData.commandsObject[commandname] = 1;
-            } else {
-                statsData.commandsObject[commandname] =
-                    statsData.commandsObject[commandname] + 1;
-            }
+            // const hasCommand = Object.keys(statsData.commandsObject).includes(
+            //     commandname
+            // );
+            // if (!hasCommand) {
+            //     statsData.commandsObject[commandname] = 1;
+            // } else {
+            //     statsData.commandsObject[commandname] =
+            //         statsData.commandsObject[commandname] + 1;
+            // }
 
             const experiencepoints = userData.experiencepoints;
             const experiencefull = calcexpfull(userData.level);

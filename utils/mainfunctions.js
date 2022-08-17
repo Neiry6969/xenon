@@ -1,6 +1,7 @@
 const fs = require("fs");
 
 const jsoncooldowns = require("../cooldowns.json");
+const interactionproccesses = require("../interactionproccesses.json");
 
 class Mainfunctions {
     static async setCooldown(
@@ -35,6 +36,22 @@ class Mainfunctions {
         fs.writeFile(
             "./cooldowns.json",
             JSON.stringify(jsoncooldowns),
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        );
+    }
+
+    static async setProcessingLock(interaction, status) {
+        interactionproccesses[interaction.user.id] = {
+            interaction: status,
+            proccessingcoins: status,
+        };
+        fs.writeFile(
+            "./interactionproccesses.json",
+            JSON.stringify(interactionproccesses),
             (err) => {
                 if (err) {
                     console.log(err);
