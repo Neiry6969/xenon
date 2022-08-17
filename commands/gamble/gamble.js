@@ -1,23 +1,15 @@
 const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+} = require("../../utils/currencyfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
 
 const dice = [
     {
@@ -60,19 +52,18 @@ module.exports = {
         }),
     cdmsg: "Stop gambling so fast! If this keeps up, I bet you'll be much more poor.",
     cooldown: 10,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData
-    ) {
+    async execute(interaction, client) {
         const options = {
             amount: interaction.options.getString("amount"),
         };
+        let error_message;
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData_fetch = await fetchInventoryData(
+            interaction.user.id
+        );
+        const economyData = economyData_fetch.data;
+        const inventoryData = inventoryData_fetch.data;
 
-        const errorembed = new MessageEmbed().setColor("#FF5C5C");
         const maxwinningmulti = 1.5;
         const minwinningmulti = 0.5;
         let maxwallet = 25000000;
@@ -80,84 +71,61 @@ module.exports = {
         if (inventoryData.inventory["finecrown"] >= 1) {
             maxwallet = 500000000;
         }
-        let betamount = options.amount?.toLowerCase();
-        const maxbetamount = 500000;
+        let amount = options.amount?.toLowerCase();
+        const maxamount = 500000;
 
-        if (userData.wallet >= maxwallet) {
-            errorembed.setDescription(
-                `You are too rich to gamble.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``
-            );
-
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        if (economyData.wallet >= maxwallet) {
+            error_message = `You are too rich to gamble.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${economyData.wallet.toLocaleString()}\``;
+            return errorReply(interaction, error_message);
         }
 
-        if (userData.wallet < 5000) {
-            if (userData.bank.coins >= 5000) {
-                errorembed.setDescription(
-                    `You need at least ❀ \`5,000\` to use the bet machine, maybe withdraw some?`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+        if (economyData.wallet < 5000) {
+            if (economyData.bank.coins >= 5000) {
+                error_message = `You need at least ❀ \`5,000\` to use the bet machine, maybe withdraw some?`;
+                return errorReply(interaction, error_message);
             } else {
-                errorembed.setDescription(
-                    `You need at least ❀ \`5,000\` to use the bet machine.`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+                error_message = `You need at least ❀ \`5,000\` to use the bet machine.`;
+                return errorReply(interaction, error_message);
             }
         }
 
-        if (betamount === "max" || betamount === "all") {
-            if (userData.wallet > maxbetamount) {
-                betamount = maxbetamount;
+        if (amount === "max" || amount === "all") {
+            if (economyData.wallet > maxamount) {
+                amount = maxamount;
             } else {
-                betamount = userData.wallet;
+                amount = economyData.wallet;
             }
-        } else if (betamount === "half") {
-            betamount = Math.floor(userData.wallet / 2);
+        } else if (amount === "half") {
+            amount = Math.floor(economyData.wallet / 2);
         } else if (
-            letternumbers.find((val) => val.letter === betamount.slice(-1))
+            letternumbers.find((val) => val.letter === amount.slice(-1))
         ) {
-            if (parseInt(betamount.slice(0, -1))) {
-                const number = parseFloat(betamount.slice(0, -1));
+            if (parseInt(amount.slice(0, -1))) {
+                const number = parseFloat(amount.slice(0, -1));
                 const numbermulti = letternumbers.find(
-                    (val) => val.letter === betamount.slice(-1)
+                    (val) => val.letter === amount.slice(-1)
                 ).number;
-                betamount = number * numbermulti;
+                amount = number * numbermulti;
             } else {
-                betamount = null;
+                amount = null;
             }
         } else {
-            betamount = parseInt(betamount);
+            amount = parseInt(amount);
         }
-        betamount = parseInt(betamount);
+        amount = parseInt(amount);
 
-        if (!betamount || betamount < 0) {
-            errorembed.setDescription(
-                `You can only bet a whole number of coins, don't try to break me smh.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (betamount > userData.wallet) {
-            errorembed.setDescription(
-                `You don't have that many coins to bet.\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``
-            );
-
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (betamount < 5000) {
-            errorembed.setDescription(
-                `You need to bet atleast at least ❀ \`5,000\` with the bet machine.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (betamount > maxbetamount) {
-            errorembed.setDescription(
-                `You aren't able to bet that many coins\n**Max Amount:** \`❀ ${maxbetamount.toLocaleString()}\``
-            );
-
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        if (!amount || amount < 0) {
+            error_message = `You can only bet a whole number of coins, don't try to break me smh.`;
+            return errorReply(interaction, error_message);
+        } else if (amount > economyData.wallet) {
+            error_message = `You don't have that many coins to bet.\n**Wallet:** \`❀ ${economyData.wallet.toLocaleString()}\``;
+            return errorReply(interaction, error_message);
+        } else if (amount < 5000) {
+            error_message = `You need to bet atleast at least ❀ \`5,000\` with the bet machine.`;
+            return errorReply(interaction, error_message);
+        } else if (amount > maxamount) {
+            error_message = `You aren't able to bet that many coins\n**Max Amount:** \`❀ ${maxamount.toLocaleString()}\``;
+            return errorReply(interaction, error_message);
         }
 
         const userdice1_random = Math.floor(Math.random() * 6) + 1;
@@ -173,10 +141,13 @@ module.exports = {
         const xenondice1 = dice.find((val) => val.value === xenondice1_random);
         const xenondice2 = dice.find((val) => val.value === xenondice2_random);
 
-        const embed = {
-            color: "#000000",
-            title: `${interaction.user.username}'s betting game`,
-            fields: [
+        const gamble_embed = new MessageEmbed()
+            .setTitle(`Gamble Game`)
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setFields(
                 {
                     name: `${interaction.user.username}`,
                     value: `${userdice1.symbol}${userdice2.symbol} \`${userdice_total}\``,
@@ -186,78 +157,38 @@ module.exports = {
                     name: `${client.user.username}`,
                     value: `${xenondice1.symbol}${xenondice2.symbol} \`${xenondice_total}\``,
                     inline: true,
-                },
-            ],
-            footer: {
-                text: "Xenon Gamble",
-            },
-        };
-
-        await interaction.reply({ embeds: [embed] });
-        const msg = await interaction.fetchReply();
-
-        if (userdice_total < xenondice_total) {
-            const response = await economyModel.findOneAndUpdate(
-                {
-                    userId: interaction.user.id,
-                },
-                {
-                    $inc: {
-                        wallet: -betamount,
-                    },
-                },
-                {
-                    upsert: true,
                 }
             );
 
-            const lostamount = userData.wallet - betamount;
+        await interaction.reply({ embeds: [gamble_embed] });
+        const gamble_msg = await interaction.fetchReply();
 
-            const embed = {
-                color: "#ff4c4c",
-                title: `${interaction.user.username}'s betting game`,
-                description: `You Lost!\n\n**You lost:** \`❀ ${betamount.toLocaleString()}\`\n**Wallet:** \`❀ ${lostamount.toLocaleString()}\``,
-                fields: [
-                    {
-                        name: `${interaction.user.username}`,
-                        value: `${userdice1.symbol}${userdice2.symbol} \`${userdice_total}\``,
-                        inline: true,
-                    },
-                    {
-                        name: `${client.user.username}`,
-                        value: `${xenondice1.symbol}${xenondice2.symbol} \`${xenondice_total}\``,
-                        inline: true,
-                    },
-                ],
-                footer: {
-                    text: "Xenon Gamble",
-                },
-            };
+        if (userdice_total < xenondice_total) {
+            await removeCoins(economyData.userId, amount);
 
-            msg.edit({ embeds: [embed] });
+            const newwallet = economyData.wallet - amount;
+
+            gamble_embed
+                .setColor(`#ff87a7`)
+                .setDescription(
+                    `You Lost! <a:cat_cry:1008879262671044719>\n\n**You lost:** \`❀ ${amount.toLocaleString()}\``
+                )
+                .setFooter({
+                    text: `New Wallet: ❀ ${newwallet.toLocaleString()}`,
+                });
+
+            gamble_msg.edit({ embeds: [gamble_embed] });
         } else if (userdice_total === xenondice_total) {
-            const embed = {
-                color: "#FFFF00",
-                title: `${interaction.user.username}'s betting game`,
-                description: `You Tied! Nothing has changed.\n\n**You Won:** ❀ \`0\`\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
-                fields: [
-                    {
-                        name: `${interaction.user.username}`,
-                        value: `${userdice1.symbol}${userdice2.symbol} \`${userdice_total}\``,
-                        inline: true,
-                    },
-                    {
-                        name: `${client.user.username}`,
-                        value: `${xenondice1.symbol}${xenondice2.symbol} \`${xenondice_total}\``,
-                        inline: true,
-                    },
-                ],
-                footer: {
-                    text: "Xenon Gamble",
-                },
-            };
+            gamble_embed
+                .setColor(`#fdff87`)
+                .setDescription(
+                    `You Tied! <a:wumpus_relief:1008882381366759434>\n\`Nothing has changed\``
+                )
+                .setFooter({
+                    text: `New Wallet: ❀ ${economyData.wallet.toLocaleString()}`,
+                });
 
-            msg.edit({ embeds: [embed] });
+            gamble_msg.edit({ embeds: [gamble_embed] });
         } else {
             const dicedifference = userdice_total - xenondice_total;
             const maxwinmulti = maxwinningmulti - (0.1 * dicedifference - 0.1);
@@ -266,68 +197,25 @@ module.exports = {
                 Math.random() * maxwinmulti + minwinningmulti;
             const multiplier = multipliercalc.toFixed(2);
 
-            const winningamount = Math.floor(multiplier * betamount);
-            const wallet = userData.wallet + winningamount;
+            const winningamount = Math.floor(multiplier * amount);
+            const newwallet = economyData.wallet + winningamount;
 
-            const response = await economyModel.findOneAndUpdate(
-                {
-                    userId: interaction.user.id,
-                },
-                {
-                    $inc: {
-                        wallet: winningamount,
-                    },
-                },
-                {
-                    upsert: true,
-                }
-            );
+            await addCoins(economyData.userId, winningamount);
 
-            const embed = {
-                color: "#b7ffa1",
-                title: `${interaction.user.username}'s betting game`,
-                description: `You Won!\n\n**You Won:** \`❀ ${winningamount.toLocaleString()}\`\n**Multiplier:** \`x${multiplier}\` \`${parseInt(
-                    multiplier * 100
-                )}%\`\n**Wallet:** \`❀ ${wallet.toLocaleString()}\``,
-                fields: [
-                    {
-                        name: `${interaction.user.username}`,
-                        value: `${userdice1.symbol}${userdice2.symbol} \`${userdice_total}\``,
-                        inline: true,
-                    },
-                    {
-                        name: `${client.user.username}`,
-                        value: `${xenondice1.symbol}${xenondice2.symbol} \`${xenondice_total}\``,
-                        inline: true,
-                    },
-                ],
-                footer: {
-                    text: "Xenon Gamble",
-                },
-            };
+            gamble_embed
+                .setColor(`#95ff87`)
+                .setDescription(
+                    `You Won! <a:cat_greenbonk:1008879267674865755>\n\n**You Won:** \`❀ ${winningamount.toLocaleString()}\`\n**Multiplier:** \`x${multiplier}\` \`${parseInt(
+                        multiplier * 100
+                    )}%\``
+                )
+                .setFooter({
+                    text: `New Wallet: ❀ ${newwallet.toLocaleString()}`,
+                });
 
-            msg.edit({ embeds: [embed] });
+            gamble_msg.edit({ embeds: [gamble_embed] });
         }
 
-        let cooldown = 10;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].gamble = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        return setCooldown(interaction, "gamble", 10, economyData);
     },
 };

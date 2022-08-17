@@ -57,7 +57,7 @@ module.exports = {
                 },
                 {
                     name: `Creator/Owners`,
-                    value: `Creator: \`neriseo#1435\` (<@567805802388127754>)\nOwner: \`neriseo#1435\` (<@567805802388127754>)`,
+                    value: `Creator: \`neriseo#7397\` (<@567805802388127754>)\nOwner: \`neriseo#7397\` (<@567805802388127754>)`,
                     inline: true,
                 },
                 {
@@ -68,7 +68,6 @@ module.exports = {
             )
             .setThumbnail(client.user.displayAvatarURL());
 
-        
         return interaction.reply({ embeds: [infoembed], components: [row] });
     },
 };

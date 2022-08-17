@@ -1,23 +1,15 @@
 const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+} = require("../../utils/currencyfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
 
 const winningicons = [
     "<:excalibur:966537260034043974>",
@@ -136,62 +128,48 @@ module.exports = {
         }),
     cdmsg: "Stop gambling so fast! If this keeps up, I bet you'll be much more poor.",
     cooldown: 10,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData
-    ) {
+    async execute(interaction) {
         const options = {
             amount: interaction.options.getString("amount"),
         };
+        let error_message;
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData_fetch = await fetchInventoryData(
+            interaction.user.id
+        );
+        const economyData = economyData_fetch.data;
+        const inventoryData = inventoryData_fetch.data;
 
+        const maxslotsamount = 500000;
         let maxwallet = 25000000;
-        const errorembed = new MessageEmbed().setColor("#FF5C5C");
+        let slotsamount = options.amount?.toLowerCase();
         if (inventoryData.inventory["finecrown"] >= 1) {
             maxwallet = 500000000;
         }
-        let slotsamount = options.amount?.toLowerCase();
-        const maxslotsamount = 500000;
 
-        if (userData.wallet >= maxwallet) {
-            errorembed.setDescription(
-                `You are too rich to use the slots machine.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``
-            );
-
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        if (economyData.wallet >= maxwallet) {
+            error_message = `You are too rich to use the slots machine.\n**Cap:** \`❀ ${maxwallet.toLocaleString()}\`\n**Wallet:** \`❀ ${economyData.wallet.toLocaleString()}\``;
+            return errorReply(interaction, error_message);
         }
 
-        if (userData.wallet < 5000) {
-            if (userData.bank.coins >= 5000) {
-                errorembed.setDescription(
-                    `You need at least ❀ \`5,000\` to use the slots machine, maybe withdraw some?`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+        if (economyData.wallet < 5000) {
+            if (economyData.bank.coins >= 5000) {
+                error_message = `You need at least ❀ \`5,000\` to use the slots machine, maybe withdraw some?`;
+                return errorReply(interaction, error_message);
             } else {
-                errorembed.setDescription(
-                    `You need at least ❀ \`5,000\` to use the slots machine.`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+                error_message = `You need at least ❀ \`5,000\` to use the slots machine.`;
+                return errorReply(interaction, error_message);
             }
         }
 
         if (slotsamount === "max" || slotsamount === "all") {
-            if (userData.wallet > maxslotsamount) {
+            if (economyData.wallet > maxslotsamount) {
                 slotsamount = maxslotsamount;
             } else {
-                slotsamount = userData.wallet;
+                slotsamount = economyData.wallet;
             }
         } else if (slotsamount === "half") {
-            slotsamount = Math.floor(userData.wallet / 2);
+            slotsamount = Math.floor(economyData.wallet / 2);
         } else if (
             letternumbers.find((val) => val.letter === slotsamount.slice(-1))
         ) {
@@ -210,26 +188,18 @@ module.exports = {
 
         slotsamount = parseInt(slotsamount);
 
-        if (slotsamount > userData.wallet) {
-            errorembed.setDescription(
-                `You don't have that many coins to slots.\n**Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+        if (slotsamount > economyData.wallet) {
+            error_message = `You don't have that many coins to slots.\n**Wallet:** \`❀ ${economyData.wallet.toLocaleString()}\``;
+            return errorReply(interaction, error_message);
         } else if (!slotsamount || slotsamount < 0) {
-            errorembed.setDescription(
-                `You can only slots a whole number of coins, don't try to break me smh.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = `You can only slots a whole number of coins, don't try to break me smh.`;
+            return errorReply(interaction, error_message);
         } else if (slotsamount < 5000) {
-            errorembed.setDescription(
-                `You need to bet atleast at least ❀ \`5,000\` with the slots machine.`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = `You need to bet atleast at least ❀ \`5,000\` with the slots machine.`;
+            return errorReply(interaction, error_message);
         } else if (slotsamount > maxslotsamount) {
-            errorembed.setDescription(
-                `You aren't able to slots that many coins\n**Max Amount:** \`❀ ${maxslotsamount.toLocaleString()}\``
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = `You aren't able to slots that many coins\n**Max Amount:** \`❀ ${maxslotsamount.toLocaleString()}\``;
+            return errorReply(interaction, error_message);
         }
 
         const slot1_num = Math.floor(Math.random() * 100 * 100);
@@ -240,38 +210,12 @@ module.exports = {
         const slots3 = slot(slot3_num);
         const resultslots = [slots1, slots2, slots3];
 
-        let cooldown = 10;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].slots = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        const slots_embed = new MessageEmbed()
+            .setTitle(`Slots Machine`)
+            .setDescription(`\` [>\`${resultslots.join(" ")} \`<]\``);
 
-        const embed = {
-            color: "#000000",
-            title: `${interaction.user.username}'s slots machine`,
-            description: `**[>${resultslots.join(" ")}<]**`,
-            footer: {
-                text: "Xenon Slots",
-            },
-        };
-
-        await interaction.reply({ embeds: [embed] });
-        const msg = await interaction.fetchReply();
+        await interaction.reply({ embeds: [slots_embed] });
+        const slots_msg = await interaction.fetchReply();
 
         let multiplier;
         const majorityelement = majorityElement(resultslots);
@@ -280,64 +224,30 @@ module.exports = {
             resultslots
         );
 
-        if (majorityelement === false) {
-            const response = await economyModel.findOneAndUpdate(
-                {
-                    userId: interaction.user.id,
-                },
-                {
-                    $inc: {
-                        wallet: -slotsamount,
-                    },
-                },
-                {
-                    upsert: true,
-                }
-            );
+        if (
+            majorityelement === false ||
+            !winningicons.includes(majorityelement)
+        ) {
+            await addCoins(economyData.userId, slotsamount);
 
-            const lostamount = userData.wallet - slotsamount;
+            const newwallet = economyData.wallet - slotsamount;
 
-            const embed = {
-                color: "#ff4c4c",
-                title: `${interaction.user.username}'s losing slots machine`,
-                description: `**[>${resultslots.join(
-                    " "
-                )}<]**\n\n**You lost:** \`❀ ${slotsamount.toLocaleString()}\`\n**Wallet:** \`❀ ${lostamount.toLocaleString()}\``,
-                footer: {
-                    text: "Xenon Slots",
-                },
-            };
+            slots_embed
+                .setColor(`#ff87a7`)
+                .setAuthor({
+                    name: `${interaction.user.tag}`,
+                    iconURL: interaction.user.displayAvatarURL(),
+                })
+                .setDescription(
+                    `**\`[>\` ${resultslots.join(
+                        " "
+                    )} \`<]\`**\n\n**You lost:** \`❀ ${slotsamount.toLocaleString()}\``
+                )
+                .setFooter({
+                    text: `New Wallet: ❀ ${newwallet.toLocaleString()}`,
+                });
 
-            msg.edit({ embeds: [embed] });
-        } else if (!winningicons.includes(majorityelement)) {
-            const response = await economyModel.findOneAndUpdate(
-                {
-                    userId: interaction.user.id,
-                },
-                {
-                    $inc: {
-                        wallet: -slotsamount,
-                    },
-                },
-                {
-                    upsert: true,
-                }
-            );
-
-            const lostamount = userData.wallet - slotsamount;
-
-            const embed = {
-                color: "#ff4c4c",
-                title: `${interaction.user.username}'s losing slots machine`,
-                description: `**[>${resultslots.join(
-                    " "
-                )}<]**\n\n**You lost:** \`❀ ${slotsamount.toLocaleString()}\`\n**Wallet:** \`❀ ${lostamount.toLocaleString()}\``,
-                footer: {
-                    text: "Xenon Slots",
-                },
-            };
-
-            msg.edit({ embeds: [embed] });
+            slots_msg.edit({ embeds: [slots_embed] });
         } else {
             let multiplier;
             if (majorityelementcount[majorityelement] === 3) {
@@ -354,35 +264,24 @@ module.exports = {
                 ).multi;
             }
 
-            const winamount = Math.floor(multiplier * slotsamount);
-            const wallet = userData.wallet + winamount;
+            const winningamount = Math.floor(multiplier * slotsamount);
+            const newwallet = economyData.wallet + winningamount;
 
-            const response = await economyModel.findOneAndUpdate(
-                {
-                    userId: interaction.user.id,
-                },
-                {
-                    $inc: {
-                        wallet: winamount,
-                    },
-                },
-                {
-                    upsert: true,
-                }
-            );
+            await addCoins(economyData.userId, winningamount);
 
-            const embed = {
-                color: "#b7ffa1",
-                title: `${interaction.user.username}'s winning slots machine`,
-                description: `**[>${resultslots.join(
-                    " "
-                )}<]**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`❀ ${winamount.toLocaleString()}\`\n**Wallet:** \`❀ ${wallet.toLocaleString()}\``,
-                footer: {
-                    text: "Xenon Slots",
-                },
-            };
+            slots_embed
+                .setColor(`#95ff87`)
+                .setDescription(
+                    `**\`[>\` ${resultslots.join(
+                        " "
+                    )} \`<]\`**\n\n**Multiplier:** \`x${multiplier.toLocaleString()}\`\n**You Won:** \`❀ ${winningamount.toLocaleString()}\``
+                )
+                .setFooter({
+                    text: `New Wallet: ❀ ${newwallet.toLocaleString()}`,
+                });
 
-            msg.edit({ embeds: [embed] });
+            slots_msg.edit({ embeds: [slots_embed] });
         }
+        return setCooldown(interaction, "slots", 10, economyData);
     },
 };

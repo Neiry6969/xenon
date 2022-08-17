@@ -8,12 +8,8 @@ const statsSchema = new mongoose.Schema(
             unique: true,
         },
         commands: {
-            type: Number,
-            default: 0,
-        },
-        commandsObject: {
-            type: Object,
-            default: {},
+            type: Onject,
+            default: { total: 0, list: {} },
         },
         gamblestats: {
             type: Object,
@@ -22,12 +18,6 @@ const statsSchema = new mongoose.Schema(
         interactionstats: {
             type: Object,
             default: {},
-        },
-        interactionstats: {
-            type: Object,
-            default: {
-                lastvoted: null,
-            },
         },
         streaks: {
             type: Object,
