@@ -184,7 +184,7 @@ module.exports = {
 
                     buy_embed
                         .setTitle(`Action Cancelled - Purchase`)
-                        .setColor(`#fdff87`);
+                        .setColor(`#ff8f87`);
 
                     confirm.setDisabled().setStyle("SECONDARY");
                     cancel.setDisabled();
@@ -203,7 +203,7 @@ module.exports = {
 
                     buy_embed
                         .setTitle(`Action Timed Out - Purchase`)
-                        .setColor(`#fdff87`);
+                        .setColor(`#ff8f87`);
 
                     confirm.setDisabled().setStyle("SECONDARY");
                     cancel.setDisabled().setStyle("SECONDARY");

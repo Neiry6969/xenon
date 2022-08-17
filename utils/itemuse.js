@@ -138,7 +138,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff9497")
+                    .setColor("#ff8f87")
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
@@ -171,7 +171,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff9497")
+                    .setColor("#ff8f87")
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
@@ -286,7 +286,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff9497")
+                    .setColor("#ff8f87")
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
@@ -318,7 +318,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff9497")
+                    .setColor("#ff8f87")
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon

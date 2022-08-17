@@ -191,7 +191,7 @@ module.exports = {
                     confirm.setDisabled().setStyle("SUCCESS");
                     cancel.setDisabled().setStyle("SECONDARY");
 
-                    sell_embed.edit({
+                    sell_msg.edit({
                         embeds: [sell_embed],
                         components: [row],
                     });
@@ -202,7 +202,7 @@ module.exports = {
 
                     sell_embed
                         .setTitle(`Action Cancelled - Sell`)
-                        .setColor(`#fdff87`);
+                        .setColor(`#ff8f87`);
 
                     confirm.setDisabled().setStyle("SECONDARY");
                     cancel.setDisabled();
@@ -222,7 +222,7 @@ module.exports = {
 
                     sell_embed
                         .setTitle(`Action Timed Out - Sell`)
-                        .setColor(`#fdff87`);
+                        .setColor(`#ff8f87`);
 
                     confirm.setDisabled().setStyle("SECONDARY");
                     cancel.setDisabled().setStyle("SECONDARY");

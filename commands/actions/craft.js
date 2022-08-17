@@ -574,7 +574,7 @@ module.exports = {
                         displaytext =
                             displaytext +
                             `\n\n\`\`\`You do not meet the requirements to craft even one of this item\`\`\``;
-                        craft_msg_embed.setColor("#ff9497");
+                        craft_msg_embed.setColor("#ff8f87");
                     } else if (maxcraftamount === 1) {
                         minusbutton.setDisabled();
                         addbutton.setDisabled();
