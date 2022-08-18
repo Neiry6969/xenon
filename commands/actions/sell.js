@@ -185,7 +185,7 @@ module.exports = {
                             }\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (Each: \`❀ ${itemData.price.toLocaleString()}\`)`
                         )
                         .setFooter({
-                            text: `New Owned Quantity: ${newquantityowned.toLocaleString()}`,
+                            text: `Units Owned: ${newquantityowned.toLocaleString()}`,
                         });
 
                     confirm.setDisabled().setStyle("SUCCESS");
@@ -247,7 +247,7 @@ module.exports = {
                     }\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Sale Price:** \`❀ ${saleprice.toLocaleString()}\` (Each: \`❀ ${itemData.price.toLocaleString()}\`)`
                 )
                 .setFooter({
-                    text: `New Owned Quantity: ${newquantityowned.toLocaleString()}`,
+                    text: `New Units Owned: ${newquantityowned.toLocaleString()}`,
                 });
 
             return interaction.reply({ embeds: [sell_embed] });

@@ -122,6 +122,10 @@ module.exports = {
 
             const buy_embed = new MessageEmbed()
                 .setColor("#2f3136")
+                .setAuthor({
+                    name: `${interaction.user.tag}`,
+                    iconURL: interaction.user.displayAvatarURL(),
+                })
                 .setTitle(`Action Confirmation  - Purchase`)
                 .setDescription(
                     `<@${interaction.user.id}>, are you sure you want to buy ${
@@ -168,7 +172,7 @@ module.exports = {
                             }\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (Each: \`❀ ${itemData.price.toLocaleString()}\`)`
                         )
                         .setFooter({
-                            text: `New Owned Quantity: ${newquantityowned.toLocaleString()}`,
+                            text: `Units Owned: ${newquantityowned.toLocaleString()}`,
                         });
 
                     confirm.setDisabled().setStyle("SUCCESS");
@@ -228,7 +232,7 @@ module.exports = {
                     }\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (Each: \`❀ ${itemData.price.toLocaleString()}\`)`
                 )
                 .setFooter({
-                    text: `Owned Quantity: ${newquantityowned.toLocaleString()}`,
+                    text: `Units Owned: ${newquantityowned.toLocaleString()}`,
                 });
 
             return interaction.reply({ embeds: [buy_embed] });

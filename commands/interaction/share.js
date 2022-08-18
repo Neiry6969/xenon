@@ -1,24 +1,22 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+    addItem,
+    removeItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const { death_handler } = require("../../utils/currencyevents");
 const letternumbers = require("../../reference/letternumber");
-const interactionproccesses = require("../../interactionproccesses.json");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -40,79 +38,40 @@ module.exports = {
                 .setRequired(true);
         }),
     cooldown: 10,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData
-    ) {
+    async execute(interaction) {
         let endinteraction = true;
+        let error_message;
         const options = {
             user: interaction.options.getUser("user"),
             amount: interaction.options.getString("amount"),
         };
 
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
         const target = options.user;
         let amount = options.amount?.toLowerCase();
-        const errorembed = new MessageEmbed().setColor("#FF5C5C");
 
-        const params = {
-            userId: interaction.user.id,
-        };
-
-        let cooldown = 10;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].share = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
         if (target.id === interaction.user.id) {
-            errorembed.setDescription(
-                `You can't share coins with yourself!\n${expectedsyntax}`
-            );
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = `You can't share coins with yourself!\n${expectedsyntax}`;
+            return errorReply(interaction, error_message);
         }
 
-        if (userData.wallet <= 0) {
-            if (userData.bank.coins <= 0) {
-                errorembed.setDescription(
-                    `You got no coins in your wallet or your bank to share, your broke :c.`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+        if (economyData.wallet <= 0) {
+            if (economyData.bank.coins <= 0) {
+                error_message = `You got no coins in your wallet or your bank to share, your broke :c.`;
+                return errorReply(interaction, error_message);
             } else {
-                errorembed.setDescription(
-                    `You got no coins in your wallet to share, maybe withdraw some?`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+                error_message = `You got no coins in your wallet to share, maybe withdraw some?`;
+                return errorReply(interaction, error_message);
             }
         }
 
         if (amount === "max" || amount === "all") {
-            amount = userData.wallet;
+            amount = economyData.wallet;
         } else if (amount === "half") {
-            amount = Math.floor(userData.wallet / 2);
+            amount = Math.floor(economyData.wallet / 2);
         } else if (
             letternumbers.find((val) => val.letter === amount.slice(-1))
         ) {
@@ -130,30 +89,19 @@ module.exports = {
         }
 
         if (amount === 0) {
-            errorembed.setDescription(
-                "So you want to share nothing, pretend you did that in your mind"
-            );
+            error_message =
+                "So you want to share nothing, pretend you did that in your mind";
             return interaction.reply({ embeds: [errorembed], ephemeral: true });
         } else if (!amount || amount < 0 || amount % 1 != 0) {
             errorembed.setDescription("Share amount must be a whole number.");
             return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        } else if (amount > userData.wallet) {
-            if (amount < userData.bank.coins + userData.wallet) {
-                errorembed.setDescription(
-                    `You don't have that amount of coins to give from your wallet, maybe withdraw some?`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+        } else if (amount > economyData.wallet) {
+            if (amount < economyData.bank.coins + economyData.wallet) {
+                error_message = `You don't have that amount of coins to give from your wallet, maybe withdraw some?`;
+                return errorReply(interaction, error_message);
             } else {
-                errorembed.setDescription(
-                    `You don't have that amount of coins to give from your wallet or your bank.`
-                );
-                return interaction.reply({
-                    embeds: [errorembed],
-                    ephemeral: true,
-                });
+                error_message = `You don't have that amount of coins to give from your wallet or your bank.`;
+                return errorReply(interaction, error_message);
             }
         }
 
@@ -169,22 +117,23 @@ module.exports = {
 
         let row = new MessageActionRow().addComponents(confirm, cancel);
 
-        const embed = {
-            color: "RANDOM",
-            author: {
-                name: `_____________`,
-                icon_url: `${interaction.user.displayAvatarURL()}`,
-            },
-            title: `Confirm action`,
-            description: `<@${
-                interaction.user.id
-            }>, do you want to share \`❀ ${amount.toLocaleString()}\` to <@${
-                target.id
-            }>?`,
-            timestamp: new Date(),
-        };
+        const share_embed = new MessageEmbed()
+            .setColor("#2f3136")
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setTitle(`Action Confirmation - Share`)
+            .setDescription(
+                `<@${
+                    interaction.user.id
+                }>, do you want to share \`❀ ${amount.toLocaleString()}\` to <@${
+                    target.id
+                }>?`
+            );
+
         await interaction.reply({
-            embeds: [embed],
+            embeds: [share_embed],
             components: [row],
         });
 
@@ -194,50 +143,7 @@ module.exports = {
             time: 20 * 1000,
         });
 
-        const target_profileData = await economyModel.findOne({
-            userId: target.id,
-        });
-        let target_profileData_coins;
-        if (!target_profileData) {
-            profile = await economyModel.create({
-                userId: target.id,
-                wallet: amount,
-            });
-            profile.save();
-            target_profileData_coins = amount;
-        } else {
-            await economyModel.findOneAndUpdate(
-                { userId: target.id },
-                {
-                    $inc: {
-                        wallet: amount,
-                    },
-                },
-                {
-                    upsert: true,
-                }
-            );
-            target_profileData_coins = target_profileData.wallet + amount;
-        }
-
-        interactionproccesses[interaction.user.id] = {
-            interaction: true,
-            proccessingcoins: true,
-        };
-        fs.writeFile(
-            "./interactionproccesses.json",
-            JSON.stringify(interactionproccesses),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-        userData.interactionproccesses.interaction = true;
-        userData.interactionproccesses.proccessingcoins = true;
-        userData.wallet = userData.wallet - amount;
-        await economyModel.updateOne(params, userData);
-
+        setProcessingLock(interaction, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -249,109 +155,44 @@ module.exports = {
             button.deferUpdate();
             if (button.customId === "confirm") {
                 endinteraction = true;
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
-                userData.interactionproccesses.interaction = false;
-                userData.interactionproccesses.proccessingcoins = false;
+                setProcessingLock(interaction, false);
+                await removeCoins(interaction.user.id, amount);
+                await addCoins(target.id, amount);
 
-                await economyModel.updateOne(params, userData);
-                const embed = {
-                    color: "#00FF00",
-                    author: {
-                        name: `_____________`,
-                        icon_url: `${interaction.user.displayAvatarURL()}`,
-                    },
-                    title: `Transaction success, here is the receipt`,
-                    description: `<@${
-                        interaction.user.id
-                    }> shared \`❀ ${amount.toLocaleString()}\` to <@${
-                        target.id
-                    }>`,
-                    fields: [
-                        {
-                            name: `${interaction.user.username}`,
-                            value: `**New Wallet:** \`❀ ${userData.wallet.toLocaleString()}\``,
-                            inline: true,
-                        },
-                        {
-                            name: `${target.username}`,
-                            value: `**New Wallet:** \`❀ ${target_profileData_coins.toLocaleString()}\``,
-                        },
-                    ],
-                    timestamp: new Date(),
-                };
+                const new_wallet = economyData.wallet - amount;
+
+                share_embed
+                    .setColor(`#95ff87`)
+                    .setTitle(`Receipt - Share`)
+                    .setDescription(
+                        `<@${interaction.user.id}> shared coins to <@${
+                            target.id
+                        }>, here are the details:\n\n**Coins:** \`${amount.toLocaleString()}\``
+                    )
+                    .setFooter({
+                        text: `New Wallet: ❀ ${new_wallet.toLocaleString()}`,
+                    });
 
                 confirm.setDisabled().setStyle("SUCCESS");
-
                 cancel.setDisabled().setStyle("SECONDARY");
 
                 share_msg.edit({
-                    embeds: [embed],
+                    embeds: [share_embed],
                     components: [row],
                 });
             } else if (button.customId === "cancel") {
                 endinteraction = true;
-                await economyModel.findOneAndUpdate(
-                    { userId: target.id },
-                    {
-                        $inc: {
-                            wallet: -amount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                );
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
-                userData.interactionproccesses.interaction = false;
-                userData.interactionproccesses.proccessingcoins = false;
-                userData.wallet = userData.wallet + amount;
-                await economyModel.updateOne(params, userData);
+                setProcessingLock(interaction, false);
 
-                const embed = {
-                    color: "#FF0000",
-                    author: {
-                        name: `_____________`,
-                        icon_url: `${interaction.user.displayAvatarURL()}`,
-                    },
-                    title: `Action cancelled`,
-                    description: `<@${
-                        interaction.user.id
-                    }>, do you want to share \`❀ ${amount.toLocaleString()}\` to <@${
-                        target.id
-                    }>?\nI guess not...`,
-                    timestamp: new Date(),
-                };
+                share_embed
+                    .setTitle(`Action Timed Out - Share`)
+                    .setColor(`#ff8f87`);
 
                 confirm.setDisabled().setStyle("SECONDARY");
-
                 cancel.setDisabled();
 
                 share_msg.edit({
-                    embeds: [embed],
+                    embeds: [share_embed],
                     components: [row],
                 });
             }
@@ -360,55 +201,17 @@ module.exports = {
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                await economyModel.findOneAndUpdate(
-                    { userId: target.id },
-                    {
-                        $inc: {
-                            wallet: -amount,
-                        },
-                    },
-                    {
-                        upsert: true,
-                    }
-                );
-                interactionproccesses[interaction.user.id] = {
-                    interaction: false,
-                    proccessingcoins: false,
-                };
-                fs.writeFile(
-                    "./interactionproccesses.json",
-                    JSON.stringify(interactionproccesses),
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        }
-                    }
-                );
-                userData.interactionproccesses.interaction = false;
-                userData.interactionproccesses.proccessingcoins = false;
-                userData.wallet = userData.wallet + amount;
-                await economyModel.updateOne(params, userData);
-                const embed = {
-                    color: "#FF0000",
-                    author: {
-                        name: `_____________`,
-                        icon_url: `${interaction.user.displayAvatarURL()}`,
-                    },
-                    title: `Action timeout`,
-                    description: `<@${
-                        interaction.user.id
-                    }>, do you want to share \`❀ ${amount.toLocaleString()}\` to <@${
-                        target.id
-                    }>?\nI guess not...`,
-                    timestamp: new Date(),
-                };
+                setProcessingLock(interaction, false);
+
+                share_embed
+                    .setTitle(`Action Timed Out - Share`)
+                    .setColor(`#ff8f87`);
 
                 confirm.setDisabled().setStyle("SECONDARY");
-
                 cancel.setDisabled().setStyle("SECONDARY");
 
                 share_msg.edit({
-                    embeds: [embed],
+                    embeds: [share_embed],
                     components: [row],
                 });
             }
