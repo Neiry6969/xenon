@@ -228,7 +228,7 @@ module.exports = {
             majorityelement === false ||
             !winningicons.includes(majorityelement)
         ) {
-            await addCoins(economyData.userId, slotsamount);
+            await removeCoins(economyData.userId, slotsamount);
 
             const newwallet = economyData.wallet - slotsamount;
 
