@@ -39,7 +39,7 @@ module.exports = {
         const inventoryData = inventory_fetch.data;
         const economyData = await fetchEconomyData(user.id);
 
-        if (!inventoryData.inventory) {
+        if (inventoryData.inventory === {} || !inventoryData.inventory) {
             inventory_embed
                 .setDescription(
                     `\`This inventory is empty space, nothing is in it\``
@@ -49,10 +49,6 @@ module.exports = {
                 embeds: [inventory_embed],
             });
         }
-
-        const inentory_embed = new MessageEmbed()
-            .setTitle("Inventory")
-            .setColor(theme.embed.color);
 
         const mappedData = Object.keys(inventoryData.inventory)
             .sort()
@@ -73,7 +69,15 @@ module.exports = {
             .filter(Boolean);
 
         if (mappedData.length === 0) {
-            return interaction.reply({ embeds: [inentory_embed] });
+            inventory_embed
+                .setDescription(
+                    `\`This inventory is empty space, nothing is in it\``
+                )
+                .setFooter({ text: `Networth: ❀ 0` });
+            return interaction.reply({
+                embeds: [inventory_embed],
+            });
+            return interaction.reply({ embeds: [inventory_embed] });
         } else {
             const inventory = Object.values(inventoryData.inventory).filter(
                 Boolean
@@ -130,7 +134,7 @@ module.exports = {
                     rightfarbutton
                 );
 
-                inentory_embed
+                inventory_embed
                     .setAuthor({
                         name: `${user.tag}`,
                         iconURL: user.displayAvatarURL(),
@@ -145,7 +149,7 @@ module.exports = {
                     });
 
                 return interaction.reply({
-                    embeds: [inentory_embed],
+                    embeds: [inventory_embed],
                     components: [row],
                 });
             } else {
@@ -184,7 +188,7 @@ module.exports = {
                     rightfarbutton
                 );
 
-                inentory_embed
+                inventory_embed
                     .setAuthor({
                         name: `${user.tag}`,
                         iconURL: user.displayAvatarURL(),
@@ -199,7 +203,7 @@ module.exports = {
                     });
 
                 await interaction.reply({
-                    embeds: [inentory_embed],
+                    embeds: [inventory_embed],
                     components: [row],
                 });
 
@@ -231,14 +235,14 @@ module.exports = {
                             rightbutton.setDisabled();
                             rightfarbutton.setDisabled();
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         } else {
@@ -247,14 +251,14 @@ module.exports = {
                             rightfarbutton.setDisabled(false);
                             leftfarbutton.setDisabled(false);
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         }
@@ -270,14 +274,14 @@ module.exports = {
                             rightbutton.setDisabled();
                             rightfarbutton.setDisabled();
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         } else {
@@ -286,14 +290,14 @@ module.exports = {
                             rightfarbutton.setDisabled(false);
                             leftfarbutton.setDisabled(false);
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         }
@@ -309,14 +313,14 @@ module.exports = {
                             leftbutton.setDisabled();
                             leftfarbutton.setDisabled();
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         } else {
@@ -325,14 +329,14 @@ module.exports = {
                             rightfarbutton.setDisabled(false);
                             leftfarbutton.setDisabled(false);
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         }
@@ -348,14 +352,14 @@ module.exports = {
                             leftbutton.setDisabled();
                             leftfarbutton.setDisabled();
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         } else {
@@ -364,14 +368,14 @@ module.exports = {
                             rightfarbutton.setDisabled(false);
                             leftfarbutton.setDisabled(false);
 
-                            inentory_embed.setDescription(
+                            inventory_embed.setDescription(
                                 `${mappedData
                                     .slice(display_start, display_end)
                                     .join("\n")}`
                             );
 
                             await inv_msg.edit({
-                                embeds: [inentory_embed],
+                                embeds: [inventory_embed],
                                 components: [row],
                             });
                         }
