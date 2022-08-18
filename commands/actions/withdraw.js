@@ -98,7 +98,7 @@ module.exports = {
             await EconomyModel.findOneAndUpdate(params, economyData);
 
             const deposit_embed = new MessageEmbed()
-                .setColor(await fetchEmbedColor(interaction))
+                .setColor(theme.embed.color)
                 .setTitle(`Withdrawal`)
                 .setAuthor({
                     name: interaction.user.tag,
