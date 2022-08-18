@@ -14,7 +14,7 @@ module.exports = {
         .setName("shop")
         .setDescription("See what items are being sold in the xenon shop."),
     cooldown: 5,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
         const inventoryData_fetch = await fetchInventoryData(
             interaction.user.id
@@ -67,7 +67,7 @@ module.exports = {
         let display_end = page * itemsperpage;
 
         const shop_embed = new MessageEmbed()
-            .setColor(`#2f3136`)
+            .setColor(theme.embed.color)
             .setTitle(`Xenon Shop™`);
 
         if (lastpage === 1) {

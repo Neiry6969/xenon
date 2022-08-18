@@ -22,7 +22,7 @@ module.exports = {
         .setDescription("Collect your daily rewards every 24 hours."),
     cooldown: 86400,
     cdmsg: "You already collected your daily rewards today.",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const dailybaseamount = 100000;
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData_fetch = await fetchInventoryData(
@@ -81,7 +81,7 @@ module.exports = {
         }
 
         const daily_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

@@ -14,7 +14,7 @@ module.exports = {
         .setDescription("Collect your weekly rewards every week."),
     cooldown: 604800,
     cdmsg: "You already collected your weekly rewards this week.",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const weekly_amount = 1000000;
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData_fetch = await fetchInventoryData(
@@ -25,7 +25,7 @@ module.exports = {
         await addCoins(interaction.user.id, weekly_amount);
 
         const weekly_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

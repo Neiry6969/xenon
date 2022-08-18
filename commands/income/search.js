@@ -43,9 +43,9 @@ module.exports = {
         .setDescription("Search some place for coins."),
     cooldown: 30,
     cdmsg: "At that moment, you didn't know where to search.",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         let endinteraction = false;
-        const allItems = await fetchItemData();
+        const allItems = await fetchAllitemsData();
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData_fetch = await fetchInventoryData(
             interaction.user.id
@@ -76,7 +76,7 @@ module.exports = {
         );
 
         const search_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

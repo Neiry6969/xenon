@@ -19,7 +19,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("information")
         .setDescription("Check the bot's information status."),
-    async execute(interaction, client) {
+    async execute(interaction, client, theme) {
         const fetcheconomy = await economyModel.find({});
         const usercount = fetcheconomy.length;
         const servercount = client.guilds.cache.size;
@@ -44,7 +44,7 @@ module.exports = {
                 .setDisabled(false)
         );
         infoembed = new MessageEmbed()
-            .setColor(`#2f3136`)
+            .setColor(theme.embed.color)
             .setTitle(`Xenon Information`)
             .setDescription(
                 `\`Economy bot that was made for the fun of it. Migrated to fully slash commands.\``

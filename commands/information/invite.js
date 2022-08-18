@@ -21,7 +21,7 @@ module.exports = {
         .setDescription("Invite the bot to your server."),
 
     cooldown: 5,
-    async execute(interaction, client, userData) {
+    async execute(interaction, client, theme) {
         const row = new MessageActionRow().addComponents(
             new MessageButton()
                 .setLabel("Click To Invite")
@@ -33,7 +33,7 @@ module.exports = {
         );
 
         const embed = {
-            color: `#2f3136`,
+            color: theme.embed.color,
             title: `Invite ${client.user.username} To Your Server!`,
             description: `Click the button below to invite the bot.
             Here is extra url: [\`https://discord.com/api/oauth2/authorize?client_id=847528987831304192&permissions=8&scope=bot%20applications.commands\`](https://discord.com/api/oauth2/authorize?client_id=847528987831304192&permissions=8&scope=bot%20applications.commands)`,

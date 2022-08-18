@@ -46,7 +46,7 @@ module.exports = {
         .setDescription("Go fishing for fishies."),
     cooldown: 35,
     cdmsg: "Theres no fish in these waters right now!",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
         let error_message;
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
@@ -59,7 +59,7 @@ module.exports = {
         );
 
         const fish_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

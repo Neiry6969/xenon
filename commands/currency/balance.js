@@ -18,7 +18,7 @@ module.exports = {
         }),
     cdmsg: `You can't be checking balance so fast, chilldown!`,
     cooldown: 3,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const options = {
             user: interaction.options.getUser("user"),
         };
@@ -27,7 +27,7 @@ module.exports = {
 
         const balance_embed = new MessageEmbed()
             .setTitle("Balance")
-            .setColor(`#2f3136`);
+            .setColor(theme.embed.color);
 
         const economyData = await fetchEconomyData(user.id);
         const inventoryData = await fetchInventoryData(user.id);

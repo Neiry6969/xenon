@@ -15,7 +15,7 @@ const {
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
-const { lootbox, preniumcard, bankmessage } = require("../../utils/itemuse");
+const { lootbox, preniumcard, bankmessage, watermelon } = require("../../utils/itemuse");
 const letternumbers = require("../../reference/letternumber");
 
 module.exports = {
@@ -37,7 +37,7 @@ module.exports = {
         }),
     cdmsg: `Bruh chillax! The items aren't going anywhere.`,
     cooldown: 5,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const options = {
             item: interaction.options.getString("item"),
             quantity: interaction.options.getString("quantity"),
@@ -125,6 +125,8 @@ module.exports = {
             );
         } else if (itemData.type === "lootbox") {
             return lootbox(interaction, inventoryData, itemData, quantity);
+        } else if (itemData.item === "watermelon") {
+            return watermelon(interaction, inventoryData, itemData);
         }
 
         error_message = `That item isn't usable sorry not sorry.\n\nItem: ${itemData.icon} \`${itemData.item}\``;

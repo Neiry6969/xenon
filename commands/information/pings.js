@@ -19,9 +19,9 @@ module.exports = {
         .setName("ping")
         .setDescription("Check the bot's latency status."),
     cooldown: 10,
-    async execute(interaction, client, userData) {
+    async execute(interaction, client, theme) {
         const embed = {
-            color: `#2f3136`,
+            color: theme.embed.color,
             title: `${client.user.username}'s Bot Latency`,
             description: `Here are the bot's latencies...`,
             author: {

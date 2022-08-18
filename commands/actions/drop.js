@@ -27,7 +27,7 @@ module.exports = {
         .setName("drops")
         .setDescription("Limited drop items."),
     cooldown: 5,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         let error_message;
         const allItems = await fetchAllitemsData();
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
@@ -148,7 +148,7 @@ module.exports = {
         let row2 = new MessageActionRow().setComponents(endinteractionbutton);
 
         const drops_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setDescription(mappedData);
 
         await interaction.reply({
@@ -197,7 +197,9 @@ module.exports = {
             } else if (i.customId === "backbutton") {
                 row.setComponents(dropmenu);
                 row2.setComponents(endinteractionbutton);
-                drops_embed.setColor("#2f3136").setDescription(mappedData);
+                drops_embed
+                    .setColor(theme.embed.color)
+                    .setDescription(mappedData);
 
                 drop_msg.edit({
                     embeds: [drops_embed],

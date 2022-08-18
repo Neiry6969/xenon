@@ -9,6 +9,8 @@ const StatsModel = require("../models/statsSchema");
 const interactionproccesses = require("../interactionproccesses.json");
 const { setProcessingLock } = require("../utils/mainfunctions");
 const { errorReply } = require("../utils/errorfunctions");
+const { fetchEmbedColor } = require("./cosmeticsfunctions");
+const { fetchUserData, removeItem } = require("./currencyfunctions");
 
 class Useitem {
     static async bankmessage(
@@ -38,7 +40,7 @@ class Useitem {
         const averageexpansion = Math.floor(expandedspace / useamount);
 
         const confirmembed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(await fetchEmbedColor(interaction))
             .setDescription(
                 `Are you sure you want to use ${item.icon} \`${
                     item.item
@@ -138,7 +140,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff8f87")
+                    .setColor(await fetchEmbedColor(interaction))
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
@@ -171,7 +173,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff8f87")
+                    .setColor(await fetchEmbedColor(interaction))
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
@@ -207,7 +209,7 @@ class Useitem {
         }
 
         const confirmembed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(await fetchEmbedColor(interaction))
             .setDescription(
                 `Are you sure you want to use ${item.icon} \`${
                     item.item
@@ -258,7 +260,7 @@ class Useitem {
                 endinteraction = true;
 
                 const embed = {
-                    color: "#2f3136",
+                    color: await fetchEmbedColor(interaction),
                     thumbnail: {
                         url: item.imageUrl,
                     },
@@ -286,7 +288,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff8f87")
+                    .setColor(await fetchEmbedColor(interaction))
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
@@ -318,7 +320,7 @@ class Useitem {
                 await InventoryModel.findOneAndUpdate(params, inventoryData);
 
                 confirmembed
-                    .setColor("#ff8f87")
+                    .setColor(await fetchEmbedColor(interaction))
                     .setDescription(
                         `Are you sure you want to use \`${useamount.toLocaleString()} x\` ${
                             item.icon
@@ -405,11 +407,52 @@ class Useitem {
 
         const embed = new MessageEmbed()
             .setTitle(`${interaction.user.username}'s ${item.name}`)
-            .setColor("#2f3136")
+            .setColor(await fetchEmbedColor(interaction))
             .setThumbnail(item.imageUrl)
             .setDescription(resultsmap)
             .setFooter({
                 text: `${useamount.toLocaleString()}x ${item.item}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            });
+
+        return interaction.reply({ embeds: [embed] });
+    }
+
+    static async watermelon(interaction, inventoryData, itemData) {
+        const colors = ["#ffac80", "#fff280", "#ffd980", "#d7ff80", "#ff8880"];
+        const fetch_userData = await fetchUserData(interaction.user.id);
+        const userData = fetch_userData.data;
+
+        userData.cosmetics.embedcolors = [
+            "#ffac80",
+            "#fff280",
+            "#ffd980",
+            "#d7ff80",
+            "#ff8880",
+        ];
+        const colors_display = userData.cosmetics.embedcolors
+            .map((color) => {
+                return `\`${color}\``;
+            })
+            .join(", ");
+
+        await removeItem(interaction.user.id, itemData.item, 1);
+        await UserModel.findOneAndUpdate(
+            { userId: interaction.user.id },
+            userData
+        );
+
+        const embed = new MessageEmbed()
+            .setTitle(`${interaction.user.username}'s ${itemData.name}`)
+            .setColor(await fetchEmbedColor(interaction))
+            .setThumbnail(itemData.imageUrl)
+            .setDescription(
+                `You used \`${1}\` ${itemData.icon} \`${
+                    itemData.item
+                }\`\n\nYou redeemed the colours bellow:\n${colors_display}`
+            )
+            .setFooter({
+                text: `${(1).toLocaleString()}x ${itemData.item}`,
                 iconURL: interaction.user.displayAvatarURL(),
             });
 

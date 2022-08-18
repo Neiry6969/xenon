@@ -31,7 +31,7 @@ module.exports = {
         }),
     cdmsg: "Stop withdrawing so fast!",
     cooldown: 5,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const options = {
             amount: interaction.options.getString("amount"),
         };
@@ -98,7 +98,7 @@ module.exports = {
             await EconomyModel.findOneAndUpdate(params, economyData);
 
             const deposit_embed = new MessageEmbed()
-                .setColor("#2f3136")
+                .setColor(await fetchEmbedColor(interaction))
                 .setTitle(`Withdrawal`)
                 .setAuthor({
                     name: interaction.user.tag,

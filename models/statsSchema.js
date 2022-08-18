@@ -9,7 +9,7 @@ const statsSchema = new mongoose.Schema(
         },
         commands: {
             type: Object,
-            default: { total: 0, list: {} },
+            default: { all: 0, list: {} },
         },
         gamblestats: {
             type: Object,

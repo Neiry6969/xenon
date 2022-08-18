@@ -92,7 +92,7 @@ module.exports = {
         .setDescription("Go mining for exotic materials/substances."),
     cooldown: 120,
     cdmsg: "I am not going let you mine anymore, you need rest!",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
         let error_message;
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
@@ -105,7 +105,7 @@ module.exports = {
         );
 
         const mine_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

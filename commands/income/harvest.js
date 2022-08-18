@@ -46,7 +46,7 @@ module.exports = {
         .setDescription("Harvest crops for your inventory."),
     cooldown: 35,
     cdmsg: "None of your crops grew.",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
         let error_message;
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
@@ -57,7 +57,7 @@ module.exports = {
         const hoe = allItems.find((val) => val.item.toLowerCase() === "hoe");
 
         const harvest_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

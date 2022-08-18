@@ -44,7 +44,7 @@ module.exports = {
         .setName("vote")
         .setDescription("Vote rewards you can get from voting every 12 hours."),
     cooldown: 3,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const userData_fetch = await fetchUserData(interaction.user.id);
@@ -92,7 +92,7 @@ module.exports = {
         }
 
         const votembed = new MessageEmbed()
-            .setColor(`#2f3136`)
+            .setColor(theme.embed.color)
             .setTitle("Voting Rewards For Xenon")
             .setDescription(
                 `[**top.gg** <:topgg:995813492424716399>](https://top.gg/bot/847528987831304192/vote)\n\` > \` \`❀ ${topggvoterewards_coins.toLocaleString()}\`\n${voterewards_items_map}`

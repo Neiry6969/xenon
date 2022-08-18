@@ -18,7 +18,7 @@ module.exports = {
                 .setDescription("Specify a user's inventory you want to see");
         }),
     cooldown: 3,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
 
         const options = {
@@ -29,7 +29,7 @@ module.exports = {
 
         const inventory_embed = new MessageEmbed()
             .setTitle(`Inventory`)
-            .setColor(`#2f3136`)
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${user.tag}`,
                 iconURL: `${user.displayAvatarURL()}`,
@@ -52,7 +52,7 @@ module.exports = {
 
         const inentory_embed = new MessageEmbed()
             .setTitle("Inventory")
-            .setColor(`#2f3136`);
+            .setColor(theme.embed.color);
 
         const mappedData = Object.keys(inventoryData.inventory)
             .sort()

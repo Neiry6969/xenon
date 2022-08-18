@@ -14,7 +14,7 @@ module.exports = {
         .setDescription("Collect your monthly rewards every month."),
     cooldown: 2678400,
     cdmsg: "You already collected your monthly rewards this month.",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const monthly_amount = 10000000;
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData_fetch = await fetchInventoryData(
@@ -25,7 +25,7 @@ module.exports = {
         await addCoins(interaction.user.id, monthly_amount);
 
         const monthly_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

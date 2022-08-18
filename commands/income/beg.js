@@ -13,7 +13,7 @@ const {
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
-const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 const { death_handler } = require("../../utils/currencyevents");
 const beg_data = require("../../data/beg_data");
 
@@ -33,7 +33,7 @@ module.exports = {
         .setDescription("Beg random strangers for coins."),
     cooldown: 45,
     cdmsg: `There is no one you can beg to right now, making money by begging isn't this easy!`,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData = inventory_fetch.data;
@@ -44,7 +44,7 @@ module.exports = {
         const resultdeath = randomizer(beginteraction.deathrate);
 
         const embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setTitle(beginteraction.title);
 
         if (resultsuccess === true) {
@@ -96,6 +96,6 @@ module.exports = {
         }
 
         interaction.reply({ embeds: [embed] });
-        return setCooldown(interaction, "beg", 0, economyData);
+        return setCooldown(interaction, "beg", 45, economyData);
     },
 };

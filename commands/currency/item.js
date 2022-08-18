@@ -24,7 +24,7 @@ module.exports = {
         }),
     cdmsg: `You can't be checking items so fast, slow it buddy!`,
     cooldown: 5,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const options = {
             item: interaction.options.getString("item"),
         };
@@ -122,7 +122,7 @@ module.exports = {
         }
 
         const embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setTitle(
                 `**${itemData.icon} ${itemData.name}** (${
                     inventoryData.inventory[itemData.item]

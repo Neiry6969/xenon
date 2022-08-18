@@ -38,7 +38,7 @@ module.exports = {
                 );
         }),
     cooldown: 25,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const options = {
             amount: interaction.options.getString("amount"),
         };
@@ -119,7 +119,7 @@ module.exports = {
             );
 
             const eventheist_embed = new MessageEmbed()
-                .setColor(`#2f3136`)
+                .setColor(theme.embed.color)
                 .setTitle(
                     `<a:alarm:997584331302260909> Event Heist Starting! <a:alarm:997584331302260909>`
                 )
@@ -193,7 +193,7 @@ module.exports = {
 
                 eventheist_embed
                     .setTitle(`Event Heist Ended...`)
-                    .setColor(`#2f3136`);
+                    .setColor(theme.embed.color);
                 joineventheist.setDisabled();
 
                 if (eventheist_arry.length < 3) {
@@ -252,21 +252,21 @@ module.exports = {
                     const eachcoins = Math.floor(amount / survivors.length);
 
                     const surviorsembed = new MessageEmbed()
-                        .setColor(`#2f3136`)
+                        .setColor(theme.embed.color)
 
                         .setTitle("<:nezuko_yas:995045946087968850> Survivors")
                         .setDescription(
                             `Showing results~ <a:loading:987196796549861376>`
                         );
                     const caughtembed = new MessageEmbed()
-                        .setColor(`#2f3136`)
+                        .setColor(theme.embed.color)
 
                         .setTitle("<:nezuko_gun:995045376551833611> Caught")
                         .setDescription(
                             `Showing results~ <a:loading:987196796549861376>`
                         );
                     const deadembed = new MessageEmbed()
-                        .setColor(`#2f3136`)
+                        .setColor(theme.embed.color)
 
                         .setTitle("<:ghost:978412292012146688> Died")
                         .setDescription(
@@ -450,7 +450,7 @@ module.exports = {
         let row = new MessageActionRow().addComponents(confirm, cancel);
 
         const eventheist_embed = new MessageEmbed()
-            .setColor(`#2f3136`)
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

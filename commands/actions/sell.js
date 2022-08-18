@@ -38,7 +38,7 @@ module.exports = {
         }),
     cdmsg: "You already bought something earlier why are you buying things so fast?",
     cooldown: 10,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         let endinteraction = false;
         let error_message;
 
@@ -135,7 +135,7 @@ module.exports = {
             let row = new MessageActionRow().addComponents(confirm, cancel);
 
             const sell_embed = new MessageEmbed()
-                .setColor("#2f3136")
+                .setColor(theme.embed.color)
                 .setTitle(`Action Confirmation  - Sell`)
                 .setDescription(
                     `<@${interaction.user.id}>, are you sure you want to sell ${

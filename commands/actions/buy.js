@@ -13,7 +13,11 @@ const {
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
-const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const {
+    setCooldown,
+    setProcessingLock,
+    fetchEmbedColor,
+} = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
 
 module.exports = {
@@ -37,7 +41,7 @@ module.exports = {
         }),
     cdmsg: "You already bought something earlier why are you buying things so fast?",
     cooldown: 5,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         let endinteraction = false;
         let error_message;
 
@@ -121,7 +125,7 @@ module.exports = {
             let row = new MessageActionRow().addComponents(confirm, cancel);
 
             const buy_embed = new MessageEmbed()
-                .setColor("#2f3136")
+                .setColor(theme.embed.color)
                 .setAuthor({
                     name: `${interaction.user.tag}`,
                     iconURL: interaction.user.displayAvatarURL(),

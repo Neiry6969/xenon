@@ -26,15 +26,7 @@ module.exports = {
                 )
         ),
     cooldown: 0,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
         const options = {
             guide: interaction.options.getString("guide"),
@@ -80,7 +72,7 @@ module.exports = {
             const high_table = `${statue.icon} \`${statue.item}\`, ${bronzecrown.icon} \`${bronzecrown.item}\``;
 
             const embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Dig Table ${shovel.icon}`,
                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.9%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.1%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
@@ -129,7 +121,7 @@ module.exports = {
             const high_table = `${bubbletea.icon} \`${bubbletea.item}\``;
 
             const embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Harvest Table ${hoe.icon}`,
                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.5%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.5%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
@@ -174,7 +166,7 @@ module.exports = {
             const high_table = `${losttrident.icon} \`${losttrident.item}\``;
 
             const embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Fishing Table ${fishingrod.icon}`,
                 description: `**Fail** ──── \`60%\`\n\n**Lowest** ──── \`20%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.99%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.01%\`\nitems: ${high_table}`,
                 timestamp: new Date(),
@@ -226,7 +218,7 @@ module.exports = {
             const highest_table = `${panda.icon} \`${panda.item}\``;
 
             const embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Hunt Table ${rifle.icon}`,
                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`30%\`\nitems: ${lowest_table}\n\n**Low Mid** ──── \`15%\`\nitems: ${lowmid_table}\n\n**High Mid** ──── \`4.5%\`\nitems: ${highmid_table}\n\n**High** ──── \`0.49%\`\nitems: ${high_table}\n\n**Highest** ──── \`0.01%\`\nitems: ${highest_table}`,
                 timestamp: new Date(),
@@ -332,7 +324,7 @@ module.exports = {
                 .join("\n");
 
             const embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Mine Table ${pickaxe.icon}`,
                 description: `**Fail** ──── \`50%\`\n\n**Lowest** ──── \`33%\`\n${lowestMap}\n\n**Low Mid** ──── \`15%\`\n${lowmidtMap}\n\n**High Mid** ──── \`1.99%\`\n${highmidMap}\n\n**High** ──── \`0.01%\`\n${highMap}`,
                 timestamp: new Date(),
@@ -343,7 +335,7 @@ module.exports = {
             const maxwinningmulti = 1.5;
             const minwinningmulti = 0.5;
             const embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Gamble Table`,
                 description: `**MAX WINNING MULTIPLIER**: **x${
                     maxwinningmulti + minwinningmulti
@@ -422,7 +414,7 @@ module.exports = {
                 .join("\n");
 
             const embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Slots Table`,
                 description: `Here is the slots table.\n\n**ICON**<:blankemojispace:968955340517433414>**MULTIPLIER**\n${multifor2}\n${multifor3}`,
                 timestamp: new Date(),

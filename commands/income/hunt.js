@@ -51,7 +51,7 @@ module.exports = {
         .setDescription("Go hunting for cute animals."),
     cooldown: 35,
     cdmsg: "All the animals are weary of you so they hid very well.",
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
         let error_message;
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
@@ -64,7 +64,7 @@ module.exports = {
         );
 
         const hunt_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
             type: Object,
             default: {},
         },
+        cosmetics: {
+            type: Object,
+            default: { embedcolors: [] },
+        },
     },
     { minimize: false }
 );

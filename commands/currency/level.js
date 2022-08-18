@@ -110,7 +110,7 @@ module.exports = {
                 .setDescription("Specify a user's level stats you want to see");
         }),
     cooldown: 5,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const options = {
             user: interaction.options.getUser("user"),
         };
@@ -119,7 +119,7 @@ module.exports = {
 
         const level_embed = new MessageEmbed()
             .setTitle("Level")
-            .setColor(`#2f3136`);
+            .setColor(theme.embed.color);
 
         const economyData = await fetchEconomyData(user.id);
         const inventoryData = await fetchInventoryData(user.id);
@@ -139,7 +139,7 @@ module.exports = {
         const dailystreak = statsData.data.streaks.daily.strk;
         const deaths = statsData.data.deaths;
         const createdat = economyData.data.createdAt;
-        const totalcommands = statsData.data.commands;
+        const totalcommands = statsData.data.commands.all;
 
         level_embed
             .setAuthor({

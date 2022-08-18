@@ -12,7 +12,7 @@ module.exports = {
                 .setDescription("Which command do you want to view.")
         ),
     cooldown: 0,
-    async execute(interaction, client) {
+    async execute(interaction, client, theme) {
         const options = {
             commands: interaction.options.getString("command"),
         };
@@ -87,7 +87,7 @@ module.exports = {
             );
 
             embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Xenon Help`,
                 thumbnail: {
                     url: client.user.displayAvatarURL(),
@@ -126,7 +126,7 @@ module.exports = {
             );
 
             embed = {
-                color: "#2f3136",
+                color: theme.embed.color,
                 title: `Xenon Help`,
                 thumbnail: {
                     url: client.user.displayAvatarURL(),
@@ -171,7 +171,7 @@ module.exports = {
                         rightbutton.setDisabled();
 
                         embed = {
-                            color: "#2f3136",
+                            color: theme.embed.color,
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),
@@ -193,7 +193,7 @@ module.exports = {
                         rightbutton.setDisabled(false);
 
                         embed = {
-                            color: "#2f3136",
+                            color: theme.embed.color,
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),
@@ -222,7 +222,7 @@ module.exports = {
                         leftbutton.setDisabled();
 
                         embed = {
-                            color: "#2f3136",
+                            color: theme.embed.color,
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),
@@ -244,7 +244,7 @@ module.exports = {
                         rightbutton.setDisabled(false);
 
                         embed = {
-                            color: "#2f3136",
+                            color: theme.embed.color,
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),

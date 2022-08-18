@@ -37,7 +37,7 @@ module.exports = {
 
     cdmsg: "You were already at your crafting table, stop trying to break me!",
     cooldown: 10,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
 
         const params = {
@@ -50,7 +50,7 @@ module.exports = {
         const economyData = economyData_fetch.data;
 
         const craft_msg_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: interaction.user.tag,
                 iconURL: interaction.user.displayAvatarURL(),
@@ -265,7 +265,7 @@ module.exports = {
                     row3.setComponents(endinteractionbutton);
 
                     craft_msg_embed
-                        .setColor("#2f3136")
+                        .setColor(theme.embed.color)
                         .setDescription(
                             `${craftingtable_map
                                 .slice(display_start, display_end)

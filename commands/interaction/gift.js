@@ -43,7 +43,7 @@ module.exports = {
                 );
         }),
     cooldown: 10,
-    async execute(interaction) {
+    async execute(interaction, client, theme) {
         let endinteraction = false;
         let error_message;
         const options = {
@@ -129,7 +129,7 @@ module.exports = {
         let row = new MessageActionRow().addComponents(confirm, cancel);
 
         const gift_embed = new MessageEmbed()
-            .setColor("#2f3136")
+            .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),

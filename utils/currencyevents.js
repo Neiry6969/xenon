@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 
+const { fetchEconomyData, fetchStatsData } = require("./currencyfunctions");
 const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
 const UserModel = require("../models/userSchema");
@@ -59,6 +60,50 @@ class Currencyevents {
         client.users.fetch(userId, false).then((user) => {
             user.send({ embeds: [dmdeathembed] });
         });
+    }
+
+    static async backgroundupdates_handler(interaction, commandname) {
+        function calcexpfull(level) {
+            if (level < 50) {
+                return level * 10 + 100;
+            } else if (level >= 50 && level < 500) {
+                return level * 25;
+            } else if (level >= 500 && level < 1000) {
+                return level * 50;
+            } else if (level >= 1000) {
+                return level * 100;
+            }
+        }
+        const params = {
+            userId: interaction.user.id,
+        };
+
+        const fetch_economyData = await fetchEconomyData(interaction.user.id);
+        const fetch_statsData = await fetchStatsData(interaction.user.id);
+        const economyData = fetch_economyData.data;
+        const statsData = fetch_statsData.data;
+
+        const experiencepoints = economyData.experiencepoints;
+        const experiencefull = calcexpfull(economyData.level);
+        if (experiencepoints >= experiencefull) {
+            economyData.level = economyData.level + 1;
+            economyData.experiencepoints = experiencepoints - experiencefull;
+        }
+
+        statsData.commands.all = statsData.commands.all + 1;
+
+        const hasCommand = Object.keys(statsData.commands.list).includes(
+            commandname
+        );
+        if (!hasCommand) {
+            statsData.commands.list[commandname] = 1;
+        } else {
+            statsData.commands.list[commandname] =
+                statsData.commands.list[commandname] + 1;
+        }
+
+        await StatsModel.findOneAndUpdate(params, statsData);
+        await EconomyModel.findOneAndUpdate(params, economyData);
     }
 }
 
