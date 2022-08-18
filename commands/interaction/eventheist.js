@@ -38,14 +38,7 @@ module.exports = {
                 );
         }),
     cooldown: 25,
-    async execute(
-        interaction,
-        client,
-        economyData,
-        inventoryData,
-        statsData,
-        profileData
-    ) {
+    async execute(interaction) {
         const options = {
             amount: interaction.options.getString("amount"),
         };
@@ -560,5 +553,6 @@ module.exports = {
                 });
             }
         });
+        return setCooldown(interaction, "eventheist", 25, economyData);
     },
 };

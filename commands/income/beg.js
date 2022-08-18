@@ -1,24 +1,21 @@
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-const beg_data = require("../../data/beg_data");
-const { death_handler } = require("../../utils/currencyevents");
-
 const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    removeCoins,
+    addCoins,
+    addItem,
+    removeItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const { death_handler } = require("../../utils/currencyevents");
+const beg_data = require("../../data/beg_data");
 
 function randomizer(precent) {
     const randomnum = Math.floor(Math.random() * 10000);
@@ -36,27 +33,18 @@ module.exports = {
         .setDescription("Beg random strangers for coins."),
     cooldown: 45,
     cdmsg: `There is no one you can beg to right now, making money by begging isn't this easy!`,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        const allItems = itemData;
+    async execute(interaction) {
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
         const searchidexrandom = Math.floor(Math.random() * beg_data.length);
         const beginteraction = beg_data[searchidexrandom];
         const resultsuccess = randomizer(beginteraction.successrate);
         const resultdeath = randomizer(beginteraction.deathrate);
 
-        const params = {
-            userId: interaction.user.id,
-        };
-
         const embed = new MessageEmbed()
-            .setColor("RANDOM")
+            .setColor("#2f3136")
             .setTitle(beginteraction.title);
 
         if (resultsuccess === true) {
@@ -68,7 +56,7 @@ module.exports = {
                 coins.toLocaleString()
             );
 
-            userData.wallet = userData.wallet + coins;
+            await addCoins(interaction.user.id, coins);
 
             if (beginteraction.items) {
                 const ifgetitems = randomizer(beginteraction.itemsprecent);
@@ -77,9 +65,10 @@ module.exports = {
                     const itemnum = Math.floor(
                         Math.random() * beginteraction.items.length
                     );
-                    const resultitem = allItems.find(
-                        ({ item }) => item === beginteraction.items[itemnum]
+                    const resultitem = await fetchItemData(
+                        beginteraction.items[itemnum]
                     );
+
                     const beg_resultitem =
                         beginteraction.itemdescription.replace(
                             "ITEM",
@@ -87,26 +76,18 @@ module.exports = {
                         );
                     embed.setDescription(`${beg_result}\n${beg_resultitem}`);
 
-                    const hasItem = Object.keys(
-                        inventoryData.inventory
-                    ).includes(resultitem.item);
-                    if (!hasItem) {
-                        inventoryData.inventory[resultitem.item] = 1;
-                    } else {
-                        inventoryData.inventory[resultitem.item] =
-                            inventoryData.inventory[resultitem.item] + 1;
-                    }
+                    await addItem(interaction.user.id, resultitem.item, 1);
                 }
             }
         } else if (resultdeath === true) {
             embed
                 .setDescription(beginteraction.deathdescription)
-                .setColor("RED");
+                .setColor("#ff8f87");
 
             death_handler(
                 client,
                 interaction.user.id,
-                userData,
+                economyData,
                 inventoryData,
                 "begging"
             );
@@ -114,33 +95,7 @@ module.exports = {
             embed.setDescription(beginteraction.faildescription);
         }
 
-        userData.bank.expbankspace =
-            userData.bank.expbankspace + Math.floor(Math.random() * 69);
-        userData.experiencepoints =
-            userData.experiencepoints + Math.floor(Math.random() * 69);
-        await economyModel.findOneAndUpdate(params, userData);
-        await inventoryModel.findOneAndUpdate(params, inventoryData);
-
         interaction.reply({ embeds: [embed] });
-        let cooldown = 45;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].beg = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
+        return setCooldown(interaction, "beg", 0, economyData);
     },
 };

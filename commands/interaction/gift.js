@@ -234,6 +234,6 @@ module.exports = {
             }
         });
 
-        return setCooldown(interaction, "sell", 10, economyData);
+        return setCooldown(interaction, "gift", 10, economyData);
     },
 };

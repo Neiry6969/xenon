@@ -216,5 +216,6 @@ module.exports = {
                 });
             }
         });
+        return setCooldown(interaction, "share", 10, economyData);
     },
 };
