@@ -405,6 +405,7 @@ class Useitem {
 
         const embed = new MessageEmbed()
             .setTitle(`${interaction.user.username}'s ${item.name}`)
+            .setColor("#2f3136")
             .setThumbnail(item.imageUrl)
             .setDescription(resultsmap)
             .setFooter({

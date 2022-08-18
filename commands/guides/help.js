@@ -87,7 +87,7 @@ module.exports = {
             );
 
             embed = {
-                color: "#AF97FE",
+                color: "#2f3136",
                 title: `Xenon Help`,
                 thumbnail: {
                     url: client.user.displayAvatarURL(),
@@ -126,7 +126,7 @@ module.exports = {
             );
 
             embed = {
-                color: "#AF97FE",
+                color: "#2f3136",
                 title: `Xenon Help`,
                 thumbnail: {
                     url: client.user.displayAvatarURL(),
@@ -147,7 +147,7 @@ module.exports = {
             const help_msg = await interaction.fetchReply();
 
             const collector = help_msg.createMessageComponentCollector({
-                time: 20 * 1000,
+                idle: 20 * 1000,
             });
 
             collector.on("collect", async (button) => {
@@ -171,7 +171,7 @@ module.exports = {
                         rightbutton.setDisabled();
 
                         embed = {
-                            color: "#AF97FE",
+                            color: "#2f3136",
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),
@@ -193,7 +193,7 @@ module.exports = {
                         rightbutton.setDisabled(false);
 
                         embed = {
-                            color: "#AF97FE",
+                            color: "#2f3136",
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),
@@ -222,7 +222,7 @@ module.exports = {
                         leftbutton.setDisabled();
 
                         embed = {
-                            color: "#AF97FE",
+                            color: "#2f3136",
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),
@@ -244,7 +244,7 @@ module.exports = {
                         rightbutton.setDisabled(false);
 
                         embed = {
-                            color: "#AF97FE",
+                            color: "#2f3136",
                             title: `Xenon Help`,
                             thumbnail: {
                                 url: client.user.displayAvatarURL(),

@@ -1,22 +1,20 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    addCoins,
+    addItem,
+    fetchUserData,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
+const searchplaces = require("../../data/search_places");
 
 function time_split(time) {
     if (time < 60) {
@@ -46,56 +44,37 @@ module.exports = {
         .setName("vote")
         .setDescription("Vote rewards you can get from voting every 12 hours."),
     cooldown: 3,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        const allItems = itemData;
-
-        let cooldown = 3;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].vote = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
+    async execute(interaction) {
+        const allItems = await fetchAllitemsData();
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const userData_fetch = await fetchUserData(interaction.user.id);
+        const userData = userData_fetch.data;
+        const inventoryData_fetch = await fetchInventoryData(
+            interaction.user.id
         );
-            
-        const nowtimestamp = Date.now()
+        const economyData = economyData_fetch.data;
+        const nowtimestamp = Date.now();
 
         const topggvoterewards_coins = 50000;
-        const topggvoterewards_items = [{ item: "chestofcommon", quantity: 5 }, { item: "bankmessage", quantity: 5 }, { item: "ticketofvoting", quantity: 1 }];
-        const topgglastvotedtimestamp = profileData.eventcooldowns.vote_topgg;
-        const topggvotetimestampready = topgglastvotedtimestamp + 43200000
-        
-  
-       
-        const voterewards_items_map = topggvoterewards_items.map((element) => {
-            const item = allItems.find(
-                (val) => val.item.toLowerCase() === element.item
-            );
+        const topggvoterewards_items = [
+            { item: "chestofcommon", quantity: 5 },
+            { item: "bankmessage", quantity: 5 },
+            { item: "ticketofvoting", quantity: 1 },
+        ];
+        const topgglastvotedtimestamp = userData.eventcooldowns.vote_topgg;
+        const topggvotetimestampready = topgglastvotedtimestamp + 43200000;
 
-            return `\` > \` ${item.icon} \`${
-                item.item
-            }\` \`x${element.quantity.toLocaleString()}\``;
-        }).join("\n");
+        const voterewards_items_map = topggvoterewards_items
+            .map((element) => {
+                const item = allItems.find(
+                    (val) => val.item.toLowerCase() === element.item
+                );
+
+                return `\` > \` ${item.icon} \`${
+                    item.item
+                }\` \`x${element.quantity.toLocaleString()}\``;
+            })
+            .join("\n");
 
         const topggbutton = new MessageButton()
             .setLabel("top.gg")
@@ -103,25 +82,23 @@ module.exports = {
             .setEmoji("<:topgg:995813492424716399>")
             .setURL("https://top.gg/bot/847528987831304192/vote")
             .setDisabled(false);
-       
 
         const row = new MessageActionRow().addComponents(topggbutton);
-                        
-        if(topggvotetimestampready > nowtimestamp) {
-            const timeleft = topggvotetimestampready - nowtimestamp;
-            const formattime = time_split(timeleft / 1000)
-            topggbutton
-                .setLabel(formattime)
-                .setDisabled()
 
+        if (topggvotetimestampready > nowtimestamp) {
+            const timeleft = topggvotetimestampready - nowtimestamp;
+            const formattime = time_split(timeleft / 1000);
+            topggbutton.setLabel(formattime).setDisabled();
         }
 
         const votembed = new MessageEmbed()
+            .setColor(`#2f3136`)
             .setTitle("Voting Rewards For Xenon")
             .setDescription(
                 `[**top.gg** <:topgg:995813492424716399>](https://top.gg/bot/847528987831304192/vote)\n\` > \` \`❀ ${topggvoterewards_coins.toLocaleString()}\`\n${voterewards_items_map}`
             );
 
-        return interaction.reply({ embeds: [votembed], components: [row] });
+        interaction.reply({ embeds: [votembed], components: [row] });
+        return setCooldown(interaction, "weekly", 604800, economyData);
     },
 };

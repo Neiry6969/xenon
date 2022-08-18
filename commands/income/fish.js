@@ -1,21 +1,16 @@
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    addItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 
 const lowest = ["shrimp", "crab", "fish"];
 const lowmid = ["lobster", "squid"];
@@ -51,104 +46,52 @@ module.exports = {
         .setDescription("Go fishing for fishies."),
     cooldown: 35,
     cdmsg: "Theres no fish in these waters right now!",
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        const allItems = itemData;
-        const params = {
-            userId: interaction.user.id,
-        };
+    async execute(interaction) {
+        const allItems = await fetchAllitemsData();
+        let error_message;
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
+
         const fishingrod = allItems.find(
             (val) => val.item.toLowerCase() === "fishingrod"
         );
 
+        const fish_embed = new MessageEmbed()
+            .setColor("#2f3136")
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setTitle(`Fish ${fishingrod.icon}`);
+
         const result = fish();
         if (
             !inventoryData.inventory[fishingrod.item] ||
-            inventoryData.inventory[fishingrod.item] === 0 ||
-            !userData
+            inventoryData.inventory[fishingrod.item] === 0
         ) {
-            const embed = {
-                color: "RANDOM",
-                title: `Fishing Error ${fishingrod.icon}`,
-                description: `You need atleast \`1\` ${fishingrod.item} ${fishingrod.icon} to go fishing. Use this command again when you have one.`,
-                timestamp: new Date(),
-            };
-
-            return interaction.reply({ embeds: [embed] });
+            error_message = `You need at least \`1\` ${fishingrod.icon} ${fishingrod.item}  to go fishing. Use this command again when you have one.`;
+            return errorReply(interaction, error_message);
         } else {
             if (result === `You weren't able to catch anything.`) {
-                const embed = {
-                    color: "RANDOM",
-                    title: `${interaction.user.username} went for a fish ${fishingrod.icon}`,
-                    description: result,
-                    timestamp: new Date(),
-                };
-
-                interaction.reply({ embeds: [embed] });
+                fish_embed.setDescription(`\`${result}\``);
+                interaction.reply({ embeds: [fish_embed] });
             } else {
                 const item = allItems.find(
                     (val) => val.item.toLowerCase() === result
                 );
-                const hasItem = Object.keys(inventoryData.inventory).includes(
-                    item.item
+
+                await addItem(interaction.user.id, item.item, 1);
+
+                fish_embed.setDescription(
+                    `There is something on your hook! You pulled something out of the water! You got \`${1}\` ${
+                        item.icon
+                    } \`${item.item}\``
                 );
-                if (!hasItem) {
-                    inventoryData.inventory[item.item] = 1;
-                } else {
-                    inventoryData.inventory[item.item] =
-                        inventoryData.inventory[item.item] + 1;
-                }
-
-                const expbankspace_amount =
-                    Math.floor(Math.random() * 1000) + 100;
-                const experiencepoints_amount = Math.floor(
-                    expbankspace_amount / 100
-                );
-                userData.bank.expbankspace =
-                    userData.bank.expbankspace + expbankspace_amount;
-                userData.experiencepoints =
-                    userData.experiencepoints + experiencepoints_amount;
-                userData.bank.expbankspace =
-                    userData.bank.expbankspace + Math.floor(Math.random() * 69);
-                await inventoryModel.findOneAndUpdate(params, inventoryData);
-                await economyModel.findOneAndUpdate(params, userData);
-
-                const embed = {
-                    color: "RANDOM",
-                    title: `${interaction.user.username} went for a fish ${fishingrod.icon}`,
-                    description: `You were able to catch something! You got a \`${item.item}\` ${item.icon}`,
-                    timestamp: new Date(),
-                };
-
-                interaction.reply({ embeds: [embed] });
+                interaction.reply({ embeds: [fish_embed] });
             }
-            let cooldown = 35;
-            if (
-                interaction.guild.id === "852261411136733195" ||
-                interaction.guild.id === "978479705906892830" ||
-                userData.premium.rank >= 1
-            ) {
-                cooldown = premiumcooldowncalc(cooldown);
-            }
-            const cooldown_amount = cooldown * 1000;
-            const timpstamp = Date.now() + cooldown_amount;
-            jsoncooldowns[interaction.user.id].fish = timpstamp;
-            fs.writeFile(
-                "./cooldowns.json",
-                JSON.stringify(jsoncooldowns),
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                }
-            );
         }
+        return setCooldown(interaction, "fish", 35, economyData);
     },
 };

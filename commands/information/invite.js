@@ -33,7 +33,7 @@ module.exports = {
         );
 
         const embed = {
-            color: 0x0099ff,
+            color: `#2f3136`,
             title: `Invite ${client.user.username} To Your Server!`,
             description: `Click the button below to invite the bot.
             Here is extra url: [\`https://discord.com/api/oauth2/authorize?client_id=847528987831304192&permissions=8&scope=bot%20applications.commands\`](https://discord.com/api/oauth2/authorize?client_id=847528987831304192&permissions=8&scope=bot%20applications.commands)`,

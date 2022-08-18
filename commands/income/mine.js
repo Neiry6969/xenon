@@ -1,21 +1,16 @@
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    addItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 
 let amount;
 
@@ -97,108 +92,52 @@ module.exports = {
         .setDescription("Go mining for exotic materials/substances."),
     cooldown: 120,
     cdmsg: "I am not going let you mine anymore, you need rest!",
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
-        const allItems = itemData;
-        const params = {
-            userId: interaction.user.id,
-        };
+    async execute(interaction) {
+        const allItems = await fetchAllitemsData();
+        let error_message;
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
 
         const pickaxe = allItems.find(
             (val) => val.item.toLowerCase() === "pickaxe"
         );
 
-        const result = mine();
+        const mine_embed = new MessageEmbed()
+            .setColor("#2f3136")
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setTitle(`Mine ${pickaxe.icon}`);
 
+        const result = mine();
         if (
             !inventoryData.inventory[pickaxe.item] ||
-            inventoryData.inventory[pickaxe.item] === 0 ||
-            !userData
+            inventoryData.inventory[pickaxe.item] === 0
         ) {
-            const embed = {
-                color: "RANDOM",
-                title: `Mine Error ${pickaxe.icon}`,
-                description: `You need atleast \`1\` ${pickaxe.item} ${pickaxe.icon} to go minning. Use this command again when you have one.`,
-                timestamp: new Date(),
-            };
-
-            return interaction.reply({ embeds: [embed] });
+            error_message = `You need at least \`1\` ${pickaxe.icon} ${pickaxe.item}  to go mining. Use this command again when you have one.`;
+            return errorReply(interaction, error_message);
         } else {
             if (result === `You weren't able to mine anything, unlucky.`) {
-                const embed = {
-                    color: "RANDOM",
-                    title: `${interaction.user.username} went for a mine ${pickaxe.icon}`,
-                    description: result,
-                    timestamp: new Date(),
-                };
-
-                interaction.reply({ embeds: [embed] });
+                mine_embed.setDescription(`\`${result}\``);
+                interaction.reply({ embeds: [mine_embed] });
             } else {
                 const item = allItems.find(
                     (val) => val.item.toLowerCase() === result
                 );
-                const hasItem = Object.keys(inventoryData.inventory).includes(
-                    item.item
+
+                await addItem(interaction.user.id, item.item, amount);
+
+                mine_embed.setDescription(
+                    `What is that? Oh you were actually able to find somethings down in thet ancient mine! Good for you, you got \`${1}\` ${
+                        item.icon
+                    } \`${item.item}\``
                 );
-                if (!hasItem) {
-                    inventoryData.inventory[item.item] = amount;
-                } else {
-                    inventoryData.inventory[item.item] =
-                        inventoryData.inventory[item.item] + amount;
-                }
-
-                const expbankspace_amount =
-                    Math.floor(Math.random() * 1000) + 100;
-                const experiencepoints_amount = Math.floor(
-                    expbankspace_amount / 100
-                );
-                userData.bank.expbankspace =
-                    userData.bank.expbankspace + expbankspace_amount;
-                userData.experiencepoints =
-                    userData.experiencepoints + experiencepoints_amount;
-                userData.bank.expbankspace =
-                    userData.bank.expbankspace + Math.floor(Math.random() * 69);
-                await inventoryModel.findOneAndUpdate(params, inventoryData);
-                await economyModel.findOneAndUpdate(params, userData);
-
-                const embed = {
-                    color: "RANDOM",
-                    title: `${interaction.user.username} went for a mine ${pickaxe.icon}`,
-                    description: `Nice find! You got [\`${amount.toLocaleString()}\`](https://www.youtube.com/watch?v=H5QeTGcCeug) \`${
-                        item.item
-                    }\` ${item.icon}`,
-                    timestamp: new Date(),
-                };
-
-                interaction.reply({ embeds: [embed] });
+                interaction.reply({ embeds: [mine_embed] });
             }
-            let cooldown = 120;
-            if (
-                interaction.guild.id === "852261411136733195" ||
-                interaction.guild.id === "978479705906892830" ||
-                userData.premium.rank >= 1
-            ) {
-                cooldown = premiumcooldowncalc(cooldown);
-            }
-            const cooldown_amount = cooldown * 1000;
-            const timpstamp = Date.now() + cooldown_amount;
-            jsoncooldowns[interaction.user.id].mine = timpstamp;
-            fs.writeFile(
-                "./cooldowns.json",
-                JSON.stringify(jsoncooldowns),
-                (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                }
-            );
         }
+        return setCooldown(interaction, "mine", 120, economyData);
     },
 };

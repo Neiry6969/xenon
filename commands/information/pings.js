@@ -21,7 +21,7 @@ module.exports = {
     cooldown: 10,
     async execute(interaction, client, userData) {
         const embed = {
-            color: 0x0099ff,
+            color: `#2f3136`,
             title: `${client.user.username}'s Bot Latency`,
             description: `Here are the bot's latencies...`,
             author: {

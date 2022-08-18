@@ -1,24 +1,18 @@
-const { MessageActionRow, MessageButton } = require("discord.js");
+const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
-
-const economyModel = require("../../models/economySchema");
-const inventoryModel = require("../../models/inventorySchema");
-
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+    addCoins,
+    addItem,
+} = require("../../utils/currencyfunctions");
+const {
+    fetchItemData,
+    fetchAllitemsData,
+} = require("../../utils/itemfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
+const { setCooldown } = require("../../utils/mainfunctions");
 const searchplaces = require("../../data/search_places");
-
-const jsoncooldowns = require("../../cooldowns.json");
-const fs = require("fs");
-function premiumcooldowncalc(defaultcooldown) {
-    if (defaultcooldown <= 5 && defaultcooldown > 2) {
-        return defaultcooldown - 2;
-    } else if (defaultcooldown <= 15) {
-        return defaultcooldown - 5;
-    } else if (defaultcooldown <= 120) {
-        return defaultcooldown - 10;
-    } else {
-        return defaultcooldown;
-    }
-}
 
 function getRandom(arr, n) {
     var result = new Array(n),
@@ -49,43 +43,15 @@ module.exports = {
         .setDescription("Search some place for coins."),
     cooldown: 30,
     cdmsg: "At that moment, you didn't know where to search.",
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
+    async execute(interaction) {
         let endinteraction = false;
-        const allItems = itemData;
-        let cooldown = 30;
-        if (
-            interaction.guild.id === "852261411136733195" ||
-            interaction.guild.id === "978479705906892830" ||
-            userData.premium.rank >= 1
-        ) {
-            cooldown = premiumcooldowncalc(cooldown);
-        }
-        const cooldown_amount = cooldown * 1000;
-        const timpstamp = Date.now() + cooldown_amount;
-        jsoncooldowns[interaction.user.id].search = timpstamp;
-        fs.writeFile(
-            "./cooldowns.json",
-            JSON.stringify(jsoncooldowns),
-            (err) => {
-                if (err) {
-                    console.log(err);
-                }
-            }
+        const allItems = await fetchItemData();
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData_fetch = await fetchInventoryData(
+            interaction.user.id
         );
-
-        const params = {
-            userId: interaction.user.id,
-        };
+        const economyData = economyData_fetch.data;
         const displayedplaces = getRandom(searchplaces, 3);
-
         let placesearched;
 
         let display_1 = new MessageButton()
@@ -109,15 +75,19 @@ module.exports = {
             display_3
         );
 
-        const embed = {
-            color: "RANDOM",
-            title: `Where do you plan to search?`,
-            description: `Pick an option below to start searching that location.\n\`You got 10 seconds to choose!\``,
-            timestamp: new Date(),
-        };
+        const search_embed = new MessageEmbed()
+            .setColor("#2f3136")
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setTitle(`Search`)
+            .setDescription(
+                `**Where do you plan to search?**\n\nPick an option below to start searching that location.\n\`You got 10 seconds to choose!\``
+            );
 
         await interaction.reply({
-            embeds: [embed],
+            embeds: [search_embed],
             components: [row],
         });
 
@@ -149,11 +119,6 @@ module.exports = {
                     "COINS",
                     coins.toLocaleString()
                 );
-                const experiencepoints_amount = Math.floor(4) + 1;
-                userData.bank.expbankspace =
-                    userData.bank.expbankspace + Math.floor(Math.random() * 69);
-                userData.experiencepoints =
-                    userData.experiencepoints + experiencepoints_amount;
 
                 if (placesearched_items.items) {
                     if (
@@ -167,57 +132,48 @@ module.exports = {
                                 val.item.toLowerCase() ===
                                 placesearched_items.items
                         );
-                        userData.wallet = userData.wallet + coins;
-                        const hasItem = Object.keys(
-                            inventoryData.inventory
-                        ).includes(item.item);
-                        if (!hasItem) {
-                            inventoryData.inventory[item.item] = 1;
-                        } else {
-                            inventoryData.inventory[item.item] =
-                                inventoryData.inventory[item.item] + 1;
-                        }
+                        await addCoins(interaction.user.id);
+                        await addItem(interaction.user.id, item.item, 1);
 
-                        const embed = {
-                            color: "RANDOM",
-                            title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`,
-                            timestamp: new Date(),
-                        };
+                        search_embed.setDescription(
+                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
+                        );
+
                         display_1.setDisabled();
                         display_2.setStyle("SECONDARY").setDisabled();
                         display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({ embeds: [embed], components: [row] });
+                        search_msg.edit({
+                            embeds: [search_embed],
+                            components: [row],
+                        });
                     } else {
-                        userData.wallet = userData.wallet + coins;
+                        await addCoins(interaction.user.id);
 
-                        const embed = {
-                            color: "RANDOM",
-                            title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}`,
-                            timestamp: new Date(),
-                        };
+                        search_embed.setDescription(
+                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
+                        );
                         display_1.setDisabled();
                         display_2.setStyle("SECONDARY").setDisabled();
                         display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({ embeds: [embed], components: [row] });
+                        search_msg.edit({
+                            embeds: [search_embed],
+                            components: [row],
+                        });
                     }
                 } else {
-                    userData.wallet = userData.wallet + coins;
+                    await addCoins(interaction.user.id);
 
-                    const embed = {
-                        color: "RANDOM",
-                        title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                        description: `${search_result}`,
-                        timestamp: new Date(),
-                    };
+                    search_embed.setDescription(
+                        `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
+                    );
                     display_1.setDisabled();
                     display_2.setStyle("SECONDARY").setDisabled();
                     display_3.setStyle("SECONDARY").setDisabled();
-                    search_msg.edit({ embeds: [embed], components: [row] });
+                    search_msg.edit({
+                        embeds: [search_embed],
+                        components: [row],
+                    });
                 }
-                await inventoryModel.findOneAndUpdate(params, inventoryData);
-                await economyModel.findOneAndUpdate(params, userData);
             } else if (button.customId === displayedplaces[1].place) {
                 endinteraction = true;
                 placesearched = displayedplaces[1].place;
@@ -231,11 +187,6 @@ module.exports = {
                     "COINS",
                     coins.toLocaleString()
                 );
-                const experiencepoints_amount = Math.floor(4) + 1;
-                userData.bank.expbankspace =
-                    userData.bank.expbankspace + Math.floor(Math.random() * 69);
-                userData.experiencepoints =
-                    userData.experiencepoints + experiencepoints_amount;
 
                 if (placesearched_items.items) {
                     if (
@@ -249,59 +200,48 @@ module.exports = {
                                 val.item.toLowerCase() ===
                                 placesearched_items.items
                         );
-                        userData.wallet = userData.wallet + coins;
+                        await addCoins(interaction.user.id);
 
-                        const hasItem = Object.keys(
-                            inventoryData.inventory
-                        ).includes(item.item);
-                        if (!hasItem) {
-                            inventoryData.inventory[item.item] = 1;
-                        } else {
-                            inventoryData.inventory[item.item] =
-                                inventoryData.inventory[item.item] + 1;
-                        }
+                        await addItem(interaction.user.id, item.item, 1);
 
-                        const embed = {
-                            color: "RANDOM",
-                            title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`,
-                            timestamp: new Date(),
-                        };
+                        search_embed.setDescription(
+                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
+                        );
                         display_2.setDisabled();
                         display_1.setStyle("SECONDARY").setDisabled();
                         display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({ embeds: [embed], components: [row] });
+                        search_msg.edit({
+                            embeds: [search_embed],
+                            components: [row],
+                        });
                     } else {
-                        userData.wallet = userData.wallet + coins;
+                        await addCoins(interaction.user.id);
 
-                        const embed = {
-                            color: "RANDOM",
-                            title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}`,
-                            timestamp: new Date(),
-                        };
+                        search_embed.setDescription(
+                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
+                        );
                         display_2.setDisabled();
                         display_1.setStyle("SECONDARY").setDisabled();
                         display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({ embeds: [embed], components: [row] });
+                        search_msg.edit({
+                            embeds: [search_embed],
+                            components: [row],
+                        });
                     }
                 } else {
-                    userData.wallet = userData.wallet + coins;
+                    await addCoins(interaction.user.id);
 
-                    const embed = {
-                        color: "RANDOM",
-                        title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                        description: `${search_result}`,
-                        timestamp: new Date(),
-                    };
+                    search_embed.setDescription(
+                        `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
+                    );
                     display_2.setDisabled();
                     display_1.setStyle("SECONDARY").setDisabled();
                     display_3.setStyle("SECONDARY").setDisabled();
-                    search_msg.edit({ embeds: [embed], components: [row] });
+                    search_msg.edit({
+                        embeds: [search_embed],
+                        components: [row],
+                    });
                 }
-                await inventoryModel.findOneAndUpdate(params, inventoryData);
-
-                await economyModel.findOneAndUpdate(params, userData);
             } else if (button.customId === displayedplaces[2].place) {
                 endinteraction = true;
                 placesearched = displayedplaces[2].place;
@@ -314,11 +254,6 @@ module.exports = {
                     "COINS",
                     coins.toLocaleString()
                 );
-                const experiencepoints_amount = Math.floor(4) + 1;
-                userData.bank.expbankspace =
-                    userData.bank.expbankspace + Math.floor(Math.random() * 69);
-                userData.experiencepoints =
-                    userData.experiencepoints + experiencepoints_amount;
 
                 if (placesearched_items.items) {
                     const percent = (
@@ -332,59 +267,48 @@ module.exports = {
                                 val.item.toLowerCase() ===
                                 placesearched_items.items
                         );
-                        userData.wallet = userData.wallet + coins;
+                        await addCoins(interaction.user.id);
 
-                        const hasItem = Object.keys(
-                            inventoryData.inventory
-                        ).includes(item.item);
-                        if (!hasItem) {
-                            inventoryData.inventory[item.item] = 1;
-                        } else {
-                            inventoryData.inventory[item.item] =
-                                inventoryData.inventory[item.item] + 1;
-                        }
+                        await addItem(interaction.user.id, item.item, 1);
 
-                        const embed = {
-                            color: "RANDOM",
-                            title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}\nYou also got lucky and found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`,
-                            timestamp: new Date(),
-                        };
+                        search_embed.setDescription(
+                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
+                        );
                         display_3.setDisabled();
                         display_1.setStyle("SECONDARY").setDisabled();
                         display_2.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({ embeds: [embed], components: [row] });
+                        search_msg.edit({
+                            embeds: [search_embed],
+                            components: [row],
+                        });
                     } else {
-                        userData.wallet = userData.wallet + coins;
+                        await addCoins(interaction.user.id);
 
-                        const embed = {
-                            color: "RANDOM",
-                            title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                            description: `${search_result}`,
-                            timestamp: new Date(),
-                        };
+                        search_embed.setDescription(
+                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
+                        );
                         display_3.setDisabled();
                         display_1.setStyle("SECONDARY").setDisabled();
                         display_2.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({ embeds: [embed], components: [row] });
+                        search_msg.edit({
+                            embeds: [search_embed],
+                            components: [row],
+                        });
                     }
                 } else {
-                    userData.wallet = userData.wallet + coins;
+                    await addCoins(interaction.user.id);
 
-                    const embed = {
-                        color: "RANDOM",
-                        title: `${interaction.user.username} searched ${placesearched_items.place}`,
-                        description: `${search_result}`,
-                        timestamp: new Date(),
-                    };
+                    search_embed.setDescription(
+                        `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
+                    );
                     display_3.setDisabled();
                     display_1.setStyle("SECONDARY").setDisabled();
                     display_2.setStyle("SECONDARY").setDisabled();
-                    search_msg.edit({ embeds: [embed], components: [row] });
+                    search_msg.edit({
+                        embeds: [search_embed],
+                        components: [row],
+                    });
                 }
-                await inventoryModel.findOneAndUpdate(params, inventoryData);
-
-                await economyModel.findOneAndUpdate(params, userData);
             }
         });
 
@@ -392,20 +316,21 @@ module.exports = {
             if (endinteraction === true) {
                 return;
             } else {
-                const embed = {
-                    color: "RANDOM",
-                    title: `Search timed out`,
-                    description: `So I guess your not going to search anywhere.`,
-                    timestamp: new Date(),
-                };
+                search_embed
+                    .setColor(`#ff8f87`)
+                    .setTitle(`Action Timed Out - Search`)
+                    .setDescription(
+                        `\`So I am guessing your not going to search anywhere\``
+                    );
                 search_msg.components[0].components.forEach((c) => {
                     c.setDisabled();
                 });
                 search_msg.edit({
-                    embeds: [embed],
+                    embeds: [search_embed],
                     components: search_msg.components,
                 });
             }
         });
+        return setCooldown(interaction, "search", 30, economyData);
     },
 };

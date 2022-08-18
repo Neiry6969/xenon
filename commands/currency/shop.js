@@ -14,16 +14,12 @@ module.exports = {
         .setName("shop")
         .setDescription("See what items are being sold in the xenon shop."),
     cooldown: 5,
-    async execute(
-        interaction,
-        client,
-        userData,
-        inventoryData,
-        statsData,
-        profileData,
-        itemData
-    ) {
+    async execute(interaction) {
         const allItems = await fetchAllitemsData();
+        const inventoryData_fetch = await fetchInventoryData(
+            interaction.user.id
+        );
+        const inventoryData = inventoryData_fetch.data;
 
         const shopmaparray = allItems
             .map((value) => {

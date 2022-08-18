@@ -44,7 +44,7 @@ module.exports = {
                 .setDisabled(false)
         );
         infoembed = new MessageEmbed()
-            .setColor("#000000")
+            .setColor(`#2f3136`)
             .setTitle(`Xenon Information`)
             .setDescription(
                 `\`Economy bot that was made for the fun of it. Migrated to fully slash commands.\``
@@ -52,7 +52,7 @@ module.exports = {
             .addFields(
                 {
                     name: `Bot`,
-                    value: `Created At: <t:1650404340:D>\nLatest Released Version: \`v0.0.1\`\nUser Count: \`${usercount.toLocaleString()}\`\nServer Count: \`${servercount.toLocaleString()}\``,
+                    value: `Created At: <t:1650404340:D>\nLatest Released Version: \`v0.60.01\`\nUser Count: \`${usercount.toLocaleString()}\`\nServer Count: \`${servercount.toLocaleString()}\``,
                     inline: true,
                 },
                 {
