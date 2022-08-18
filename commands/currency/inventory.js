@@ -73,7 +73,7 @@ module.exports = {
             .filter(Boolean);
 
         if (mappedData.length === 0) {
-            return interaction.reply({ embeds: [emptyembed] });
+            return interaction.reply({ embeds: [inentory_embed] });
         } else {
             const inventory = Object.values(inventoryData.inventory).filter(
                 Boolean
