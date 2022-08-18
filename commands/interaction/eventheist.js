@@ -48,6 +48,10 @@ module.exports = {
         let amount = options.amount?.toLowerCase();
         const minreqcoins = 500000;
         const minjoincoins = 5000;
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
 
         if (economyData.bank.coins <= 0) {
             if (economyData.wallet <= 0) {
