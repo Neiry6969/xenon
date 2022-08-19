@@ -535,13 +535,11 @@ module.exports = {
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                if (confirmed === true) {
-                    setProcessingLock(interaction, false);
-                }
+                setProcessingLock(interaction, false);
 
                 eventheist_embed
                     .setColor(`#ff8f87`)
-                    .setTitle(`Action Cancelled - Event-heist`)
+                    .setTitle(`Action Timed Out - Event-heist`)
                     .setDescription(
                         `<@${
                             interaction.user.id
