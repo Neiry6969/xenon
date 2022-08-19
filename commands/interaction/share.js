@@ -93,8 +93,8 @@ module.exports = {
                 "So you want to share nothing, pretend you did that in your mind";
             return interaction.reply({ embeds: [errorembed], ephemeral: true });
         } else if (!amount || amount < 0 || amount % 1 != 0) {
-            errorembed.setDescription("Share amount must be a whole number.");
-            return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            error_message = "Share amount must be a whole number.";
+            return errorReply(interaction, error_message);
         } else if (amount > economyData.wallet) {
             if (amount < economyData.bank.coins + economyData.wallet) {
                 error_message = `You don't have that amount of coins to give from your wallet, maybe withdraw some?`;
@@ -155,10 +155,6 @@ module.exports = {
             button.deferUpdate();
             if (button.customId === "confirm") {
                 endinteraction = true;
-                setProcessingLock(interaction, false);
-                await removeCoins(interaction.user.id, amount);
-                await addCoins(target.id, amount);
-
                 const new_wallet = economyData.wallet - amount;
 
                 share_embed
@@ -180,6 +176,9 @@ module.exports = {
                     embeds: [share_embed],
                     components: [row],
                 });
+                setProcessingLock(interaction, false);
+                await removeCoins(interaction.user.id, amount);
+                await addCoins(target.id, amount);
             } else if (button.customId === "cancel") {
                 endinteraction = true;
                 setProcessingLock(interaction, false);
