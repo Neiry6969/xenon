@@ -3,6 +3,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
     fetchEconomyData,
+    fetchStatsData,
     removeCoins,
     addCoins,
     addItem,
@@ -36,8 +37,10 @@ module.exports = {
     async execute(interaction, client, theme) {
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const statsData_fetch = await fetchStatsData(interaction.user.id);
         const inventoryData = inventory_fetch.data;
         const economyData = economyData_fetch.data;
+        const statsData = statsData_fetch.data;
         const searchidexrandom = Math.floor(Math.random() * beg_data.length);
         const beginteraction = beg_data[searchidexrandom];
         const resultsuccess = randomizer(beginteraction.successrate);
@@ -89,6 +92,7 @@ module.exports = {
                 interaction.user.id,
                 economyData,
                 inventoryData,
+                statsData,
                 "begging"
             );
         } else {

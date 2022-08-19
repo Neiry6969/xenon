@@ -167,10 +167,7 @@ module.exports = {
 
             if (button.customId === "confirm") {
                 endinteraction = true;
-                setProcessingLock(interaction, false);
-                await removeItem(interaction.user.id, itemData.item, quantity);
-                await addItem(target.id, itemData.item, quantity);
-
+                
                 const newquantityowned =
                     inventoryData.inventory[itemData.item] - quantity;
 
@@ -197,6 +194,9 @@ module.exports = {
                     embeds: [gift_embed],
                     components: [row],
                 });
+                setProcessingLock(interaction, false);
+                await removeItem(interaction.user.id, itemData.item, quantity);
+                await addItem(target.id, itemData.item, quantity);
             } else if (button.customId === "cancel") {
                 endinteraction = true;
                 setProcessingLock(interaction, false);

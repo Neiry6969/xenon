@@ -9,6 +9,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
     fetchEconomyData,
+    fetchStatsData,
     removeCoins,
     addCoins,
     addItem,
@@ -176,7 +177,7 @@ module.exports = {
                         const joinedembed = new MessageEmbed()
                             .setColor(`#95ff87`)
                             .setDescription(
-                                `You successfully paided \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
+                                `You successfully paid \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
                             );
 
                         await eventheistlobby_msg.edit({
@@ -313,6 +314,11 @@ module.exports = {
                         await addCoins(user.id, eachcoins);
                         return survivors_msg.edit({ embeds: [surviorsembed] });
                     });
+                    if(survivors.length <= 0) {
+                      survivorsusermsg = `\`\`\`No one survived\`\`\``;
+                        caughtembed.setDescription(survivorsusermsg);
+                        survivors_msg.edit({ embeds: [survivorsusermsg] });
+                    }
 
                     const caught_msg = await interaction.channel.send({
                         embeds: [caughtembed],
@@ -383,18 +389,22 @@ module.exports = {
                                 `\`\`\`diff\n${deadusermsg}\n\`\`\``
                             );
 
-                            const fetchUserData = await fetchEconomyData(
+                            const fetchEconomyData_user = await fetchEconomyData(
                                 user.id
                             );
-                            const fetctInvData = await fetchInventoryData(
+                            const fetctInvData_user = await fetchInventoryData(
+                                user.id
+                            );
+                            const fetctStatsData_user = await fetchStatsData(
                                 user.id
                             );
 
                             death_handler(
                                 client,
                                 user.id,
-                                fetchUserData,
-                                fetctInvData,
+                                fetchEconomyData_user.data,
+                                fetctInvData_user.data,
+                                fetctStatsData_user.data,
                                 "event-heist"
                             );
                             return dead_msg.edit({
@@ -535,13 +545,11 @@ module.exports = {
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                if (confirmed === true) {
-                    setProcessingLock(interaction, false);
-                }
+                setProcessingLock(interaction, false);
 
                 eventheist_embed
                     .setColor(`#ff8f87`)
-                    .setTitle(`Action Cancelled - Event-heist`)
+                    .setTitle(`Action Timed Out - Event-heist`)
                     .setDescription(
                         `<@${
                             interaction.user.id
