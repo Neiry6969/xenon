@@ -389,22 +389,22 @@ module.exports = {
                                 `\`\`\`diff\n${deadusermsg}\n\`\`\``
                             );
 
-                            const fetchEconomyData = await fetchEconomyData(
+                            const fetchEconomyData_user = await fetchEconomyData(
                                 user.id
                             );
-                            const fetctInvData = await fetchInventoryData(
+                            const fetctInvData_user = await fetchInventoryData(
                                 user.id
                             );
-                            const fetctStatsData = await fetchStatsData(
+                            const fetctStatsData_user = await fetchStatsData(
                                 user.id
                             );
 
                             death_handler(
                                 client,
                                 user.id,
-                                fetchEconomyData.data,
-                                fetctInvData.data,
-                                fetctStatsData.data,
+                                fetchEconomyData_user.data,
+                                fetctInvData_user.data,
+                                fetctStatsData_user.data,
                                 "event-heist"
                             );
                             return dead_msg.edit({
