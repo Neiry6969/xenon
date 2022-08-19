@@ -176,7 +176,7 @@ module.exports = {
                         const joinedembed = new MessageEmbed()
                             .setColor(`#95ff87`)
                             .setDescription(
-                                `You successfully paided \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
+                                `You successfully paid \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
                             );
 
                         await eventheistlobby_msg.edit({
