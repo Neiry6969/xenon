@@ -226,7 +226,7 @@ module.exports = {
             await addItem(economyData.userId, itemData.item, quantity);
             await removeCoins(economyData.userId, totalprice);
             const newquantityowned =
-                inventoryData.inventory[itemData.item] + quantity;
+                inventoryData.inventory[itemData.item] + quantity || quantity;
             const buy_embed = new MessageEmbed()
                 .setColor(`#95ff87`)
                 .setTitle(`Receipt - Purchase`)
