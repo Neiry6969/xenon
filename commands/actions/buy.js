@@ -161,9 +161,6 @@ module.exports = {
 
                 if (button.customId === "confirm") {
                     endinteraction = true;
-                    setProcessingLock(interaction, false);
-                    await addItem(economyData.userId, itemData.item, quantity);
-                    await removeCoins(economyData.userId, totalprice);
                     const newquantityowned =
                         inventoryData.inventory[itemData.item] + quantity;
 
@@ -182,10 +179,13 @@ module.exports = {
                     confirm.setDisabled().setStyle("SUCCESS");
                     cancel.setDisabled().setStyle("SECONDARY");
 
-                    return buy_msg.edit({
+                    buy_msg.edit({
                         embeds: [buy_embed],
                         components: [row],
                     });
+                    setProcessingLock(interaction, false);
+                    await addItem(economyData.userId, itemData.item, quantity);
+                    await removeCoins(economyData.userId, totalprice);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
                     setProcessingLock(interaction, false);
