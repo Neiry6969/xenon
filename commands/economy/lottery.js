@@ -97,13 +97,21 @@ module.exports = {
             .setCustomId("cancel")
             .setLabel("Cancel")
             .setStyle("DANGER");
-        let row = new MessageActionRow().addComponents(confirm, cancel);
+        let community = new MessageButton()
+            .setLabel("Community")
+            .setStyle("LINK")
+            .setURL(`https://discord.gg/YVnv8Yud5u`);
+        let row = new MessageActionRow().addComponents(
+            confirm,
+            cancel,
+            community
+        );
 
         const lottery_embed = new MessageEmbed()
             .setTitle(`Action Confirmation - Purchase (lottery)`)
             .setColor(theme.embed.color)
             .setDescription(
-                `Lottery Ending: <t:${lotteryData.endsAt / 1000}:R>\n<@${
+                `**Lottery Ending:** <t:${lotteryData.endsAt / 1000}:R>\n\n<@${
                     interaction.user.id
                 }>, are you sure you want to buy <:xe_ticket:1010244491657089074> Lottery Tickets?\n\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (Each: \`❀ ${lotteryticket_cost.toLocaleString()}\`)`
             );
