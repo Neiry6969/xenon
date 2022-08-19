@@ -100,6 +100,6 @@ module.exports = {
         }
 
         interaction.reply({ embeds: [embed] });
-        return setCooldown(interaction, "beg", 0, economyData);
+        return setCooldown(interaction, "beg", 45, economyData);
     },
 };
