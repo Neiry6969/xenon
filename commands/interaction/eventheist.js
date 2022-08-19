@@ -313,6 +313,11 @@ module.exports = {
                         await addCoins(user.id, eachcoins);
                         return survivors_msg.edit({ embeds: [surviorsembed] });
                     });
+                    if(survivors.length <= 0) {
+                      survivorsusermsg = `\`\`\`No one survived\`\`\``;
+                        caughtembed.setDescription(survivorsusermsg);
+                        survivors_msg.edit({ embeds: [survivorsusermsg] });
+                    }
 
                     const caught_msg = await interaction.channel.send({
                         embeds: [caughtembed],
