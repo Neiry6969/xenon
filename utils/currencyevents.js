@@ -12,9 +12,10 @@ class Currencyevents {
     userId,
     economyData,
     inventoryData,
+    statsData,
     reason
   ) {
-    economyData.deaths = economyData.deaths + 1;
+    statsData.deaths = statsData.deaths + 1;
     const lostcoins = economyData.wallet;
     const dmdeathembed = new MessageEmbed().setColor("#FFA500");
     let hasLife;
@@ -54,6 +55,8 @@ class Currencyevents {
 
     await EconomyModel.findOneAndUpdate({ userId: userId }, economyData);
     await InventoryModel.findOneAndUpdate({ userId: userId }, inventoryData);
+    await StatsModel.findOneAndUpdate({ userId: userId }, statsData);
+
     client.users.fetch(userId, false).then((user) => {
       user.send({ embeds: [dmdeathembed] });
     });
