@@ -9,6 +9,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
     fetchEconomyData,
+    fetchStatsData,
     removeCoins,
     addCoins,
     addItem,
@@ -388,18 +389,22 @@ module.exports = {
                                 `\`\`\`diff\n${deadusermsg}\n\`\`\``
                             );
 
-                            const fetchUserData = await fetchEconomyData(
+                            const fetchEconomyData = await fetchEconomyData(
                                 user.id
                             );
                             const fetctInvData = await fetchInventoryData(
+                                user.id
+                            );
+                            const fetctStatsData = await fetchStatsData(
                                 user.id
                             );
 
                             death_handler(
                                 client,
                                 user.id,
-                                fetchUserData,
-                                fetctInvData,
+                                fetchEconomyData.data,
+                                fetctInvData.data,
+                                fetctStatsData.data
                                 "event-heist"
                             );
                             return dead_msg.edit({
