@@ -19,7 +19,7 @@ class Currencyevents {
     const dmdeathembed = new MessageEmbed().setColor("#FFA500");
     let hasLife;
 
-    if (Object.keys(inventoryData.inventory)) {
+    if (inventoryData.inventory !== {}) {
       hasLife = Object.keys(inventoryData.inventory).includes("lifesaver");
     }
 
