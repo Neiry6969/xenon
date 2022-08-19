@@ -162,7 +162,7 @@ module.exports = {
                 if (button.customId === "confirm") {
                     endinteraction = true;
                     const newquantityowned =
-                        inventoryData.inventory[itemData.item] + quantity;
+                        inventoryData.inventory[itemData.item] + quantity || quantity;
 
                     buy_embed
                         .setColor(`#95ff87`)
