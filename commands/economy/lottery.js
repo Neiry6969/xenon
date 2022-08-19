@@ -46,6 +46,9 @@ module.exports = {
         const economyData = economyData_fetch.data;
         const bankcoins = economyData.bank.coins;
         const walletcoins = economyData.wallet;
+        const lotteryData = await LotteryModel.findOne({
+            lotteryId: "2022aug19",
+        });
 
         let quantity = options.quantity?.toLowerCase();
         if (quantity === "max" || quantity === "all") {
@@ -100,7 +103,7 @@ module.exports = {
             .setTitle(`Action Confirmation - Purchase (lottery)`)
             .setColor(theme.embed.color)
             .setDescription(
-                `<@${
+                `Lottery Ending: <t:${lotteryData.endsAt / 1000}:R>\n<@${
                     interaction.user.id
                 }>, are you sure you want to buy <:xe_ticket:1010244491657089074> Lottery Tickets?\n\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (Each: \`❀ ${lotteryticket_cost.toLocaleString()}\`)`
             );
@@ -141,10 +144,6 @@ module.exports = {
                 buylotteryticket_msg.edit({
                     embeds: [lottery_embed],
                     components: [row],
-                });
-
-                const lotteryData = await LotteryModel.findOne({
-                    lotteryId: "2022aug19",
                 });
 
                 const entry_info = {
