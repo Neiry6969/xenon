@@ -62,6 +62,8 @@ module.exports = {
         let item;
         if (statsData.streaks.daily.strk === 696) {
             item = `chestofgods`;
+        } else if (statsData.streaks.daily.strk === 0) {
+             item = `kfcchicken`;
         } else if (statsData.streaks.daily.strk % 100 === 0) {
             item = `chestofangelic`;
         } else if (statsData.streaks.daily.strk % 10 === 0) {
