@@ -13,11 +13,7 @@ const {
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
-const {
-    setCooldown,
-    setProcessingLock,
-    fetchEmbedColor,
-} = require("../../utils/mainfunctions");
+const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
 
 module.exports = {

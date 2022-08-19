@@ -8,8 +8,8 @@ const {
     Collection,
 } = require("discord.js");
 
+const { addCoins } = require("../utils/currencyfunctions");
 const LotteryModel = require("../models/lotterySchema");
-const EconomyModel = require("../models/economySchema");
 
 let LotteryCounter = 0;
 
@@ -17,66 +17,74 @@ module.exports = {
     name: "tick",
     once: false,
     async execute(client) {
-        let nowTimestamp = new Date();
-        LotteryCounter++;
+        const lotteryData = await LotteryModel.findOne({
+            lotteryId: "2022aug19",
+        });
 
-        if (LotteryCounter === 3600) {
-            LotteryCounter = 0;
-            const lotteryData = await LotteryModel.findOne({
-                lotteryId: "Tasdw8932ik",
-            });
+        if (lotteryData.endsAt < Date.now()) {
+            const hourms = 60 * 60 * 1000;
+            const datenexthour =
+                Math.floor(new Date(Date.now() + 60 * 60 * 1000) / hourms) *
+                hourms;
 
-            if (lotteryData.entrees.length > 0) {
-                const entrees_count = lotteryData.entrees.length;
-                const entress_winningno = Math.floor(
-                    Math.random() * entrees_count
+            if (
+                lotteryData.entries.length > 0 &&
+                lotteryData.entriesTotal > 0
+            ) {
+                let winningentry;
+                const winningticket = Math.floor(
+                    Math.random() * lotteryData.entriesTotal
                 );
-                const winner_id = lotteryData.entrees[entress_winningno];
-
-                const lottery_perticket = 10000;
-                const lottery_prize = lottery_perticket * entrees_count;
-
-                const winnerEconomyData = await EconomyModel.findOne({
-                    userId: winner_id,
-                });
-
-                winnerEconomyData.wallet =
-                    winnerEconomyData.wallet + lottery_prize;
-
-                await EconomyModel.findOneAndUpdate(
-                    {
-                        userId: winner_id,
-                    },
-                    winnerEconomyData
+                const find_absolute = lotteryData.entries.find(
+                    (value) =>
+                        value.first === winningticket ||
+                        value.last === winningticket
                 );
-
-                dmembed = new MessageEmbed()
-                    .setTitle(`You won the lottery!`)
-                    .setColor("#7aff8c")
-                    .setDescription(
-                        `The money was directly put into your wallet.\n**Grand Prize:** \`❀ ${lottery_prize.toLocaleString()}\``
+                if (find_absolute) {
+                    winningentry = find_absolute;
+                } else {
+                    winningentry = lotteryData.entries.find(
+                        (value) =>
+                            value.first < winningticket &&
+                            value.last > winningticket
                     );
-                announceembed = new MessageEmbed()
-                    .setColor("#fffb7a")
-                    .setTitle("Hourly Lottery Winner")
-                    .setDescription(
-                        `**Grand Prize:** \`❀ ${lottery_prize.toLocaleString()}\`\n**Entrees:** \`${entrees_count.toLocaleString()}\`\n\n**__Winner__**\nUser: <@${winner_id}>\nId: \`${winner_id}\``
-                    );
+                }
+                const lottery_entriesTotal = lotteryData.entriesTotal;
+                const lottery_prize = {
+                    coins: lotteryData.entriesTotal * 10000,
+                };
 
-                client.users.fetch(winner_id, false).then((user) => {
-                    user.send({ embeds: [dmembed] });
-                });
-                client.channels.cache
-                    .get("999430498420011090")
-                    .send({ embeds: [announceembed] });
-
-                lotteryData.entrees = [];
+                await addCoins(winningentry.userId, lottery_prize.coins);
+                lotteryData.entries = [];
+                lotteryData.entriesTotal = 0;
+                lotteryData.endsAt = datenexthour;
                 await LotteryModel.findOneAndUpdate(
-                    {
-                        lotteryId: "Tasdw8932ik",
-                    },
+                    { lotteryId: lotteryData.lotteryId },
                     lotteryData
                 );
+
+                winner_fetch = await client.users.fetch(winningentry.userId);
+                dm_embed = new MessageEmbed()
+                    .setTitle(`You won the lottery! (hourly)`)
+                    .setColor("#7aff8c")
+                    .setDescription(
+                        `The money was directly put into your wallet.\n**Grand Prize:** \`❀ ${lottery_prize.coins.toLocaleString()}\``
+                    );
+                announce_embed = new MessageEmbed()
+                    .setColor("#fffb7a")
+                    .setTitle("Hourly Lottery Winner")
+                    .setThumbnail(winner_fetch.displayAvatarURL())
+                    .setDescription(
+                        `**Grand Prize:** \`❀ ${lottery_prize.coins.toLocaleString()}\`\n**Total Entries:** \`${lottery_entriesTotal.toLocaleString()}\`\n\n**__Winner__**\nUser: <@${
+                            winningentry.userId
+                        }>\nId: \`${winningentry.userId}\``
+                    );
+
+                winner_fetch.send({ embeds: [dm_embed] });
+                await client.channels.cache.get("999430498420011090").send({
+                    content: `<@${winningentry.userId}>`,
+                    embeds: [announce_embed],
+                });
             }
         }
 

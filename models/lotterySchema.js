@@ -7,17 +7,25 @@ const lotterySchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        entrees: {
+        entriesTotal: {
+            type: Number,
+            default: 0,
+        },
+        entries: {
             type: Array,
             default: [],
         },
-        topEntrees: {
-            type: Array,
-            default: [],
-        },
-        winner: {
+        entriesTop: {
             type: Object,
             default: {},
+        },
+        endsAt: {
+            type: Number,
+            default: null,
+        },
+        endStatus: {
+            type: Boolean,
+            default: false,
         },
     },
     { minimize: false }
