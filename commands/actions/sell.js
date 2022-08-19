@@ -236,7 +236,7 @@ module.exports = {
             await removeItem(economyData.userId, itemData.item, quantity);
             await addCoins(economyData.userId, saleprice);
             const newquantityowned =
-                inventoryData.inventory[itemData.item] + quantity;
+                inventoryData.inventory[itemData.item] + quantity || quantity;
             const sell_embed = new MessageEmbed()
                 .setColor(`#95ff87`)
                 .setTitle(`Receipt - Sell`)
