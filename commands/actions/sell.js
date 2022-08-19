@@ -167,12 +167,6 @@ module.exports = {
 
                 if (button.customId === "confirm") {
                     endinteraction = true;
-                    await removeItem(
-                        economyData.userId,
-                        itemData.item,
-                        quantity
-                    );
-                    await addCoins(economyData.userId, saleprice);
                     const newquantityowned =
                         inventoryData.inventory[itemData.item] - quantity;
 
@@ -195,7 +189,12 @@ module.exports = {
                         embeds: [sell_embed],
                         components: [row],
                     });
-
+                     await removeItem(
+                        economyData.userId,
+                        itemData.item,
+                        quantity
+                    );
+                    await addCoins(economyData.userId, saleprice);
                     setProcessingLock(interaction, false);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
