@@ -24,7 +24,7 @@ module.exports = {
         if (lotteryData.endsAt < Date.now()) {
             const hourms = 60 * 60 * 1000;
             const datenexthour =
-                Math.floor(new Date(Date.now() + 30 * 60 * 1000) / hourms) *
+                Math.floor(new Date(Date.now() + 60 * 60 * 1000) / hourms) *
                 hourms;
 
             if (
