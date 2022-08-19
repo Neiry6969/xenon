@@ -404,7 +404,7 @@ module.exports = {
                                 user.id,
                                 fetchEconomyData.data,
                                 fetctInvData.data,
-                                fetctStatsData.data
+                                fetctStatsData.data,
                                 "event-heist"
                             );
                             return dead_msg.edit({
