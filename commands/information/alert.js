@@ -136,7 +136,6 @@ module.exports = {
                 button.deferUpdate();
 
                 if (button.customId === "endinteraction") {
-                    setProcessingLock(interaction, false);
                     alert_msg.components[0].components.forEach((c) => {
                         c.setDisabled();
                     });
@@ -146,6 +145,7 @@ module.exports = {
                     alert_msg.edit({
                         components: alert_msg.components,
                     });
+                    setProcessingLock(interaction, false);
                 } else if (button.customId === "next") {
                     if (page === lastpage) {
                         page = 1;
@@ -192,7 +192,6 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                setProcessingLock(interaction, false);
                 alert_msg.components[0].components.forEach((c) => {
                     c.setDisabled();
                 });
@@ -203,6 +202,7 @@ module.exports = {
                     components: alert_msg.components,
                 });
             });
+            setProcessingLock(interaction, false);
         } else {
             interaction.reply({
                 embeds: [alert_embed],

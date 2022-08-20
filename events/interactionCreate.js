@@ -40,7 +40,9 @@ module.exports = {
             console.log(error);
         }
 
-        const ProcessingLock_status = checkProcessingLock(interaction.user.id);
+        const ProcessingLock_status = await checkProcessingLock(
+            interaction.user.id
+        );
         if (ProcessingLock_status === true) {
             error_message = `You have an ongoing command.`;
             return errorReply(interaction, error_message);
