@@ -316,8 +316,8 @@ module.exports = {
                     });
                     if(survivors.length <= 0) {
                       survivorsusermsg = `\`\`\`No one survived\`\`\``;
-                        caughtembed.setDescription(survivorsusermsg);
-                        survivors_msg.edit({ embeds: [survivorsusermsg] });
+                        surviorsembed.setDescription(survivorsusermsg);
+                        survivors_msg.edit({ embeds: [surviorsembed] });
                     }
 
                     const caught_msg = await interaction.channel.send({
