@@ -7,10 +7,6 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        settings: {
-            type: Object,
-            default: {},
-        },
         activeitems: {
             type: Object,
             default: {},
