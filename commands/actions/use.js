@@ -15,7 +15,12 @@ const {
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
-const { lootbox, preniumcard, bankmessage, watermelon } = require("../../utils/itemuse");
+const {
+    lootbox,
+    preniumcard,
+    bankmessage,
+    watermelon,
+} = require("../../utils/itemuse");
 const letternumbers = require("../../reference/letternumber");
 
 module.exports = {

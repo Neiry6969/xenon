@@ -132,7 +132,6 @@ module.exports = {
                                 val.item.toLowerCase() ===
                                 placesearched_items.items
                         );
-                       
 
                         search_embed.setDescription(
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
@@ -148,7 +147,6 @@ module.exports = {
                         await addCoins(interaction.user.id);
                         await addItem(interaction.user.id, item.item, 1);
                     } else {
-
                         search_embed.setDescription(
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                         );
@@ -159,7 +157,7 @@ module.exports = {
                             embeds: [search_embed],
                             components: [row],
                         });
-                        await addCoins(interaction.user.id);                        
+                        await addCoins(interaction.user.id);
                     }
                 } else {
                     await addCoins(interaction.user.id);
@@ -218,7 +216,6 @@ module.exports = {
                         await addCoins(interaction.user.id);
                         await addItem(interaction.user.id, item.item, 1);
                     } else {
-
                         search_embed.setDescription(
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                         );
@@ -232,7 +229,6 @@ module.exports = {
                         await addCoins(interaction.user.id);
                     }
                 } else {
-
                     search_embed.setDescription(
                         `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                     );
@@ -244,7 +240,6 @@ module.exports = {
                         components: [row],
                     });
                     await addCoins(interaction.user.id);
-
                 }
             } else if (button.customId === displayedplaces[2].place) {
                 endinteraction = true;
@@ -271,7 +266,6 @@ module.exports = {
                                 val.item.toLowerCase() ===
                                 placesearched_items.items
                         );
-                      
 
                         search_embed.setDescription(
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
@@ -310,7 +304,6 @@ module.exports = {
                         components: [row],
                     });
                     await addCoins(interaction.user.id);
-
                 }
             }
         });

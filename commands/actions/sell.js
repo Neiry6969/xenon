@@ -168,7 +168,8 @@ module.exports = {
                 if (button.customId === "confirm") {
                     endinteraction = true;
                     const newquantityowned =
-                        inventoryData.inventory[itemData.item] - quantity || quantity;
+                        inventoryData.inventory[itemData.item] - quantity ||
+                        quantity;
 
                     sell_embed
                         .setColor(`#95ff87`)
@@ -189,7 +190,7 @@ module.exports = {
                         embeds: [sell_embed],
                         components: [row],
                     });
-                     await removeItem(
+                    await removeItem(
                         economyData.userId,
                         itemData.item,
                         quantity
