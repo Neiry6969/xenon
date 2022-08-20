@@ -27,13 +27,15 @@ module.exports = {
                 Math.floor(new Date(Date.now() + 30 * 60 * 1000) / hourms) *
                 hourms;
 
+            lotteryData.endsAt = datenexthour;
+
             if (
                 lotteryData.entries.length > 0 &&
                 lotteryData.entriesTotal > 0
             ) {
                 let winningentry;
                 const winningticket = Math.floor(
-                    Math.random() * lotteryData.entriesTotal
+                    Math.random() * lotteryData.entriesTotal + 1
                 );
                 const find_absolute = lotteryData.entries.find(
                     (value) =>
@@ -45,8 +47,8 @@ module.exports = {
                 } else {
                     winningentry = lotteryData.entries.find(
                         (value) =>
-                            value.first < winningticket &&
-                            value.last > winningticket
+                            value.first <= winningticket &&
+                            value.last >= winningticket
                     );
                 }
                 const lottery_entriesTotal = lotteryData.entriesTotal;
@@ -57,11 +59,6 @@ module.exports = {
                 await addCoins(winningentry.userId, lottery_prize.coins);
                 lotteryData.entries = [];
                 lotteryData.entriesTotal = 0;
-                lotteryData.endsAt = datenexthour;
-                await LotteryModel.findOneAndUpdate(
-                    { lotteryId: lotteryData.lotteryId },
-                    lotteryData
-                );
 
                 winner_fetch = await client.users.fetch(winningentry.userId);
                 dm_embed = new MessageEmbed()
@@ -86,6 +83,10 @@ module.exports = {
                     embeds: [announce_embed],
                 });
             }
+            await LotteryModel.findOneAndUpdate(
+                { lotteryId: lotteryData.lotteryId },
+                lotteryData
+            );
         }
 
         setTimeout(() => {
