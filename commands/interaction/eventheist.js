@@ -382,26 +382,26 @@ module.exports = {
                         embeds: [deadembed],
                     });
                     if (dead.length > 0) {
-                        const smsgs = [
-                            "was shot by someone in the commotion",
-                            "was destroyed by a cop",
-                            "slipped on a banana",
-                            "jumped by a hostage",
-                            "hit in the head by a steal baton",
-                            "killed because they died an explosion",
-                            "fought with their buddy and got shot by them",
-                            "fell off the stairs, kinda funny how they died",
-                            "played too many games of mafia and died of cringe",
-                            "was hanged by the their comrades",
-                            "ate too much edibles",
-                            "was stabbed to death",
-                            "tried be cool but died doing nothing",
-                            "died of cringe",
-                            "died because they weren't able to enter the bank",
-                        ];
-                        const selected_smsg =
-                            smsgs[Math.floor(Math.random() * smsgs.length)];
                         dead.forEach(async (id) => {
+                            const smsgs = [
+                                "was shot by someone in the commotion",
+                                "was destroyed by a cop",
+                                "slipped on a banana",
+                                "jumped by a hostage",
+                                "hit in the head by a steal baton",
+                                "killed because they died an explosion",
+                                "fought with their buddy and got shot by them",
+                                "fell off the stairs, kinda funny how they died",
+                                "played too many games of mafia and died of cringe",
+                                "was hanged by the their comrades",
+                                "ate too much edibles",
+                                "was stabbed to death",
+                                "tried be cool but died doing nothing",
+                                "died of cringe",
+                                "died because they weren't able to enter the bank",
+                            ];
+                            const selected_smsg =
+                                smsgs[Math.floor(Math.random() * smsgs.length)];
                             const user = await client.users
                                 .fetch(id)
                                 .catch(console.error);
