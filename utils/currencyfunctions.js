@@ -4,6 +4,7 @@ const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
 const UserModel = require("../models/userSchema");
 const StatsModel = require("../models/statsSchema");
+const SettingsModel = require("../models/settingsSchema");
 const { fetchAllitemsData, fetchItemData } = require("./itemfunctions");
 
 class Currencyfunctions {
@@ -135,6 +136,29 @@ class Currencyfunctions {
         };
 
         return userData_object;
+    }
+    static async fetchSettingsData(userId) {
+        let settingsData;
+        try {
+            settingsData = await SettingsModel.findOne({ userId: userId });
+            if (!settingsData) {
+                let settings = await SettingsModel.create({
+                    userId: userId,
+                });
+
+                settings.save();
+
+                settingsData = settings;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        const settingsData_object = {
+            data: settingsData,
+        };
+
+        return settingsData_object;
     }
 
     static async addCoins(userId, coins) {

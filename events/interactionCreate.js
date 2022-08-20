@@ -1,15 +1,14 @@
 const { Collection, MessageEmbed } = require("discord.js");
-const fs = require("fs");
 
 const { errorReply } = require("../utils/errorfunctions");
 const { backgroundupdates_handler } = require("../utils/currencyevents");
 const {
     checkProcessingLock,
     checkCooldown,
+    checkAlert,
 } = require("../utils/mainfunctions");
 const { fetchEmbedColor } = require("../utils/cosmeticsfunctions");
-const economyModel = require("../models/economySchema");
-const statsModel = require("../models/statsSchema");
+const { fetchSettingsData } = require("../utils/currencyfunctions");
 const GuildModel = require("../models/guildSchema");
 
 module.exports = {
@@ -82,6 +81,14 @@ module.exports = {
                 };
 
                 await command.execute(interaction, client, theme);
+                setTimeout(async function () {
+                    if (
+                        interaction.replied === true &&
+                        commandname !== "alert"
+                    ) {
+                        await checkAlert(interaction);
+                    }
+                }, 1000);
             } catch (error) {
                 console.error(error);
                 error_message =

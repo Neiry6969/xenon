@@ -5,6 +5,7 @@ const { fetchEmbedColor } = require("./cosmeticsfunctions");
 const { fetchEconomyData, fetchUserData } = require("./currencyfunctions");
 const jsoncooldowns = require("../cooldowns.json");
 const interactionproccesses = require("../interactionproccesses.json");
+const AlertModel = require("../models/alertSchema");
 
 class Mainfunctions {
     static async setCooldown(
@@ -206,6 +207,30 @@ class Mainfunctions {
             return true;
         }
         return false;
+    }
+
+    static async checkAlert(interaction) {
+        const alertDatas = await AlertModel.find({});
+        let hasunread = false;
+
+        alertDatas.forEach((alert) => {
+            if (!alert.usersRead.includes(interaction.user.id)) {
+                return (hasunread = true);
+            }
+        });
+
+        if (hasunread === true) {
+            return interaction.followUp({
+                embeds: [
+                    new MessageEmbed()
+                        .setColor(await fetchEmbedColor(interaction))
+                        .setDescription(
+                            `${interaction.user}, you have an unread alert! To check the alert, run \`/alert\``
+                        ),
+                ],
+                ephemeral: true,
+            });
+        }
     }
 }
 

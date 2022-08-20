@@ -238,9 +238,9 @@ module.exports = {
                                 Math.random() * failed.length
                             );
                             const id = failed[survivedno];
-                            failed.pull(id);
+                            const pullIndex = failed.indexOf(id);
+                            failed.splice(pullIndex, 1);
                             survivors.push(id);
-                            console.log(id);
                         }
                     }
 
@@ -303,7 +303,7 @@ module.exports = {
                             "walked in mad that they didn't get their salary, walked out happier",
                             "wormed their way out",
                             "turned invisible and became a ninja",
-                            "put on airpods and hear nothing, didn't even know they where robbing a bank"
+                            "put on airpods and hear nothing, didn't even know they where robbing a bank",
                         ];
                         const selected_smsg =
                             smsgs[Math.floor(Math.random() * smsgs.length)];
@@ -325,8 +325,8 @@ module.exports = {
                         await addCoins(user.id, eachcoins);
                         return survivors_msg.edit({ embeds: [surviorsembed] });
                     });
-                    if(survivors.length <= 0) {
-                      survivorsusermsg = `\`\`\`No one survived\`\`\``;
+                    if (survivors.length <= 0) {
+                        survivorsusermsg = `\`\`\`No one survived\`\`\``;
                         surviorsembed.setDescription(survivorsusermsg);
                         survivors_msg.edit({ embeds: [surviorsembed] });
                     }
@@ -350,7 +350,7 @@ module.exports = {
                                 "looked for shelter in a police car",
                                 "was woulded and needed an ambulance",
                                 "felt disgraced",
-                                "dream of getting it, but was caught in the end"
+                                "dream of getting it, but was caught in the end",
                             ];
                             const selected_smsg =
                                 smsgs[Math.floor(Math.random() * smsgs.length)];
@@ -397,7 +397,7 @@ module.exports = {
                             "was stabbed to death",
                             "tried be cool but died doing nothing",
                             "died of cringe",
-                            "died because they weren't able to enter the bank"
+                            "died because they weren't able to enter the bank",
                         ];
                         const selected_smsg =
                             smsgs[Math.floor(Math.random() * smsgs.length)];
@@ -418,9 +418,8 @@ module.exports = {
                                 `\`\`\`diff\n${deadusermsg}\n\`\`\``
                             );
 
-                            const fetchEconomyData_user = await fetchEconomyData(
-                                user.id
-                            );
+                            const fetchEconomyData_user =
+                                await fetchEconomyData(user.id);
                             const fetctInvData_user = await fetchInventoryData(
                                 user.id
                             );
