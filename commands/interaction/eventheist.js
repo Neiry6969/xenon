@@ -293,6 +293,17 @@ module.exports = {
                             "sunck out with the hostages",
                             "ate something that made them invisible",
                             "was just lucky",
+                            "feared nothing",
+                            "went out right away",
+                            "was so scary no one wanted to be near them",
+                            "had some decent combat skills and escaped",
+                            "just did it ✓™",
+                            "came out with tons of wounds",
+                            "almost died, and might retire soon",
+                            "walked in mad that they didn't get their salary, walked out happier",
+                            "wormed their way out",
+                            "turned invisible and became a ninja",
+                            "put on airpods and hear nothing, didn't even know they where robbing a bank"
                         ];
                         const selected_smsg =
                             smsgs[Math.floor(Math.random() * smsgs.length)];
@@ -331,6 +342,15 @@ module.exports = {
                                 "failed to get out",
                                 "was stuck at the entrance looking for the exit",
                                 "tried sneaking out but was caught",
+                                "attended the heist in their head",
+                                "tried to befriend a police",
+                                "was drunk and called the police",
+                                "belly was too big and was suspected",
+                                "ate too much and couldn't move",
+                                "looked for shelter in a police car",
+                                "was woulded and needed an ambulance",
+                                "felt disgraced",
+                                "dream of getting it, but was caught in the end"
                             ];
                             const selected_smsg =
                                 smsgs[Math.floor(Math.random() * smsgs.length)];
@@ -369,6 +389,15 @@ module.exports = {
                             "jumped by a hostage",
                             "hit in the head by a steal baton",
                             "killed because they died an explosion",
+                            "fought with their buddy and got shot by them",
+                            "fell off the stairs, kinda funny how they died",
+                            "played too many games of mafia and died of cringe",
+                            "was hanged by the their comrades",
+                            "ate too much edibles",
+                            "was stabbed to death",
+                            "tried be cool but died doing nothing",
+                            "died of cringe",
+                            "died because they weren't able to enter the bank"
                         ];
                         const selected_smsg =
                             smsgs[Math.floor(Math.random() * smsgs.length)];

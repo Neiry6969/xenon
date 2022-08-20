@@ -141,7 +141,7 @@ module.exports = {
         await leaderboard_msg.edit({ embeds: [embed], components: [row] });
         const collector = await leaderboard_msg.createMessageComponentCollector(
             {
-                time: 30 * 1000,
+                idle: 30 * 1000,
             }
         );
         collector.on("collect", async (i) => {
