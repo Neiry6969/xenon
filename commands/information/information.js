@@ -1,15 +1,27 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
-const { fetchEconomyData } = require("../../utils/currencyfunctions");
+
+const economyModel = require("../../models/economySchema");
+
+function premiumcooldowncalc(defaultcooldown) {
+    if (defaultcooldown <= 5 && defaultcooldown > 2) {
+        return defaultcooldown - 2;
+    } else if (defaultcooldown <= 15) {
+        return defaultcooldown - 5;
+    } else if (defaultcooldown <= 120) {
+        return defaultcooldown - 10;
+    } else {
+        return defaultcooldown;
+    }
+}
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("information")
         .setDescription("Check the bot's information status."),
     async execute(interaction, client, theme) {
-        const fetch_economyData = await fetchEconomyData(interaction.user.id);
-        const economyData = fetch_economyData.data;
-        const usercount = economyData.length;
+        const fetcheconomy = await economyModel.find({});
+        const usercount = fetcheconomy.length;
         const servercount = client.guilds.cache.size;
 
         const row = new MessageActionRow().addComponents(
