@@ -122,11 +122,7 @@ module.exports = {
                             entries_unique
                         ).length.toLocaleString()}\`\n**Grand Prize:**\nCoins: \`❀ ${lottery_prize.coins.toLocaleString()}\`\nItems: \`${1}\` ${
                             winninglotteryticket.icon
-                        } \`${
-                            winninglotteryticket.item
-                        }\`\n**Users Participated:** \`${Object.keys(
-                            entries_unique
-                        ).length.toLocaleString()}\``
+                        } \`${winninglotteryticket.item}\``
                     );
                 announce_embed = new MessageEmbed()
                     .setColor("#fffb7a")
