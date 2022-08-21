@@ -40,6 +40,7 @@ module.exports = {
         const options = {
             quantity: interaction.options.getString("quantity"),
         };
+
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData = inventory_fetch.data;
@@ -49,7 +50,6 @@ module.exports = {
         const lotteryData = await LotteryModel.findOne({
             lotteryId: "2022aug19",
         });
-
         let quantity = options.quantity?.toLowerCase();
         if (quantity === "max" || quantity === "all") {
             if (economyData.wallet < lotteryticket_cost) {
@@ -111,7 +111,9 @@ module.exports = {
             .setTitle(`Action Confirmation - Purchase (lottery)`)
             .setColor(theme.embed.color)
             .setDescription(
-                `**Lottery Ending:** <t:${lotteryData.endsAt / 1000}:R>\n\n<@${
+                `**Lottery Ending:** <t:${
+                    lotteryData.endsAt / 1000
+                }:R>\nTotal Globally Entries: \`${lotteryData.entriesTotal.toLocaleString()}\`\n\n<@${
                     interaction.user.id
                 }>, are you sure you want to buy <:xe_ticket:1010244491657089074> Lottery Tickets?\n\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (Each: \`❀ ${lotteryticket_cost.toLocaleString()}\`)`
             );
@@ -142,7 +144,9 @@ module.exports = {
                     .setColor(`#95ff87`)
                     .setTitle(`Receipt - Purchase (lottery)`)
                     .setDescription(
-                        `**Item:** <:xe_ticket:1010244491657089074> \`lotteryticket\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (Each: \`❀ ${lotteryticket_cost.toLocaleString()}\`)`
+                        `**Lottery Ending:** <t:${
+                            lotteryData.endsAt / 1000
+                        }:R>\nTotal Globally Entries: \`${lotteryData.entriesTotal.toLocaleString()}\` \`+ ${quantity.toLocaleString()}\`\n\n**Item:** <:xe_ticket:1010244491657089074> \`lotteryticket\`\n**Quantity:** \`${quantity.toLocaleString()}\`\n**Total Price:** \`❀ ${totalprice.toLocaleString()}\` (Each: \`❀ ${lotteryticket_cost.toLocaleString()}\`)`
                     )
                     .setFooter({
                         text: `New Wallet: ${new_wallet.toLocaleString()}`,
