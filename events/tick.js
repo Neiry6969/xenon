@@ -69,9 +69,11 @@ module.exports = {
                 const topentries = entries_unique_map.slice(0, 3);
                 const topentries_map = topentries
                     .map((entry, index) => {
-                        return `${rankingicons(index + 1)} <@${entry}> \`${
-                            entries_unique[entry]
-                        } entries\` (\`❀ ${(
+                        return `${rankingicons(
+                            index + 1
+                        )} <@${entry}> \`${entries_unique[
+                            entry
+                        ].toLocaleString()} entries\` (\`❀ ${(
                             entries_unique[entry] *
                             10 *
                             1000
@@ -137,9 +139,11 @@ module.exports = {
                             entries_unique
                         ).length.toLocaleString()}\`\n\n**__Winner__**\nUser: <@${
                             winningentry.userId
-                        }>\nId: \`${winningentry.userId}\`\nEntries: \`${
-                            entries_unique[winningentry.userId]
-                        }\` (❀ \`${(
+                        }>\nId: \`${
+                            winningentry.userId
+                        }\`\nEntries: \`${entries_unique[
+                            winningentry.userId
+                        ].toLocaleString()}\` (❀ \`${(
                             entries_unique[winningentry.userId] *
                             10 *
                             1000
