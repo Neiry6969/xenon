@@ -449,7 +449,7 @@ class Useitem {
             .setDescription(
                 `You used \`${1}\` ${itemData.icon} \`${
                     itemData.item
-                }\`\n\nYou redeemed the colours bellow:\n${colors_display}`
+                }\`\n\nYou redeemed the colours below:\n${colors_display}`
             )
             .setFooter({
                 text: `${(1).toLocaleString()}x ${itemData.item}`,
