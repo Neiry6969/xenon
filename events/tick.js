@@ -12,7 +12,17 @@ const { addCoins, addItem } = require("../utils/currencyfunctions");
 const { fetchItemData } = require("../utils/itemfunctions");
 const LotteryModel = require("../models/lotterySchema");
 
-let LotteryCounter = 0;
+function rankingicons(rank) {
+    if (rank === 1) {
+        return "<:rank_gold:1010208515677237388>";
+    } else if (rank === 2) {
+        return "<:rank_silver:1010208521037545482>";
+    } else if (rank === 3) {
+        return "<:rank_bronze:1010208526758596709>";
+    } else {
+        return "<:rank_unranked:1010208532316037130>";
+    }
+}
 
 module.exports = {
     name: "tick",
@@ -37,6 +47,38 @@ module.exports = {
                 lotteryData.entries.length > 0 &&
                 lotteryData.entriesTotal > 0
             ) {
+                const entries_unique = {};
+                lotteryData.entries.forEach((entry) => {
+                    if (!entries_unique[entry.userId]) {
+                        entries_unique[entry.userId] =
+                            entry.last - entry.first + 1;
+                    } else {
+                        entries_unique[entry.userId] +=
+                            entry.last - entry.first + 1;
+                    }
+                });
+
+                const entries_unique_map = Object.keys(entries_unique)
+                    .map((key) => {
+                        return key;
+                    })
+                    .sort(function (a, b) {
+                        return entries_unique[b] - entries_unique[a];
+                    });
+
+                const topentries = entries_unique_map.slice(0, 3);
+                const topentries_map = topentries
+                    .map((entry, index) => {
+                        return `${rankingicons(index + 1)} <@${entry}> \`${
+                            entries_unique[entry]
+                        } entries\` (\`❀ ${(
+                            entries_unique[entry] *
+                            10 *
+                            1000
+                        ).toLocaleString()}\`)`;
+                    })
+                    .join("\n");
+
                 let winningentry;
                 const winningticket = Math.floor(
                     Math.random() * lotteryData.entriesTotal + 1
@@ -59,6 +101,8 @@ module.exports = {
                 const lottery_prize = {
                     coins: lotteryData.entriesTotal * 10000,
                 };
+
+                console;
 
                 await addItem(
                     winningentry.userId,
@@ -87,9 +131,17 @@ module.exports = {
                             winninglotteryticket.icon
                         } \`${
                             winninglotteryticket.item
-                        }\`\n**Total Entries:** \`${lottery_entriesTotal.toLocaleString()}\`\n\n**__Winner__**\nUser: <@${
+                        }\`\n**Tickets:** \`${lottery_entriesTotal.toLocaleString()}\`\n**Users Participated:** \`${Object.keys(
+                            entries_unique
+                        ).length.toLocaleString()}\`\n\n**__Winner__**\nUser: <@${
                             winningentry.userId
-                        }>\nId: \`${winningentry.userId}\``
+                        }>\nId: \`${winningentry.userId}\`\nEntries: \`${
+                            entries_unique[winningentry.userId]
+                        }\` (❀ \`${(
+                            entries_unique[winningentry.userId] *
+                            10 *
+                            1000
+                        ).toLocaleString()}\`)\n\n**__Top Spenders__**\n${topentries_map}`
                     );
 
                 winner_fetch.send({ embeds: [dm_embed] });
