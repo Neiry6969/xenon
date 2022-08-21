@@ -118,9 +118,15 @@ module.exports = {
                     .setTitle(`You won the lottery! (hourly)`)
                     .setColor("#7aff8c")
                     .setDescription(
-                        `The money was directly put into your wallet.\n\n**Grand Prize:**\nCoins: \`❀ ${lottery_prize.coins.toLocaleString()}\`\nItems: \`${1}\` ${
+                        `The money was directly put into your wallet.\n\n**Users Participated:** \`${Object.keys(
+                            entries_unique
+                        ).length.toLocaleString()}\`\n**Grand Prize:**\nCoins: \`❀ ${lottery_prize.coins.toLocaleString()}\`\nItems: \`${1}\` ${
                             winninglotteryticket.icon
-                        } \`${winninglotteryticket.item}\``
+                        } \`${
+                            winninglotteryticket.item
+                        }\`\n**Users Participated:** \`${Object.keys(
+                            entries_unique
+                        ).length.toLocaleString()}\``
                     );
                 announce_embed = new MessageEmbed()
                     .setColor("#fffb7a")
