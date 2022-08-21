@@ -150,7 +150,20 @@ module.exports = {
                         ).toLocaleString()}\`)\n\n**__Top Spenders__**\n${topentries_map}`
                     );
 
-                winner_fetch.send({ embeds: [dm_embed] });
+                winner_fetch.send({
+                    embeds: [dm_embed],
+                    components: [
+                        new MessageActionRow().setComponents(
+                            new MessageButton()
+                                .setStyle("LINK")
+                                .setURL("https://discord.gg/YVnv8Yud5u")
+                                .setLabel("Community")
+                                .setEmoji(
+                                    "<a:winninglotteryticket:1010942366078750730>"
+                                )
+                        ),
+                    ],
+                });
                 await client.channels.cache.get("999430498420011090").send({
                     content: `<@${winningentry.userId}>`,
                     embeds: [announce_embed],
