@@ -6,6 +6,7 @@ const {
     fetchEconomyData,
     addCoins,
 } = require("../../utils/currencyfunctions");
+const { errorReply } = require("../../utils/errorfunctions");
 const {
     setCooldown,
     setEventCooldown,
@@ -18,7 +19,10 @@ module.exports = {
         .setDescription("Collect your monthly rewards every month."),
     cooldown: 60,
     async execute(interaction, client, theme) {
-        const cooldown = await checkEventCooldown(interaction.user.id, "daily");
+        const cooldown = await checkEventCooldown(
+            interaction.user.id,
+            "monthly"
+        );
 
         if (cooldown.status === true) {
             error_message = `You already collected your monthlyly rewards this monthly\n\nCooldown: \`31d\`\nReady: <t:${Math.floor(

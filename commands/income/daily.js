@@ -20,6 +20,7 @@ const {
     checkEventCooldown,
 } = require("../../utils/mainfunctions");
 const StatsModel = require("../../models/statsSchema");
+const { errorReply } = require("../../utils/errorfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
