@@ -17,7 +17,11 @@ const {
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
-const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const {
+    setCooldown,
+    setProcessingLock,
+    checkEventCooldown,
+} = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
 const LotteryModel = require("../../models/lotterySchema");
 
@@ -40,6 +44,18 @@ module.exports = {
         const options = {
             quantity: interaction.options.getString("quantity"),
         };
+
+        const cooldown = await checkEventCooldown(
+            interaction.user.id,
+            "lottery"
+        );
+
+        if (cooldown.status === true) {
+            error_message = `You won the lottery recently so you are on cooldown.\n\nCooldown: \`1d\`\nYou can enter again: <t:${Math.floor(
+                cooldown.rawcooldown / 1000
+            )}:R>`;
+            return errorReply(interaction, error_message);
+        }
 
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
         const economyData_fetch = await fetchEconomyData(interaction.user.id);

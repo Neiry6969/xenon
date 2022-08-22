@@ -13,16 +13,29 @@ const {
     fetchItemData,
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
-const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const {
+    setCooldown,
+    setProcessingLock,
+    setEventCooldown,
+    checkEventCooldown,
+} = require("../../utils/mainfunctions");
 const StatsModel = require("../../models/statsSchema");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("daily")
         .setDescription("Collect your daily rewards every 24 hours."),
-    cooldown: 86400,
-    cdmsg: "You already collected your daily rewards today.",
+    cooldown: 60,
     async execute(interaction, client, theme) {
+        const cooldown = await checkEventCooldown(interaction.user.id, "daily");
+
+        if (cooldown.status === true) {
+            error_message = `You already collected your daily rewards today\n\nCooldown: \`1d\`\nReady: <t:${Math.floor(
+                cooldown.rawcooldown / 1000
+            )}:R>`;
+            return errorReply(interaction, error_message);
+        }
+
         const dailybaseamount = 100000;
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData_fetch = await fetchInventoryData(
@@ -81,6 +94,7 @@ module.exports = {
                 itemData.icon
             } \`${itemData.item}\` \`x${1}\``;
         }
+        await setEventCooldown(interaction.user.id, "daily", 86400);
 
         const daily_embed = new MessageEmbed()
             .setColor(theme.embed.color)
@@ -92,6 +106,6 @@ module.exports = {
             .setDescription(rewards_display);
 
         interaction.reply({ embeds: [daily_embed] });
-        return setCooldown(interaction, "daily", 86400, economyData);
+        return setCooldown(interaction, "daily", 60, economyData);
     },
 };

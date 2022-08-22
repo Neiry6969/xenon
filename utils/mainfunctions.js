@@ -6,6 +6,7 @@ const { fetchEconomyData, fetchUserData } = require("./currencyfunctions");
 const jsoncooldowns = require("../cooldowns.json");
 const interactionproccesses = require("../interactionproccesses.json");
 const AlertModel = require("../models/alertSchema");
+const UserModel = require("../models/userSchema");
 
 class Mainfunctions {
     static async setCooldown(
@@ -231,6 +232,33 @@ class Mainfunctions {
                 ephemeral: true,
             });
         }
+    }
+
+    static async setEventCooldown(userId, cooldownname, cooldownduration) {
+        const fetch_userData = await fetchUserData(userId);
+        const userData = fetch_userData.data;
+        const cooldownendtimestamp = Date.now() + cooldownduration * 1000;
+        userData.eventcooldowns[cooldownname] = cooldownendtimestamp;
+        await UserModel.findOneAndUpdate({ userId: userData.userId }, userData);
+    }
+
+    static async checkEventCooldown(userId, cooldownname) {
+        const fetch_userData = await fetchUserData(userId);
+        const userData = fetch_userData.data;
+        const cooldownleft = userData.eventcooldowns[cooldownname] - Date.now();
+        const coodown_object = {
+            status: false,
+            rawcooldown: userData.eventcooldowns[cooldownname],
+            cooldownleft: cooldownleft,
+        };
+
+        if (userData.eventcooldowns[cooldownname]) {
+            if (Date.now() < userData.eventcooldowns[cooldownname]) {
+                coodown_object.status = true;
+            }
+        }
+
+        return coodown_object;
     }
 }
 

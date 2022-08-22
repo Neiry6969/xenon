@@ -6,15 +6,26 @@ const {
     fetchEconomyData,
     addCoins,
 } = require("../../utils/currencyfunctions");
-const { setCooldown } = require("../../utils/mainfunctions");
+const {
+    setCooldown,
+    setEventCooldown,
+    checkEventCooldown,
+} = require("../../utils/mainfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("monthly")
         .setDescription("Collect your monthly rewards every month."),
-    cooldown: 2678400,
-    cdmsg: "You already collected your monthly rewards this month.",
+    cooldown: 60,
     async execute(interaction, client, theme) {
+        const cooldown = await checkEventCooldown(interaction.user.id, "daily");
+
+        if (cooldown.status === true) {
+            error_message = `You already collected your monthlyly rewards this monthly\n\nCooldown: \`31d\`\nReady: <t:${Math.floor(
+                cooldown.rawcooldown / 1000
+            )}:R>`;
+            return errorReply(interaction, error_message);
+        }
         const monthly_amount = 10000000;
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData_fetch = await fetchInventoryData(
@@ -23,6 +34,7 @@ module.exports = {
         const economyData = economyData_fetch.data;
 
         await addCoins(interaction.user.id, monthly_amount);
+        await setEventCooldown(interaction.user.id, "monthly", 2678400);
 
         const monthly_embed = new MessageEmbed()
             .setColor(theme.embed.color)
@@ -36,6 +48,6 @@ module.exports = {
             );
 
         interaction.reply({ embeds: [monthly_embed] });
-        return setCooldown(interaction, "monthly", 2678400, economyData);
+        return setCooldown(interaction, "monthly", 60, economyData);
     },
 };

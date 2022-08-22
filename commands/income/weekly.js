@@ -6,15 +6,26 @@ const {
     fetchEconomyData,
     addCoins,
 } = require("../../utils/currencyfunctions");
-const { setCooldown } = require("../../utils/mainfunctions");
+const {
+    setCooldown,
+    setEventCooldown,
+    checkEventCooldown,
+} = require("../../utils/mainfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("weekly")
         .setDescription("Collect your weekly rewards every week."),
-    cooldown: 604800,
-    cdmsg: "You already collected your weekly rewards this week.",
+    cooldown: 60,
     async execute(interaction, client, theme) {
+        const cooldown = await checkEventCooldown(interaction.user.id, "daily");
+
+        if (cooldown.status === true) {
+            error_message = `You already collected your weekly rewards this week\n\nCooldown: \`7d\`\nReady: <t:${Math.floor(
+                cooldown.rawcooldown / 1000
+            )}:R>`;
+            return errorReply(interaction, error_message);
+        }
         const weekly_amount = 1000000;
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const inventoryData_fetch = await fetchInventoryData(
@@ -23,6 +34,7 @@ module.exports = {
         const economyData = economyData_fetch.data;
 
         await addCoins(interaction.user.id, weekly_amount);
+        await setEventCooldown(interaction.user.id, "weekly", 604800);
 
         const weekly_embed = new MessageEmbed()
             .setColor(theme.embed.color)
@@ -36,6 +48,6 @@ module.exports = {
             );
 
         interaction.reply({ embeds: [weekly_embed] });
-        return setCooldown(interaction, "weekly", 604800, economyData);
+        return setCooldown(interaction, "weekly", 60, economyData);
     },
 };

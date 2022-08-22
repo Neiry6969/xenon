@@ -11,6 +11,7 @@ const {
 const { addCoins, addItem } = require("../utils/currencyfunctions");
 const { fetchItemData } = require("../utils/itemfunctions");
 const LotteryModel = require("../models/lotterySchema");
+const { setEventCooldown } = require("../utils/mainfunctions");
 
 function rankingicons(rank) {
     if (rank === 1) {
@@ -168,6 +169,7 @@ module.exports = {
                     content: `<@${winningentry.userId}>`,
                     embeds: [announce_embed],
                 });
+                await setEventCooldown(winningentry.userId, "lottery", 86400);
             }
             await LotteryModel.findOneAndUpdate(
                 { lotteryId: lotteryData.lotteryId },
