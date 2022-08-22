@@ -144,7 +144,7 @@ module.exports = {
                             embeds: [search_embed],
                             components: [row],
                         });
-                        await addCoins(interaction.user.id);
+                        await addCoins(interaction.user.id, coins);
                         await addItem(interaction.user.id, item.item, 1);
                     } else {
                         search_embed.setDescription(
@@ -157,10 +157,10 @@ module.exports = {
                             embeds: [search_embed],
                             components: [row],
                         });
-                        await addCoins(interaction.user.id);
+                        await addCoins(interaction.user.id, coins);
                     }
                 } else {
-                    await addCoins(interaction.user.id);
+                    await addCoins(interaction.user.id, coins);
 
                     search_embed.setDescription(
                         `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
@@ -172,7 +172,7 @@ module.exports = {
                         embeds: [search_embed],
                         components: [row],
                     });
-                    await addCoins(interaction.user.id);
+                    await addCoins(interaction.user.id, coins);
                 }
             } else if (button.customId === displayedplaces[1].place) {
                 endinteraction = true;
@@ -200,7 +200,7 @@ module.exports = {
                                 val.item.toLowerCase() ===
                                 placesearched_items.items
                         );
-                        await addCoins(interaction.user.id);
+                        await addCoins(interaction.user.id, coins);
                         await addItem(interaction.user.id, item.item, 1);
 
                         search_embed.setDescription(
@@ -213,7 +213,7 @@ module.exports = {
                             embeds: [search_embed],
                             components: [row],
                         });
-                        await addCoins(interaction.user.id);
+                        await addCoins(interaction.user.id, coins);
                         await addItem(interaction.user.id, item.item, 1);
                     } else {
                         search_embed.setDescription(
@@ -226,7 +226,7 @@ module.exports = {
                             embeds: [search_embed],
                             components: [row],
                         });
-                        await addCoins(interaction.user.id);
+                        await addCoins(interaction.user.id, coins);
                     }
                 } else {
                     search_embed.setDescription(
@@ -239,7 +239,7 @@ module.exports = {
                         embeds: [search_embed],
                         components: [row],
                     });
-                    await addCoins(interaction.user.id);
+                    await addCoins(interaction.user.id, coins);
                 }
             } else if (button.customId === displayedplaces[2].place) {
                 endinteraction = true;
@@ -277,7 +277,7 @@ module.exports = {
                             embeds: [search_embed],
                             components: [row],
                         });
-                        await addCoins(interaction.user.id);
+                        await addCoins(interaction.user.id, coins);
                         await addItem(interaction.user.id, item.item, 1);
                     } else {
                         search_embed.setDescription(
@@ -290,7 +290,7 @@ module.exports = {
                             embeds: [search_embed],
                             components: [row],
                         });
-                        await addCoins(interaction.user.id);
+                        await addCoins(interaction.user.id, coins);
                     }
                 } else {
                     search_embed.setDescription(
@@ -303,7 +303,7 @@ module.exports = {
                         embeds: [search_embed],
                         components: [row],
                     });
-                    await addCoins(interaction.user.id);
+                    await addCoins(interaction.user.id, coins);
                 }
             }
         });
