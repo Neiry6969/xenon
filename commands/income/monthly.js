@@ -25,7 +25,7 @@ module.exports = {
         );
 
         if (cooldown.status === true) {
-            error_message = `You already collected your monthlyly rewards this monthly\n\nCooldown: \`31d\`\nReady: <t:${Math.floor(
+            error_message = `You already collected your monthly rewards this monthly\n\nCooldown: \`31d\`\nReady: <t:${Math.floor(
                 cooldown.rawcooldown / 1000
             )}:R>`;
             return errorReply(interaction, error_message);
