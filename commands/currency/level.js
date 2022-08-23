@@ -149,7 +149,7 @@ module.exports = {
             .setDescription(
                 `${
                     premiumrank > 0
-                        ? `**Prenium:** <:premiumcard:970846275975118958> \`rank ${premiumrank}\`\n`
+                        ? `**Premium:** <:premiumcard:970846275975118958> \`rank ${premiumrank}\`\n`
                         : ""
                 }${
                     badges.length > 0 ? "**Badges:**\n" : ""

@@ -143,6 +143,10 @@ module.exports = {
             .setCustomId("backbutton")
             .setLabel("Back")
             .setStyle("SECONDARY");
+        let setmaxbutton = new MessageButton()
+            .setCustomId("setmaxbutton")
+            .setLabel("Set Max")
+            .setStyle("SECONDARY");
 
         let row = new MessageActionRow().setComponents(dropmenu);
         let row2 = new MessageActionRow().setComponents(endinteractionbutton);
@@ -256,6 +260,7 @@ module.exports = {
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 }
 
                 if (userbought === dropinfo.maxperuser) {
@@ -264,6 +269,7 @@ module.exports = {
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (amountleft === 0) {
                     totalprice_amountcanbuy = 0;
                     amountcanbuy = 0;
@@ -271,6 +277,7 @@ module.exports = {
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 }
 
                 if (buycount <= 1) {
@@ -286,16 +293,22 @@ module.exports = {
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (amountcanbuy === buycount) {
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (leftforuser <= buycount) {
                     buycount = leftforuser;
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (amountleft <= buycount) {
                     buycount = amountleft;
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else {
                     addbutton.setDisabled(false);
+                    setmaxbutton.setDisabled(false);
+                    buydropbutton.setDisabled(false);
                 }
                 dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
                     dropitem.item
@@ -305,7 +318,130 @@ module.exports = {
                     buycount * dropinfo.price
                 ).toLocaleString()}\`)`;
 
-                row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row.setComponents([
+                    buydropbutton,
+                    setmaxbutton,
+                    addbutton,
+                    minusbutton,
+                ]);
+                row2.setComponents([endinteractionbutton, backbutton]);
+
+                drops_embed.setDescription(dropinfo_map);
+                await drop_msg.edit({
+                    embeds: [drops_embed],
+                    components: [row, row2],
+                });
+            } else if (i.customId === "setmaxbutton") {
+                buycount = amountcanbuy;
+
+                const dropinfo = await DropModel.findOne({
+                    item: selecteddrop,
+                });
+
+                const dropitem = allItems.find(
+                    (val) => val.item.toLowerCase() === dropinfo.item
+                );
+
+                const amountleft = dropinfo.maxdrop - dropinfo.amountbought;
+
+                let userbought = dropinfo.usersbuyobject[interaction.user.id];
+                const amountleftuser = dropinfo.maxperuser - userbought;
+
+                if (!dropinfo.usersbuyobject[interaction.user.id]) {
+                    userbought = 0;
+                    dropinfo.usersbuyobject[interaction.user.id] = 0;
+
+                    await DropModel.findOneAndUpdate(
+                        { item: selecteddrop },
+                        dropinfo
+                    );
+                }
+
+                buydropbutton.setEmoji(dropitem.icon);
+
+                fecthusereconomy = await fetchEconomyData(interaction.user.id);
+                userwallet = fecthusereconomy.data.wallet;
+                amountcanbuy = Math.floor(userwallet / dropinfo.price);
+
+                if (amountcanbuy > dropinfo.maxperuser) {
+                    amountcanbuy = dropinfo.maxperuser;
+                }
+
+                if (amountcanbuy > amountleftuser) {
+                    amountcanbuy = amountleftuser;
+                }
+
+                if (buycount > amountcanbuy) {
+                    buycount = amountcanbuy;
+                }
+
+                totalprice_amountcanbuy = amountcanbuy * dropinfo.price;
+
+                buydropbutton.setEmoji(dropitem.icon);
+
+                if (amountcanbuy === 0) {
+                    buycount = 0;
+                    totalprice_amountcanbuy = 0;
+                    amountcanbuy = 0;
+                    buydropbutton.setDisabled(true);
+                    addbutton.setDisabled(true);
+                    minusbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
+                    totalprice_amountcanbuy = 0;
+                    amountcanbuy = 0;
+                } else if (userbought === dropinfo.maxperuser) {
+                    buydropbutton.setDisabled(true);
+                    addbutton.setDisabled(true);
+                    minusbutton.setDisabled(true);
+                } else if (amountleft === 0) {
+                    totalprice_amountcanbuy = 0;
+                    amountcanbuy = 0;
+                    extrastring = `\n\`Too sad, the stocks ran out!\``;
+                    buydropbutton.setDisabled(true);
+                    addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
+                    minusbutton.setDisabled(true);
+                } else if (amountleft === 1) {
+                    addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
+                    minusbutton.setDisabled(true);
+                } else if (buycount <= 1) {
+                    buycount = 1;
+                    minusbutton.setDisabled(true);
+                } else {
+                    minusbutton.setDisabled(false);
+                }
+
+                const leftforuser = dropinfo.maxperuser - userbought;
+                if (amountcanbuy === buycount) {
+                    addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
+                } else if (leftforuser <= buycount) {
+                    buycount = leftforuser;
+                    addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
+                } else if (amountleft <= buycount) {
+                    buycount = amountleft;
+                    addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
+                } else {
+                    addbutton.setDisabled(false);
+                    setmaxbutton.setDisabled(false);
+                }
+                dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
+                    dropitem.item
+                }\`\nDrop Ending At: <t:${dropinfo.dropendtime}:f> <t:${
+                    dropinfo.dropendtime
+                }:R>\nPrice: \`❀ ${dropinfo.price.toLocaleString()}\`\nAmount Left: \`${amountleft.toLocaleString()}/${dropinfo.maxdrop.toLocaleString()}\`\nMax Per User: \`${userbought.toLocaleString()}/${dropinfo.maxperuser.toLocaleString()}\`\n\nYour Wallet: \`❀ ${userwallet.toLocaleString()}\`\nAvaliable for you: \`❀ ${totalprice_amountcanbuy.toLocaleString()}\` (${amountcanbuy.toLocaleString()})\n**You want to buy:** \`${buycount.toLocaleString()}\` (\`❀ ${(
+                    buycount * dropinfo.price
+                ).toLocaleString()}\`)`;
+
+                row.setComponents([
+                    buydropbutton,
+                    setmaxbutton,
+                    addbutton,
+                    minusbutton,
+                ]);
                 row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
@@ -368,6 +504,7 @@ module.exports = {
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     totalprice_amountcanbuy = 0;
                     amountcanbuy = 0;
                 } else if (userbought === dropinfo.maxperuser) {
@@ -380,9 +517,11 @@ module.exports = {
                     extrastring = `\n\`Too sad, the stocks ran out!\``;
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
                 } else if (amountleft === 1) {
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
                 } else if (buycount <= 1) {
                     buycount = 1;
@@ -394,14 +533,18 @@ module.exports = {
                 const leftforuser = dropinfo.maxperuser - userbought;
                 if (amountcanbuy === buycount) {
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (leftforuser <= buycount) {
                     buycount = leftforuser;
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (amountleft <= buycount) {
                     buycount = amountleft;
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else {
                     addbutton.setDisabled(false);
+                    setmaxbutton.setDisabled(false);
                 }
                 dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
                     dropitem.item
@@ -411,7 +554,12 @@ module.exports = {
                     buycount * dropinfo.price
                 ).toLocaleString()}\`)`;
 
-                row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row.setComponents([
+                    buydropbutton,
+                    setmaxbutton,
+                    addbutton,
+                    minusbutton,
+                ]);
                 row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
@@ -473,12 +621,14 @@ module.exports = {
                     amountcanbuy = 0;
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
                 } else if (userbought === dropinfo.maxperuser) {
                     totalprice_amountcanbuy = 0;
                     amountcanbuy = 0;
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
                 } else if (amountleft === 0) {
                     totalprice_amountcanbuy = 0;
@@ -486,11 +636,13 @@ module.exports = {
                     extrastring = `\n\`Too sad, the stocks ran out!\``;
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
                 }
 
                 if (amountleft === 1) {
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
                 }
 
@@ -504,14 +656,18 @@ module.exports = {
                 const leftforuser = dropinfo.maxperuser - userbought;
                 if (amountcanbuy === buycount) {
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (leftforuser <= buycount) {
                     buycount = leftforuser;
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else if (amountleft <= buycount) {
                     buycount = amountleft;
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                 } else {
                     addbutton.setDisabled(false);
+                    setmaxbutton.setDisabled(false);
                 }
 
                 dropinfo_map = `${dropitem.icon} **${dropitem.name}**\nID: \`${
@@ -522,7 +678,12 @@ module.exports = {
                     buycount * dropinfo.price
                 ).toLocaleString()}\`)`;
 
-                row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row.setComponents([
+                    buydropbutton,
+                    setmaxbutton,
+                    addbutton,
+                    minusbutton,
+                ]);
                 row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed.setDescription(dropinfo_map);
@@ -533,10 +694,14 @@ module.exports = {
             } else if (i.customId === "buydropbutton") {
                 buydropbutton.setDisabled(true);
                 addbutton.setDisabled(true);
+                setmaxbutton.setDisabled(true);
                 minusbutton.setDisabled(true);
                 const dropinfo = await DropModel.findOne({
                     item: selecteddrop,
                 });
+                fecthusereconomy = await fetchEconomyData(interaction.user.id);
+                userwallet = fecthusereconomy.data.wallet;
+                amountcanbuy = Math.floor(userwallet / dropinfo.price);
 
                 const dropitem = allItems.find(
                     (val) => val.item.toLowerCase() === dropinfo.item
@@ -574,10 +739,6 @@ module.exports = {
 
                 buydropbutton.setEmoji(dropitem.icon);
 
-                fecthusereconomy = await fetchEconomyData(interaction.user.id);
-                userwallet = fecthusereconomy.data.wallet;
-                amountcanbuy = Math.floor(userwallet / dropinfo.price);
-
                 if (amountcanbuy > dropinfo.maxperuser) {
                     amountcanbuy = dropinfo.maxperuser;
                 }
@@ -591,6 +752,7 @@ module.exports = {
                     amountcanbuy = 0;
                     buydropbutton.setDisabled(true);
                     addbutton.setDisabled(true);
+                    setmaxbutton.setDisabled(true);
                     minusbutton.setDisabled(true);
                     extrastring = `\n\`You couldn't even buy 1 of the stocks.\``;
                 } else if (amountcanbuy === buycount) {
@@ -641,7 +803,12 @@ module.exports = {
                     dropinfo_map = dropinfo_map + extrastring;
                 }
 
-                row.setComponents([buydropbutton, addbutton, minusbutton]);
+                row.setComponents([
+                    buydropbutton,
+                    setmaxbutton,
+                    addbutton,
+                    minusbutton,
+                ]);
                 row2.setComponents([endinteractionbutton, backbutton]);
 
                 drops_embed
