@@ -309,7 +309,7 @@ module.exports = {
             }
         });
 
-        collector.on("end", (collected) => {
+        collector.on("end", async (collected) => {
             if (endinteraction === true) {
                 return;
             } else {
