@@ -8,6 +8,7 @@ const {
     addCoins,
     addItem,
     removeItem,
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -60,6 +61,7 @@ module.exports = {
             );
 
             await addCoins(interaction.user.id, coins);
+            await addexperiencepoints(interaction.user.id, null, null, 10)
 
             if (beginteraction.items) {
                 const ifgetitems = randomizer(beginteraction.itemsprecent);
