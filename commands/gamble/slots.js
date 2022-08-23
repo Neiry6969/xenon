@@ -6,6 +6,7 @@ const {
     fetchEconomyData,
     removeCoins,
     addCoins,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
@@ -268,6 +269,7 @@ module.exports = {
             const newwallet = economyData.wallet + winningamount;
 
             await addCoins(economyData.userId, winningamount);
+            await addexperiencepoints(interaction.user.id, 1, 30)
 
             slots_embed
                 .setColor(`#95ff87`)
