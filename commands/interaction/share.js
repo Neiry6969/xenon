@@ -198,10 +198,10 @@ module.exports = {
         });
 
         collector.on("end", async (collected) => {
+            setProcessingLock(interaction, false);
+
             if (endinteraction === true) {
             } else {
-                setProcessingLock(interaction, false);
-
                 share_embed
                     .setTitle(`Action Timed Out - Share`)
                     .setColor(`#ff8f87`);

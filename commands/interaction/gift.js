@@ -167,7 +167,7 @@ module.exports = {
 
             if (button.customId === "confirm") {
                 endinteraction = true;
-                
+
                 const newquantityowned =
                     inventoryData.inventory[itemData.item] - quantity;
 
@@ -216,10 +216,10 @@ module.exports = {
         });
 
         collector.on("end", async (collected) => {
+            setProcessingLock(interaction, false);
+
             if (endinteraction === true) {
             } else {
-                setProcessingLock(interaction, false);
-
                 gift_embed
                     .setTitle(`Action Timed Out - Gift`)
                     .setColor(`#ff8f87`);

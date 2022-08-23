@@ -216,10 +216,10 @@ module.exports = {
             });
 
             collector.on("end", async (collected) => {
+                setProcessingLock(interaction, false);
+
                 if (endinteraction === true) {
                 } else {
-                    setProcessingLock(interaction, false);
-
                     sell_embed
                         .setTitle(`Action Timed Out - Sell`)
                         .setColor(`#ff8f87`);

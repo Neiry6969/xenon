@@ -141,9 +141,14 @@ module.exports = {
                 components: [erow],
             });
 
-            const collector =
-                eventheistlobby_msg.createMessageComponentCollector({
+            const collector = eventheistlobby_msg
+                .createMessageComponentCollector({
                     time: 120 * 1000,
+                })
+                .catch((error) => {
+                    if (error) {
+                        setProcessingLock(interaction, false);
+                    }
                 });
 
             collector.on("collect", async (button) => {

@@ -234,10 +234,10 @@ module.exports = {
                 }
             });
             collector.on("end", async (collected) => {
+                setProcessingLock(interaction, false);
+
                 if (endinteraction === true) {
                 } else {
-                    setProcessingLock(interaction, false);
-
                     lottery_embed
                         .setTitle(`Action Timed Out - Purchase (lottery)`)
                         .setColor(`#ff8f87`);
