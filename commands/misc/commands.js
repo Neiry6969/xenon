@@ -47,7 +47,7 @@ module.exports = {
                     ].toLocaleString()}\``;
                 })
                 .sort(function (a, b) {
-                    return commandslist[a] - commandslist[b];
+                    return commandslist[b] - commandslist[a];
                 });
         }
 
