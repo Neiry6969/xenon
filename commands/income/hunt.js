@@ -4,6 +4,7 @@ const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
