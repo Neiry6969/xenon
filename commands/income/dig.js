@@ -4,6 +4,7 @@ const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -83,6 +84,7 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, 1);
+                await addexperiencepoints(interaction.user.id, 1, 20)
 
                 dig_embed.setDescription(
                     `You pulled something out of the ground! You got \`${1}\` ${
