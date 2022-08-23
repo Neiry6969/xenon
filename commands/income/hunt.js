@@ -9,7 +9,6 @@ const {
 const {
     fetchItemData,
     fetchAllitemsData,
-    addexperiencepoints
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
