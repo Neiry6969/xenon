@@ -266,6 +266,47 @@ class Currencyfunctions {
             inventoryData
         );
     }
+    static async addexperiencepoints(
+        userId,
+        relativeq_min,
+        relativeq_max,
+        absoluteq
+    ) {
+        let economyData;
+        try {
+            economyData = await EconomyModel.findOne({ userId: userId });
+            if (!economyData) {
+                let economy = await EconomyModel.create({
+                    userId: userId,
+                });
+
+                economy.save();
+
+                economyData = economy;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        if (absoluteq) {
+            economyData.experiencepoints += absoluteq;
+            return await EconomyModel.findOneAndUpdate(
+                { userId: economyData.userId },
+                economyData
+            );
+        }
+
+        if (relativeq_min && relativeq_max) {
+            const randomexp =
+                Math.floor(Math.random() * (relativeq_max - relativeq_min)) +
+                relativeq_min;
+            economyData.experiencepoints += randomexp;
+            return await EconomyModel.findOneAndUpdate(
+                { userId: economyData.userId },
+                economyData
+            );
+        }
+    }
 }
 
 module.exports = Currencyfunctions;

@@ -38,6 +38,7 @@ module.exports = {
             ],
             timestamp: new Date(),
         };
+        interaction.reply({ embeds: [embed] });
 
         setCooldown(interaction, "pings", 10, economyData);
     },
