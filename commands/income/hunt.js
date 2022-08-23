@@ -8,6 +8,7 @@ const {
 const {
     fetchItemData,
     fetchAllitemsData,
+    addexperiencepoints
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
@@ -91,6 +92,7 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, 1);
+                await addexperiencepoints(interaction.user.id, 1, 20)
 
                 hunt_embed.setDescription(
                     `And that is a wrap, you actually can shoot! Now you got some raw meat to deal with! You got \`${1}\` ${
