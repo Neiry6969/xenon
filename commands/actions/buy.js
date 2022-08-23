@@ -7,6 +7,7 @@ const {
     removeCoins,
     addCoins,
     addItem,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -206,6 +207,7 @@ module.exports = {
 
                 if (endinteraction === true) {
                 } else {
+                    await addexperiencepoints(interaction.user.id, 1, 5)
                     buy_embed
                         .setTitle(`Action Timed Out - Purchase`)
                         .setColor(`#ff8f87`);
