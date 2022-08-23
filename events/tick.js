@@ -105,8 +105,6 @@ module.exports = {
                     coins: lotteryData.entriesTotal * 10000,
                 };
 
-                console;
-
                 await addItem(
                     winningentry.userId,
                     winninglotteryticket.item,

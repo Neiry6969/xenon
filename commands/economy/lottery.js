@@ -25,14 +25,33 @@ const {
 const letternumbers = require("../../reference/letternumber");
 const LotteryModel = require("../../models/lotterySchema");
 
+function rankingicons(rank) {
+    if (rank === 1) {
+        return "<:rank_gold:1010208515677237388>";
+    } else if (rank === 2) {
+        return "<:rank_silver:1010208521037545482>";
+    } else if (rank === 3) {
+        return "<:rank_bronze:1010208526758596709>";
+    } else {
+        return "<:rank_unranked:1010208532316037130>";
+    }
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("lottery")
         .setDescription("Lottery info, entery, etc.")
         .addSubcommand((subcommand) =>
             subcommand
+                .setName("show")
+                .setDescription(
+                    "Show current status of current lottery and how many times you have entered."
+                )
+        )
+        .addSubcommand((subcommand) =>
+            subcommand
                 .setName("enter")
-                .setDescription("Buy tickets to join the hourly lottery")
+                .setDescription("Buy tickets to join the hourly lottery.")
                 .addStringOption((oi) => {
                     return oi
                         .setName("quantity")
@@ -46,6 +65,15 @@ module.exports = {
     async execute(interaction, client, theme) {
         let error_message;
         let endinteraction = false;
+        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const inventoryData = inventory_fetch.data;
+        const economyData = economyData_fetch.data;
+        const bankcoins = economyData.bank.coins;
+        const walletcoins = economyData.wallet;
+        const lotteryData = await LotteryModel.findOne({
+            lotteryId: "2022aug19",
+        });
 
         if (interaction.options.getSubcommand() === "enter") {
             const lotteryticket_cost = 10000;
@@ -65,19 +93,6 @@ module.exports = {
                 return errorReply(interaction, error_message);
             }
 
-            const inventory_fetch = await fetchInventoryData(
-                interaction.user.id
-            );
-            const economyData_fetch = await fetchEconomyData(
-                interaction.user.id
-            );
-            const inventoryData = inventory_fetch.data;
-            const economyData = economyData_fetch.data;
-            const bankcoins = economyData.bank.coins;
-            const walletcoins = economyData.wallet;
-            const lotteryData = await LotteryModel.findOne({
-                lotteryId: "2022aug19",
-            });
             let quantity = options.quantity?.toLowerCase();
             if (quantity === "max" || quantity === "all") {
                 if (economyData.wallet < lotteryticket_cost) {
@@ -235,6 +250,110 @@ module.exports = {
                     });
                 }
             });
+        } else if (interaction.options.getSubcommand() === "show") {
+            const lotteryData = await LotteryModel.findOne({
+                lotteryId: "2022aug19",
+            });
+            const winninglotteryticket = await fetchItemData(
+                "winninglotteryticket"
+            );
+
+            const entries_unique = {};
+            lotteryData.entries.forEach((entry) => {
+                if (!entries_unique[entry.userId]) {
+                    entries_unique[entry.userId] = entry.last - entry.first + 1;
+                } else {
+                    entries_unique[entry.userId] +=
+                        entry.last - entry.first + 1;
+                }
+            });
+
+            const entries_unique_map = Object.keys(entries_unique)
+                .map((key) => {
+                    return key;
+                })
+                .sort(function (a, b) {
+                    return entries_unique[b] - entries_unique[a];
+                });
+
+            const topentries = entries_unique_map.slice(0, 3);
+            const topentries_map = topentries
+                .map((entry, index) => {
+                    return `${rankingicons(
+                        index + 1
+                    )} <@${entry}> \`${entries_unique[
+                        entry
+                    ].toLocaleString()} entries\` (\`❀ ${(
+                        entries_unique[entry] *
+                        10 *
+                        1000
+                    ).toLocaleString()}\`)`;
+                })
+                .join("\n");
+
+            const lotteryshow_embed = new MessageEmbed()
+                .setColor(theme.embed.color)
+                .setDescription(
+                    `**Lottery Ending:** <t:${
+                        lotteryData.endsAt / 1000
+                    }:R>\nTotal Globally Entries: \`${lotteryData.entriesTotal.toLocaleString()}\`\nUsers Participating: \`${Object.keys(
+                        entries_unique
+                    ).length.toLocaleString()}\`\nEntry Fee: \`❀ ${(
+                        10 * 1000
+                    ).toLocaleString()}\`\n\n**Prizes:**\n> \`>\` \`❀ ${(
+                        lotteryData.entriesTotal *
+                        10 *
+                        1000
+                    ).toLocaleString()}\`\n> \`>\` ${
+                        winninglotteryticket.icon
+                    } \`${winninglotteryticket.item}\`\n\n**Top Spenders:**\n${
+                        topentries.length > 0
+                            ? topentries_map
+                            : "*`no entries yet`*"
+                    }\n\n**Your Tickets:** \`${
+                        entries_unique[interaction.user.id]
+                            ? entries_unique[
+                                  interaction.user.id
+                              ].toLocaleString()
+                            : 0
+                    }\` (❀ \`${
+                        entries_unique[interaction.user.id]
+                            ? (
+                                  entries_unique[interaction.user.id] *
+                                  10 *
+                                  1000
+                              ).toLocaleString()
+                            : 0
+                    }\`)\nWinning Chance: \`${
+                        entries_unique[interaction.user.id]
+                            ? `${(
+                                  (entries_unique[interaction.user.id] /
+                                      lotteryData.entriesTotal) *
+                                  100
+                              ).toFixed(2)}%`
+                            : `0.00%`
+                    }\``
+                )
+                .setFooter({
+                    text: `Join community through button below to see lottery results`,
+                });
+
+            interaction.reply({
+                embeds: [lotteryshow_embed],
+                components: [
+                    new MessageActionRow().setComponents(
+                        new MessageButton()
+                            .setStyle("LINK")
+                            .setURL("https://discord.gg/YVnv8Yud5u")
+                            .setLabel("Community")
+                            .setEmoji(
+                                "<a:winninglotteryticket:1010942366078750730>"
+                            )
+                    ),
+                ],
+            });
         }
+
+        setCooldown(interaction, "lottery", 15, economyData);
     },
 };
