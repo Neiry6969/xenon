@@ -5,6 +5,7 @@ const {
     fetchEconomyData,
     addCoins,
     addItem,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -308,10 +309,11 @@ module.exports = {
             }
         });
 
-        collector.on("end", (collected) => {
+        collector.on("end", async (collected) => {
             if (endinteraction === true) {
                 return;
             } else {
+                await addexperiencepoints(interaction.user.id, 1, 20)
                 search_embed
                     .setColor(`#ff8f87`)
                     .setTitle(`Action Timed Out - Search`)

@@ -4,6 +4,7 @@ const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -81,6 +82,8 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, 1);
+                await addexperiencepoints(interaction.user.id, 1, 20)
+
 
                 harvest_embed.setDescription(
                     `Oh look something actually grew! Your a farmer now! You got \`${1}\` ${

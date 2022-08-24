@@ -4,6 +4,7 @@ const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -129,6 +130,7 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, amount);
+                await addexperiencepoints(interaction.user.id, 1, 40)
 
                 mine_embed.setDescription(
                     `What is that? Oh you were actually able to find somethings down in thet ancient mine! Good for you, you got \`${1}\` ${

@@ -4,6 +4,7 @@ const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -83,7 +84,8 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, 1);
-
+                await addexperiencepoints(interaction.user.id, 1, 20)
+                
                 fish_embed.setDescription(
                     `There is something on your hook! You pulled something out of the water! You got \`${1}\` ${
                         item.icon
