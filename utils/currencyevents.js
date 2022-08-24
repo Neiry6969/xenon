@@ -15,7 +15,7 @@ class Currencyevents {
         statsData,
         reason
     ) {
-        statsData.deaths = statsData.deaths + 1;
+        statsData.deaths += 1;
         const lostcoins = economyData.wallet;
         const dmdeathembed = new MessageEmbed().setColor("#FFA500");
         let hasLife;
@@ -43,8 +43,7 @@ class Currencyevents {
                     `You didn't have any items to save you from this death. You lost your whole wallet.\n\nDeath: \`${reason}\`\nCoins Lost: \`❀ ${lostcoins.toLocaleString()}\``
                 );
         } else {
-            inventoryData.inventory["lifesaver"] =
-                inventoryData.inventory["lifesaver"] - 1;
+            inventoryData.inventory["lifesaver"] -= 1;
             dmdeathembed
                 .setColor("#edfaf1")
                 .setTitle(

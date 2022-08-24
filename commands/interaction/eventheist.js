@@ -141,8 +141,8 @@ module.exports = {
                 components: [erow],
             });
 
-            const collector = eventheistlobby_msg
-                .createMessageComponentCollector({
+            const collector =
+                eventheistlobby_msg.createMessageComponentCollector({
                     time: 120 * 1000,
                 });
 
@@ -281,76 +281,72 @@ module.exports = {
                     let caughtsusermsg;
                     let deadusermsg;
 
-                    const survivors_msg = await interaction.channel.send({
-                        embeds: [surviorsembed],
-                    });
-                    survivors.forEach(async (id) => {
-                        const smsgs = [
-                            "tampled over everyone in the bank to get out",
-                            "shot everyone they saw and walked out the front door of the bank",
-                            "scammed a police into letting them out of the bank",
-                            "snuck out the back door",
-                            "sunck out with the hostages",
-                            "ate something that made them invisible",
-                            "was just lucky",
-                            "feared nothing",
-                            "went out right away",
-                            "was so scary no one wanted to be near them",
-                            "had some decent combat skills and escaped",
-                            "just did it ✓™",
-                            "came out with tons of wounds",
-                            "almost died, and might retire soon",
-                            "walked in mad that they didn't get their salary, walked out happier",
-                            "wormed their way out",
-                            "turned invisible and became a ninja",
-                            "put on airpods and hear nothing, didn't even know they where robbing a bank",
-                        ];
-                        const selected_smsg =
-                            smsgs[Math.floor(Math.random() * smsgs.length)];
-                        const user = await client.users
-                            .fetch(id)
-                            .catch(console.error);
+                    if (eventheist_arry.length > 40) {
+                        await interaction.channel.send({
+                            embeds: [
+                                new MessageEmbed()
+                                    .setColor(theme.embed.color)
+                                    .setDescription(
+                                        `More than \`40\` join this event-heist and to prevent spam, individual results aren't shown.There might be changes to this in the future.`
+                                    ),
+                            ],
+                        });
 
-                        if (survivorsusermsg === undefined) {
-                            survivorsusermsg = `+ ${user.tag} ${selected_smsg}`;
-                        } else {
-                            survivorsusermsg =
-                                survivorsusermsg +
-                                `\n+ ${user.tag} ${selected_smsg}`;
+                        survivors.forEach(async (id) => {
+                            const user = await client.users
+                                .fetch(id)
+                                .catch(console.error);
+
+                            await addCoins(user.id, eachcoins);
+                        });
+
+                        if (dead.length > 0) {
+                            dead.forEach(async (id) => {
+                                const user = await client.users
+                                    .fetch(id)
+                                    .catch(console.error);
+
+                                const fetchEconomyData_user =
+                                    await fetchEconomyData(user.id);
+                                const fetctInvData_user =
+                                    await fetchInventoryData(user.id);
+                                const fetctStatsData_user =
+                                    await fetchStatsData(user.id);
+
+                                await death_handler(
+                                    client,
+                                    user.id,
+                                    fetchEconomyData_user.data,
+                                    fetctInvData_user.data,
+                                    fetctStatsData_user.data,
+                                    "event-heist"
+                                );
+                            });
                         }
-                        surviorsembed.setDescription(
-                            `\`\`\`diff\n${survivorsusermsg}\n\`\`\``
-                        );
-
-                        await addCoins(user.id, eachcoins);
-                        return survivors_msg.edit({ embeds: [surviorsembed] });
-                    });
-                    if (survivors.length <= 0) {
-                        survivorsusermsg = `\`\`\`No one survived\`\`\``;
-                        surviorsembed.setDescription(survivorsusermsg);
-                        survivors_msg.edit({ embeds: [surviorsembed] });
-                    }
-
-                    const caught_msg = await interaction.channel.send({
-                        embeds: [caughtembed],
-                    });
-                    if (caught.length > 0) {
-                        caught.forEach(async (id) => {
+                    } else {
+                        const survivors_msg = await interaction.channel.send({
+                            embeds: [surviorsembed],
+                        });
+                        survivors.forEach(async (id) => {
                             const smsgs = [
-                                "was scared and turned themselves in",
-                                "ran into a cop",
-                                "failed to get out",
-                                "was stuck at the entrance looking for the exit",
-                                "tried sneaking out but was caught",
-                                "attended the heist in their head",
-                                "tried to befriend a police",
-                                "was drunk and called the police",
-                                "belly was too big and was suspected",
-                                "ate too much and couldn't move",
-                                "looked for shelter in a police car",
-                                "was woulded and needed an ambulance",
-                                "felt disgraced",
-                                "dream of getting it, but was caught in the end",
+                                "tampled over everyone in the bank to get out",
+                                "shot everyone they saw and walked out the front door of the bank",
+                                "scammed a police into letting them out of the bank",
+                                "snuck out the back door",
+                                "sunck out with the hostages",
+                                "ate something that made them invisible",
+                                "was just lucky",
+                                "feared nothing",
+                                "went out right away",
+                                "was so scary no one wanted to be near them",
+                                "had some decent combat skills and escaped",
+                                "just did it ✓™",
+                                "came out with tons of wounds",
+                                "almost died, and might retire soon",
+                                "walked in mad that they didn't get their salary, walked out happier",
+                                "wormed their way out",
+                                "turned invisible and became a ninja",
+                                "put on airpods and hear nothing, didn't even know they where robbing a bank",
                             ];
                             const selected_smsg =
                                 smsgs[Math.floor(Math.random() * smsgs.length)];
@@ -358,91 +354,143 @@ module.exports = {
                                 .fetch(id)
                                 .catch(console.error);
 
-                            if (caughtsusermsg === undefined) {
-                                caughtsusermsg = `> ${user.tag} ${selected_smsg}`;
+                            if (survivorsusermsg === undefined) {
+                                survivorsusermsg = `+ ${user.tag} ${selected_smsg}`;
                             } else {
-                                caughtsusermsg =
-                                    caughtsusermsg +
-                                    `\n> ${user.tag} ${selected_smsg}`;
+                                survivorsusermsg =
+                                    survivorsusermsg +
+                                    `\n+ ${user.tag} ${selected_smsg}`;
                             }
-                            caughtembed.setDescription(
-                                `\`\`\`${caughtsusermsg}\n\`\`\``
+                            surviorsembed.setDescription(
+                                `\`\`\`diff\n${survivorsusermsg}\n\`\`\``
                             );
-                            return caught_msg.edit({
-                                embeds: [caughtembed],
+
+                            await addCoins(user.id, eachcoins);
+                            return survivors_msg.edit({
+                                embeds: [surviorsembed],
                             });
                         });
-                    } else {
-                        caughtsusermsg = `\`\`\`No one was caught\`\`\``;
-                        caughtembed.setDescription(caughtsusermsg);
-                        caught_msg.edit({ embeds: [caughtembed] });
-                    }
+                        if (survivors.length <= 0) {
+                            survivorsusermsg = `\`\`\`No one survived\`\`\``;
+                            surviorsembed.setDescription(survivorsusermsg);
+                            survivors_msg.edit({ embeds: [surviorsembed] });
+                        }
 
-                    const dead_msg = await interaction.channel.send({
-                        embeds: [deadembed],
-                    });
-                    if (dead.length > 0) {
-                        dead.forEach(async (id) => {
-                            const smsgs = [
-                                "was shot by someone in the commotion",
-                                "was destroyed by a cop",
-                                "slipped on a banana",
-                                "jumped by a hostage",
-                                "hit in the head by a steal baton",
-                                "killed because they died an explosion",
-                                "fought with their buddy and got shot by them",
-                                "fell off the stairs, kinda funny how they died",
-                                "played too many games of mafia and died of cringe",
-                                "was hanged by the their comrades",
-                                "ate too much edibles",
-                                "was stabbed to death",
-                                "tried be cool but died doing nothing",
-                                "died of cringe",
-                                "died because they weren't able to enter the bank",
-                            ];
-                            const selected_smsg =
-                                smsgs[Math.floor(Math.random() * smsgs.length)];
-                            const user = await client.users
-                                .fetch(id)
-                                .catch(console.error);
-
-                            if (deadusermsg === undefined) {
-                                deadusermsg = `- ${user.tag} ${selected_smsg}`;
-                            } else {
-                                deadusermsg =
-                                    deadusermsg +
-                                    `\n- ${user.tag} ${selected_smsg}`;
-                            }
-
-                            deadembed.setDescription(
-                                `\`\`\`diff\n${deadusermsg}\n\`\`\``
-                            );
-
-                            const fetchEconomyData_user =
-                                await fetchEconomyData(user.id);
-                            const fetctInvData_user = await fetchInventoryData(
-                                user.id
-                            );
-                            const fetctStatsData_user = await fetchStatsData(
-                                user.id
-                            );
-
-                            death_handler(
-                                client,
-                                user.id,
-                                fetchEconomyData_user.data,
-                                fetctInvData_user.data,
-                                fetctStatsData_user.data,
-                                "event-heist"
-                            );
-                            return dead_msg.edit({
-                                embeds: [deadembed],
-                            });
+                        const caught_msg = await interaction.channel.send({
+                            embeds: [caughtembed],
                         });
-                    } else {
-                        deadusermsg = `\`\`\`No one died\`\`\``;
-                        deadembed.setDescription(deadusermsg);
-                        dead_msg.edit({ embeds: [deadembed] });
+                        if (caught.length > 0) {
+                            caught.forEach(async (id) => {
+                                const smsgs = [
+                                    "was scared and turned themselves in",
+                                    "ran into a cop",
+                                    "failed to get out",
+                                    "was stuck at the entrance looking for the exit",
+                                    "tried sneaking out but was caught",
+                                    "attended the heist in their head",
+                                    "tried to befriend a police",
+                                    "was drunk and called the police",
+                                    "belly was too big and was suspected",
+                                    "ate too much and couldn't move",
+                                    "looked for shelter in a police car",
+                                    "was woulded and needed an ambulance",
+                                    "felt disgraced",
+                                    "dream of getting it, but was caught in the end",
+                                ];
+                                const selected_smsg =
+                                    smsgs[
+                                        Math.floor(Math.random() * smsgs.length)
+                                    ];
+                                const user = await client.users
+                                    .fetch(id)
+                                    .catch(console.error);
+
+                                if (caughtsusermsg === undefined) {
+                                    caughtsusermsg = `> ${user.tag} ${selected_smsg}`;
+                                } else {
+                                    caughtsusermsg =
+                                        caughtsusermsg +
+                                        `\n> ${user.tag} ${selected_smsg}`;
+                                }
+                                caughtembed.setDescription(
+                                    `\`\`\`${caughtsusermsg}\n\`\`\``
+                                );
+                                return caught_msg.edit({
+                                    embeds: [caughtembed],
+                                });
+                            });
+                        } else {
+                            caughtsusermsg = `\`\`\`No one was caught\`\`\``;
+                            caughtembed.setDescription(caughtsusermsg);
+                            caught_msg.edit({ embeds: [caughtembed] });
+                        }
+
+                        const dead_msg = await interaction.channel.send({
+                            embeds: [deadembed],
+                        });
+                        if (dead.length > 0) {
+                            dead.forEach(async (id) => {
+                                const smsgs = [
+                                    "was shot by someone in the commotion",
+                                    "was destroyed by a cop",
+                                    "slipped on a banana",
+                                    "jumped by a hostage",
+                                    "hit in the head by a steal baton",
+                                    "killed because they died an explosion",
+                                    "fought with their buddy and got shot by them",
+                                    "fell off the stairs, kinda funny how they died",
+                                    "played too many games of mafia and died of cringe",
+                                    "was hanged by the their comrades",
+                                    "ate too much edibles",
+                                    "was stabbed to death",
+                                    "tried be cool but died doing nothing",
+                                    "died of cringe",
+                                    "died because they weren't able to enter the bank",
+                                ];
+                                const selected_smsg =
+                                    smsgs[
+                                        Math.floor(Math.random() * smsgs.length)
+                                    ];
+                                const user = await client.users
+                                    .fetch(id)
+                                    .catch(console.error);
+
+                                if (deadusermsg === undefined) {
+                                    deadusermsg = `- ${user.tag} ${selected_smsg}`;
+                                } else {
+                                    deadusermsg =
+                                        deadusermsg +
+                                        `\n- ${user.tag} ${selected_smsg}`;
+                                }
+
+                                deadembed.setDescription(
+                                    `\`\`\`diff\n${deadusermsg}\n\`\`\``
+                                );
+
+                                const fetchEconomyData_user =
+                                    await fetchEconomyData(user.id);
+                                const fetctInvData_user =
+                                    await fetchInventoryData(user.id);
+                                const fetctStatsData_user =
+                                    await fetchStatsData(user.id);
+
+                                death_handler(
+                                    client,
+                                    user.id,
+                                    fetchEconomyData_user.data,
+                                    fetctInvData_user.data,
+                                    fetctStatsData_user.data,
+                                    "event-heist"
+                                );
+                                return dead_msg.edit({
+                                    embeds: [deadembed],
+                                });
+                            });
+                        } else {
+                            deadusermsg = `\`\`\`No one died\`\`\``;
+                            deadembed.setDescription(deadusermsg);
+                            dead_msg.edit({ embeds: [deadembed] });
+                        }
                     }
 
                     economyData.bank.coins -= amount;

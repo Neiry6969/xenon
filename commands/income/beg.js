@@ -61,7 +61,7 @@ module.exports = {
             );
 
             await addCoins(interaction.user.id, coins);
-            await addexperiencepoints(interaction.user.id, null, null, 10)
+            await addexperiencepoints(interaction.user.id, null, null, 10);
 
             if (beginteraction.items) {
                 const ifgetitems = randomizer(beginteraction.itemsprecent);
@@ -89,7 +89,7 @@ module.exports = {
                 .setDescription(beginteraction.deathdescription)
                 .setColor("#ff8f87");
 
-            death_handler(
+            await death_handler(
                 client,
                 interaction.user.id,
                 economyData,
