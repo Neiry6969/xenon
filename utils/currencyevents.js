@@ -96,7 +96,11 @@ class Currencyevents {
             economyData.experiencepoints = experiencepoints - experiencefull;
         }
 
-        if (commandname !== "help" || commandname !== "commands") {
+        console.log(commandname !== "help");
+
+        if (commandname === "help" || commandname === "commands") {
+            return;
+        } else {
             statsData.commands.all = statsData.commands.all + 1;
 
             const hasCommand = Object.keys(statsData.commands.list).includes(
