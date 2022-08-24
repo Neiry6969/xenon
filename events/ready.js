@@ -10,7 +10,7 @@ module.exports = {
         client.user.setPresence({
             activities: [
                 {
-                    name: `Slaying alone`,
+                    name: `${client.guilds.cache.size} servers`,
                     type: "WATCHING",
                 },
             ],
