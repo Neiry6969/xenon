@@ -1,8 +1,12 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, DataResolver } = require("discord.js");
 const fs = require("fs");
 
 const { fetchEmbedColor } = require("./cosmeticsfunctions");
-const { fetchEconomyData, fetchUserData } = require("./currencyfunctions");
+const {
+    fetchEconomyData,
+    fetchUserData,
+    fetchStatsData,
+} = require("./currencyfunctions");
 const jsoncooldowns = require("../cooldowns.json");
 const interactionproccesses = require("../interactionproccesses.json");
 const AlertModel = require("../models/alertSchema");
@@ -259,6 +263,30 @@ class Mainfunctions {
         }
 
         return coodown_object;
+    }
+
+    static async checknewaccount(userId) {
+        const fetch_economyData = await fetchEconomyData(userId);
+        const fetch_statsData = await fetchStatsData(userId);
+        const economyData = fetch_economyData.data;
+        const statsData = fetch_statsData.data;
+        const createdtimestamp = new Date(economyData.createdAt);
+        const readytimestamp = createdtimestamp.getTime() + 1209600000;
+        let newaccount = false;
+
+        if (Date.now() < readytimestamp || statsData.commands.all < 2000) {
+            newaccount = true;
+        }
+
+        const newacount_object = {
+            rawboolean: newaccount,
+            commandsleft: 2000 - statsData.commands.all,
+            timeleft: readytimestamp - Date.now(),
+            readytimestamp: readytimestamp,
+            commandsleft_display: `${statsData.commands.all.toLocaleString()}/2,000`,
+        };
+
+        return newacount_object;
     }
 }
 

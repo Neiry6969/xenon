@@ -14,7 +14,11 @@ const {
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
-const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const {
+    setCooldown,
+    setProcessingLock,
+    checknewaccount,
+} = require("../../utils/mainfunctions");
 const { death_handler } = require("../../utils/currencyevents");
 const letternumbers = require("../../reference/letternumber");
 
@@ -113,6 +117,29 @@ module.exports = {
             inventoryData.inventory[itemData.item] === 0
         ) {
             error_message = `You have \`0\` ${itemData.icon} \`${itemData.item}\`, so how are you going to gift that?`;
+            return errorReply(interaction, error_message);
+        }
+
+        const checknewaccount_local = await checknewaccount(
+            interaction.user.id
+        );
+        const checknewaccount_user = await checknewaccount(options.user.id);
+        if (checknewaccount_local.rawboolean === true) {
+            error_message = `Your account is too new to gift items, you need the following\n\n${
+                checknewaccount_local.commandsleft > 0
+                    ? `Commands: \`${checknewaccount_local.commandsleft_display}\`\n`
+                    : ""
+            }${
+                checknewaccount_local.timeleft > 0
+                    ? `Ready: <t:${Math.floor(
+                          checknewaccount_local.readytimestamp / 1000
+                      )}:R>`
+                    : ""
+            }`;
+            return errorReply(interaction, error_message);
+        }
+        if (checknewaccount_user.rawboolean === true) {
+            error_message = `That account is too new to gift items to`;
             return errorReply(interaction, error_message);
         }
 

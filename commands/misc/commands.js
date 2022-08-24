@@ -40,16 +40,22 @@ module.exports = {
         if (!commandslist || Object.keys(commandslist).length <= 0) {
             commands_map = `\`no commands ran\``;
         } else {
-            commands_map = Object.keys(commandslist)
+            const commands_sort = Object.keys(commandslist)
                 .map((key) => {
-                    return `\`>\` \`${key}\` \`${commandslist[
-                        key
-                    ].toLocaleString()}\``;
+                    return key;
                 })
                 .sort(function (a, b) {
                     return commandslist[b] - commandslist[a];
                 });
+            commands_map = commands_sort.map((key) => {
+                return `\`>\` \`${key}\` \`${commandslist[
+                    key
+                ].toLocaleString()}\``;
+            });
         }
+        commands_embed.setFooter({
+            text: `Total Commands: ${statsData.data.commands.all.toLocaleString()}`,
+        });
 
         const commands = Object.values(commands_map).filter(Boolean);
         const commandslength = commands.length;
