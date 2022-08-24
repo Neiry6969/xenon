@@ -474,7 +474,7 @@ module.exports = {
                                 const fetctStatsData_user =
                                     await fetchStatsData(user.id);
 
-                                death_handler(
+                                await death_handler(
                                     client,
                                     user.id,
                                     fetchEconomyData_user.data,
