@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -117,7 +117,7 @@ module.exports = {
 
         let user = options.user || interaction.user;
 
-        const level_embed = new EmbedBuilder()
+        const level_embed = new MessageEmbed()
             .setTitle("Level")
             .setColor(theme.embed.color);
 

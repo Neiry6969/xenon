@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -25,7 +25,7 @@ module.exports = {
 
         let user = options.user || interaction.user;
 
-        const balance_embed = new EmbedBuilder()
+        const balance_embed = new MessageEmbed()
             .setTitle("Balance")
             .setColor(theme.embed.color);
 

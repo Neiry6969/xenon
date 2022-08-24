@@ -2,10 +2,11 @@ const { mongodb_srv, discord_token } = require("./config.json");
 const colors = require("colors");
 
 const {
-    Client,
+    Discord,
     Collection,
-    GatewayIntentBits,
-    Partials,
+    Intents,
+    Client,
+    MessageEmbed,
 } = require("discord.js");
 const fs = require("fs");
 
@@ -24,13 +25,7 @@ mongoose
     });
 
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers,
-    ],
-    partials: [Partials.Channel],
+    intents: [Intents.FLAGS.GUILDS],
 });
 client.commands = new Collection();
 

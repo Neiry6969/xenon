@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
+const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const fs = require("fs");
 
 const EconomyModel = require("../models/economySchema");
@@ -39,7 +39,7 @@ class Useitem {
             economyData.bank.otherbankspace;
         const averageexpansion = Math.floor(expandedspace / useamount);
 
-        const confirmembed = new EmbedBuilder()
+        const confirmembed = new MessageEmbed()
             .setColor(await fetchEmbedColor(interaction))
             .setDescription(
                 `Are you sure you want to use ${item.icon} \`${
@@ -47,17 +47,17 @@ class Useitem {
                 }\`  \`x ${useamount.toLocaleString()}\` `
             );
 
-        let confirm = new ButtonBuilder()
+        let confirm = new MessageButton()
             .setCustomId("confirm")
             .setLabel("Confirm")
-            .setStyle("Primary");
+            .setStyle("PRIMARY");
 
-        let cancel = new ButtonBuilder()
+        let cancel = new MessageButton()
             .setCustomId("cancel")
             .setLabel("Cancel")
-            .setStyle("Danger");
+            .setStyle("DANGER");
 
-        let row = new ActionRowBuilder().addComponents(confirm, cancel);
+        let row = new MessageActionRow().addComponents(confirm, cancel);
 
         await interaction.reply({
             embeds: [confirmembed],
@@ -119,8 +119,8 @@ class Useitem {
                     timestamp: new Date(),
                 };
 
-                confirm.setDisabled().setStyle("Success");
-                cancel.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SUCCESS");
+                cancel.setDisabled().setStyle("SECONDARY");
 
                 use_msg.edit({
                     embeds: [embed],
@@ -147,7 +147,7 @@ class Useitem {
                         } \`${item.item}\``
                     );
 
-                confirm.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SECONDARY");
                 cancel.setDisabled();
 
                 use_msg.edit({
@@ -180,9 +180,9 @@ class Useitem {
                         } \`${item.item}\``
                     );
 
-                confirm.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SECONDARY");
 
-                cancel.setDisabled().setStyle("Secondary");
+                cancel.setDisabled().setStyle("SECONDARY");
 
                 return use_msg.edit({
                     embeds: [confirmembed],
@@ -208,7 +208,7 @@ class Useitem {
             return errorReply(interaction, error_message);
         }
 
-        const confirmembed = new EmbedBuilder()
+        const confirmembed = new MessageEmbed()
             .setColor(await fetchEmbedColor(interaction))
             .setDescription(
                 `Are you sure you want to use ${item.icon} \`${
@@ -216,17 +216,17 @@ class Useitem {
                 }\`  \`x ${useamount.toLocaleString()}\` `
             );
 
-        let confirm = new ButtonBuilder()
+        let confirm = new MessageButton()
             .setCustomId("confirm")
             .setLabel("Confirm")
-            .setStyle("Primary");
+            .setStyle("PRIMARY");
 
-        let cancel = new ButtonBuilder()
+        let cancel = new MessageButton()
             .setCustomId("cancel")
             .setLabel("Cancel")
-            .setStyle("Danger");
+            .setStyle("DANGER");
 
-        let row = new ActionRowBuilder().addComponents(confirm, cancel);
+        let row = new MessageActionRow().addComponents(confirm, cancel);
 
         await interaction.reply({
             embeds: [confirmembed],
@@ -269,8 +269,8 @@ class Useitem {
                     timestamp: new Date(),
                 };
 
-                confirm.setDisabled().setStyle("Success");
-                cancel.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SUCCESS");
+                cancel.setDisabled().setStyle("SECONDARY");
 
                 use_msg.edit({
                     embeds: [embed],
@@ -295,7 +295,7 @@ class Useitem {
                         } \`${item.item}\``
                     );
 
-                confirm.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SECONDARY");
 
                 cancel.setDisabled();
 
@@ -327,8 +327,8 @@ class Useitem {
                         } \`${item.item}\``
                     );
 
-                confirm.setDisabled().setStyle("Secondary");
-                cancel.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SECONDARY");
+                cancel.setDisabled().setStyle("SECONDARY");
 
                 return use_msg.edit({
                     embeds: [confirmembed],
@@ -405,7 +405,7 @@ class Useitem {
             .sort()
             .join("\n");
 
-        const embed = new EmbedBuilder()
+        const embed = new MessageEmbed()
             .setTitle(`${interaction.user.username}'s ${item.name}`)
             .setColor(await fetchEmbedColor(interaction))
             .setThumbnail(item.imageUrl)
@@ -442,7 +442,7 @@ class Useitem {
             userData
         );
 
-        const embed = new EmbedBuilder()
+        const embed = new MessageEmbed()
             .setTitle(`${interaction.user.username}'s ${itemData.name}`)
             .setColor(await fetchEmbedColor(interaction))
             .setThumbnail(itemData.imageUrl)

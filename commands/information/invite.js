@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { ActionRowBuilder, ButtonBuilder } = require("discord.js");
-const { fetchEconomyData } = require("../../utils/currencyfunctions");
+const { MessageActionRow, MessageButton } = require("discord.js");
 const { setCooldown } = require("../../utils/mainfunctions");
 
 module.exports = {
@@ -12,10 +11,10 @@ module.exports = {
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const economyData = economyData_fetch.data;
 
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
+        const row = new MessageActionRow().addComponents(
+            new MessageButton()
                 .setLabel("Click To Invite")
-                .setStyle("Link")
+                .setStyle("LINK")
                 .setURL(
                     "https://discord.com/api/oauth2/authorize?client_id=847528987831304192&permissions=8&scope=bot%20applications.commands"
                 )

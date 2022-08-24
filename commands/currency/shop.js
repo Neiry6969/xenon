@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -66,39 +66,39 @@ module.exports = {
         let display_start = (page - 1) * itemsperpage;
         let display_end = page * itemsperpage;
 
-        const shop_embed = new EmbedBuilder()
+        const shop_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setTitle(`Xenon Shop™`);
 
         if (lastpage === 1) {
-            let pagebutton = new ButtonBuilder()
+            let pagebutton = new MessageButton()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("Secondary")
+                .setStyle("SECONDARY")
                 .setDisabled();
-            let leftfarbutton = new ButtonBuilder()
+            let leftfarbutton = new MessageButton()
                 .setCustomId("leftfar")
                 .setLabel("<<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let leftbutton = new ButtonBuilder()
+            let leftbutton = new MessageButton()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let rightfarbutton = new ButtonBuilder()
+            let rightfarbutton = new MessageButton()
                 .setCustomId("rightfar")
                 .setLabel(">>")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let rightbutton = new ButtonBuilder()
+            let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let row = new ActionRowBuilder().addComponents(
+            let row = new MessageActionRow().addComponents(
                 leftfarbutton,
                 leftbutton,
                 pagebutton,
@@ -116,34 +116,34 @@ module.exports = {
                 components: [row],
             });
         } else {
-            let pagebutton = new ButtonBuilder()
+            let pagebutton = new MessageButton()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("Secondary")
+                .setStyle("SECONDARY")
                 .setDisabled();
-            let leftfarbutton = new ButtonBuilder()
+            let leftfarbutton = new MessageButton()
                 .setCustomId("leftfar")
                 .setLabel("<<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let leftbutton = new ButtonBuilder()
+            let leftbutton = new MessageButton()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let rightfarbutton = new ButtonBuilder()
+            let rightfarbutton = new MessageButton()
                 .setCustomId("rightfar")
                 .setLabel(">>")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let rightbutton = new ButtonBuilder()
+            let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let row = new ActionRowBuilder().addComponents(
+            let row = new MessageActionRow().addComponents(
                 leftfarbutton,
                 leftbutton,
                 pagebutton,
@@ -336,8 +336,11 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
+                shop_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
                 shop_msg.edit({
-                    components: [],
+                    components: shop_msg.components,
                 });
             });
         }

@@ -1,7 +1,7 @@
 const {
-    ActionRowBuilder,
-    ButtonBuilder,
-    EmbedBuilder,
+    MessageActionRow,
+    MessageButton,
+    MessageEmbed,
     Message,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -106,24 +106,24 @@ module.exports = {
             const heistendstimestamp = Math.floor((Date.now() + 120000) / 1000);
             const eventheist_arry = [];
             let eventheistjoinedno = 0;
-            let joineventheist = new ButtonBuilder()
+            let joineventheist = new MessageButton()
                 .setCustomId("joineventheist")
                 .setLabel(
                     `Join Event Heist (- ❀ ${minjoincoins.toLocaleString()})`
                 )
-                .setStyle(`Success`);
-            let eventheistjoined = new ButtonBuilder()
+                .setStyle(`SUCCESS`);
+            let eventheistjoined = new MessageButton()
                 .setCustomId("eventheistjoined")
                 .setLabel(`Users: ${eventheistjoinedno.toLocaleString()}`)
-                .setStyle("Secondary")
+                .setStyle("SECONDARY")
                 .setDisabled();
 
-            let erow = new ActionRowBuilder().addComponents(
+            let erow = new MessageActionRow().addComponents(
                 joineventheist,
                 eventheistjoined
             );
 
-            const eventheist_embed = new EmbedBuilder()
+            const eventheist_embed = new MessageEmbed()
                 .setColor(theme.embed.color)
                 .setTitle(
                     `<a:alarm:997584331302260909> Event Heist Starting! <a:alarm:997584331302260909>`
@@ -174,7 +174,7 @@ module.exports = {
                         eventheistjoined.setLabel(
                             `Users: ${eventheistjoinedno.toLocaleString()}`
                         );
-                        const joinedembed = new EmbedBuilder()
+                        const joinedembed = new MessageEmbed()
                             .setColor(`#95ff87`)
                             .setDescription(
                                 `You successfully paid \`❀ ${minjoincoins.toLocaleString()}\` to join the event-heist, now sit tight and wait for the event to end!`
@@ -256,21 +256,21 @@ module.exports = {
 
                     const eachcoins = Math.floor(amount / survivors.length);
 
-                    const surviorsembed = new EmbedBuilder()
+                    const surviorsembed = new MessageEmbed()
                         .setColor(theme.embed.color)
 
                         .setTitle("<:nezuko_yas:995045946087968850> Survivors")
                         .setDescription(
                             `Showing results~ <a:loading:987196796549861376>`
                         );
-                    const caughtembed = new EmbedBuilder()
+                    const caughtembed = new MessageEmbed()
                         .setColor(theme.embed.color)
 
                         .setTitle("<:nezuko_gun:995045376551833611> Caught")
                         .setDescription(
                             `Showing results~ <a:loading:987196796549861376>`
                         );
-                    const deadembed = new EmbedBuilder()
+                    const deadembed = new MessageEmbed()
                         .setColor(theme.embed.color)
 
                         .setTitle("<:ghost:978412292012146688> Died")
@@ -284,7 +284,7 @@ module.exports = {
                     if (eventheist_arry.length > 40) {
                         await interaction.channel.send({
                             embeds: [
-                                new EmbedBuilder()
+                                new MessageEmbed()
                                     .setColor(theme.embed.color)
                                     .setDescription(
                                         `More than \`40\` join this event-heist and to prevent spam, individual results aren't shown.There might be changes to this in the future.`
@@ -495,7 +495,7 @@ module.exports = {
 
                     economyData.bank.coins -= amount;
 
-                    const resultembed = new EmbedBuilder()
+                    const resultembed = new MessageEmbed()
                         .setTitle("Event-heist Results~")
                         .setDescription(
                             `\`${eventheist_arry.length.toLocaleString()} attended the event-heist\`\n**Each survivor took home a payout of: \`❀ ${eachcoins.toLocaleString()}\`**\n\n<:nezuko_yas:995045946087968850> Survivors: \`${survivors.length.toLocaleString()}\`\n<:nezuko_gun:995045376551833611> Caught: \`${caught.length.toLocaleString()}\`\n<:ghost:978412292012146688> Died: \`${dead.length.toLocaleString()}\``
@@ -527,19 +527,19 @@ module.exports = {
             });
         }
 
-        let confirm = new ButtonBuilder()
+        let confirm = new MessageButton()
             .setCustomId("confirm")
             .setLabel("Confirm")
-            .setStyle("Primary");
+            .setStyle("PRIMARY");
 
-        let cancel = new ButtonBuilder()
+        let cancel = new MessageButton()
             .setCustomId("cancel")
             .setLabel("Cancel")
-            .setStyle("Danger");
+            .setStyle("DANGER");
 
-        let row = new ActionRowBuilder().addComponents(confirm, cancel);
+        let row = new MessageActionRow().addComponents(confirm, cancel);
 
-        const eventheist_embed = new EmbedBuilder()
+        const eventheist_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -588,8 +588,8 @@ module.exports = {
 
                 eventheist();
 
-                confirm.setDisabled().setStyle("Success");
-                cancel.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SUCCESS");
+                cancel.setDisabled().setStyle("SECONDARY");
 
                 eventheist_msg.edit({
                     embeds: [eventheist_embed],
@@ -608,7 +608,7 @@ module.exports = {
                         }>, are you sure you want to host an event-heist of \`❀ ${amount.toLocaleString()}\`?`
                     );
 
-                confirm.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SECONDARY");
                 cancel.setDisabled();
 
                 eventheist_msg.edit({
@@ -632,8 +632,8 @@ module.exports = {
                         }>, are you sure you want to host an event-heist of \`❀ ${amount.toLocaleString()}\`?`
                     );
 
-                confirm.setDisabled().setStyle("Secondary");
-                cancel.setDisabled().setStyle("Secondary");
+                confirm.setDisabled().setStyle("SECONDARY");
+                cancel.setDisabled().setStyle("SECONDARY");
 
                 eventheist_msg.edit({
                     embeds: [eventheist_embed],

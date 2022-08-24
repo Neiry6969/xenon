@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
@@ -47,7 +47,7 @@ module.exports = {
         const resultsuccess = randomizer(beginteraction.successrate);
         const resultdeath = randomizer(beginteraction.deathrate);
 
-        const embed = new EmbedBuilder()
+        const embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setTitle(beginteraction.title);
 

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 const EconomyModel = require("../../models/economySchema");
 const letternumbers = require("../../reference/letternumber");
@@ -115,7 +115,7 @@ module.exports = {
 
             await EconomyModel.findOneAndUpdate(params, economyData);
 
-            const deposit_embed = new EmbedBuilder()
+            const deposit_embed = new MessageEmbed()
                 .setColor(theme.embed.color)
                 .setTitle(`Deposit`)
                 .setAuthor({

@@ -1,8 +1,8 @@
 const {
-    ActionRowBuilder,
-    ButtonBuilder,
-    SelectMenuBuilder,
-    EmbedBuilder,
+    MessageActionRow,
+    MessageButton,
+    MessageSelectMenu,
+    MessageEmbed,
 } = require("discord.js");
 const fs = require("fs");
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -49,7 +49,7 @@ module.exports = {
         const inventoryData = inventory_fetch.data;
         const economyData = economyData_fetch.data;
 
-        const craft_msg_embed = new EmbedBuilder()
+        const craft_msg_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: interaction.user.tag,
@@ -115,82 +115,82 @@ module.exports = {
                 };
             });
 
-            let pagebutton = new ButtonBuilder()
+            let pagebutton = new MessageButton()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("Secondary")
+                .setStyle("SECONDARY")
                 .setDisabled();
-            let leftfarbutton = new ButtonBuilder()
+            let leftfarbutton = new MessageButton()
                 .setCustomId("leftfar")
                 .setLabel("<<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let leftbutton = new ButtonBuilder()
+            let leftbutton = new MessageButton()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let rightfarbutton = new ButtonBuilder()
+            let rightfarbutton = new MessageButton()
                 .setCustomId("rightfar")
                 .setLabel(">>")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let rightbutton = new ButtonBuilder()
+            let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("Primary");
-            let craftmenu = new SelectMenuBuilder()
+                .setStyle("PRIMARY");
+            let craftmenu = new MessageSelectMenu()
                 .setCustomId("dropmenu")
                 .setMinValues(0)
                 .setMaxValues(1)
                 .setPlaceholder("Select an item to craft")
                 .addOptions(mappedCraftOptions);
 
-            let endinteractionbutton = new ButtonBuilder()
+            let endinteractionbutton = new MessageButton()
                 .setCustomId("endinteraction")
                 .setLabel("End Interaction")
-                .setStyle("Secondary");
+                .setStyle("SECONDARY");
 
-            let backbutton = new ButtonBuilder()
+            let backbutton = new MessageButton()
                 .setCustomId("backbutton")
                 .setLabel("Back")
-                .setStyle("Secondary");
-            let minusbutton = new ButtonBuilder()
+                .setStyle("SECONDARY");
+            let minusbutton = new MessageButton()
                 .setCustomId("minusbutton")
                 .setLabel("-")
-                .setStyle("Success");
-            let addbutton = new ButtonBuilder()
+                .setStyle("SUCCESS");
+            let addbutton = new MessageButton()
                 .setCustomId("addbutton")
                 .setLabel("+")
-                .setStyle("Success");
-            let setmaxbutton = new ButtonBuilder()
+                .setStyle("SUCCESS");
+            let setmaxbutton = new MessageButton()
                 .setCustomId("setmaxbutton")
                 .setLabel("Set Max")
-                .setStyle("Success");
-            let sethalfbutton = new ButtonBuilder()
+                .setStyle("SUCCESS");
+            let sethalfbutton = new MessageButton()
                 .setCustomId("sethalfbutton")
                 .setLabel("Set Half")
-                .setStyle("Success");
-            let setminbutton = new ButtonBuilder()
+                .setStyle("SUCCESS");
+            let setminbutton = new MessageButton()
                 .setCustomId("setminbutton")
                 .setLabel("Set Min")
-                .setStyle("Success");
-            let craftbutton = new ButtonBuilder()
+                .setStyle("SUCCESS");
+            let craftbutton = new MessageButton()
                 .setCustomId("craftbutton")
                 .setLabel("Craft Item")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let row = new ActionRowBuilder().addComponents([
+            let row = new MessageActionRow().addComponents([
                 leftfarbutton,
                 leftbutton,
                 pagebutton,
                 rightbutton,
                 rightfarbutton,
             ]);
-            let row2 = new ActionRowBuilder().addComponents([craftmenu]);
-            let row3 = new ActionRowBuilder().addComponents([
+            let row2 = new MessageActionRow().addComponents([craftmenu]);
+            let row3 = new MessageActionRow().addComponents([
                 endinteractionbutton,
             ]);
 
@@ -231,8 +231,19 @@ module.exports = {
                 if (i.customId === "endinteraction") {
                     setProcessingLock(interaction, false);
 
+                    craft_msg.components[0].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+                    craft_msg.components[1].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+
+                    craft_msg.components[2].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+
                     return craft_msg.edit({
-                        components: [],
+                        components: craft_msg.components,
                     });
                 } else if (i.customId === "backbutton") {
                     craftcounter = 0;
@@ -1017,6 +1028,16 @@ module.exports = {
                         .setColor("#95ff87")
                         .setDescription(displaytext);
 
+                    craft_msg.components[0].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+                    craft_msg.components[1].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+                    craft_msg.components[2].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+
                     const hasItem = Object.keys(
                         inventoryData.inventory
                     ).includes(item.item);
@@ -1034,7 +1055,7 @@ module.exports = {
 
                     return craft_msg.edit({
                         embeds: [craft_msg_embed],
-                        components: [],
+                        components: craft_msg.components,
                     });
                 }
             });
@@ -1042,8 +1063,18 @@ module.exports = {
             collector.on("end", (collected) => {
                 setProcessingLock(interaction, false);
 
+                craft_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
+                craft_msg.components[1].components.forEach((c) => {
+                    c.setDisabled();
+                });
+                craft_msg.components[2].components.forEach((c) => {
+                    c.setDisabled();
+                });
+
                 return craft_msg.edit({
-                    components: [],
+                    components: craft_msg.components,
                 });
             });
         } catch (error) {

@@ -214,14 +214,14 @@ module.exports = {
             const collector = item_msg.createMessageComponentCollector({
                 time: 10 * 1000,
             });
-            collector.on("collect", async (button) => {
-                if (button.customId === "itemsbutton") {
-                    await button.reply({
+            collector.on("collect", async (interaction) => {
+                if (interaction.customId === "itemsbutton") {
+                    await interaction.reply({
                         embeds: [ephemerallootboxitems_embed],
                         ephemeral: true,
                     });
-                } else if (button.customId === "drophistorybutton") {
-                    await button.reply({
+                } else if (interaction.customId === "drophistorybutton") {
+                    await interaction.reply({
                         embeds: [ephemeraldrophistory_embed],
                         ephemeral: true,
                     });
@@ -229,8 +229,12 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
+                item_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                    c.setStyle("SECONDARY");
+                });
                 item_msg.edit({
-                    components: [],
+                    components: item_msg.components,
                 });
             });
         }

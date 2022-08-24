@@ -1,10 +1,10 @@
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
-    addexperiencepoints,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -59,7 +59,7 @@ module.exports = {
             (val) => val.item.toLowerCase() === "fishingrod"
         );
 
-        const fish_embed = new EmbedBuilder()
+        const fish_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -84,8 +84,8 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, 1);
-                await addexperiencepoints(interaction.user.id, 1, 20);
-
+                await addexperiencepoints(interaction.user.id, 1, 20)
+                
                 fish_embed.setDescription(
                     `There is something on your hook! You pulled something out of the water! You got \`${1}\` ${
                         item.icon

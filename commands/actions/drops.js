@@ -1,8 +1,8 @@
 const {
-    EmbedBuilder,
-    SelectMenuBuilder,
-    ActionRowBuilder,
-    ButtonBuilder,
+    MessageEmbed,
+    MessageSelectMenu,
+    MessageActionRow,
+    MessageButton,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
@@ -114,44 +114,44 @@ module.exports = {
             };
         });
 
-        let endinteractionbutton = new ButtonBuilder()
+        let endinteractionbutton = new MessageButton()
             .setCustomId("endinteraction")
             .setLabel("End Interaction")
-            .setStyle("Secondary");
+            .setStyle("SECONDARY");
 
-        let dropmenu = new SelectMenuBuilder()
+        let dropmenu = new MessageSelectMenu()
             .setCustomId("dropmenu")
             .setMinValues(0)
             .setMaxValues(1)
             .setPlaceholder("Select a drop to view")
             .addOptions(mappedDropOptions);
 
-        let buydropbutton = new ButtonBuilder()
+        let buydropbutton = new MessageButton()
             .setCustomId("buydropbutton")
             .setLabel("Buy Drop")
-            .setStyle("Primary");
-        let addbutton = new ButtonBuilder()
+            .setStyle("PRIMARY");
+        let addbutton = new MessageButton()
             .setCustomId("addbutton")
             .setLabel("+")
-            .setStyle("Secondary");
+            .setStyle("SECONDARY");
 
-        let minusbutton = new ButtonBuilder()
+        let minusbutton = new MessageButton()
             .setCustomId("minusbutton")
             .setLabel("-")
-            .setStyle("Secondary");
-        let backbutton = new ButtonBuilder()
+            .setStyle("SECONDARY");
+        let backbutton = new MessageButton()
             .setCustomId("backbutton")
             .setLabel("Back")
-            .setStyle("Secondary");
-        let setmaxbutton = new ButtonBuilder()
+            .setStyle("SECONDARY");
+        let setmaxbutton = new MessageButton()
             .setCustomId("setmaxbutton")
             .setLabel("Set Max")
-            .setStyle("Secondary");
+            .setStyle("SECONDARY");
 
-        let row = new ActionRowBuilder().setComponents(dropmenu);
-        let row2 = new ActionRowBuilder().setComponents(endinteractionbutton);
+        let row = new MessageActionRow().setComponents(dropmenu);
+        let row2 = new MessageActionRow().setComponents(endinteractionbutton);
 
-        const drops_embed = new EmbedBuilder()
+        const drops_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setDescription(mappedData);
 
@@ -187,19 +187,15 @@ module.exports = {
             i.deferUpdate();
 
             if (i.customId === "endinteraction") {
-                const disabledrows = [];
-                drop_msg.components.forEach((row, index) => {
-                    const row_new = ActionRowBuilder.from(
-                        drop_msg.components[index]
-                    );
-                    row_new.components.forEach((c) => {
-                        c.setDisabled();
-                    });
-                    disabledrows.push(row_new);
+                drop_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
+                drop_msg.components[1].components.forEach((c) => {
+                    c.setDisabled();
                 });
 
                 drop_msg.edit({
-                    components: disabledrows,
+                    components: drop_msg.components,
                 });
                 setProcessingLock(interaction, false);
             } else if (i.customId === "backbutton") {
@@ -823,19 +819,15 @@ module.exports = {
                             userwallet - totalprice
                         ).toLocaleString()}`,
                     });
-                const disabledrows = [];
-                drop_msg.components.forEach((row, index) => {
-                    const row_new = ActionRowBuilder.from(
-                        drop_msg.components[index]
-                    );
-                    row_new.components.forEach((c) => {
-                        c.setDisabled();
-                    });
-                    disabledrows.push(row_new);
+                drop_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
+                drop_msg.components[1].components.forEach((c) => {
+                    c.setDisabled();
                 });
                 drop_msg.edit({
                     embeds: [drops_embed],
-                    components: disabledrows,
+                    components: drop_msg.components,
                 });
 
                 setProcessingLock(interaction, false);
@@ -845,18 +837,14 @@ module.exports = {
         collector.on("end", (collected) => {
             setProcessingLock(interaction, false);
 
-            const disabledrows = [];
-            drop_msg.components.forEach((row, index) => {
-                const row_new = ActionRowBuilder.from(
-                    drop_msg.components[index]
-                );
-                row_new.components.forEach((c) => {
-                    c.setDisabled();
-                });
-                disabledrows.push(row_new);
+            drop_msg.components[0].components.forEach((c) => {
+                c.setDisabled();
+            });
+            drop_msg.components[1].components.forEach((c) => {
+                c.setDisabled();
             });
             drop_msg.edit({
-                components: disabledrows,
+                components: drop_msg.components,
             });
         });
         return setCooldown(interaction, "drops", 5, economyData);

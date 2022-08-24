@@ -1,8 +1,8 @@
 const {
     Collection,
-    ActionRowBuilder,
-    ButtonBuilder,
-    EmbedBuilder,
+    MessageActionRow,
+    MessageButton,
+    MessageEmbed,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
@@ -134,25 +134,25 @@ module.exports = {
                 return errorReply(interaction, error_message);
             }
 
-            let confirm = new ButtonBuilder()
+            let confirm = new MessageButton()
                 .setCustomId("confirm")
                 .setLabel("Confirm")
-                .setStyle("Primary");
-            let cancel = new ButtonBuilder()
+                .setStyle("PRIMARY");
+            let cancel = new MessageButton()
                 .setCustomId("cancel")
                 .setLabel("Cancel")
-                .setStyle("Danger");
-            let community = new ButtonBuilder()
+                .setStyle("DANGER");
+            let community = new MessageButton()
                 .setLabel("Community")
-                .setStyle("Link")
+                .setStyle("LINK")
                 .setURL(`https://discord.gg/YVnv8Yud5u`);
-            let row = new ActionRowBuilder().addComponents(
+            let row = new MessageActionRow().addComponents(
                 confirm,
                 cancel,
                 community
             );
 
-            const lottery_embed = new EmbedBuilder()
+            const lottery_embed = new MessageEmbed()
                 .setTitle(`Action Confirmation - Purchase (lottery)`)
                 .setColor(theme.embed.color)
                 .setDescription(
@@ -186,7 +186,7 @@ module.exports = {
                     endinteraction = true;
                     const new_wallet = economyData.wallet - totalprice;
 
-                    const lottery_embed = new EmbedBuilder()
+                    const lottery_embed = new MessageEmbed()
                         .setColor(`#95ff87`)
                         .setTitle(`Receipt - Purchase (lottery)`)
                         .setDescription(
@@ -197,8 +197,8 @@ module.exports = {
                         .setFooter({
                             text: `New Wallet: ${new_wallet.toLocaleString()}`,
                         });
-                    confirm.setDisabled().setStyle("Success");
-                    cancel.setDisabled().setStyle("Secondary");
+                    confirm.setDisabled().setStyle("SUCCESS");
+                    cancel.setDisabled().setStyle("SECONDARY");
                     buylotteryticket_msg.edit({
                         embeds: [lottery_embed],
                         components: [row],
@@ -225,7 +225,7 @@ module.exports = {
                     lottery_embed
                         .setTitle(`Action Cancelled - Purchase (lottery)`)
                         .setColor(`#ff8f87`);
-                    confirm.setDisabled().setStyle("Secondary");
+                    confirm.setDisabled().setStyle("SECONDARY");
                     cancel.setDisabled();
                     return buylotteryticket_msg.edit({
                         embeds: [lottery_embed],
@@ -242,8 +242,8 @@ module.exports = {
                         .setTitle(`Action Timed Out - Purchase (lottery)`)
                         .setColor(`#ff8f87`);
 
-                    confirm.setDisabled().setStyle("Secondary");
-                    cancel.setDisabled().setStyle("Secondary");
+                    confirm.setDisabled().setStyle("SECONDARY");
+                    cancel.setDisabled().setStyle("SECONDARY");
                     return buylotteryticket_msg.edit({
                         embeds: [lottery_embed],
                         components: [row],
@@ -291,7 +291,7 @@ module.exports = {
                 })
                 .join("\n");
 
-            const lotteryshow_embed = new EmbedBuilder()
+            const lotteryshow_embed = new MessageEmbed()
                 .setColor(theme.embed.color)
                 .setDescription(
                     `**Lottery Ending:** <t:${
@@ -341,9 +341,9 @@ module.exports = {
             interaction.reply({
                 embeds: [lotteryshow_embed],
                 components: [
-                    new ActionRowBuilder().setComponents(
-                        new ButtonBuilder()
-                            .setStyle("Link")
+                    new MessageActionRow().setComponents(
+                        new MessageButton()
+                            .setStyle("LINK")
                             .setURL("https://discord.gg/YVnv8Yud5u")
                             .setLabel("Community")
                             .setEmoji(

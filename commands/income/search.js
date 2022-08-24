@@ -1,11 +1,11 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require("discord.js");
+const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
     fetchEconomyData,
     addCoins,
     addItem,
-    addexperiencepoints,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -55,28 +55,28 @@ module.exports = {
         const displayedplaces = getRandom(searchplaces, 3);
         let placesearched;
 
-        let display_1 = new ButtonBuilder()
+        let display_1 = new MessageButton()
             .setCustomId(displayedplaces[0].place)
             .setLabel(displayedplaces[0].place)
-            .setStyle("Primary");
+            .setStyle("PRIMARY");
 
-        let display_2 = new ButtonBuilder()
+        let display_2 = new MessageButton()
             .setCustomId(displayedplaces[1].place)
             .setLabel(displayedplaces[1].place)
-            .setStyle("Primary");
+            .setStyle("PRIMARY");
 
-        let display_3 = new ButtonBuilder()
+        let display_3 = new MessageButton()
             .setCustomId(displayedplaces[2].place)
             .setLabel(displayedplaces[2].place)
-            .setStyle("Primary");
+            .setStyle("PRIMARY");
 
-        let row = new ActionRowBuilder().addComponents(
+        let row = new MessageActionRow().addComponents(
             display_1,
             display_2,
             display_3
         );
 
-        const search_embed = new EmbedBuilder()
+        const search_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -139,8 +139,8 @@ module.exports = {
                         );
 
                         display_1.setDisabled();
-                        display_2.setStyle("Secondary").setDisabled();
-                        display_3.setStyle("Secondary").setDisabled();
+                        display_2.setStyle("SECONDARY").setDisabled();
+                        display_3.setStyle("SECONDARY").setDisabled();
                         search_msg.edit({
                             embeds: [search_embed],
                             components: [row],
@@ -152,8 +152,8 @@ module.exports = {
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                         );
                         display_1.setDisabled();
-                        display_2.setStyle("Secondary").setDisabled();
-                        display_3.setStyle("Secondary").setDisabled();
+                        display_2.setStyle("SECONDARY").setDisabled();
+                        display_3.setStyle("SECONDARY").setDisabled();
                         search_msg.edit({
                             embeds: [search_embed],
                             components: [row],
@@ -167,8 +167,8 @@ module.exports = {
                         `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                     );
                     display_1.setDisabled();
-                    display_2.setStyle("Secondary").setDisabled();
-                    display_3.setStyle("Secondary").setDisabled();
+                    display_2.setStyle("SECONDARY").setDisabled();
+                    display_3.setStyle("SECONDARY").setDisabled();
                     search_msg.edit({
                         embeds: [search_embed],
                         components: [row],
@@ -208,8 +208,8 @@ module.exports = {
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
                         );
                         display_2.setDisabled();
-                        display_1.setStyle("Secondary").setDisabled();
-                        display_3.setStyle("Secondary").setDisabled();
+                        display_1.setStyle("SECONDARY").setDisabled();
+                        display_3.setStyle("SECONDARY").setDisabled();
                         search_msg.edit({
                             embeds: [search_embed],
                             components: [row],
@@ -221,8 +221,8 @@ module.exports = {
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                         );
                         display_2.setDisabled();
-                        display_1.setStyle("Secondary").setDisabled();
-                        display_3.setStyle("Secondary").setDisabled();
+                        display_1.setStyle("SECONDARY").setDisabled();
+                        display_3.setStyle("SECONDARY").setDisabled();
                         search_msg.edit({
                             embeds: [search_embed],
                             components: [row],
@@ -234,8 +234,8 @@ module.exports = {
                         `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                     );
                     display_2.setDisabled();
-                    display_1.setStyle("Secondary").setDisabled();
-                    display_3.setStyle("Secondary").setDisabled();
+                    display_1.setStyle("SECONDARY").setDisabled();
+                    display_3.setStyle("SECONDARY").setDisabled();
                     search_msg.edit({
                         embeds: [search_embed],
                         components: [row],
@@ -272,8 +272,8 @@ module.exports = {
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
                         );
                         display_3.setDisabled();
-                        display_1.setStyle("Secondary").setDisabled();
-                        display_2.setStyle("Secondary").setDisabled();
+                        display_1.setStyle("SECONDARY").setDisabled();
+                        display_2.setStyle("SECONDARY").setDisabled();
                         search_msg.edit({
                             embeds: [search_embed],
                             components: [row],
@@ -285,8 +285,8 @@ module.exports = {
                             `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                         );
                         display_3.setDisabled();
-                        display_1.setStyle("Secondary").setDisabled();
-                        display_2.setStyle("Secondary").setDisabled();
+                        display_1.setStyle("SECONDARY").setDisabled();
+                        display_2.setStyle("SECONDARY").setDisabled();
                         search_msg.edit({
                             embeds: [search_embed],
                             components: [row],
@@ -298,8 +298,8 @@ module.exports = {
                         `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
                     );
                     display_3.setDisabled();
-                    display_1.setStyle("Secondary").setDisabled();
-                    display_2.setStyle("Secondary").setDisabled();
+                    display_1.setStyle("SECONDARY").setDisabled();
+                    display_2.setStyle("SECONDARY").setDisabled();
                     search_msg.edit({
                         embeds: [search_embed],
                         components: [row],
@@ -313,17 +313,19 @@ module.exports = {
             if (endinteraction === true) {
                 return;
             } else {
-                await addexperiencepoints(interaction.user.id, 1, 20);
+                await addexperiencepoints(interaction.user.id, 1, 20)
                 search_embed
                     .setColor(`#ff8f87`)
                     .setTitle(`Action Timed Out - Search`)
                     .setDescription(
                         `\`So I am guessing your not going to search anywhere\``
                     );
-
+                search_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
                 search_msg.edit({
                     embeds: [search_embed],
-                    components: [],
+                    components: search_msg.components,
                 });
             }
         });

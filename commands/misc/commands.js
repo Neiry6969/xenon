@@ -1,4 +1,4 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
+const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -24,7 +24,7 @@ module.exports = {
 
         let user = options.user || interaction.user;
 
-        const commands_embed = new EmbedBuilder()
+        const commands_embed = new MessageEmbed()
             .setTitle("Commands")
             .setColor(theme.embed.color)
             .setAuthor({
@@ -73,24 +73,24 @@ module.exports = {
         let display_end = page * itemsperpage;
 
         if (lastpage === 1) {
-            let pagebutton = new ButtonBuilder()
+            let pagebutton = new MessageButton()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("Secondary")
+                .setStyle("SECONDARY")
                 .setDisabled();
 
-            let leftbutton = new ButtonBuilder()
+            let leftbutton = new MessageButton()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let rightbutton = new ButtonBuilder()
+            let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let row = new ActionRowBuilder().addComponents(
+            let row = new MessageActionRow().addComponents(
                 leftbutton,
                 pagebutton,
                 rightbutton
@@ -103,24 +103,24 @@ module.exports = {
                 components: [row],
             });
         } else {
-            let pagebutton = new ButtonBuilder()
+            let pagebutton = new MessageButton()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("Secondary")
+                .setStyle("SECONDARY")
                 .setDisabled();
 
-            let leftbutton = new ButtonBuilder()
+            let leftbutton = new MessageButton()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("Primary")
+                .setStyle("PRIMARY")
                 .setDisabled();
 
-            let rightbutton = new ButtonBuilder()
+            let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let row = new ActionRowBuilder().addComponents(
+            let row = new MessageActionRow().addComponents(
                 leftbutton,
                 pagebutton,
                 rightbutton
@@ -225,8 +225,11 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
+                commands_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
                 commands_msg.edit({
-                    components: [],
+                    components: commands_msg.components,
                 });
             });
         }

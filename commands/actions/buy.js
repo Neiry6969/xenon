@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -7,7 +7,7 @@ const {
     removeCoins,
     addCoins,
     addItem,
-    addexperiencepoints,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -109,19 +109,19 @@ module.exports = {
         }
 
         if (totalprice >= 100000) {
-            let confirm = new ButtonBuilder()
+            let confirm = new MessageButton()
                 .setCustomId("confirm")
                 .setLabel("Confirm")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
-            let cancel = new ButtonBuilder()
+            let cancel = new MessageButton()
                 .setCustomId("cancel")
                 .setLabel("Cancel")
-                .setStyle("Danger");
+                .setStyle("DANGER");
 
-            let row = new ActionRowBuilder().addComponents(confirm, cancel);
+            let row = new MessageActionRow().addComponents(confirm, cancel);
 
-            const buy_embed = new EmbedBuilder()
+            const buy_embed = new MessageEmbed()
                 .setColor(theme.embed.color)
                 .setAuthor({
                     name: `${interaction.user.tag}`,
@@ -174,8 +174,8 @@ module.exports = {
                             text: `Units Owned: ${newquantityowned.toLocaleString()}`,
                         });
 
-                    confirm.setDisabled().setStyle("Success");
-                    cancel.setDisabled().setStyle("Secondary");
+                    confirm.setDisabled().setStyle("SUCCESS");
+                    cancel.setDisabled().setStyle("SECONDARY");
 
                     buy_msg.edit({
                         embeds: [buy_embed],
@@ -192,7 +192,7 @@ module.exports = {
                         .setTitle(`Action Cancelled - Purchase`)
                         .setColor(`#ff8f87`);
 
-                    confirm.setDisabled().setStyle("Secondary");
+                    confirm.setDisabled().setStyle("SECONDARY");
                     cancel.setDisabled();
 
                     return buy_msg.edit({
@@ -207,13 +207,13 @@ module.exports = {
 
                 if (endinteraction === true) {
                 } else {
-                    await addexperiencepoints(interaction.user.id, 1, 5);
+                    await addexperiencepoints(interaction.user.id, 1, 5)
                     buy_embed
                         .setTitle(`Action Timed Out - Purchase`)
                         .setColor(`#ff8f87`);
 
-                    confirm.setDisabled().setStyle("Secondary");
-                    cancel.setDisabled().setStyle("Secondary");
+                    confirm.setDisabled().setStyle("SECONDARY");
+                    cancel.setDisabled().setStyle("SECONDARY");
 
                     return buy_msg.edit({
                         embeds: [buy_embed],
@@ -226,7 +226,7 @@ module.exports = {
             await removeCoins(economyData.userId, totalprice);
             const newquantityowned =
                 inventoryData.inventory[itemData.item] + quantity || quantity;
-            const buy_embed = new EmbedBuilder()
+            const buy_embed = new MessageEmbed()
                 .setColor(`#95ff87`)
                 .setTitle(`Receipt - Purchase`)
                 .setDescription(

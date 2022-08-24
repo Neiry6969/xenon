@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
@@ -59,7 +59,7 @@ module.exports = {
             (val) => val.item.toLowerCase() === "shovel"
         );
 
-        const dig_embed = new EmbedBuilder()
+        const dig_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -84,7 +84,7 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, 1);
-                await addexperiencepoints(interaction.user.id, 1, 20);
+                await addexperiencepoints(interaction.user.id, 1, 20)
 
                 dig_embed.setDescription(
                     `You pulled something out of the ground! You got \`${1}\` ${

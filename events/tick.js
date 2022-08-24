@@ -1,8 +1,8 @@
 const {
     Client,
-    EmbedBuilder,
-    ActionRowBuilder,
-    ButtonBuilder,
+    MessageEmbed,
+    MessageActionRow,
+    MessageButton,
     Message,
     TextChannel,
     Collection,
@@ -115,7 +115,7 @@ module.exports = {
                 lotteryData.entriesTotal = 0;
 
                 winner_fetch = await client.users.fetch(winningentry.userId);
-                dm_embed = new EmbedBuilder()
+                dm_embed = new MessageEmbed()
                     .setTitle(`You won the lottery! (hourly)`)
                     .setColor("#7aff8c")
                     .setDescription(
@@ -125,7 +125,7 @@ module.exports = {
                             winninglotteryticket.icon
                         } \`${winninglotteryticket.item}\``
                     );
-                announce_embed = new EmbedBuilder()
+                announce_embed = new MessageEmbed()
                     .setColor("#fffb7a")
                     .setTitle("Hourly Lottery Winner")
                     .setThumbnail(winner_fetch.displayAvatarURL())
@@ -152,9 +152,9 @@ module.exports = {
                 winner_fetch.send({
                     embeds: [dm_embed],
                     components: [
-                        new ActionRowBuilder().setComponents(
-                            new ButtonBuilder()
-                                .setStyle("Link")
+                        new MessageActionRow().setComponents(
+                            new MessageButton()
+                                .setStyle("LINK")
                                 .setURL("https://discord.gg/YVnv8Yud5u")
                                 .setLabel("Community")
                                 .setEmoji(

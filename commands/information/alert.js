@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 
 const AlertModel = require("../../models//alertSchema");
 const { fetchEconomyData } = require("../../utils/currencyfunctions");
@@ -16,7 +16,7 @@ module.exports = {
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const economyData = economyData_fetch.data;
 
-        const alert_embed = new EmbedBuilder()
+        const alert_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -99,21 +99,21 @@ module.exports = {
             interaction.reply({
                 embeds: [alert_embed],
                 components: [
-                    new ActionRowBuilder().setComponents(
-                        new ButtonBuilder()
+                    new MessageActionRow().setComponents(
+                        new MessageButton()
                             .setCustomId("page")
-                            .setStyle("Secondary")
+                            .setStyle("SECONDARY")
                             .setDisabled()
                             .setLabel(`${page}/${lastpage}`),
-                        new ButtonBuilder()
+                        new MessageButton()
                             .setCustomId("next")
-                            .setStyle("Primary")
+                            .setStyle("PRIMARY")
                             .setEmoji("<a:heart_right:1009840455799820410>")
                     ),
-                    new ActionRowBuilder().setComponents(
-                        new ButtonBuilder()
+                    new MessageActionRow().setComponents(
+                        new MessageButton()
                             .setCustomId("endinteraction")
-                            .setStyle("Secondary")
+                            .setStyle("SECONDARY")
                             .setLabel(`End Interaction`)
                     ),
                 ],
@@ -194,8 +194,14 @@ module.exports = {
             collector.on("end", (collected) => {
                 setProcessingLock(interaction, false);
 
+                alert_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
+                alert_msg.components[1].components.forEach((c) => {
+                    c.setDisabled();
+                });
                 alert_msg.edit({
-                    components: [],
+                    components: alert_msg.components,
                 });
             });
         } else {

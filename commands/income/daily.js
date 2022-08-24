@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 const {
     fetchInventoryData,
@@ -97,7 +97,7 @@ module.exports = {
         }
         await setEventCooldown(interaction.user.id, "daily", 86400);
 
-        const daily_embed = new EmbedBuilder()
+        const daily_embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,

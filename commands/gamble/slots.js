@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -6,7 +6,7 @@ const {
     fetchEconomyData,
     removeCoins,
     addCoins,
-    addexperiencepoints,
+    addexperiencepoints
 } = require("../../utils/currencyfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
@@ -211,7 +211,7 @@ module.exports = {
         const slots3 = slot(slot3_num);
         const resultslots = [slots1, slots2, slots3];
 
-        const slots_embed = new EmbedBuilder()
+        const slots_embed = new MessageEmbed()
             .setTitle(`Slots Machine`)
             .setDescription(`\` [>\`${resultslots.join(" ")} \`<]\``);
 
@@ -269,7 +269,7 @@ module.exports = {
             const newwallet = economyData.wallet + winningamount;
 
             await addCoins(economyData.userId, winningamount);
-            await addexperiencepoints(interaction.user.id, 1, 30);
+            await addexperiencepoints(interaction.user.id, 1, 30)
 
             slots_embed
                 .setColor(`#95ff87`)
