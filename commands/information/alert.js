@@ -194,14 +194,8 @@ module.exports = {
             collector.on("end", (collected) => {
                 setProcessingLock(interaction, false);
 
-                alert_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
-                alert_msg.components[1].components.forEach((c) => {
-                    c.setDisabled();
-                });
                 alert_msg.edit({
-                    components: alert_msg.components,
+                    components: [],
                 });
             });
         } else {

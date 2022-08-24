@@ -187,15 +187,19 @@ module.exports = {
             i.deferUpdate();
 
             if (i.customId === "endinteraction") {
-                drop_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
-                drop_msg.components[1].components.forEach((c) => {
-                    c.setDisabled();
+                const disabledrows = [];
+                drop_msg.components.forEach((row, index) => {
+                    const row_new = ActionRowBuilder.from(
+                        drop_msg.components[index]
+                    );
+                    row_new.components.forEach((c) => {
+                        c.setDisabled();
+                    });
+                    disabledrows.push(row_new);
                 });
 
                 drop_msg.edit({
-                    components: drop_msg.components,
+                    components: disabledrows,
                 });
                 setProcessingLock(interaction, false);
             } else if (i.customId === "backbutton") {
@@ -819,15 +823,19 @@ module.exports = {
                             userwallet - totalprice
                         ).toLocaleString()}`,
                     });
-                drop_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
-                drop_msg.components[1].components.forEach((c) => {
-                    c.setDisabled();
+                const disabledrows = [];
+                drop_msg.components.forEach((row, index) => {
+                    const row_new = ActionRowBuilder.from(
+                        drop_msg.components[index]
+                    );
+                    row_new.components.forEach((c) => {
+                        c.setDisabled();
+                    });
+                    disabledrows.push(row_new);
                 });
                 drop_msg.edit({
                     embeds: [drops_embed],
-                    components: drop_msg.components,
+                    components: disabledrows,
                 });
 
                 setProcessingLock(interaction, false);
@@ -837,14 +845,18 @@ module.exports = {
         collector.on("end", (collected) => {
             setProcessingLock(interaction, false);
 
-            drop_msg.components[0].components.forEach((c) => {
-                c.setDisabled();
-            });
-            drop_msg.components[1].components.forEach((c) => {
-                c.setDisabled();
+            const disabledrows = [];
+            drop_msg.components.forEach((row, index) => {
+                const row_new = ActionRowBuilder.from(
+                    drop_msg.components[index]
+                );
+                row_new.components.forEach((c) => {
+                    c.setDisabled();
+                });
+                disabledrows.push(row_new);
             });
             drop_msg.edit({
-                components: drop_msg.components,
+                components: disabledrows,
             });
         });
         return setCooldown(interaction, "drops", 5, economyData);

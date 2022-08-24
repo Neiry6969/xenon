@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -121,7 +121,7 @@ module.exports = {
                 .join("\n");
         }
 
-        const embed = new EmbedBuilder()
+        const embed = new MessageEmbed()
             .setColor(theme.embed.color)
             .setTitle(
                 `**${itemData.icon} ${itemData.name}** (${
@@ -174,22 +174,22 @@ module.exports = {
             });
         }
 
-        let row = new ActionRowBuilder();
+        let row = new MessageActionRow();
 
         if (lootboxitems) {
-            let itemsbutton = new ButtonBuilder()
+            let itemsbutton = new MessageButton()
                 .setCustomId("itemsbutton")
                 .setLabel("Possible Items")
-                .setStyle("Primary");
+                .setStyle("PRIMARY");
 
             row.addComponents(itemsbutton);
         }
 
         if (drophistory) {
-            let drophistorybutton = new ButtonBuilder()
+            let drophistorybutton = new MessageButton()
                 .setCustomId("drophistorybutton")
                 .setLabel("Drop History")
-                .setStyle("Success")
+                .setStyle("SUCCESS")
                 .setEmoji("<a:drop:992514722232541207>");
 
             row.addComponents(drophistorybutton);
@@ -203,25 +203,25 @@ module.exports = {
         const item_msg = await interaction.fetchReply();
 
         if (lootboxitems || drophistory) {
-            const ephemerallootboxitems_embed = new EmbedBuilder()
+            const ephemerallootboxitems_embed = new MessageEmbed()
                 .setTitle(`**Possible Items** [Possible Quantities]`)
                 .setDescription(lootboxitems);
 
-            const ephemeraldrophistory_embed = new EmbedBuilder()
+            const ephemeraldrophistory_embed = new MessageEmbed()
                 .setTitle(`**Drop History**`)
                 .setDescription(drophistory);
 
             const collector = item_msg.createMessageComponentCollector({
                 time: 10 * 1000,
             });
-            collector.on("collect", async (interaction) => {
-                if (interaction.customId === "itemsbutton") {
-                    await interaction.reply({
+            collector.on("collect", async (button) => {
+                if (button.customId === "itemsbutton") {
+                    await button.reply({
                         embeds: [ephemerallootboxitems_embed],
                         ephemeral: true,
                     });
-                } else if (interaction.customId === "drophistorybutton") {
-                    await interaction.reply({
+                } else if (button.customId === "drophistorybutton") {
+                    await button.reply({
                         embeds: [ephemeraldrophistory_embed],
                         ephemeral: true,
                     });
@@ -229,12 +229,8 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                item_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                    c.setStyle("Secondary");
-                });
                 item_msg.edit({
-                    components: item_msg.components,
+                    components: [],
                 });
             });
         }

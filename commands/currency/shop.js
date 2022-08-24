@@ -336,11 +336,8 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                shop_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
                 shop_msg.edit({
-                    components: shop_msg.components,
+                    components: [],
                 });
             });
         }

@@ -320,12 +320,10 @@ module.exports = {
                     .setDescription(
                         `\`So I am guessing your not going to search anywhere\``
                     );
-                search_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
+
                 search_msg.edit({
                     embeds: [search_embed],
-                    components: search_msg.components,
+                    components: [],
                 });
             }
         });

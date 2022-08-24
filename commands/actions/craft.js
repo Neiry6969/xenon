@@ -231,19 +231,8 @@ module.exports = {
                 if (i.customId === "endinteraction") {
                     setProcessingLock(interaction, false);
 
-                    craft_msg.components[0].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-                    craft_msg.components[1].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-
-                    craft_msg.components[2].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-
                     return craft_msg.edit({
-                        components: craft_msg.components,
+                        components: [],
                     });
                 } else if (i.customId === "backbutton") {
                     craftcounter = 0;
@@ -1028,16 +1017,6 @@ module.exports = {
                         .setColor("#95ff87")
                         .setDescription(displaytext);
 
-                    craft_msg.components[0].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-                    craft_msg.components[1].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-                    craft_msg.components[2].components.forEach((c) => {
-                        c.setDisabled();
-                    });
-
                     const hasItem = Object.keys(
                         inventoryData.inventory
                     ).includes(item.item);
@@ -1055,7 +1034,7 @@ module.exports = {
 
                     return craft_msg.edit({
                         embeds: [craft_msg_embed],
-                        components: craft_msg.components,
+                        components: [],
                     });
                 }
             });
@@ -1063,18 +1042,8 @@ module.exports = {
             collector.on("end", (collected) => {
                 setProcessingLock(interaction, false);
 
-                craft_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
-                craft_msg.components[1].components.forEach((c) => {
-                    c.setDisabled();
-                });
-                craft_msg.components[2].components.forEach((c) => {
-                    c.setDisabled();
-                });
-
                 return craft_msg.edit({
-                    components: craft_msg.components,
+                    components: [],
                 });
             });
         } catch (error) {

@@ -383,11 +383,8 @@ module.exports = {
                 });
 
                 collector.on("end", (collected) => {
-                    inv_msg.components[0].components.forEach((c) => {
-                        c.setDisabled();
-                    });
                     inv_msg.edit({
-                        components: inv_msg.components,
+                        components: [],
                     });
                 });
             }

@@ -266,11 +266,8 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                help_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
                 help_msg.edit({
-                    components: help_msg.components,
+                    components: [],
                 });
             });
         }

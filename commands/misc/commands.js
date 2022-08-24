@@ -1,4 +1,4 @@
-const { EmbedBuilder, MessageButton, ActionRowBuilder } = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -73,19 +73,19 @@ module.exports = {
         let display_end = page * itemsperpage;
 
         if (lastpage === 1) {
-            let pagebutton = new MessageButton()
+            let pagebutton = new ButtonBuilder()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
                 .setStyle("Secondary")
                 .setDisabled();
 
-            let leftbutton = new MessageButton()
+            let leftbutton = new ButtonBuilder()
                 .setCustomId("left")
                 .setLabel("<")
                 .setStyle("Primary")
                 .setDisabled();
 
-            let rightbutton = new MessageButton()
+            let rightbutton = new ButtonBuilder()
                 .setCustomId("right")
                 .setLabel(">")
                 .setStyle("Primary");
@@ -103,19 +103,19 @@ module.exports = {
                 components: [row],
             });
         } else {
-            let pagebutton = new MessageButton()
+            let pagebutton = new ButtonBuilder()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
                 .setStyle("Secondary")
                 .setDisabled();
 
-            let leftbutton = new MessageButton()
+            let leftbutton = new ButtonBuilder()
                 .setCustomId("left")
                 .setLabel("<")
                 .setStyle("Primary")
                 .setDisabled();
 
-            let rightbutton = new MessageButton()
+            let rightbutton = new ButtonBuilder()
                 .setCustomId("right")
                 .setLabel(">")
                 .setStyle("Primary");
@@ -225,11 +225,8 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                commands_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
                 commands_msg.edit({
-                    components: commands_msg.components,
+                    components: [],
                 });
             });
         }
