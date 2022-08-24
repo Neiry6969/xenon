@@ -133,7 +133,7 @@ module.exports = {
                 await addexperiencepoints(interaction.user.id, 1, 40)
 
                 mine_embed.setDescription(
-                    `What is that? Oh you were actually able to find somethings down in thet ancient mine! Good for you, you got \`${1}\` ${
+                    `What is that? Oh you were actually able to find some things down in that ancient mine! Good for you, you got \`${1}\` ${
                         item.icon
                     } \`${item.item}\``
                 );
