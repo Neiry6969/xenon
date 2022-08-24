@@ -96,16 +96,18 @@ class Currencyevents {
             economyData.experiencepoints = experiencepoints - experiencefull;
         }
 
-        statsData.commands.all = statsData.commands.all + 1;
+        if (commandname !== "help" || !commandname !== "commands") {
+            statsData.commands.all = statsData.commands.all + 1;
 
-        const hasCommand = Object.keys(statsData.commands.list).includes(
-            commandname
-        );
-        if (!hasCommand) {
-            statsData.commands.list[commandname] = 1;
-        } else {
-            statsData.commands.list[commandname] =
-                statsData.commands.list[commandname] + 1;
+            const hasCommand = Object.keys(statsData.commands.list).includes(
+                commandname
+            );
+            if (!hasCommand) {
+                statsData.commands.list[commandname] = 1;
+            } else {
+                statsData.commands.list[commandname] =
+                    statsData.commands.list[commandname] + 1;
+            }
         }
 
         await StatsModel.findOneAndUpdate(params, statsData);
