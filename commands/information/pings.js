@@ -1,6 +1,11 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { setCooldown } = require("../../utils/mainfunctions");
 
+const {
+    fetchInventoryData,
+    fetchEconomyData,
+} = require("../../utils/currencyfunctions");
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("ping")
