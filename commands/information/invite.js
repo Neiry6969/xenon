@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { ActionRowBuilder, ButtonBuilder } = require("discord.js");
+const { fetchEconomyData } = require("../../utils/currencyfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
 
 module.exports = {
