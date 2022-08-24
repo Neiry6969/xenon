@@ -1,10 +1,10 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -105,7 +105,7 @@ module.exports = {
             (val) => val.item.toLowerCase() === "pickaxe"
         );
 
-        const mine_embed = new MessageEmbed()
+        const mine_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -130,7 +130,7 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, amount);
-                await addexperiencepoints(interaction.user.id, 1, 40)
+                await addexperiencepoints(interaction.user.id, 1, 40);
 
                 mine_embed.setDescription(
                     `What is that? Oh you were actually able to find somethings down in thet ancient mine! Good for you, you got \`${1}\` ${

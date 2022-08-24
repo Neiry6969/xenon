@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -121,7 +121,7 @@ module.exports = {
                 .join("\n");
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setTitle(
                 `**${itemData.icon} ${itemData.name}** (${
@@ -174,22 +174,22 @@ module.exports = {
             });
         }
 
-        let row = new MessageActionRow();
+        let row = new ActionRowBuilder();
 
         if (lootboxitems) {
-            let itemsbutton = new MessageButton()
+            let itemsbutton = new ButtonBuilder()
                 .setCustomId("itemsbutton")
                 .setLabel("Possible Items")
-                .setStyle("PRIMARY");
+                .setStyle("Primary");
 
             row.addComponents(itemsbutton);
         }
 
         if (drophistory) {
-            let drophistorybutton = new MessageButton()
+            let drophistorybutton = new ButtonBuilder()
                 .setCustomId("drophistorybutton")
                 .setLabel("Drop History")
-                .setStyle("SUCCESS")
+                .setStyle("Success")
                 .setEmoji("<a:drop:992514722232541207>");
 
             row.addComponents(drophistorybutton);
@@ -203,11 +203,11 @@ module.exports = {
         const item_msg = await interaction.fetchReply();
 
         if (lootboxitems || drophistory) {
-            const ephemerallootboxitems_embed = new MessageEmbed()
+            const ephemerallootboxitems_embed = new EmbedBuilder()
                 .setTitle(`**Possible Items** [Possible Quantities]`)
                 .setDescription(lootboxitems);
 
-            const ephemeraldrophistory_embed = new MessageEmbed()
+            const ephemeraldrophistory_embed = new EmbedBuilder()
                 .setTitle(`**Drop History**`)
                 .setDescription(drophistory);
 
@@ -231,7 +231,7 @@ module.exports = {
             collector.on("end", (collected) => {
                 item_msg.components[0].components.forEach((c) => {
                     c.setDisabled();
-                    c.setStyle("SECONDARY");
+                    c.setStyle("Secondary");
                 });
                 item_msg.edit({
                     components: item_msg.components,

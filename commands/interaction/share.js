@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -132,19 +132,19 @@ module.exports = {
             return errorReply(interaction, error_message);
         }
 
-        let confirm = new MessageButton()
+        let confirm = new ButtonBuilder()
             .setCustomId("confirm")
             .setLabel("Confirm")
-            .setStyle("PRIMARY");
+            .setStyle("Primary");
 
-        let cancel = new MessageButton()
+        let cancel = new ButtonBuilder()
             .setCustomId("cancel")
             .setLabel("Cancel")
-            .setStyle("DANGER");
+            .setStyle("Danger");
 
-        let row = new MessageActionRow().addComponents(confirm, cancel);
+        let row = new ActionRowBuilder().addComponents(confirm, cancel);
 
-        const share_embed = new MessageEmbed()
+        const share_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -196,8 +196,8 @@ module.exports = {
                         text: `New Wallet: ❀ ${new_wallet.toLocaleString()}`,
                     });
 
-                confirm.setDisabled().setStyle("SUCCESS");
-                cancel.setDisabled().setStyle("SECONDARY");
+                confirm.setDisabled().setStyle("Success");
+                cancel.setDisabled().setStyle("Secondary");
 
                 share_msg.edit({
                     embeds: [share_embed],
@@ -214,7 +214,7 @@ module.exports = {
                     .setTitle(`Action Timed Out - Share`)
                     .setColor(`#ff8f87`);
 
-                confirm.setDisabled().setStyle("SECONDARY");
+                confirm.setDisabled().setStyle("Secondary");
                 cancel.setDisabled();
 
                 share_msg.edit({
@@ -233,8 +233,8 @@ module.exports = {
                     .setTitle(`Action Timed Out - Share`)
                     .setColor(`#ff8f87`);
 
-                confirm.setDisabled().setStyle("SECONDARY");
-                cancel.setDisabled().setStyle("SECONDARY");
+                confirm.setDisabled().setStyle("Secondary");
+                cancel.setDisabled().setStyle("Secondary");
 
                 share_msg.edit({
                     embeds: [share_embed],

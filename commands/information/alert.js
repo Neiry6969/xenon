@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 
 const AlertModel = require("../../models//alertSchema");
 const { fetchEconomyData } = require("../../utils/currencyfunctions");
@@ -16,7 +16,7 @@ module.exports = {
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const economyData = economyData_fetch.data;
 
-        const alert_embed = new MessageEmbed()
+        const alert_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -99,21 +99,21 @@ module.exports = {
             interaction.reply({
                 embeds: [alert_embed],
                 components: [
-                    new MessageActionRow().setComponents(
-                        new MessageButton()
+                    new ActionRowBuilder().setComponents(
+                        new ButtonBuilder()
                             .setCustomId("page")
-                            .setStyle("SECONDARY")
+                            .setStyle("Secondary")
                             .setDisabled()
                             .setLabel(`${page}/${lastpage}`),
-                        new MessageButton()
+                        new ButtonBuilder()
                             .setCustomId("next")
-                            .setStyle("PRIMARY")
+                            .setStyle("Primary")
                             .setEmoji("<a:heart_right:1009840455799820410>")
                     ),
-                    new MessageActionRow().setComponents(
-                        new MessageButton()
+                    new ActionRowBuilder().setComponents(
+                        new ButtonBuilder()
                             .setCustomId("endinteraction")
-                            .setStyle("SECONDARY")
+                            .setStyle("Secondary")
                             .setLabel(`End Interaction`)
                     ),
                 ],

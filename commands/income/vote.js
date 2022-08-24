@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require("discord.js");
 
 const {
     fetchInventoryData,
@@ -76,14 +76,14 @@ module.exports = {
             })
             .join("\n");
 
-        const topggbutton = new MessageButton()
+        const topggbutton = new ButtonBuilder()
             .setLabel("top.gg")
-            .setStyle("LINK")
+            .setStyle("Link")
             .setEmoji("<:topgg:995813492424716399>")
             .setURL("https://top.gg/bot/847528987831304192/vote")
             .setDisabled(false);
 
-        const row = new MessageActionRow().addComponents(topggbutton);
+        const row = new ActionRowBuilder().addComponents(topggbutton);
 
         if (topggvotetimestampready > nowtimestamp) {
             const timeleft = topggvotetimestampready - nowtimestamp;
@@ -91,7 +91,7 @@ module.exports = {
             topggbutton.setLabel(formattime).setDisabled();
         }
 
-        const votembed = new MessageEmbed()
+        const votembed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setTitle("Voting Rewards For Xenon")
             .setDescription(

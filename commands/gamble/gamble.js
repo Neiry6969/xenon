@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -6,7 +6,7 @@ const {
     fetchEconomyData,
     removeCoins,
     addCoins,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
@@ -142,7 +142,7 @@ module.exports = {
         const xenondice1 = dice.find((val) => val.value === xenondice1_random);
         const xenondice2 = dice.find((val) => val.value === xenondice2_random);
 
-        const gamble_embed = new MessageEmbed()
+        const gamble_embed = new EmbedBuilder()
             .setTitle(`Gamble Game`)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -202,7 +202,7 @@ module.exports = {
             const newwallet = economyData.wallet + winningamount;
 
             await addCoins(economyData.userId, winningamount);
-            await addexperiencepoints(interaction.user.id, 1, 25)
+            await addexperiencepoints(interaction.user.id, 1, 25);
 
             gamble_embed
                 .setColor(`#95ff87`)

@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -143,19 +143,19 @@ module.exports = {
             return errorReply(interaction, error_message);
         }
 
-        let confirm = new MessageButton()
+        let confirm = new ButtonBuilder()
             .setCustomId("confirm")
             .setLabel("Confirm")
-            .setStyle("PRIMARY");
+            .setStyle("Primary");
 
-        let cancel = new MessageButton()
+        let cancel = new ButtonBuilder()
             .setCustomId("cancel")
             .setLabel("Cancel")
-            .setStyle("DANGER");
+            .setStyle("Danger");
 
-        let row = new MessageActionRow().addComponents(confirm, cancel);
+        let row = new ActionRowBuilder().addComponents(confirm, cancel);
 
-        const gift_embed = new MessageEmbed()
+        const gift_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -214,8 +214,8 @@ module.exports = {
                         text: `Units Owned: ${newquantityowned.toLocaleString()}`,
                     });
 
-                confirm.setDisabled().setStyle("SUCCESS");
-                cancel.setDisabled().setStyle("SECONDARY");
+                confirm.setDisabled().setStyle("Success");
+                cancel.setDisabled().setStyle("Secondary");
 
                 gift_msg.edit({
                     embeds: [gift_embed],
@@ -232,7 +232,7 @@ module.exports = {
                     .setTitle(`Action Cancellend - Gift`)
                     .setColor(`#ff8f87`);
 
-                confirm.setDisabled().setStyle("SECONDARY");
+                confirm.setDisabled().setStyle("Secondary");
                 cancel.setDisabled();
 
                 gift_msg.edit({
@@ -251,8 +251,8 @@ module.exports = {
                     .setTitle(`Action Timed Out - Gift`)
                     .setColor(`#ff8f87`);
 
-                confirm.setDisabled().setStyle("SECONDARY");
-                cancel.setDisabled().setStyle("SECONDARY");
+                confirm.setDisabled().setStyle("Secondary");
+                cancel.setDisabled().setStyle("Secondary");
 
                 gift_msg.edit({
                     embeds: [gift_embed],

@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
+const { EmbedBuilder, MessageButton, ActionRowBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -24,7 +24,7 @@ module.exports = {
 
         let user = options.user || interaction.user;
 
-        const commands_embed = new MessageEmbed()
+        const commands_embed = new EmbedBuilder()
             .setTitle("Commands")
             .setColor(theme.embed.color)
             .setAuthor({
@@ -76,21 +76,21 @@ module.exports = {
             let pagebutton = new MessageButton()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("SECONDARY")
+                .setStyle("Secondary")
                 .setDisabled();
 
             let leftbutton = new MessageButton()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("PRIMARY")
+                .setStyle("Primary")
                 .setDisabled();
 
             let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("PRIMARY");
+                .setStyle("Primary");
 
-            let row = new MessageActionRow().addComponents(
+            let row = new ActionRowBuilder().addComponents(
                 leftbutton,
                 pagebutton,
                 rightbutton
@@ -106,21 +106,21 @@ module.exports = {
             let pagebutton = new MessageButton()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("SECONDARY")
+                .setStyle("Secondary")
                 .setDisabled();
 
             let leftbutton = new MessageButton()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("PRIMARY")
+                .setStyle("Primary")
                 .setDisabled();
 
             let rightbutton = new MessageButton()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("PRIMARY");
+                .setStyle("Primary");
 
-            let row = new MessageActionRow().addComponents(
+            let row = new ActionRowBuilder().addComponents(
                 leftbutton,
                 pagebutton,
                 rightbutton

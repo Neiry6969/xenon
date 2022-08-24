@@ -1,8 +1,8 @@
 const {
-    MessageActionRow,
-    MessageButton,
-    MessageSelectMenu,
-    MessageEmbed,
+    ActionRowBuilder,
+    ButtonBuilder,
+    SelectMenuBuilder,
+    EmbedBuilder,
 } = require("discord.js");
 const fs = require("fs");
 const { SlashCommandBuilder } = require("@discordjs/builders");
@@ -49,7 +49,7 @@ module.exports = {
         const inventoryData = inventory_fetch.data;
         const economyData = economyData_fetch.data;
 
-        const craft_msg_embed = new MessageEmbed()
+        const craft_msg_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: interaction.user.tag,
@@ -115,82 +115,82 @@ module.exports = {
                 };
             });
 
-            let pagebutton = new MessageButton()
+            let pagebutton = new ButtonBuilder()
                 .setCustomId("page")
                 .setLabel(`${page}/${lastpage}`)
-                .setStyle("SECONDARY")
+                .setStyle("Secondary")
                 .setDisabled();
-            let leftfarbutton = new MessageButton()
+            let leftfarbutton = new ButtonBuilder()
                 .setCustomId("leftfar")
                 .setLabel("<<")
-                .setStyle("PRIMARY")
+                .setStyle("Primary")
                 .setDisabled();
 
-            let leftbutton = new MessageButton()
+            let leftbutton = new ButtonBuilder()
                 .setCustomId("left")
                 .setLabel("<")
-                .setStyle("PRIMARY")
+                .setStyle("Primary")
                 .setDisabled();
 
-            let rightfarbutton = new MessageButton()
+            let rightfarbutton = new ButtonBuilder()
                 .setCustomId("rightfar")
                 .setLabel(">>")
-                .setStyle("PRIMARY");
+                .setStyle("Primary");
 
-            let rightbutton = new MessageButton()
+            let rightbutton = new ButtonBuilder()
                 .setCustomId("right")
                 .setLabel(">")
-                .setStyle("PRIMARY");
-            let craftmenu = new MessageSelectMenu()
+                .setStyle("Primary");
+            let craftmenu = new SelectMenuBuilder()
                 .setCustomId("dropmenu")
                 .setMinValues(0)
                 .setMaxValues(1)
                 .setPlaceholder("Select an item to craft")
                 .addOptions(mappedCraftOptions);
 
-            let endinteractionbutton = new MessageButton()
+            let endinteractionbutton = new ButtonBuilder()
                 .setCustomId("endinteraction")
                 .setLabel("End Interaction")
-                .setStyle("SECONDARY");
+                .setStyle("Secondary");
 
-            let backbutton = new MessageButton()
+            let backbutton = new ButtonBuilder()
                 .setCustomId("backbutton")
                 .setLabel("Back")
-                .setStyle("SECONDARY");
-            let minusbutton = new MessageButton()
+                .setStyle("Secondary");
+            let minusbutton = new ButtonBuilder()
                 .setCustomId("minusbutton")
                 .setLabel("-")
-                .setStyle("SUCCESS");
-            let addbutton = new MessageButton()
+                .setStyle("Success");
+            let addbutton = new ButtonBuilder()
                 .setCustomId("addbutton")
                 .setLabel("+")
-                .setStyle("SUCCESS");
-            let setmaxbutton = new MessageButton()
+                .setStyle("Success");
+            let setmaxbutton = new ButtonBuilder()
                 .setCustomId("setmaxbutton")
                 .setLabel("Set Max")
-                .setStyle("SUCCESS");
-            let sethalfbutton = new MessageButton()
+                .setStyle("Success");
+            let sethalfbutton = new ButtonBuilder()
                 .setCustomId("sethalfbutton")
                 .setLabel("Set Half")
-                .setStyle("SUCCESS");
-            let setminbutton = new MessageButton()
+                .setStyle("Success");
+            let setminbutton = new ButtonBuilder()
                 .setCustomId("setminbutton")
                 .setLabel("Set Min")
-                .setStyle("SUCCESS");
-            let craftbutton = new MessageButton()
+                .setStyle("Success");
+            let craftbutton = new ButtonBuilder()
                 .setCustomId("craftbutton")
                 .setLabel("Craft Item")
-                .setStyle("PRIMARY");
+                .setStyle("Primary");
 
-            let row = new MessageActionRow().addComponents([
+            let row = new ActionRowBuilder().addComponents([
                 leftfarbutton,
                 leftbutton,
                 pagebutton,
                 rightbutton,
                 rightfarbutton,
             ]);
-            let row2 = new MessageActionRow().addComponents([craftmenu]);
-            let row3 = new MessageActionRow().addComponents([
+            let row2 = new ActionRowBuilder().addComponents([craftmenu]);
+            let row3 = new ActionRowBuilder().addComponents([
                 endinteractionbutton,
             ]);
 

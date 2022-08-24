@@ -1,8 +1,8 @@
 const {
     Collection,
-    MessageActionRow,
-    MessageSelectMenu,
-    MessageEmbed,
+    ActionRowBuilder,
+    SelectMenuBuilder,
+    EmbedBuilder,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
@@ -44,7 +44,7 @@ module.exports = {
         const collection = new Collection();
         const collection0 = new Collection();
         const collection1 = new Collection();
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setTitle(`${interaction.guild.name} Currency Leaderboard`)
             .setDescription(
@@ -108,7 +108,7 @@ module.exports = {
                 }`;
             })
             .join("\n");
-        let leaderboardmenu = new MessageSelectMenu()
+        let leaderboardmenu = new SelectMenuBuilder()
             .setCustomId("leaderboardmenu")
             .setMinValues(0)
             .setMaxValues(1)
@@ -127,7 +127,7 @@ module.exports = {
                     value: "inventoryworth",
                 },
             ]);
-        let row = new MessageActionRow().addComponents(leaderboardmenu);
+        let row = new ActionRowBuilder().addComponents(leaderboardmenu);
         embed
             .setColor(theme.embed.color)
             .setTitle(`${interaction.guild.name}`)
@@ -176,7 +176,7 @@ module.exports = {
                             }`
                         )
                         .setColor(theme.embed.color);
-                    leaderboardmenu = new MessageSelectMenu()
+                    leaderboardmenu = new SelectMenuBuilder()
                         .setCustomId("leaderboardmenu")
                         .setMinValues(0)
                         .setMaxValues(1)
@@ -195,7 +195,7 @@ module.exports = {
                                 value: "inventoryworth",
                             },
                         ]);
-                    row = new MessageActionRow().addComponents(leaderboardmenu);
+                    row = new ActionRowBuilder().addComponents(leaderboardmenu);
                     leaderboard_msg.edit({
                         embeds: [embed],
                         components: [row],
@@ -223,7 +223,7 @@ module.exports = {
                             }`
                         )
                         .setColor(theme.embed.color);
-                    leaderboardmenu = new MessageSelectMenu()
+                    leaderboardmenu = new SelectMenuBuilder()
                         .setCustomId("leaderboardmenu")
                         .setMinValues(0)
                         .setMaxValues(1)
@@ -242,7 +242,7 @@ module.exports = {
                                 default: true,
                             },
                         ]);
-                    row = new MessageActionRow().addComponents(leaderboardmenu);
+                    row = new ActionRowBuilder().addComponents(leaderboardmenu);
                     leaderboard_msg.edit({
                         embeds: [embed],
                         components: [row],
@@ -270,7 +270,7 @@ module.exports = {
                                     : "There is no rich people in this server rip. This can also be because members have not been cached."
                             }`
                         );
-                    leaderboardmenu = new MessageSelectMenu()
+                    leaderboardmenu = new SelectMenuBuilder()
                         .setCustomId("leaderboardmenu")
                         .setMinValues(0)
                         .setMaxValues(1)
@@ -289,7 +289,7 @@ module.exports = {
                                 value: "inventoryworth",
                             },
                         ]);
-                    row = new MessageActionRow().addComponents(leaderboardmenu);
+                    row = new ActionRowBuilder().addComponents(leaderboardmenu);
                     leaderboard_msg.edit({
                         embeds: [embed],
                         components: [row],

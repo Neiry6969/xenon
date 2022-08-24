@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const { fetchEconomyData, fetchStatsData } = require("./currencyfunctions");
 const EconomyModel = require("../models/economySchema");
@@ -17,7 +17,7 @@ class Currencyevents {
     ) {
         statsData.deaths += 1;
         const lostcoins = economyData.wallet;
-        const dmdeathembed = new MessageEmbed().setColor("#FFA500");
+        const dmdeathembed = new EmbedBuilder().setColor("#FFA500");
         let hasLife;
 
         if (inventoryData.inventory !== {}) {
