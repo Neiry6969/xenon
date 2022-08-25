@@ -8,7 +8,7 @@ const {
     addCoins,
     addItem,
     removeItem,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -221,7 +221,7 @@ module.exports = {
 
                 if (endinteraction === true) {
                 } else {
-                    await addexperiencepoints(interaction.user.id, 1, 5)
+                    await addexperiencepoints(interaction.user.id, 1, 5);
                     sell_embed
                         .setTitle(`Action Timed Out - Sell`)
                         .setColor(`#ff8f87`);
@@ -239,7 +239,7 @@ module.exports = {
             await removeItem(economyData.userId, itemData.item, quantity);
             await addCoins(economyData.userId, saleprice);
             const newquantityowned =
-                inventoryData.inventory[itemData.item] + quantity || quantity;
+                inventoryData.inventory[itemData.item] - quantity || quantity;
             const sell_embed = new MessageEmbed()
                 .setColor(`#95ff87`)
                 .setTitle(`Receipt - Sell`)

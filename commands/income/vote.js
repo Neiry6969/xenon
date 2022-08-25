@@ -14,7 +14,6 @@ const {
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
-const searchplaces = require("../../data/search_places");
 
 function time_split(time) {
     if (time < 60) {

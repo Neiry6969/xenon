@@ -5,7 +5,7 @@ const {
     fetchEconomyData,
     addCoins,
     addItem,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -13,7 +13,7 @@ const {
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
-const searchplaces = require("../../data/search_places");
+const SearchModel = require("../../models/searchSchema");
 
 function getRandom(arr, n) {
     var result = new Array(n),
@@ -46,14 +46,11 @@ module.exports = {
     cdmsg: "At that moment, you didn't know where to search.",
     async execute(interaction, client, theme) {
         let endinteraction = false;
+        const search_data = await SearchModel.find();
         const allItems = await fetchAllitemsData();
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
-        const inventoryData_fetch = await fetchInventoryData(
-            interaction.user.id
-        );
         const economyData = economyData_fetch.data;
-        const displayedplaces = getRandom(searchplaces, 3);
-        let placesearched;
+        const displayedplaces = getRandom(search_data, 3);
 
         let display_1 = new MessageButton()
             .setCustomId(displayedplaces[0].place)
@@ -93,7 +90,6 @@ module.exports = {
         });
 
         const search_msg = await interaction.fetchReply();
-
         const collector = await search_msg.createMessageComponentCollector({
             time: 10 * 1000,
         });
@@ -108,204 +104,57 @@ module.exports = {
 
             button.deferUpdate();
 
-            if (button.customId === displayedplaces[0].place) {
-                endinteraction = true;
-                placesearched = displayedplaces[0].place;
-                const placesearched_items = searchplaces.find(
-                    (val) => val.place.toLowerCase() === placesearched
-                );
-                const coins =
-                    Math.floor(Math.random() * placesearched_items.coins) + 500;
-                const search_result = placesearched_items.message.replace(
-                    "COINS",
-                    coins.toLocaleString()
-                );
+            const placesearched = button.customId;
+            endinteraction = true;
+            let item;
+            const placesearched_data = search_data.find(
+                (val) => val.place.toLowerCase() === placesearched
+            );
+            const coins =
+                Math.floor(Math.random() * placesearched_data.maxcoins) +
+                placesearched_data.mincoins;
+            const search_result = placesearched_data.message.replace(
+                "COINS",
+                coins.toLocaleString()
+            );
+            search_embed.setDescription(
+                `**${interaction.user.username} searched ${placesearched_data.place}**\n\n${search_result}`
+            );
 
-                if (placesearched_items.items) {
-                    if (
-                        itemtruefalse(placesearched_items.itempecrent) === true
-                    ) {
-                        const percent = (
-                            placesearched_items.itempecrent / 100
-                        ).toFixed(2);
-                        const item = allItems.find(
-                            (val) =>
-                                val.item.toLowerCase() ===
-                                placesearched_items.items
-                        );
-
-                        search_embed.setDescription(
-                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
-                        );
-
-                        display_1.setDisabled();
-                        display_2.setStyle("SECONDARY").setDisabled();
-                        display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({
-                            embeds: [search_embed],
-                            components: [row],
-                        });
-                        await addCoins(interaction.user.id, coins);
-                        await addItem(interaction.user.id, item.item, 1);
-                    } else {
-                        search_embed.setDescription(
-                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
-                        );
-                        display_1.setDisabled();
-                        display_2.setStyle("SECONDARY").setDisabled();
-                        display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({
-                            embeds: [search_embed],
-                            components: [row],
-                        });
-                        await addCoins(interaction.user.id, coins);
-                    }
-                } else {
-                    await addCoins(interaction.user.id, coins);
-
-                    search_embed.setDescription(
-                        `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
-                    );
-                    display_1.setDisabled();
-                    display_2.setStyle("SECONDARY").setDisabled();
-                    display_3.setStyle("SECONDARY").setDisabled();
-                    search_msg.edit({
-                        embeds: [search_embed],
-                        components: [row],
-                    });
-                    await addCoins(interaction.user.id, coins);
-                }
-            } else if (button.customId === displayedplaces[1].place) {
-                endinteraction = true;
-                placesearched = displayedplaces[1].place;
-                const placesearched_items = searchplaces.find(
-                    (val) => val.place.toLowerCase() === placesearched
-                );
-
-                const coins =
-                    Math.floor(Math.random() * placesearched_items.coins) + 500;
-                const search_result = placesearched_items.message.replace(
-                    "COINS",
-                    coins.toLocaleString()
-                );
-
-                if (placesearched_items.items) {
-                    if (
-                        itemtruefalse(placesearched_items.itempecrent) === true
-                    ) {
-                        const percent = (
-                            placesearched_items.itempecrent / 100
-                        ).toFixed(2);
-                        const item = allItems.find(
-                            (val) =>
-                                val.item.toLowerCase() ===
-                                placesearched_items.items
-                        );
-                        await addCoins(interaction.user.id, coins);
-                        await addItem(interaction.user.id, item.item, 1);
-
-                        search_embed.setDescription(
-                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
-                        );
-                        display_2.setDisabled();
-                        display_1.setStyle("SECONDARY").setDisabled();
-                        display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({
-                            embeds: [search_embed],
-                            components: [row],
-                        });
-                        await addCoins(interaction.user.id, coins);
-                        await addItem(interaction.user.id, item.item, 1);
-                    } else {
-                        search_embed.setDescription(
-                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
-                        );
-                        display_2.setDisabled();
-                        display_1.setStyle("SECONDARY").setDisabled();
-                        display_3.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({
-                            embeds: [search_embed],
-                            components: [row],
-                        });
-                        await addCoins(interaction.user.id, coins);
-                    }
-                } else {
-                    search_embed.setDescription(
-                        `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
-                    );
-                    display_2.setDisabled();
-                    display_1.setStyle("SECONDARY").setDisabled();
-                    display_3.setStyle("SECONDARY").setDisabled();
-                    search_msg.edit({
-                        embeds: [search_embed],
-                        components: [row],
-                    });
-                    await addCoins(interaction.user.id, coins);
-                }
-            } else if (button.customId === displayedplaces[2].place) {
-                endinteraction = true;
-                placesearched = displayedplaces[2].place;
-                const placesearched_items = searchplaces.find(
-                    (val) => val.place.toLowerCase() === placesearched
-                );
-                const coins =
-                    Math.floor(Math.random() * placesearched_items.coins) + 500;
-                const search_result = placesearched_items.message.replace(
-                    "COINS",
-                    coins.toLocaleString()
-                );
-
-                if (placesearched_items.items) {
+            if (placesearched_data.items.length > 0) {
+                if (itemtruefalse(placesearched_data.itempecrent) === true) {
+                    const selecteditem =
+                        placesearched_data.items[
+                            Math.floor(
+                                Math.random() * placesearched_data.items.length
+                            )
+                        ];
                     const percent = (
-                        placesearched_items.itempecrent / 100
+                        placesearched_data.itempecrent / 100
                     ).toFixed(2);
-                    if (
-                        itemtruefalse(placesearched_items.itempecrent) === true
-                    ) {
-                        const item = allItems.find(
-                            (val) =>
-                                val.item.toLowerCase() ===
-                                placesearched_items.items
-                        );
-
-                        search_embed.setDescription(
-                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon}\n\`${percent}%\` chance of happening`
-                        );
-                        display_3.setDisabled();
-                        display_1.setStyle("SECONDARY").setDisabled();
-                        display_2.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({
-                            embeds: [search_embed],
-                            components: [row],
-                        });
-                        await addCoins(interaction.user.id, coins);
-                        await addItem(interaction.user.id, item.item, 1);
-                    } else {
-                        search_embed.setDescription(
-                            `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
-                        );
-                        display_3.setDisabled();
-                        display_1.setStyle("SECONDARY").setDisabled();
-                        display_2.setStyle("SECONDARY").setDisabled();
-                        search_msg.edit({
-                            embeds: [search_embed],
-                            components: [row],
-                        });
-                        await addCoins(interaction.user.id, coins);
-                    }
-                } else {
-                    search_embed.setDescription(
-                        `**${interaction.user.username} searched ${placesearched_items.place}**\n\n${search_result}`
+                    item = allItems.find(
+                        (val) => val.item.toLowerCase() === selecteditem
                     );
-                    display_3.setDisabled();
-                    display_1.setStyle("SECONDARY").setDisabled();
-                    display_2.setStyle("SECONDARY").setDisabled();
-                    search_msg.edit({
-                        embeds: [search_embed],
-                        components: [row],
-                    });
-                    await addCoins(interaction.user.id, coins);
+
+                    search_embed.setDescription(
+                        `**${interaction.user.username} searched ${placesearched_data.place}**\n\n${search_result}\nYou also found \`1\` ${item.icon} \`${item.item}\`\n\`${percent}%\` chance of happening`
+                    );
                 }
+            }
+
+            search_msg.components[0].components.forEach((c) => {
+                c.setDisabled().setStyle("SECONDARY");
+                if (c.customId === button.customId) {
+                    c.setStyle("PRIMARY");
+                }
+            });
+            search_msg.edit({
+                embeds: [search_embed],
+                components: search_msg.components,
+            });
+            await addCoins(interaction.user.id, coins);
+            if (item) {
+                await addItem(interaction.user.id, item.item, 1);
             }
         });
 
@@ -313,7 +162,7 @@ module.exports = {
             if (endinteraction === true) {
                 return;
             } else {
-                await addexperiencepoints(interaction.user.id, 1, 20)
+                await addexperiencepoints(interaction.user.id, 1, 20);
                 search_embed
                     .setColor(`#ff8f87`)
                     .setTitle(`Action Timed Out - Search`)
