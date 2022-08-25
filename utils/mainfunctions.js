@@ -113,8 +113,8 @@ class Mainfunctions {
         }
 
         function premiumcooldowncalc(defaultcooldown) {
-            if (defaultcooldown <= 5 && defaultcooldown > 2) {
-                return defaultcooldown - 2;
+            if (defaultcooldown <= 5 && defaultcooldown > 4) {
+                return defaultcooldown - 3;
             } else if (defaultcooldown <= 15) {
                 return defaultcooldown - 5;
             } else if (defaultcooldown <= 120) {
@@ -161,7 +161,7 @@ class Mainfunctions {
                 economyData.premium.rank >= 1
             ) {
                 cooldownembed
-                    .setColor("#FFC000")
+                    .setColor("#fff5e3")
                     .setDescription(
                         `\`${
                             command.cdmsg || "Chillax bro!"

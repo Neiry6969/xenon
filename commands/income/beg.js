@@ -17,7 +17,7 @@ const {
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
 const { death_handler } = require("../../utils/currencyevents");
-const beg_data = require("../../data/beg_data");
+const BegModel = require("../../models/begSchema");
 
 function randomizer(precent) {
     const randomnum = Math.floor(Math.random() * 10000);
@@ -36,6 +36,7 @@ module.exports = {
     cooldown: 45,
     cdmsg: `There is no one you can beg to right now, making money by begging isn't this easy!`,
     async execute(interaction, client, theme) {
+        const beg_data = await BegModel.find();
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const statsData_fetch = await fetchStatsData(interaction.user.id);
@@ -49,7 +50,11 @@ module.exports = {
 
         const embed = new MessageEmbed()
             .setColor(theme.embed.color)
-            .setTitle(beginteraction.title);
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setTitle(`Beg`);
 
         if (resultsuccess === true) {
             const maxcoins = beginteraction.maxcoins - beginteraction.mincoins;
@@ -79,14 +84,22 @@ module.exports = {
                             "ITEM",
                             `${resultitem.icon} \`${resultitem.item}\``
                         );
-                    embed.setDescription(`${beg_result}\n${beg_resultitem}`);
+                    embed.setDescription(
+                        `**${beginteraction.title}**` +
+                            `\n\n` +
+                            `${beg_result}\n${beg_resultitem}`
+                    );
 
                     await addItem(interaction.user.id, resultitem.item, 1);
                 }
             }
         } else if (resultdeath === true) {
             embed
-                .setDescription(beginteraction.deathdescription)
+                .setDescription(
+                    `**${beginteraction.title}**` +
+                        `\n\n` +
+                        beginteraction.deathdescription
+                )
                 .setColor("#ff8f87");
 
             await death_handler(
@@ -98,7 +111,11 @@ module.exports = {
                 "begging"
             );
         } else {
-            embed.setDescription(beginteraction.faildescription);
+            embed.setDescription(
+                `**${beginteraction.title}**` +
+                    `\n\n` +
+                    beginteraction.faildescription
+            );
         }
 
         interaction.reply({ embeds: [embed] });
