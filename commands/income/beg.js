@@ -70,7 +70,9 @@ module.exports = {
 
             if (beginteraction.items) {
                 const ifgetitems = randomizer(beginteraction.itemsprecent);
-                embed.setDescription(beg_result);
+                embed.setDescription(
+                    `**${beginteraction.title}**` + `\n\n` + beg_result
+                );
                 if (ifgetitems === true) {
                     const itemnum = Math.floor(
                         Math.random() * beginteraction.items.length
