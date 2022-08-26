@@ -52,7 +52,7 @@ module.exports = {
             .addFields(
                 {
                     name: `Bot`,
-                    value: `Created At: <t:1650404340:D>\nLatest Released Version: \`v0.69.51\`\nUser Count: \`${usercount.toLocaleString()}\`\nServer Count: \`${servercount.toLocaleString()}\``,
+                    value: `Created At: <t:1650404340:D>\nLatest Released Version: \`vv0.75.05\`\nUser Count: \`${usercount.toLocaleString()}\`\nServer Count: \`${servercount.toLocaleString()}\``,
                     inline: true,
                 },
                 {
