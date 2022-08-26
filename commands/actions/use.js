@@ -99,15 +99,13 @@ module.exports = {
             error_message = "So you want to use nothing, why bother?";
             return errorReply(interaction, error_message);
         } else if (inventoryData.inventory[itemData.item] < quantity) {
-            errorembed.setDescription(
-                `You don't have enough of that item to use that many of that item.\n\nItem: ${
-                    itemData.icon
-                } \`${
-                    itemData.item
-                }\`\nQuantity: \`${quantity.toLocaleString()}\`\n**Units Owned:** \`${inventoryData.inventory[
-                    itemData.item
-                ].toLocaleString()}\``
-            );
+            error_message = `You don't have enough of that item to use that many of that item.\n\nItem: ${
+                itemData.icon
+            } \`${
+                itemData.item
+            }\`\nQuantity: \`${quantity.toLocaleString()}\`\n**Units Owned:** \`${inventoryData.inventory[
+                itemData.item
+            ].toLocaleString()}\``;
             return errorReply(interaction, error_message);
         }
 
