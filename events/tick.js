@@ -167,7 +167,7 @@ module.exports = {
                     content: `<@${winningentry.userId}>`,
                     embeds: [announce_embed],
                 });
-                await setEventCooldown(winningentry.userId, "lottery", 43200);
+                await setEventCooldown(winningentry.userId, "lottery", 10800);
             }
             await LotteryModel.findOneAndUpdate(
                 { lotteryId: lotteryData.lotteryId },
