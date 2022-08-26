@@ -1,10 +1,15 @@
 const { MessageEmbed } = require("discord.js");
 
-const { fetchEconomyData, fetchStatsData } = require("./currencyfunctions");
+const {
+    fetchEconomyData,
+    fetchStatsData,
+    fetchSettingsData,
+} = require("./currencyfunctions");
 const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
 const UserModel = require("../models/userSchema");
 const StatsModel = require("../models/statsSchema");
+const { dmuser } = require("./discordfunctions");
 
 class Currencyevents {
     static async death_handler(
@@ -63,12 +68,10 @@ class Currencyevents {
         );
         await StatsModel.findOneAndUpdate({ userId: userId }, statsData);
 
-        client.users.fetch(userId, false).then((user) => {
-            user.send({ embeds: [dmdeathembed] });
-        });
+        await dmuser(client, userId, dmdeathembed);
     }
 
-    static async backgroundupdates_handler(interaction, commandname) {
+    static async backgroundupdates_handler(interaction, client, commandname) {
         function calcexpfull(level) {
             if (level < 50) {
                 return level * 10 + 100;
@@ -86,14 +89,45 @@ class Currencyevents {
 
         const fetch_economyData = await fetchEconomyData(interaction.user.id);
         const fetch_statsData = await fetchStatsData(interaction.user.id);
+        const fetch_settingsData = await fetchSettingsData(interaction.user.id);
         const economyData = fetch_economyData.data;
         const statsData = fetch_statsData.data;
+        const settingsData = fetch_settingsData.data;
 
         const experiencepoints = economyData.experiencepoints;
         const experiencefull = calcexpfull(economyData.level);
         if (experiencepoints >= experiencefull) {
             economyData.level = economyData.level + 1;
             economyData.experiencepoints = experiencepoints - experiencefull;
+            if (settingsData.settings.levelupnotifications.status === true) {
+                const hasdmed = await dmuser(
+                    client,
+                    interaction.user.id,
+                    new MessageEmbed()
+                        .setColor(`#ffa159`)
+                        .setTitle(
+                            `Level Up! <a:streakflame:1008505222747922503>`
+                        )
+                        .setDescription(
+                            `Good work ${
+                                interaction.user.username
+                            }! **You have reached level \`${economyData.level.toLocaleString()}\`!**`
+                        )
+                );
+                if (hasdmed !== true) {
+                    interaction.channel.send({
+                        embeds: [
+                            new MessageEmbed()
+                                .setColor(`#ffa159`)
+                                .setDescription(
+                                    `**<@${
+                                        interaction.user.id
+                                    }> has reached level \`${economyData.level.toLocaleString()}\`**`
+                                ),
+                        ],
+                    });
+                }
+            }
         }
 
         if (commandname === "help" || commandname === "commands") {

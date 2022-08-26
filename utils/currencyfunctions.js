@@ -307,6 +307,29 @@ class Currencyfunctions {
             );
         }
     }
+    static async editusersettings(userId, setting, value) {
+        let settingsData;
+        try {
+            settingsData = await SettingsModel.findOne({ userId: userId });
+            if (!settingsData) {
+                let settings = await SettingsModel.create({
+                    userId: userId,
+                });
+
+                settings.save();
+
+                settingsData = settings;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        settingsData.settings[setting] = {
+            status: value,
+            lastedited: Date.now(),
+        };
+        await SettingsModel.findOneAndUpdate({ userId: userId }, settingsData);
+    }
 }
 
 module.exports = Currencyfunctions;

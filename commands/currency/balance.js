@@ -6,6 +6,7 @@ const {
     fetchEconomyData,
 } = require("../../utils/currencyfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
+const { dmuser } = require("../../utils/discordfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()

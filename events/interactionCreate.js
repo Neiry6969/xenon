@@ -14,6 +14,7 @@ const GuildModel = require("../models/guildSchema");
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
+        // interaction.reply({embeds: [new MessageEmbed().setDescription(`Bot is being updated! This is not a bug.`)]})
         if (!interaction.isCommand()) return;
 
         const commandname = interaction.commandName;
@@ -63,7 +64,7 @@ module.exports = {
             return errorReply(interaction, error_message);
         }
 
-        await backgroundupdates_handler(interaction, commandname);
+        await backgroundupdates_handler(interaction, client, commandname);
 
         async function executecmd() {
             try {
