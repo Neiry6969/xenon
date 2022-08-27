@@ -4,6 +4,7 @@ const {
     fetchEconomyData,
     fetchStatsData,
     fetchSettingsData,
+    fetchUserData,
 } = require("./currencyfunctions");
 const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
@@ -11,6 +12,8 @@ const UserModel = require("../models/userSchema");
 const StatsModel = require("../models/statsSchema");
 const TipsModel = require("../models/tipsSchema");
 const { dmuser } = require("./discordfunctions");
+const { ri_watermelon } = require("./itemremove");
+const { fetchItemData } = require("./itemfunctions");
 
 class Currencyevents {
     static async death_handler(
@@ -91,9 +94,11 @@ class Currencyevents {
         const fetch_economyData = await fetchEconomyData(interaction.user.id);
         const fetch_statsData = await fetchStatsData(interaction.user.id);
         const fetch_settingsData = await fetchSettingsData(interaction.user.id);
+        const fetch_userData = await fetchUserData(interaction.user.id);
         const economyData = fetch_economyData.data;
         const statsData = fetch_statsData.data;
         const settingsData = fetch_settingsData.data;
+        const userData = fetch_userData.data;
 
         const experiencepoints = economyData.experiencepoints;
         const experiencefull = calcexpfull(economyData.level);
@@ -129,6 +134,30 @@ class Currencyevents {
                     });
                 }
             }
+        }
+
+        if (Object.keys(userData.activeitems).length > 0) {
+            Object.keys(userData.activeitems).forEach(async (activeitem) => {
+                console.log(
+                    userData.activeitems[activeitem].expirydate <= Date.now()
+                );
+                if (userData.activeitems[activeitem].expirydate <= Date.now()) {
+                    if (activeitem === "watermelon") {
+                        const item = await fetchItemData("watermelon");
+                        await ri_watermelon(interaction.user.id);
+                        await dmuser(
+                            client,
+                            interaction.user.id,
+                            new MessageEmbed()
+                                .setDescription(`Item Expired`)
+                                .setColor(`#ff5e5e`)
+                                .setDescription(
+                                    `Item: $${item.icon} \`${item.item}\``
+                                )
+                        );
+                    }
+                }
+            });
         }
 
         if (commandname === "help" || commandname === "commands") {

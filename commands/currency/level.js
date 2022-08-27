@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -182,7 +182,18 @@ module.exports = {
                 }
             );
 
-        interaction.reply({ embeds: [level_embed] });
+        interaction.reply({
+            embeds: [level_embed],
+            components: [
+                new MessageActionRow().setComponents(
+                    new MessageButton()
+                        .setCustomId(`fetch_activeitems`)
+                        .setEmoji("<a:Hamster_Spin:1006783336011808838>")
+                        .setLabel("Active Items")
+                        .setStyle("PRIMARY")
+                ),
+            ],
+        });
         setCooldown(interaction, "level", 5, economyData.data);
     },
 };

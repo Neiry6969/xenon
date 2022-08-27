@@ -11,6 +11,7 @@ const { setProcessingLock } = require("../utils/mainfunctions");
 const { errorReply } = require("../utils/errorfunctions");
 const { fetchEmbedColor } = require("./cosmeticsfunctions");
 const { fetchUserData, removeItem } = require("./currencyfunctions");
+const { addActiveItem } = require("./userfunctions");
 
 class Useitem {
     static async bankmessage(
@@ -418,7 +419,7 @@ class Useitem {
         return interaction.reply({ embeds: [embed] });
     }
 
-    static async watermelon(interaction, inventoryData, itemData) {
+    static async watermelon(interaction, itemData) {
         const colors = ["#ffac80", "#fff280", "#ffd980", "#d7ff80", "#ff8880"];
         const fetch_userData = await fetchUserData(interaction.user.id);
         const userData = fetch_userData.data;
@@ -441,6 +442,7 @@ class Useitem {
             { userId: interaction.user.id },
             userData
         );
+        await addActiveItem(interaction.user.id, "watermelon", 7889238, colors);
 
         const embed = new MessageEmbed()
             .setTitle(`${interaction.user.username}'s ${itemData.name}`)

@@ -8,6 +8,7 @@ const {
     addCoins,
     addItem,
     removeItem,
+    fetchUserData,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -59,8 +60,10 @@ module.exports = {
         }
         const inventory_fetch = await fetchInventoryData(interaction.user.id);
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
+        const userData_fetch = await fetchUserData(interaction.user.id);
         const inventoryData = inventory_fetch.data;
         const economyData = economyData_fetch.data;
+        const userData = userData_fetch.data;
 
         if (!inventoryData.inventory[itemData.item]) {
             error_message = `You don't own any of this item, how are you gonna use it?\n\nItem: ${itemData.icon} \`${itemData.item}\``;
@@ -111,6 +114,11 @@ module.exports = {
 
         setCooldown(interaction, "use", 5, economyData);
 
+        if (Object.keys(userData.activeitems).includes(itemData.item)) {
+            error_message = `That item is already active!\n\nItem: ${itemData.icon} \`${itemData.item}\``;
+            return errorReply(interaction, error_message);
+        }
+
         if (itemData.item === "bankmessage") {
             return bankmessage(
                 interaction,
@@ -129,7 +137,7 @@ module.exports = {
         } else if (itemData.type === "lootbox") {
             return lootbox(interaction, inventoryData, itemData, quantity);
         } else if (itemData.item === "watermelon") {
-            return watermelon(interaction, inventoryData, itemData);
+            return watermelon(interaction, itemData);
         }
 
         error_message = `That item isn't usable sorry not sorry.\n\nItem: ${itemData.icon} \`${itemData.item}\``;

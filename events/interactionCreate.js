@@ -11,99 +11,139 @@ const {
     checkAlert,
 } = require("../utils/mainfunctions");
 const { fetchEmbedColor } = require("../utils/cosmeticsfunctions");
-const { fetchSettingsData } = require("../utils/currencyfunctions");
+const {
+    fetchSettingsData,
+    fetchUserData,
+} = require("../utils/currencyfunctions");
 const GuildModel = require("../models/guildSchema");
+const { fetchItemData, fetchAllitemsData } = require("../utils/itemfunctions");
+const { fetchActiveItems } = require("../utils/userfunctions");
 
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
-        // interaction.reply({embeds: [new MessageEmbed().setDescription(`Bot is being updated! This is not a bug.`)]})
-        if (!interaction.isCommand()) return;
+        const theme = {
+            embed: {
+                color: await fetchEmbedColor(interaction),
+            },
+        };
 
-        const commandname = interaction.commandName;
-        const command = client.commands.get(commandname);
+        if (interaction.isCommand()) {
+            const commandname = interaction.commandName;
+            const command = client.commands.get(commandname);
 
-        if (!command) return;
-        let error_message;
-        const user = interaction.user;
-        let guildData;
-        try {
-            guildData = await GuildModel.findOne({
-                guildId: interaction.guild.id,
-            });
-            if (!guildData) {
-                let guild = await GuildModel.create({
+            if (!command) return;
+            let error_message;
+            const user = interaction.user;
+            let guildData;
+            try {
+                guildData = await GuildModel.findOne({
                     guildId: interaction.guild.id,
                 });
+                if (!guildData) {
+                    let guild = await GuildModel.create({
+                        guildId: interaction.guild.id,
+                    });
 
-                guild.save();
+                    guild.save();
 
-                guildData = guild;
-            }
-        } catch (error) {
-            console.log(error);
-        }
-
-        const ProcessingLock_status = await checkProcessingLock(
-            interaction.user.id
-        );
-        if (ProcessingLock_status === true) {
-            error_message = `You have an ongoing command.`;
-            return errorReply(interaction, error_message);
-        }
-        // if (
-        //     profileData.moderation.blacklist.status === true ||
-        //     profileData.moderation.ban.status === true
-        // ) {
-        //     errorembed.setDescription(
-        //         `You are a blacklisted user, you cannot use commands untill you are unblacklisted.\nIf you believe this is a mistake please go here: [https://discord.gg/B5vjnwakdk](https://discord.gg/B5vjnwakdk)`
-        //     );
-
-        //     return interaction.reply({ embeds: [errorembed], ephemeral: true });
-        // }
-
-        if (guildData.disabledcmds[commandname] === true) {
-            error_message = `<a:cross:987458395823018044> **This command has been disabled in** \`${interaction.guild.name}\`\nGuild ID: \`${interaction.guild.id}\`\nCommand: \`${commandname}\``;
-            return errorReply(interaction, error_message);
-        }
-
-        await backgroundupdates_handler(interaction, client, commandname);
-
-        async function executecmd() {
-            try {
-                const oncooldown = await checkCooldown(
-                    interaction,
-                    interaction.user.id,
-                    command,
-                    commandname
-                );
-
-                if (oncooldown === true) return;
-
-                const theme = {
-                    embed: {
-                        color: await fetchEmbedColor(interaction),
-                    },
-                };
-
-                await command.execute(interaction, client, theme);
-                setTimeout(async function () {
-                    if (
-                        interaction.replied === true &&
-                        commandname !== "alert"
-                    ) {
-                        await checkAlert(interaction);
-                        await tips_handler(interaction, theme);
-                    }
-                }, 1000);
+                    guildData = guild;
+                }
             } catch (error) {
-                console.error(error);
-                error_message =
-                    "There was an error while executing this command!";
+                console.log(error);
+            }
+
+            const ProcessingLock_status = await checkProcessingLock(
+                interaction.user.id
+            );
+            if (ProcessingLock_status === true) {
+                error_message = `You have an ongoing command.`;
                 return errorReply(interaction, error_message);
             }
-        }
+            // if (
+            //     profileData.moderation.blacklist.status === true ||
+            //     profileData.moderation.ban.status === true
+            // ) {
+            //     errorembed.setDescription(
+            //         `You are a blacklisted user, you cannot use commands untill you are unblacklisted.\nIf you believe this is a mistake please go here: [https://discord.gg/B5vjnwakdk](https://discord.gg/B5vjnwakdk)`
+            //     );
 
-        executecmd();
+            //     return interaction.reply({ embeds: [errorembed], ephemeral: true });
+            // }
+
+            if (guildData.disabledcmds[commandname] === true) {
+                error_message = `<a:cross:987458395823018044> **This command has been disabled in** \`${interaction.guild.name}\`\nGuild ID: \`${interaction.guild.id}\`\nCommand: \`${commandname}\``;
+                return errorReply(interaction, error_message);
+            }
+
+            await backgroundupdates_handler(interaction, client, commandname);
+
+            async function executecmd() {
+                try {
+                    const oncooldown = await checkCooldown(
+                        interaction,
+                        interaction.user.id,
+                        command,
+                        commandname
+                    );
+
+                    if (oncooldown === true) return;
+
+                    await command.execute(interaction, client, theme);
+                    setTimeout(async function () {
+                        if (
+                            interaction.replied === true &&
+                            commandname !== "alert"
+                        ) {
+                            await checkAlert(interaction);
+                            await tips_handler(interaction, theme);
+                        }
+                    }, 1000);
+                } catch (error) {
+                    console.error(error);
+                    error_message =
+                        "There was an error while executing this command!";
+                    return errorReply(interaction, error_message);
+                }
+            }
+
+            executecmd();
+        } else if (interaction.isButton()) {
+            if (interaction.customId === "fetch_activeitems") {
+                const allItems = await fetchAllitemsData();
+                const fetch_userData = await fetchUserData(interaction.user.id);
+                const userData = fetch_userData.data;
+                let activeitems_map;
+                if (Object.keys(userData.activeitems).length === 0) {
+                    activeitems_map = `\`currently no active items\``;
+                } else {
+                    activeitems_map = Object.keys(userData.activeitems).map(
+                        (key) => {
+                            const item = allItems.find(
+                                ({ item }) => item === key
+                            );
+                            return `${item.icon} \`${
+                                item.item
+                            }\` expires: <t:${Math.floor(
+                                userData.activeitems[key].expirydate / 1000
+                            )}:R>`;
+                        }
+                    );
+                }
+                return interaction.reply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setColor(theme.embed.color)
+                            .setAuthor({
+                                name: `${interaction.user.tag}`,
+                                iconURL: interaction.user.displayAvatarURL(),
+                            })
+                            .setTitle(`Active items`)
+                            .setDescription(`${activeitems_map}`),
+                    ],
+                    ephemeral: true,
+                });
+            }
+        }
     },
 };
