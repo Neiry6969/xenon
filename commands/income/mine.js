@@ -4,7 +4,7 @@ const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -31,6 +31,10 @@ const lowmid = [
         maxamount: 30,
     },
     {
+        item: "shardofaluminum",
+        maxamount: 15,
+    },
+    {
         item: "shardofuranium",
         maxamount: 12,
     },
@@ -42,7 +46,7 @@ const lowmid = [
 const highmid = [
     {
         item: "shardofaluminum",
-        maxamount: 10,
+        maxamount: 25,
     },
     {
         item: "shardofgold",
@@ -130,7 +134,7 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, amount);
-                await addexperiencepoints(interaction.user.id, 1, 40)
+                await addexperiencepoints(interaction.user.id, 1, 40);
 
                 mine_embed.setDescription(
                     `What is that? Oh you were actually able to find some things down in that ancient mine! Good for you, you got \`${1}\` ${
