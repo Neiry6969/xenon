@@ -23,10 +23,6 @@ const lotterySchema = new mongoose.Schema(
             type: Number,
             default: null,
         },
-        endStatus: {
-            type: Boolean,
-            default: false,
-        },
     },
     { minimize: false }
 );

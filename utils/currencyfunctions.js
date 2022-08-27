@@ -5,6 +5,7 @@ const InventoryModel = require("../models/inventorySchema");
 const UserModel = require("../models/userSchema");
 const StatsModel = require("../models/statsSchema");
 const SettingsModel = require("../models/settingsSchema");
+const LotteryModel = require("../models/lotterySchema");
 const { fetchAllitemsData, fetchItemData } = require("./itemfunctions");
 
 class Currencyfunctions {
@@ -329,6 +330,20 @@ class Currencyfunctions {
             lastedited: Date.now(),
         };
         await SettingsModel.findOneAndUpdate({ userId: userId }, settingsData);
+    }
+
+    static async resetLottery(lotteryData) {
+        const hourms = 60 * 60 * 1000;
+        const datenexthour =
+            Math.floor(new Date(Date.now() + 60 * 60 * 1000) / hourms) * hourms;
+        lotteryData.endsAt = datenexthour;
+        lotteryData.entries = [];
+        lotteryData.entriesTotal = 0;
+
+        await LotteryModel.findOneAndUpdate(
+            { lotteryId: lotteryData.lotteryId },
+            lotteryData
+        );
     }
 }
 
