@@ -149,10 +149,12 @@ class Currencyevents {
                             client,
                             interaction.user.id,
                             new MessageEmbed()
-                                .setDescription(`Item Expired`)
+                                .setTitle(
+                                    `Item Expired <:brokenglass:1013198455356801076>`
+                                )
                                 .setColor(`#ff5e5e`)
                                 .setDescription(
-                                    `Item: $${item.icon} \`${item.item}\``
+                                    `Item: ${item.icon} \`${item.item}\``
                                 )
                         );
                     }
