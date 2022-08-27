@@ -5,8 +5,10 @@ const {
     fetchInventoryData,
     fetchEconomyData,
     fetchStatsData,
+    fetchUserData,
 } = require("../../utils/currencyfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
+const { fetchAllitemsData } = require("../../utils/itemfunctions");
 
 function calcexpfull(level) {
     if (level < 50) {
@@ -194,6 +196,59 @@ module.exports = {
                 ),
             ],
         });
+
+        const level_msg = await interaction.fetchReply();
+        const collector = level_msg.createMessageComponentCollector({
+            idle: 15 * 1000,
+        });
+
+        collector.on("collect", async (button) => {
+            if (button.customId === "fetch_activeitems") {
+                const allItems = await fetchAllitemsData();
+                const fetch_userData = await fetchUserData(user.id);
+                const userData = fetch_userData.data;
+                let activeitems_map;
+                if (Object.keys(userData.activeitems).length === 0) {
+                    activeitems_map = `\`currently no active items\``;
+                } else {
+                    activeitems_map = Object.keys(userData.activeitems).map(
+                        (key) => {
+                            const item = allItems.find(
+                                ({ item }) => item === key
+                            );
+                            return `${item.icon} \`${
+                                item.item
+                            }\` expires: <t:${Math.floor(
+                                userData.activeitems[key].expirydate / 1000
+                            )}:R>`;
+                        }
+                    );
+                }
+                return button.reply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setColor(theme.embed.color)
+                            .setAuthor({
+                                name: `${user.tag}`,
+                                iconURL: user.displayAvatarURL(),
+                            })
+                            .setTitle(`Active items`)
+                            .setDescription(`${activeitems_map}`),
+                    ],
+                    ephemeral: true,
+                });
+            }
+        });
+
+        collector.on("end", (collected) => {
+            level_msg.components[0].components.forEach((c) => {
+                c.setDisabled();
+            });
+            level_msg.edit({
+                components: level_msg.components,
+            });
+        });
+
         setCooldown(interaction, "level", 5, economyData.data);
     },
 };

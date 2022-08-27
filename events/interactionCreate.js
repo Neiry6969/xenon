@@ -109,41 +109,7 @@ module.exports = {
 
             executecmd();
         } else if (interaction.isButton()) {
-            if (interaction.customId === "fetch_activeitems") {
-                const allItems = await fetchAllitemsData();
-                const fetch_userData = await fetchUserData(interaction.user.id);
-                const userData = fetch_userData.data;
-                let activeitems_map;
-                if (Object.keys(userData.activeitems).length === 0) {
-                    activeitems_map = `\`currently no active items\``;
-                } else {
-                    activeitems_map = Object.keys(userData.activeitems).map(
-                        (key) => {
-                            const item = allItems.find(
-                                ({ item }) => item === key
-                            );
-                            return `${item.icon} \`${
-                                item.item
-                            }\` expires: <t:${Math.floor(
-                                userData.activeitems[key].expirydate / 1000
-                            )}:R>`;
-                        }
-                    );
-                }
-                return interaction.reply({
-                    embeds: [
-                        new MessageEmbed()
-                            .setColor(theme.embed.color)
-                            .setAuthor({
-                                name: `${interaction.user.tag}`,
-                                iconURL: interaction.user.displayAvatarURL(),
-                            })
-                            .setTitle(`Active items`)
-                            .setDescription(`${activeitems_map}`),
-                    ],
-                    ephemeral: true,
-                });
-            }
+            return;
         }
     },
 };

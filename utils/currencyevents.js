@@ -138,9 +138,6 @@ class Currencyevents {
 
         if (Object.keys(userData.activeitems).length > 0) {
             Object.keys(userData.activeitems).forEach(async (activeitem) => {
-                console.log(
-                    userData.activeitems[activeitem].expirydate <= Date.now()
-                );
                 if (userData.activeitems[activeitem].expirydate <= Date.now()) {
                     if (activeitem === "watermelon") {
                         const item = await fetchItemData("watermelon");
