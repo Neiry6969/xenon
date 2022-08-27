@@ -242,6 +242,10 @@ module.exports = {
                     maxamount: 30,
                 },
                 {
+                    item: "shardofaluminum",
+                    maxamount: 15,
+                },
+                {
                     item: "shardofuranium",
                     maxamount: 12,
                 },
@@ -253,7 +257,7 @@ module.exports = {
             const highmid = [
                 {
                     item: "shardofaluminum",
-                    maxamount: 10,
+                    maxamount: 25,
                 },
                 {
                     item: "shardofgold",
