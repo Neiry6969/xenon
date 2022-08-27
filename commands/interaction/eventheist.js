@@ -19,7 +19,12 @@ const {
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
-const { setCooldown, setProcessingLock } = require("../../utils/mainfunctions");
+const {
+    setCooldown,
+    setProcessingLock,
+    setEventCooldown,
+    checkEventCooldown,
+} = require("../../utils/mainfunctions");
 const { death_handler } = require("../../utils/currencyevents");
 const letternumbers = require("../../reference/letternumber");
 const EconomyModel = require("../../models/economySchema");
@@ -43,9 +48,20 @@ module.exports = {
         const options = {
             amount: interaction.options.getString("amount"),
         };
-
+        const cooldown = await checkEventCooldown(
+            interaction.user.id,
+            "eventheist"
+        );
         let endinteraction = false;
         let error_message;
+
+        if (cooldown.status === true) {
+            error_message = `You already did an event heist earlier, you need to wait for the 1 hour cooldown\n\nReady: <t:${Math.floor(
+                cooldown.rawcooldown / 1000
+            )}:R>`;
+            return errorReply(interaction, error_message);
+        }
+
         let amount = options.amount?.toLowerCase();
         const minreqcoins = 500000;
         const minjoincoins = 5000;
@@ -158,14 +174,24 @@ module.exports = {
                         button.user.id
                     );
                     const userEconomy = fetch_userEconomy.data;
+                    const joincooldown = await checkEventCooldown(
+                        button.user.id,
+                        "heist"
+                    );
 
-                    if (userEconomy.wallet < minjoincoins) {
+                    if (joincooldown.status === true) {
+                        error_message = `It hasn't been long since you last joined a heist, you will need to wait 10 minutes before joining another one.\n\nReady: <t:${Math.floor(
+                            joincooldown.rawcooldown / 1000
+                        )}:R>`;
+                        return errorReply(button, error_message);
+                    } else if (userEconomy.wallet < error_message) {
                         error_message = `You need at least \`❀ ${minjoincoins.toLocaleString()}\` in your wallet to join this event-heist!`;
                         return errorReply(button, error_message);
                     } else if (eventheist_arry.includes(button.user.id)) {
                         error_message = `You already joined this heist bruh!`;
                         return errorReply(button, error_message);
                     } else {
+                        await setEventCooldown(button.user.id, "heist", 600);
                         eventheist_arry.push(button.user.id);
                         await removeCoins(button.user.id, minjoincoins);
 
@@ -576,6 +602,7 @@ module.exports = {
 
             if (button.customId === "confirm") {
                 endinteraction = true;
+                setEventCooldown(interaction.user.id, "eventheist", 3600);
 
                 eventheist_embed
                     .setColor(`#95ff87`)

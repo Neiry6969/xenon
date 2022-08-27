@@ -9,6 +9,7 @@ const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
 const UserModel = require("../models/userSchema");
 const StatsModel = require("../models/statsSchema");
+const TipsModel = require("../models/tipsSchema");
 const { dmuser } = require("./discordfunctions");
 
 class Currencyevents {
@@ -148,6 +149,34 @@ class Currencyevents {
 
         await StatsModel.findOneAndUpdate(params, statsData);
         await EconomyModel.findOneAndUpdate(params, economyData);
+    }
+
+    static async tips_handler(interaction, theme) {
+        const fetch_settingsData = await fetchSettingsData(interaction.user.id);
+        const tipsData = await TipsModel.find();
+        const settingsData = fetch_settingsData.data;
+
+        if (settingsData.settings.tips.status === false) {
+            return;
+        }
+        const random_number = Math.floor(Math.random() * 100);
+        if (random_number > 20) {
+            return;
+        }
+
+        const tipsData_choosen =
+            tipsData[Math.floor(Math.random() * tipsData.length)];
+
+        const tip_msg = new MessageEmbed()
+            .setColor(theme.embed.color)
+            .setDescription(
+                `<a:think_lightup:1013128619004018709> **\`TIP:\`** ${tipsData_choosen.description}`
+            )
+            .setFooter({
+                text: `You can disable tips with the /usersettings command`,
+            });
+
+        return interaction.followUp({ embeds: [tip_msg], ephemeral: true });
     }
 }
 

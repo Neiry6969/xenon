@@ -1,7 +1,10 @@
 const { Collection, MessageEmbed } = require("discord.js");
 
 const { errorReply } = require("../utils/errorfunctions");
-const { backgroundupdates_handler } = require("../utils/currencyevents");
+const {
+    backgroundupdates_handler,
+    tips_handler,
+} = require("../utils/currencyevents");
 const {
     checkProcessingLock,
     checkCooldown,
@@ -90,6 +93,7 @@ module.exports = {
                         commandname !== "alert"
                     ) {
                         await checkAlert(interaction);
+                        await tips_handler(interaction, theme);
                     }
                 }, 1000);
             } catch (error) {
