@@ -45,7 +45,7 @@ class Currencyevents {
                     `Since this is the first time you've almost died, Xenon decided to protect you from dying, but next time you really will die.\n**To prevent death, buy a lifesaver from the Xenon shop (\`/shop\`)**\n\nDeath: \`${reason}\`\nAvoided Coin Loss: \`❀ ${lostcoins.toLocaleString()}\``
                 );
         } else if (!hasLife || inventoryData.inventory["lifesaver"] <= 0) {
-            economyData.wallet = economyData.wallet - economyData.wallet;
+            economyData.wallet = 0;
             dmdeathembed
                 .setTitle(`You died, rip. <:ghost:978412292012146688>`)
                 .setDescription(
@@ -65,7 +65,6 @@ class Currencyevents {
                 );
         }
 
-        await EconomyModel.findOneAndUpdate({ userId: userId }, economyData);
         await InventoryModel.findOneAndUpdate(
             { userId: userId },
             inventoryData
