@@ -184,7 +184,7 @@ module.exports = {
                             joincooldown.rawcooldown / 1000
                         )}:R>`;
                         return errorReply(button, error_message);
-                    } else if (userEconomy.wallet < error_message) {
+                    } else if (userEconomy.wallet < minjoincoins) {
                         error_message = `You need at least \`❀ ${minjoincoins.toLocaleString()}\` in your wallet to join this event-heist!`;
                         return errorReply(button, error_message);
                     } else if (eventheist_arry.includes(button.user.id)) {
