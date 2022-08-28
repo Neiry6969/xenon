@@ -65,9 +65,11 @@ module.exports = {
     async execute(interaction, client, theme) {
         let error_message;
         let endinteraction = false;
-        const inventory_fetch = await fetchInventoryData(interaction.user.id);
+        const inventoryData_fetch = await fetchInventoryData(
+            interaction.user.id
+        );
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
-        const inventoryData = inventory_fetch.data;
+        const inventoryData = inventoryData_fetch.data;
         const economyData = economyData_fetch.data;
         const bankcoins = economyData.bank.coins;
         const walletcoins = economyData.wallet;

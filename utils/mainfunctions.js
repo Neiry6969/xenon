@@ -85,6 +85,32 @@ class Mainfunctions {
         }
     }
 
+    static async setFightingLock(interaction, status) {
+        interactionproccesses[interaction.user.id]["fighting"] = status;
+        fs.writeFile(
+            "./interactionproccesses.json",
+            JSON.stringify(interactionproccesses),
+            (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        );
+    }
+
+    static async checkFightingLock(userId) {
+        if (
+            !interactionproccesses[userId] ||
+            !interactionproccesses[userId]["fighting"]
+        ) {
+            return;
+        }
+
+        if (interactionproccesses[userId]["fighting"] === true) {
+            return true;
+        }
+    }
+
     static async checkCooldown(interaction, userId, command, commandname) {
         const fetch_economyData = await fetchEconomyData(interaction.user.id);
         const economyData = fetch_economyData.data;

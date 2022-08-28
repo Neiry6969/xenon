@@ -203,7 +203,10 @@ class Currencyfunctions {
             console.log(error);
         }
 
-        economyData.wallet = economyData.wallet - coins;
+        economyData.wallet -= coins;
+        if (economyData.wallet < 0) {
+            economyData.wallet = 0;
+        }
         return await EconomyModel.findOneAndUpdate(
             { userId: economyData.userId },
             economyData
