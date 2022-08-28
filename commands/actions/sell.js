@@ -62,7 +62,7 @@ module.exports = {
         const economyData = economyData_fetch.data;
 
         if (itemData.sell === "unable to be sold") {
-            error_message = `This item is unable to be sold.\n\n**Item:** ${item.icon} \`${itemData.item}\`\n**Item Type:** \`${item.type}\``;
+            error_message = `This item is unable to be sold.\n\n**Item:** ${itemData.icon} \`${itemData.item}\`\n**Item Type:** \`${itemData.type}\``;
             return errorReply(interaction, error_message);
         }
 
