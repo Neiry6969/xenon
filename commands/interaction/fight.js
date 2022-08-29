@@ -19,6 +19,7 @@ const {
     setProcessingLock,
     checkFightingLock,
     checkProcessingLock,
+    setFightingLock,
 } = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
 const { bardisplay } = require("../../utils/utilsfunctions");
@@ -365,6 +366,11 @@ module.exports = {
                         components: [row],
                     });
                     fight();
+
+                    setFightingLock(options.user.user.id, false);
+                    setFightingLock(interaction.user.id, false);
+                    setProcessingLock(options.user.user.id, false);
+                    setProcessingLock(interaction.user.id, false);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
                     setProcessingLock(options.user.user.id, false);
