@@ -218,7 +218,7 @@ module.exports = {
             let maxcraftamount;
             let halfcraftamount;
 
-            setProcessingLock(interaction, true);
+            setProcessingLock(interaction.user.id, true);
             collector.on("collect", async (i) => {
                 if (i.user.id !== interaction.user.id) {
                     return i.reply({
@@ -229,7 +229,7 @@ module.exports = {
 
                 i.deferUpdate();
                 if (i.customId === "endinteraction") {
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
 
                     craft_msg.components[0].components.forEach((c) => {
                         c.setDisabled();
@@ -954,7 +954,7 @@ module.exports = {
                         components: [row2, row, row3],
                     });
                 } else if (i.customId === "craftbutton") {
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
 
                     craftitems = item.craftitems
                         .map((value) => {
@@ -1061,7 +1061,7 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 craft_msg.components[0].components.forEach((c) => {
                     c.setDisabled();

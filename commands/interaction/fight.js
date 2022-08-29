@@ -21,6 +21,7 @@ const {
     checkProcessingLock,
 } = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
+const { bardisplay } = require("../../utils/utilsfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -47,6 +48,7 @@ module.exports = {
     cdmsg: "You need to take it slow and wait before fighting again.",
     cooldown: 5,
     async execute(interaction, client, theme) {
+        let confirmed = false;
         let endinteraction = false;
         let error_message;
 
@@ -196,8 +198,20 @@ module.exports = {
         } else if (quantity && itemData) {
             singleprize_display = `${itemData.icon} \`${
                 itemData.item
-            }\` \`x ${quantity.toLocaleString()}}\``;
+            }\` \`x ${quantity.toLocaleString()}\``;
         }
+
+        let confirm = new MessageButton()
+            .setCustomId("confirm")
+            .setLabel("Confirm")
+            .setStyle("PRIMARY");
+
+        let cancel = new MessageButton()
+            .setCustomId("cancel")
+            .setLabel("Cancel")
+            .setStyle("DANGER");
+
+        let row = new MessageActionRow().addComponents(confirm, cancel);
 
         const confirmfight_embed = new MessageEmbed()
             .setColor(theme.embed.color)
@@ -205,12 +219,221 @@ module.exports = {
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.user.displayAvatarURL(),
             })
-            .setTitle(`Action Confirmation  - Fight`)
+            .setTitle(`Action Confirmation - Fight`)
             .setDescription(
-                `${interaction.user} are you sure you want to fight ${singleprize_display} with ${options.user}`
+                `${interaction.user} are you sure you want to fight ${singleprize_display} with ${options.user}?`
             );
-        interaction.reply({
+
+        await interaction.reply({
             embeds: [confirmfight_embed],
+            components: [row],
+        });
+
+        const confirmfight_msg = await interaction.fetchReply();
+
+        const collector = confirmfight_msg.createMessageComponentCollector({
+            time: 20 * 1000,
+        });
+
+        async function fight() {
+            const local_stats = {
+                health: 100,
+                shield: 0,
+            };
+            const target_stats = {
+                health: 100,
+                shield: 0,
+            };
+            let turn;
+            if (Math.floor(Math.random() * 2) === 1) {
+                turn = options.user.user;
+            } else {
+                turn = interaction.user;
+            }
+
+            const fight_embed = new MessageEmbed()
+                .setColor(theme.embed.color)
+                .setAuthor({
+                    name: `${turn.tag}`,
+                    iconURL: turn.displayAvatarURL(),
+                })
+                .setTitle(`Fight`)
+                .setThumbnail(
+                    "https://media.discordapp.net/attachments/964716079425417269/1013874952136564767/scientist-street-fighter-game-pixel-art-animation-by-diego-sanches-1.gif?width=311&height=389"
+                )
+                .setDescription(`${interaction.user} **VS** ${options.user}`)
+                .setFields(
+                    {
+                        name: `${interaction.user.username}`,
+                        value: `<:shield:1013876234138177586> ${bardisplay(
+                            Math.floor(local_stats.health / 100)
+                        )}`,
+                        inline: true,
+                    },
+                    {
+                        name: `${options.user.user.username}`,
+                        value: `<:shield:1013876234138177586> ${bardisplay(
+                            Math.floor(target_stats.health / 100)
+                        )}`,
+                        inline: true,
+                    }
+                );
+
+            const fight_msg = await interaction.followUp({
+                content: `**Turn:** ${turn}`,
+                embeds: [fight_embed],
+            });
+        }
+
+        async function target_confirmation() {
+            const confirmfight_embed_target = new MessageEmbed()
+                .setTitle(`Action Confirmation - Fight`)
+                .setColor(theme.embed.color)
+                .setAuthor({
+                    name: `${options.user.user.tag}`,
+                    iconURL: options.user.user.displayAvatarURL(),
+                })
+                .setDescription(
+                    `${interaction.user} want to fight ${singleprize_display} with you.\n**If you except, you will fight with ${singleprize_display}. If you lose, you will also lose this item.**`
+                );
+            confirm.setDisabled(false).setStyle("PRIMARY");
+            cancel.setDisabled(false).setStyle("DANGER");
+            const confirmfight_msg_target = await interaction.followUp({
+                content: `${options.user}`,
+                embeds: [confirmfight_embed_target],
+                components: [row],
+            });
+
+            const collector_target =
+                confirmfight_msg_target.createMessageComponentCollector({
+                    time: 20 * 1000,
+                });
+
+            setProcessingLock(options.user.user.id, true);
+            collector_target.on("collect", async (button) => {
+                if (button.user.id != options.user.user.id) {
+                    return button.reply({
+                        content: "This is not for you.",
+                        ephemeral: true,
+                    });
+                }
+
+                button.deferUpdate();
+
+                if (button.customId === "confirm") {
+                    endinteraction = true;
+                    confirmfight_embed_target
+                        .setColor(`#95ff87`)
+                        .setTitle(`Action Confirmed - Fight`);
+
+                    confirm.setDisabled().setStyle("SUCCESS");
+                    cancel.setDisabled().setStyle("SECONDARY");
+
+                    confirmfight_msg_target.edit({
+                        embeds: [confirmfight_embed_target],
+                        components: [row],
+                    });
+                    fight();
+                } else if (button.customId === "cancel") {
+                    endinteraction = true;
+                    setProcessingLock(options.user.user.id, false);
+                    setProcessingLock(interaction.user.id, false);
+
+                    confirmfight_embed_target
+                        .setTitle(`Action Cancellend - Fight`)
+                        .setColor(`#ff8f87`);
+
+                    confirm.setDisabled().setStyle("SECONDARY");
+                    cancel.setDisabled();
+
+                    confirmfight_msg_target.edit({
+                        embeds: [confirmfight_embed_target],
+                        components: [row],
+                    });
+                }
+            });
+
+            collector_target.on("end", async (collected) => {
+                if (endinteraction === true) {
+                } else {
+                    setProcessingLock(options.user.user.id, false);
+                    setProcessingLock(interaction.user.id, false);
+
+                    confirmfight_embed_target
+                        .setTitle(`Action Timed Out - Fight`)
+                        .setColor(`#ff8f87`);
+
+                    confirm.setDisabled().setStyle("SECONDARY");
+                    cancel.setDisabled().setStyle("SECONDARY");
+
+                    confirmfight_msg_target.edit({
+                        embeds: [confirmfight_embed_target],
+                        components: [row],
+                    });
+                }
+            });
+        }
+
+        setProcessingLock(interaction.user.id, true);
+        collector.on("collect", async (button) => {
+            if (button.user.id != interaction.user.id) {
+                return button.reply({
+                    content: "This is not for you.",
+                    ephemeral: true,
+                });
+            }
+
+            button.deferUpdate();
+
+            if (button.customId === "confirm") {
+                confirmfight_embed
+                    .setColor(`#95ff87`)
+                    .setTitle(`Action Confirmed - Fight`);
+
+                confirm.setDisabled().setStyle("SUCCESS");
+                cancel.setDisabled().setStyle("SECONDARY");
+
+                confirmfight_msg.edit({
+                    embeds: [confirmfight_embed],
+                    components: [row],
+                });
+
+                target_confirmation();
+            } else if (button.customId === "cancel") {
+                endinteraction = true;
+                setProcessingLock(interaction.user.id, false);
+
+                confirmfight_embed
+                    .setTitle(`Action Cancellend - Fight`)
+                    .setColor(`#ff8f87`);
+
+                confirm.setDisabled().setStyle("SECONDARY");
+                cancel.setDisabled();
+
+                confirmfight_msg.edit({
+                    embeds: [confirmfight_embed],
+                    components: [row],
+                });
+            }
+        });
+
+        collector.on("end", async (collected) => {
+            if (endinteraction === true) {
+            } else {
+                setProcessingLock(interaction.user.id, false);
+
+                confirmfight_embed
+                    .setTitle(`Action Timed Out - Fight`)
+                    .setColor(`#ff8f87`);
+
+                confirm.setDisabled().setStyle("SECONDARY");
+                cancel.setDisabled().setStyle("SECONDARY");
+
+                confirmfight_msg.edit({
+                    embeds: [confirmfight_embed],
+                    components: [row],
+                });
+            }
         });
 
         return setCooldown(interaction, "fight", 5, economyData);

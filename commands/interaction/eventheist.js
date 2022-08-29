@@ -220,7 +220,7 @@ module.exports = {
             });
 
             collector.on("end", async (collected) => {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 eventheist_embed
                     .setTitle(`Event Heist Ended...`)
@@ -545,7 +545,7 @@ module.exports = {
                     interaction.channel.send({ embeds: [resultembed] });
                 }
 
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
                 await eventheistlobby_msg.edit({
                     embeds: [eventheist_embed],
                     components: [erow],
@@ -589,7 +589,7 @@ module.exports = {
             time: 20 * 1000,
         });
 
-        setProcessingLock(interaction, true);
+        setProcessingLock(interaction.user.id, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -624,7 +624,7 @@ module.exports = {
                 });
             } else if (button.customId === "cancel") {
                 endinteraction = true;
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 eventheist_embed
                     .setColor(`#ff8f87`)
@@ -648,7 +648,7 @@ module.exports = {
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 eventheist_embed
                     .setColor(`#ff8f87`)

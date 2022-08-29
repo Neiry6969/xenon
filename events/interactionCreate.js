@@ -71,10 +71,10 @@ module.exports = {
             //     return interaction.reply({ embeds: [errorembed], ephemeral: true });
             // }
 
-            if (guildData.disabledcmds[commandname] === true) {
-                error_message = `<a:cross:987458395823018044> **This command has been disabled in** \`${interaction.guild.name}\`\nGuild ID: \`${interaction.guild.id}\`\nCommand: \`${commandname}\``;
-                return errorReply(interaction, error_message);
-            }
+            // if (guildData.disabledcmds[commandname] === true) {
+            //     error_message = `<a:cross:987458395823018044> **This command has been disabled in** \`${interaction.guild.name}\`\nGuild ID: \`${interaction.guild.id}\`\nCommand: \`${commandname}\``;
+            //     return errorReply(interaction, error_message);
+            // }
 
             await backgroundupdates_handler(interaction, client, commandname);
 

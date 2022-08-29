@@ -124,7 +124,7 @@ module.exports = {
                 idle: 20 * 1000,
             });
 
-            setProcessingLock(interaction, true);
+            setProcessingLock(interaction.user.id, true);
             collector.on("collect", async (button) => {
                 if (button.user.id != interaction.user.id) {
                     return button.reply({
@@ -145,7 +145,7 @@ module.exports = {
                     alert_msg.edit({
                         components: alert_msg.components,
                     });
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
                 } else if (button.customId === "next") {
                     if (page === lastpage) {
                         page = 1;
@@ -192,7 +192,7 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 alert_msg.components[0].components.forEach((c) => {
                     c.setDisabled();

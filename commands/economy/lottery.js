@@ -175,7 +175,7 @@ module.exports = {
                     time: 20 * 1000,
                 });
 
-            setProcessingLock(interaction, true);
+            setProcessingLock(interaction.user.id, true);
             collector.on("collect", async (button) => {
                 if (button.user.id != interaction.user.id) {
                     return button.reply({
@@ -219,10 +219,10 @@ module.exports = {
                         { lotteryId: lotteryData.lotteryId },
                         lotteryData
                     );
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
 
                     lottery_embed
                         .setTitle(`Action Cancelled - Purchase (lottery)`)
@@ -236,7 +236,7 @@ module.exports = {
                 }
             });
             collector.on("end", async (collected) => {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 if (endinteraction === true) {
                 } else {

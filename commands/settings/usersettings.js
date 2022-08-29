@@ -118,7 +118,7 @@ module.exports = {
         });
 
         let currentsetting = settings_keys[0];
-        setProcessingLock(interaction, true);
+        setProcessingLock(interaction.user.id, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -172,7 +172,7 @@ module.exports = {
                 settings_msg.edit({
                     components: settings_msg.components,
                 });
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
             } else {
                 let newstatus;
                 if (button.customId === "disablebutton") {
@@ -219,7 +219,7 @@ module.exports = {
             settings_msg.edit({
                 components: settings_msg.components,
             });
-            setProcessingLock(interaction, false);
+            setProcessingLock(interaction.user.id, false);
         });
         setCooldown(
             interaction,

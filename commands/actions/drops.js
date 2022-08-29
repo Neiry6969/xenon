@@ -175,7 +175,7 @@ module.exports = {
         let totalprice_amountcanbuy;
         let extrastring;
 
-        setProcessingLock(interaction, true);
+        setProcessingLock(interaction.user.id, true);
         collector.on("collect", async (i) => {
             if (i.user.id != interaction.user.id) {
                 return i.reply({
@@ -197,7 +197,7 @@ module.exports = {
                 drop_msg.edit({
                     components: drop_msg.components,
                 });
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
             } else if (i.customId === "backbutton") {
                 row.setComponents(dropmenu);
                 row2.setComponents(endinteractionbutton);
@@ -830,12 +830,12 @@ module.exports = {
                     components: drop_msg.components,
                 });
 
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
             }
         });
 
         collector.on("end", (collected) => {
-            setProcessingLock(interaction, false);
+            setProcessingLock(interaction.user.id, false);
 
             drop_msg.components[0].components.forEach((c) => {
                 c.setDisabled();

@@ -155,7 +155,7 @@ module.exports = {
                 time: 20 * 1000,
             });
 
-            setProcessingLock(interaction, true);
+            setProcessingLock(interaction.user.id, true);
             collector.on("collect", async (button) => {
                 if (button.user.id != interaction.user.id) {
                     return button.reply({
@@ -197,7 +197,7 @@ module.exports = {
                         quantity
                     );
                     await addCoins(economyData.userId, saleprice);
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
 
@@ -212,12 +212,12 @@ module.exports = {
                         embeds: [sell_embed],
                         components: [row],
                     });
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
                 }
             });
 
             collector.on("end", async (collected) => {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 if (endinteraction === true) {
                 } else {

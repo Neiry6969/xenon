@@ -7,7 +7,7 @@ const {
     removeCoins,
     addCoins,
     addItem,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -145,7 +145,7 @@ module.exports = {
                 time: 20 * 1000,
             });
 
-            setProcessingLock(interaction, true);
+            setProcessingLock(interaction.user.id, true);
             collector.on("collect", async (button) => {
                 if (button.user.id != interaction.user.id) {
                     return button.reply({
@@ -181,12 +181,12 @@ module.exports = {
                         embeds: [buy_embed],
                         components: [row],
                     });
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
                     await addItem(economyData.userId, itemData.item, quantity);
                     await removeCoins(economyData.userId, totalprice);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
-                    setProcessingLock(interaction, false);
+                    setProcessingLock(interaction.user.id, false);
 
                     buy_embed
                         .setTitle(`Action Cancelled - Purchase`)
@@ -203,11 +203,11 @@ module.exports = {
             });
 
             collector.on("end", async (collected) => {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 if (endinteraction === true) {
                 } else {
-                    await addexperiencepoints(interaction.user.id, 1, 5)
+                    await addexperiencepoints(interaction.user.id, 1, 5);
                     buy_embed
                         .setTitle(`Action Timed Out - Purchase`)
                         .setColor(`#ff8f87`);

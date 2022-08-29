@@ -77,7 +77,7 @@ class Useitem {
             inventoryData.inventory[item.item] - useamount;
         await EconomyModel.findOneAndUpdate(params, economyData);
         await InventoryModel.findOneAndUpdate(params, inventoryData);
-        setProcessingLock(interaction, true);
+        setProcessingLock(interaction.user.id, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -127,7 +127,7 @@ class Useitem {
                     embeds: [embed],
                     components: [row],
                 });
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
             } else if (button.customId === "cancel") {
                 endinteraction = true;
 
@@ -155,14 +155,14 @@ class Useitem {
                     embeds: [confirmembed],
                     components: [row],
                 });
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
             }
         });
 
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 economyData.bank.bankmessagespace =
                     economyData.bank.bankmessagespace - expandedspace;
@@ -246,7 +246,7 @@ class Useitem {
         await EconomyModel.findOneAndUpdate(params, economyData);
         await InventoryModel.findOneAndUpdate(params, inventoryData);
 
-        setProcessingLock(interaction, true);
+        setProcessingLock(interaction.user.id, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -277,7 +277,7 @@ class Useitem {
                     embeds: [embed],
                     components: [row],
                 });
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
             } else if (button.customId === "cancel") {
                 endinteraction = true;
 
@@ -304,14 +304,14 @@ class Useitem {
                     embeds: [confirmembed],
                     components: [row],
                 });
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
             }
         });
 
         collector.on("end", async (collected) => {
             if (endinteraction === true) {
             } else {
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 inventoryData.inventory[item.item] =
                     inventoryData.inventory[item.item] + 1;

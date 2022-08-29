@@ -170,7 +170,7 @@ module.exports = {
             time: 20 * 1000,
         });
 
-        setProcessingLock(interaction, true);
+        setProcessingLock(interaction.user.id, true);
         collector.on("collect", async (button) => {
             if (button.user.id != interaction.user.id) {
                 return button.reply({
@@ -203,12 +203,12 @@ module.exports = {
                     embeds: [share_embed],
                     components: [row],
                 });
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
                 await removeCoins(interaction.user.id, amount);
                 await addCoins(target.id, amount);
             } else if (button.customId === "cancel") {
                 endinteraction = true;
-                setProcessingLock(interaction, false);
+                setProcessingLock(interaction.user.id, false);
 
                 share_embed
                     .setTitle(`Action Timed Out - Share`)
@@ -225,7 +225,7 @@ module.exports = {
         });
 
         collector.on("end", async (collected) => {
-            setProcessingLock(interaction, false);
+            setProcessingLock(interaction.user.id, false);
 
             if (endinteraction === true) {
             } else {
