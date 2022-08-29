@@ -66,10 +66,12 @@ class Mainfunctions {
     }
 
     static async setProcessingLock(userId, status) {
-        interactionproccesses[userId] = {
-            interaction: status,
-            proccessingcoins: status,
-        };
+        if (!interactionproccesses[userId]) {
+            interactionproccesses[userId] = {};
+        }
+
+        interactionproccesses[userId]["proccessingcoins"] = status;
+        interactionproccesses[userId]["interaction"] = status;
         fs.writeFile(
             "./interactionproccesses.json",
             JSON.stringify(interactionproccesses),
@@ -82,11 +84,8 @@ class Mainfunctions {
     }
 
     static async checkProcessingLock(userId) {
-        if (!interactionproccesses[userId]?.interaction) {
-            interactionproccesses[userId] = {
-                interaction: false,
-                proccessingcoins: false,
-            };
+        if (!interactionproccesses[userId]) {
+            return;
         }
 
         if (
@@ -99,6 +98,7 @@ class Mainfunctions {
 
     static async setFightingLock(userId, status) {
         interactionproccesses[userId]["fighting"] = status;
+
         fs.writeFile(
             "./interactionproccesses.json",
             JSON.stringify(interactionproccesses),

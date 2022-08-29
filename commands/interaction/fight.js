@@ -8,6 +8,7 @@ const {
     addCoins,
     addItem,
     addexperiencepoints,
+    removeItem,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -243,21 +244,36 @@ module.exports = {
         });
 
         async function fight() {
-            const local_stats = {
-                health: 100,
-                shield: 0,
-                buff: 0,
+            setFightingLock(options.user.user.id, true);
+            setFightingLock(interaction.user.id, true);
+            const fightgame_status = {
+                local: {
+                    health: 100,
+                    shield: 0,
+                    buff: 0,
+                },
+                target: {
+                    health: 100,
+                    shield: 0,
+                    buff: 0,
+                },
             };
-            const target_stats = {
-                health: 100,
-                shield: 0,
-                buff: 0,
-            };
+
+            let hasended = false;
+            let loser;
+            let winner;
             let turn;
+            let turnraw;
+            let waitingraw;
+            let lastdamage;
             if (Math.floor(Math.random() * 2) === 1) {
                 turn = options.user.user;
+                turnraw = "target";
+                waitingraw = "local";
             } else {
                 turn = interaction.user;
+                turnraw = "local";
+                waitingraw = "target";
             }
 
             const fight_embed = new MessageEmbed()
@@ -268,40 +284,56 @@ module.exports = {
                 })
                 .setTitle(`Fight`)
                 .setThumbnail(
-                    "https://media.discordapp.net/attachments/964716079425417269/1013874952136564767/scientist-street-fighter-game-pixel-art-animation-by-diego-sanches-1.gif?width=311&height=389"
+                    "https://media.discordapp.net/attachments/964716079425417269/1013903850660442262/ezgif.com-gif-maker_27.gif?width=281&height=372"
                 )
                 .setDescription(
-                    `${interaction.user} **VS** ${options.user}\n**Prize:** ${doubleprize_display}`
+                    `${interaction.user} **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`
                 )
                 .setFields(
                     {
                         name: `${interaction.user.username}`,
                         value: `<:lifesaver:978754575098085426> ${bardisplay(
-                            Math.floor((local_stats.health / 100) * 100)
+                            Math.floor(
+                                (fightgame_status.local.health / 100) * 100
+                            )
                         )} **${
-                            local_stats.health
+                            fightgame_status.local.health
                         }%**\n<:shield:1013876234138177586> ${bardisplay(
-                            Math.floor((local_stats.shield / 100) * 100)
+                            Math.floor(
+                                (fightgame_status.local.shield / 100) * 100
+                            )
                         )} **${
-                            local_stats.shield
+                            fightgame_status.local.shield
                         }%**\n<:sword:1013883185337221151> ${bardisplay(
-                            Math.floor((local_stats.buff / 100) * 100)
-                        )} **${local_stats.buff}%**`,
+                            Math.floor(
+                                (fightgame_status.local.buff / 100) * 100
+                            )
+                        )} **${fightgame_status.local.buff}%**`,
                         inline: true,
                     },
                     {
                         name: `${options.user.user.username}`,
                         value: `<:lifesaver:978754575098085426> ${bardisplay(
-                            Math.floor((target_stats.health / 100) * 100)
+                            Math.floor(
+                                (fightgame_status.target.health / 100) * 100
+                            )
                         )} **${
-                            local_stats.health
+                            fightgame_status.target.health
                         }%**\n<:shield:1013876234138177586> ${bardisplay(
-                            Math.floor((target_stats.shield / 100) * 100)
+                            Math.floor(
+                                (fightgame_status.target.shield / 100) * 100
+                            )
                         )} **${
-                            target_stats.shield
+                            fightgame_status.target.shield
                         }%**\n<:sword:1013883185337221151> ${bardisplay(
-                            Math.floor((target_stats.buff / 100) * 100)
-                        )} **${target_stats.buff}%**`,
+                            Math.floor(
+                                (fightgame_status.target.buff / 100) * 100
+                            )
+                        )} **${fightgame_status.target.buff}%**`,
                         inline: true,
                     },
                     {
@@ -311,9 +343,565 @@ module.exports = {
                     }
                 );
 
+            const fight_components = [];
+            const row0 = new MessageActionRow();
+            const row1 = new MessageActionRow();
+
+            let shield = new MessageButton()
+                .setCustomId("shield")
+                .setLabel("Shield")
+                .setStyle("SECONDARY")
+                .setEmoji("<:shield:1013876234138177586>");
+
+            let buff = new MessageButton()
+                .setCustomId("buff")
+                .setLabel("Buff")
+                .setStyle("SECONDARY")
+                .setEmoji("<:sword:1013883185337221151>");
+
+            let heal = new MessageButton()
+                .setCustomId("heal")
+                .setLabel("Heal")
+                .setStyle("SECONDARY")
+                .setEmoji("<:medicalkit:1013892434129854544>")
+                .setDisabled(true);
+
+            row0.setComponents(shield, buff, heal);
+
+            let counterattack = new MessageButton()
+                .setCustomId("counterattck")
+                .setLabel("Counter Attack")
+                .setStyle("SECONDARY")
+                .setDisabled(true);
+
+            let block = new MessageButton()
+                .setCustomId("block")
+                .setLabel("Block Attack")
+                .setStyle("SECONDARY")
+                .setDisabled(true);
+
+            let attack = new MessageButton()
+                .setCustomId("attack")
+                .setLabel("Attack")
+                .setStyle("SECONDARY");
+
+            let breakshield = new MessageButton()
+                .setCustomId("breakshield")
+                .setLabel("Break Shield")
+                .setStyle("SECONDARY")
+                .setDisabled(true);
+            let flee = new MessageButton()
+                .setCustomId("flee")
+                .setLabel("Flee")
+                .setStyle("DANGER")
+                .setDisabled(true);
+
+            row1.setComponents(counterattack, block, attack, breakshield, flee);
+
+            fight_components.push(row0);
+            fight_components.push(row1);
             const fight_msg = await interaction.followUp({
                 content: `**Turn:** ${turn}`,
                 embeds: [fight_embed],
+                components: fight_components,
+            });
+
+            const fight_collector = fight_msg.createMessageComponentCollector({
+                idle: 60 * 1000,
+            });
+
+            fight_collector.on("collect", async (button) => {
+                if (
+                    button.user.id != interaction.user.id &&
+                    button.user.id != options.user.user.id
+                ) {
+                    fight_msg.embeds[0].description = `${
+                        interaction.user
+                    } **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`;
+
+                    fight_msg.edit({
+                        embeds: fight_msg.embeds,
+                    });
+                    return button.reply({
+                        content: "This isn't your fight.",
+                        ephemeral: true,
+                    });
+                } else if (button.user.id != turn.id) {
+                    fight_msg.embeds[0].description = `${
+                        interaction.user
+                    } **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`;
+
+                    fight_msg.edit({
+                        embeds: fight_msg.embeds,
+                    });
+                    return button.reply({
+                        content: "It is not your turn, calm down.",
+                        ephemeral: true,
+                    });
+                }
+
+                button.deferUpdate();
+                if (button.customId === "shield") {
+                    const turn_current = turn;
+                    let shield_added = Math.floor(Math.random() * 30 + 3);
+
+                    if (fightgame_status[turnraw].shield + shield_added > 100) {
+                        shield_added = 100 - fightgame_status[turnraw].shield;
+                    }
+
+                    fightgame_status[turnraw].shield += shield_added;
+
+                    if (turn.id === interaction.user.id) {
+                        turn = options.user.user;
+                        turnraw = "target";
+                        waitingraw = "local";
+                        fight_msg.embeds[0].fields[0] = {
+                            name: `${interaction.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.local.buff}%**`,
+                            inline: true,
+                        };
+                    } else {
+                        turn = interaction.user;
+                        turnraw = "local";
+                        waitingraw = "target";
+                        fight_msg.embeds[0].fields[1] = {
+                            name: `${options.user.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.target.buff}%**`,
+                            inline: true,
+                        };
+                    }
+
+                    fight_msg.embeds[0].author = {
+                        name: `${turn.tag}`,
+                        iconURL: turn.displayAvatarURL(),
+                    };
+
+                    fight_msg.embeds[0].description = `${
+                        interaction.user
+                    } **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`;
+
+                    fight_msg.embeds[0].fields[2].value = `\`${turn_current.username} upgraded their shield by ${shield_added}%\``;
+
+                    fight_msg.edit({
+                        content: `**Turn:** ${turn}`,
+                        embeds: fight_msg.embeds,
+                        components: fight_msg.components,
+                    });
+                } else if (button.customId === "buff") {
+                    const turn_current = turn;
+                    let buff_added = Math.floor(Math.random() * 30 + 3);
+
+                    if (fightgame_status[turnraw].buff + buff_added > 100) {
+                        buff_added = 100 - fightgame_status[turnraw].buff;
+                    }
+
+                    fightgame_status[turnraw].buff += buff_added;
+
+                    if (turn.id === interaction.user.id) {
+                        turn = options.user.user;
+                        turnraw = "target";
+                        waitingraw = "local";
+                        fight_msg.embeds[0].fields[0] = {
+                            name: `${interaction.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.local.buff}%**`,
+                            inline: true,
+                        };
+                    } else {
+                        turn = interaction.user;
+                        turnraw = "local";
+                        waitingraw = "target";
+                        fight_msg.embeds[0].fields[1] = {
+                            name: `${options.user.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.target.buff}%**`,
+                            inline: true,
+                        };
+                    }
+
+                    fight_msg.embeds[0].author = {
+                        name: `${turn.tag}`,
+                        iconURL: turn.displayAvatarURL(),
+                    };
+
+                    fight_msg.embeds[0].description = `${
+                        interaction.user
+                    } **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`;
+
+                    fight_msg.embeds[0].fields[2].value = `\`${turn_current.username} buffed their attack by ${buff_added}%\``;
+
+                    fight_msg.edit({
+                        content: `**Turn:** ${turn}`,
+                        embeds: fight_msg.embeds,
+                        components: fight_msg.components,
+                    });
+                } else if (button.customId === "attack") {
+                    const turn_current = turn;
+                    const attack_min = Math.floor(
+                        15 * (fightgame_status[turnraw].buff / 100)
+                    );
+                    const attack_max = 25;
+                    const attack_amount =
+                        Math.floor(Math.random() * attack_max) + attack_min;
+                    let attack_final = Math.floor(
+                        attack_amount -
+                            20 * (fightgame_status[waitingraw].shield / 100)
+                    );
+
+                    if (attack_final < 0) {
+                        fightgame_status[turnraw].health -=
+                            Math.abs(attack_final);
+
+                        if (
+                            fightgame_status[turnraw].health - attack_final <
+                            0
+                        ) {
+                            attack_final =
+                                100 - fightgame_status[turnraw].health;
+
+                            if (turn.id === interaction.user.id) {
+                                winner = options.user;
+                                loser = interaction.user;
+                            } else {
+                                winner = interaction.user;
+                                loser = options.user;
+                            }
+                        }
+                    } else {
+                        fightgame_status[waitingraw].health -= attack_final;
+
+                        if (
+                            fightgame_status[waitingraw].health - attack_final <
+                            0
+                        ) {
+                            attack_final =
+                                100 - fightgame_status[waitingraw].health;
+
+                            if (turn.id === interaction.user.id) {
+                                winner = interaction.user;
+                                loser = options.user;
+                            } else {
+                                winner = options.user;
+                                loser = interaction.user;
+                            }
+                        }
+                    }
+
+                    console.log(
+                        attack_final,
+                        attack_min,
+                        attack_max,
+                        attack_amount
+                    );
+
+                    console.log(
+                        fightgame_status.local.health,
+                        fightgame_status.target.health
+                    );
+
+                    if (turn.id === interaction.user.id) {
+                        turn = options.user.user;
+                        turnraw = "target";
+                        waitingraw = "local";
+
+                        if (attack_final < 0) {
+                            fight_msg.embeds[0].fields[0] = {
+                                name: `${interaction.user.username}`,
+                                value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.local.health / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.local.health
+                                }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.local.shield / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.local.shield
+                                }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.local.buff / 100) *
+                                            100
+                                    )
+                                )} **${fightgame_status.local.buff}%**`,
+                                inline: true,
+                            };
+                        } else {
+                            fight_msg.embeds[0].fields[1] = {
+                                name: `${options.user.user.username}`,
+                                value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.target.health / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.target.health
+                                }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.target.shield / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.target.shield
+                                }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.target.buff / 100) *
+                                            100
+                                    )
+                                )} **${fightgame_status.target.buff}%**`,
+                                inline: true,
+                            };
+                        }
+                    } else {
+                        turn = interaction.user;
+                        turnraw = "local";
+                        waitingraw = "target";
+                        if (attack_final < 0) {
+                            fight_msg.embeds[0].fields[1] = {
+                                name: `${options.user.user.username}`,
+                                value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.target.health / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.local.target
+                                }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.target.shield / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.target.shield
+                                }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.target.buff / 100) *
+                                            100
+                                    )
+                                )} **${fightgame_status.target.buff}%**`,
+                                inline: true,
+                            };
+                        } else {
+                            fight_msg.embeds[0].fields[0] = {
+                                name: `${interaction.user.username}`,
+                                value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.local.health / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.local.health
+                                }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.local.shield / 100) *
+                                            100
+                                    )
+                                )} **${
+                                    fightgame_status.local.shield
+                                }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                    Math.floor(
+                                        (fightgame_status.local.buff / 100) *
+                                            100
+                                    )
+                                )} **${fightgame_status.local.buff}%**`,
+                                inline: true,
+                            };
+                        }
+                    }
+
+                    fight_msg.embeds[0].author = {
+                        name: `${turn.tag}`,
+                        iconURL: turn.displayAvatarURL(),
+                    };
+
+                    fight_msg.embeds[0].description = `${
+                        interaction.user
+                    } **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`;
+
+                    fight_msg.embeds[0].fields[2].value = `${
+                        attack_final < 0
+                            ? `\`${
+                                  turn_current.username
+                              } tried to attack, but took ${Math.abs(
+                                  attack_final
+                              )}% damage\``
+                            : `\`${turn_current.username} gave an attack of ${attack_final}%\``
+                    }`;
+
+                    if (winner) {
+                        hasended = true;
+                        fight_msg.embeds[0].author = {
+                            name: `${winner.tag}`,
+                            iconURL: winner.displayAvatarURL(),
+                        };
+                        fight_msg.embeds[0].thumbnail.url = `https://media.discordapp.net/attachments/964716079425417269/1013913421529485453/db1tdaj-c8dcfaf2-3068-4ec1-bb66-53f75586f29e.gif?width=390&height=390`;
+                        fight_msg.embeds[0].fields[2].value = `\`${turn.username} won the fight like a king!\``;
+                        fight_msg.embeds[0].description = `**Winner: ${winner}**\n\n${interaction.user} **VS** ${options.user}\n**Prize:** ${doubleprize_display}`;
+
+                        fight_msg.components[0].components.forEach((c) => {
+                            c.setDisabled();
+                        });
+                        fight_msg.components[1].components.forEach((c) => {
+                            c.setDisabled();
+                        });
+
+                        fight_msg.edit({
+                            content: `${winner} is victorious!`,
+                            embeds: fight_msg.embeds,
+                            components: fight_msg.components,
+                        });
+
+                        if (quantity && itemData) {
+                            await removeItem(loser.id, itemData.item, quantity);
+                            await addItem(winner.id, itemData.item, quantity);
+                        } else if (quantity) {
+                            await removeCoins(loser.id, quantity);
+                            await removeCoins(winner.id, quantity);
+                        }
+                    } else {
+                        fight_msg.edit({
+                            content: `**Turn:** ${turn}`,
+                            embeds: fight_msg.embeds,
+                            components: fight_msg.components,
+                        });
+                    }
+                }
+            });
+
+            fight_collector.on("end", async (collected) => {
+                if (
+                    fightgame_status.local.health > 0 &&
+                    fightgame_status.target.health > 0
+                ) {
+                    if (turn.id === interaction.user.id) {
+                        winner = options.user.user;
+                        loser = interaction.user;
+                    } else {
+                        winner = interaction.user;
+                        loser = options.user.user;
+                    }
+                    fight_msg.embeds[0].author = {
+                        name: `${winner.tag}`,
+                        iconURL: winner.displayAvatarURL(),
+                    };
+                    fight_msg.embeds[0].thumbnail.url = `https://media.discordapp.net/attachments/964716079425417269/1013913421529485453/db1tdaj-c8dcfaf2-3068-4ec1-bb66-53f75586f29e.gif?width=390&height=390`;
+                    fight_msg.embeds[0].fields[2].value = `\`${turn.username} fell unconscious and lost the fight\``;
+                    fight_msg.embeds[0].description = `**Winner: ${winner}**\n\n${interaction.user} **VS** ${options.user}\n**Prize:** ${doubleprize_display}`;
+                } else {
+                }
+
+                fight_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
+                fight_msg.components[1].components.forEach((c) => {
+                    c.setDisabled();
+                });
+
+                fight_msg.edit({
+                    content: `${winner} is victorious!`,
+                    embeds: fight_msg.embeds,
+                    components: fight_msg.components,
+                });
+
+                if (hasended === false) {
+                    if (quantity && itemData) {
+                        await removeItem(loser.id, itemData.item, quantity);
+                        await addItem(winner.id, itemData.item, quantity);
+                    } else if (quantity) {
+                        await removeCoins(loser.id, quantity);
+                        await removeCoins(winner.id, quantity);
+                    }
+                }
+
+                setFightingLock(options.user.user.id, false);
+                setFightingLock(interaction.user.id, false);
+                setProcessingLock(options.user.user.id, false);
+                setProcessingLock(interaction.user.id, false);
             });
         }
 
@@ -366,18 +954,13 @@ module.exports = {
                         components: [row],
                     });
                     fight();
-
-                    setFightingLock(options.user.user.id, false);
-                    setFightingLock(interaction.user.id, false);
-                    setProcessingLock(options.user.user.id, false);
-                    setProcessingLock(interaction.user.id, false);
                 } else if (button.customId === "cancel") {
                     endinteraction = true;
                     setProcessingLock(options.user.user.id, false);
                     setProcessingLock(interaction.user.id, false);
 
                     confirmfight_embed_target
-                        .setTitle(`Action Cancellend - Fight`)
+                        .setTitle(`Action Declined - Fight`)
                         .setColor(`#ff8f87`);
 
                     confirm.setDisabled().setStyle("SECONDARY");
