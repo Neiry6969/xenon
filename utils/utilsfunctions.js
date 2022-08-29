@@ -74,8 +74,10 @@ class Utilsfucntions {
                 return bar + "<:barendlow:975533190930391060>";
             } else if (leftperc > 5) {
                 return bar + "<:barendmid:975533190934585374>";
-            } else if (leftperc >= 0) {
+            } else if (leftperc > 0) {
                 return bar + "<:barendhigh:975533190980730901>";
+            } else if (leftperc === 0) {
+                return bar + "<:barendfull:975526638857097337>";
             }
         }
     }

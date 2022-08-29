@@ -99,8 +99,6 @@ class Mainfunctions {
 
     static async setFightingLock(userId, status) {
         interactionproccesses[userId]["fighting"] = status;
-        interactionproccesses[userId]["interaction"] = status;
-        interactionproccesses[userId]["proccessingcoins"] = status;
         fs.writeFile(
             "./interactionproccesses.json",
             JSON.stringify(interactionproccesses),

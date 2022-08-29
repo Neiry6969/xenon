@@ -190,15 +190,21 @@ module.exports = {
             }
         }
         let singleprize_display;
+        let doubleprize_display;
 
         if (quantity === 0) {
             singleprize_display = `\`nothing\``;
+            doubleprize_display = `\`nothing\``;
         } else if (quantity && !options.item) {
             singleprize_display = `\`❀ ${quantity.toLocaleString()}\``;
+            doubleprize_display = `\`❀ ${(quantity * 2).toLocaleString()}\``;
         } else if (quantity && itemData) {
             singleprize_display = `${itemData.icon} \`${
                 itemData.item
             }\` \`x ${quantity.toLocaleString()}\``;
+            doubleprize_display = `${itemData.icon} \`${itemData.item}\` \`x ${(
+                quantity * 2
+            ).toLocaleString()}\``;
         }
 
         let confirm = new MessageButton()
@@ -239,10 +245,12 @@ module.exports = {
             const local_stats = {
                 health: 100,
                 shield: 0,
+                buff: 0,
             };
             const target_stats = {
                 health: 100,
                 shield: 0,
+                buff: 0,
             };
             let turn;
             if (Math.floor(Math.random() * 2) === 1) {
@@ -261,21 +269,44 @@ module.exports = {
                 .setThumbnail(
                     "https://media.discordapp.net/attachments/964716079425417269/1013874952136564767/scientist-street-fighter-game-pixel-art-animation-by-diego-sanches-1.gif?width=311&height=389"
                 )
-                .setDescription(`${interaction.user} **VS** ${options.user}`)
+                .setDescription(
+                    `${interaction.user} **VS** ${options.user}\n**Prize:** ${doubleprize_display}`
+                )
                 .setFields(
                     {
                         name: `${interaction.user.username}`,
-                        value: `<:shield:1013876234138177586> ${bardisplay(
-                            Math.floor(local_stats.health / 100)
-                        )}`,
+                        value: `<:lifesaver:978754575098085426> ${bardisplay(
+                            Math.floor((local_stats.health / 100) * 100)
+                        )} **${
+                            local_stats.health
+                        }%**\n<:shield:1013876234138177586> ${bardisplay(
+                            Math.floor((local_stats.shield / 100) * 100)
+                        )} **${
+                            local_stats.shield
+                        }%**\n<:sword:1013883185337221151> ${bardisplay(
+                            Math.floor((local_stats.buff / 100) * 100)
+                        )} **${local_stats.buff}%**`,
                         inline: true,
                     },
                     {
                         name: `${options.user.user.username}`,
-                        value: `<:shield:1013876234138177586> ${bardisplay(
-                            Math.floor(target_stats.health / 100)
-                        )}`,
+                        value: `<:lifesaver:978754575098085426> ${bardisplay(
+                            Math.floor((target_stats.health / 100) * 100)
+                        )} **${
+                            local_stats.health
+                        }%**\n<:shield:1013876234138177586> ${bardisplay(
+                            Math.floor((target_stats.shield / 100) * 100)
+                        )} **${
+                            target_stats.shield
+                        }%**\n<:sword:1013883185337221151> ${bardisplay(
+                            Math.floor((target_stats.buff / 100) * 100)
+                        )} **${target_stats.buff}%**`,
                         inline: true,
+                    },
+                    {
+                        name: `Last Action`,
+                        value: `\`A fight has been started!\``,
+                        inline: false,
                     }
                 );
 
@@ -294,7 +325,7 @@ module.exports = {
                     iconURL: options.user.user.displayAvatarURL(),
                 })
                 .setDescription(
-                    `${interaction.user} want to fight ${singleprize_display} with you.\n**If you except, you will fight with ${singleprize_display}. If you lose, you will also lose this item.**`
+                    `${interaction.user} want to fight ${singleprize_display} with you.\n**If you except, you will fight with ${singleprize_display}. If you lose the fight, you will also lose ${singleprize_display}.**`
                 );
             confirm.setDisabled(false).setStyle("PRIMARY");
             cancel.setDisabled(false).setStyle("DANGER");
