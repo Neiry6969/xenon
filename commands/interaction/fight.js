@@ -407,7 +407,7 @@ module.exports = {
             });
 
             const fight_collector = fight_msg.createMessageComponentCollector({
-                idle: 10 * 1000,
+                idle: 60 * 1000,
             });
 
             fight_collector.on("collect", async (button) => {
