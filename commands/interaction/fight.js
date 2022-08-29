@@ -634,11 +634,11 @@ module.exports = {
                             attack_final = fightgame_status[turnraw].health;
 
                             if (turn.id === interaction.user.id) {
-                                winner = options.user;
+                                winner = options.user.user;
                                 loser = interaction.user;
                             } else {
                                 winner = interaction.user;
-                                loser = options.user;
+                                loser = options.user.user;
                             }
                         }
                         fightgame_status[turnraw].health -=
@@ -652,9 +652,9 @@ module.exports = {
 
                             if (turn.id === interaction.user.id) {
                                 winner = interaction.user;
-                                loser = options.user;
+                                loser = options.user.user;
                             } else {
-                                winner = options.user;
+                                winner = options.user.user;
                                 loser = interaction.user;
                             }
                         }
