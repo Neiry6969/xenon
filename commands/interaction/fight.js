@@ -407,7 +407,7 @@ module.exports = {
             });
 
             const fight_collector = fight_msg.createMessageComponentCollector({
-                idle: 60 * 1000,
+                idle: 10 * 1000,
             });
 
             fight_collector.on("collect", async (button) => {
@@ -627,15 +627,11 @@ module.exports = {
                     );
 
                     if (attack_final < 0) {
-                        fightgame_status[turnraw].health -=
-                            Math.abs(attack_final);
-
                         if (
                             fightgame_status[turnraw].health - attack_final <
                             0
                         ) {
-                            attack_final =
-                                100 - fightgame_status[turnraw].health;
+                            attack_final = fightgame_status[turnraw].health;
 
                             if (turn.id === interaction.user.id) {
                                 winner = options.user;
@@ -645,15 +641,14 @@ module.exports = {
                                 loser = options.user;
                             }
                         }
+                        fightgame_status[turnraw].health -=
+                            Math.abs(attack_final);
                     } else {
-                        fightgame_status[waitingraw].health -= attack_final;
-
                         if (
                             fightgame_status[waitingraw].health - attack_final <
                             0
                         ) {
-                            attack_final =
-                                100 - fightgame_status[waitingraw].health;
+                            attack_final = fightgame_status[waitingraw].health;
 
                             if (turn.id === interaction.user.id) {
                                 winner = interaction.user;
@@ -663,19 +658,9 @@ module.exports = {
                                 loser = interaction.user;
                             }
                         }
+
+                        fightgame_status[waitingraw].health -= attack_final;
                     }
-
-                    console.log(
-                        attack_final,
-                        attack_min,
-                        attack_max,
-                        attack_amount
-                    );
-
-                    console.log(
-                        fightgame_status.local.health,
-                        fightgame_status.target.health
-                    );
 
                     if (turn.id === interaction.user.id) {
                         turn = options.user.user;
@@ -820,7 +805,7 @@ module.exports = {
                             iconURL: winner.displayAvatarURL(),
                         };
                         fight_msg.embeds[0].thumbnail.url = `https://media.discordapp.net/attachments/964716079425417269/1013913421529485453/db1tdaj-c8dcfaf2-3068-4ec1-bb66-53f75586f29e.gif?width=390&height=390`;
-                        fight_msg.embeds[0].fields[2].value = `\`${turn.username} won the fight like a king!\``;
+                        fight_msg.embeds[0].fields[2].value = `\`${winner.username} won the fight like a king!\``;
                         fight_msg.embeds[0].description = `**Winner: ${winner}**\n\n${interaction.user} **VS** ${options.user}\n**Prize:** ${doubleprize_display}`;
 
                         fight_msg.components[0].components.forEach((c) => {
@@ -854,9 +839,16 @@ module.exports = {
             });
 
             fight_collector.on("end", async (collected) => {
+                fight_msg.components[0].components.forEach((c) => {
+                    c.setDisabled();
+                });
+                fight_msg.components[1].components.forEach((c) => {
+                    c.setDisabled();
+                });
                 if (
                     fightgame_status.local.health > 0 &&
-                    fightgame_status.target.health > 0
+                    fightgame_status.target.health > 0 &&
+                    hasended === false
                 ) {
                     if (turn.id === interaction.user.id) {
                         winner = options.user.user;
@@ -872,23 +864,12 @@ module.exports = {
                     fight_msg.embeds[0].thumbnail.url = `https://media.discordapp.net/attachments/964716079425417269/1013913421529485453/db1tdaj-c8dcfaf2-3068-4ec1-bb66-53f75586f29e.gif?width=390&height=390`;
                     fight_msg.embeds[0].fields[2].value = `\`${turn.username} fell unconscious and lost the fight\``;
                     fight_msg.embeds[0].description = `**Winner: ${winner}**\n\n${interaction.user} **VS** ${options.user}\n**Prize:** ${doubleprize_display}`;
-                } else {
-                }
+                    fight_msg.edit({
+                        content: `${winner} is victorious!`,
+                        embeds: fight_msg.embeds,
+                        components: fight_msg.components,
+                    });
 
-                fight_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
-                fight_msg.components[1].components.forEach((c) => {
-                    c.setDisabled();
-                });
-
-                fight_msg.edit({
-                    content: `${winner} is victorious!`,
-                    embeds: fight_msg.embeds,
-                    components: fight_msg.components,
-                });
-
-                if (hasended === false) {
                     if (quantity && itemData) {
                         await removeItem(loser.id, itemData.item, quantity);
                         await addItem(winner.id, itemData.item, quantity);
@@ -896,6 +877,10 @@ module.exports = {
                         await removeCoins(loser.id, quantity);
                         await removeCoins(winner.id, quantity);
                     }
+                } else {
+                    fight_msg.edit({
+                        components: fight_msg.components,
+                    });
                 }
 
                 setFightingLock(options.user.user.id, false);
