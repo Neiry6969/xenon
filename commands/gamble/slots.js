@@ -18,12 +18,12 @@ const winningicons = [
     "<:finecrown:1014267762941632723>",
     "<:finetrophy:1014260401174761492>",
     "<:finemedal:1014260725016953012>",
-    "<a:finecoin:968650301546586193>",
+    "<a:finecoin:1014272776737128469>",
 ];
 
 const multiplieramount_2 = [
     {
-        icon: "<a:finecoin:968650301546586193>",
+        icon: "<a:finecoin:1014272776737128469>",
         multi: 1,
     },
     {
@@ -50,7 +50,7 @@ const multiplieramount_2 = [
 
 const multiplieramount_3 = [
     {
-        icon: "<a:finecoin:968650301546586193>",
+        icon: "<a:finecoin:1014272776737128469>",
         multi: 4,
     },
     {
@@ -100,10 +100,10 @@ function slot(num) {
         "<:finecrown:1014267762941632723>",
         "<:finetrophy:1014260401174761492>",
         "<:finemedal:1014260725016953012>",
-        "<a:finecoin:968650301546586193>",
-        "<a:fionaskitten:994306306557104240>",
+        "<a:finecoin:1014272776737128469>",
+        "<a:fineribbon:1014273403097710722>",
         "<:donut:965343121133162616>",
-        "<a:finecoin:968650301546586193>",
+        "<:lifesaver:978754575098085426>",
     ];
     if (num <= 690) {
         return "<:excalibur:966537260034043974>";

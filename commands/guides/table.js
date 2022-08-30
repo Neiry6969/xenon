@@ -355,7 +355,7 @@ module.exports = {
         } else if (option === "slots") {
             const multiplieramount_2 = [
                 {
-                    icon: "<a:finecoin:968650301546586193>",
+                    icon: "<a:finecoin:1014272776737128469>",
                     multi: 1,
                 },
                 {
@@ -382,7 +382,7 @@ module.exports = {
 
             const multiplieramount_3 = [
                 {
-                    icon: "<a:finecoin:968650301546586193>",
+                    icon: "<a:finecoin:1014272776737128469>",
                     multi: 4,
                 },
                 {
