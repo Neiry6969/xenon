@@ -845,7 +845,7 @@ module.exports = {
                     }
                 } else if (button.customId === "breakshield") {
                     const turn_current = turn;
-                    let shield_broken = Math.floor(Math.random() * 25) + 15;
+                    let shield_broken = Math.floor(Math.random() * 10) + 15;
 
                     if (
                         fightgame_status[waitingraw].shield - shield_broken <
