@@ -631,7 +631,7 @@ module.exports = {
                     if (attack_final < 0) {
                         if (
                             fightgame_status[turnraw].health -
-                                Math.abs(attack_final) <
+                                Math.abs(attack_final) <=
                             0
                         ) {
                             attack_final = -fightgame_status[turnraw].health;
@@ -648,7 +648,7 @@ module.exports = {
                             Math.abs(attack_final);
                     } else {
                         if (
-                            fightgame_status[waitingraw].health - attack_final <
+                            fightgame_status[waitingraw].health - attack_final <=
                             0
                         ) {
                             attack_final = fightgame_status[waitingraw].health;
