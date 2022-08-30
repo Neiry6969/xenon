@@ -96,7 +96,7 @@ module.exports = {
                 rightbutton
             );
 
-            commands_embed.setDescription(`${commands_map}`);
+            commands_embed.setDescription(`${commands_map.join("\n")}`);
 
             await interaction.reply({
                 embeds: [commands_embed],
