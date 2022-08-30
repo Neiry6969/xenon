@@ -363,14 +363,13 @@ module.exports = {
                 .setCustomId("heal")
                 .setLabel("Heal")
                 .setStyle("SECONDARY")
-                .setEmoji("<:medicalkit:1013892434129854544>")
-                .setDisabled(true);
+                .setEmoji("<:medicalkit:1013892434129854544>");
 
             row0.setComponents(shield, buff, heal);
 
             let counterattack = new MessageButton()
                 .setCustomId("counterattck")
-                .setLabel("Counter Attack")
+                .setLabel("Counterattack")
                 .setStyle("SECONDARY")
                 .setDisabled(true);
 
@@ -388,13 +387,13 @@ module.exports = {
             let breakshield = new MessageButton()
                 .setCustomId("breakshield")
                 .setLabel("Break Shield")
-                .setStyle("SECONDARY")
-                .setDisabled(true);
+                .setStyle("SECONDARY");
+
             let flee = new MessageButton()
                 .setCustomId("flee")
                 .setLabel("Flee")
                 .setStyle("DANGER")
-                .setDisabled(true);
+                .setEmoji("<a:run:1014250673199648910>");
 
             row1.setComponents(counterattack, block, attack, breakshield, flee);
 
@@ -618,7 +617,10 @@ module.exports = {
                     const attack_min = Math.floor(
                         15 * (fightgame_status[turnraw].buff / 100)
                     );
-                    const attack_max = 25;
+                    const attack_max =
+                        Math.floor(
+                            35 * (fightgame_status[turnraw].buff / 100)
+                        ) + 25;
                     const attack_amount =
                         Math.floor(Math.random() * attack_max) + attack_min;
                     let attack_final = Math.floor(
@@ -840,6 +842,215 @@ module.exports = {
                             components: fight_msg.components,
                         });
                     }
+                } else if (button.customId === "breakshield") {
+                    const turn_current = turn;
+                    let shield_broken = Math.floor(Math.random() * 5) + 10;
+
+                    if (
+                        fightgame_status[waitingraw].shield - shield_broken <
+                        0
+                    ) {
+                        shield_broken = fightgame_status[waitingraw].shield;
+                    }
+
+                    fightgame_status[waitingraw].shield -= shield_broken;
+
+                    if (turn.id === interaction.user.id) {
+                        turn = options.user.user;
+                        turnraw = "target";
+                        waitingraw = "local";
+                        fight_msg.embeds[0].fields[1] = {
+                            name: `${options.user.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.target.buff}%**`,
+                            inline: true,
+                        };
+                    } else {
+                        turn = interaction.user;
+                        turnraw = "local";
+                        waitingraw = "target";
+                        fight_msg.embeds[0].fields[0] = {
+                            name: `${interaction.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.local.buff}%**`,
+                            inline: true,
+                        };
+                    }
+
+                    fight_msg.embeds[0].author = {
+                        name: `${turn.tag}`,
+                        iconURL: turn.displayAvatarURL(),
+                    };
+
+                    fight_msg.embeds[0].description = `${
+                        interaction.user
+                    } **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`;
+
+                    fight_msg.embeds[0].fields[2].value = `\`${turn_current.username} attacked ${turn.username}'s shield and damaged it by ${shield_broken}%\``;
+
+                    fight_msg.edit({
+                        content: `**Turn:** ${turn}`,
+                        embeds: fight_msg.embeds,
+                        components: fight_msg.components,
+                    });
+                } else if (button.customId === "flee") {
+                    if (turn.id === interaction.user.id) {
+                        winner = options.user.user;
+                        loser = interaction.user;
+                    } else {
+                        winner = interaction.user;
+                        loser = options.user.user;
+                    }
+
+                    hasended = true;
+                    fight_msg.embeds[0].author = {
+                        name: `${winner.tag}`,
+                        iconURL: winner.displayAvatarURL(),
+                    };
+                    fight_msg.embeds[0].thumbnail.url = `https://media.discordapp.net/attachments/964716079425417269/1013913421529485453/db1tdaj-c8dcfaf2-3068-4ec1-bb66-53f75586f29e.gif?width=390&height=390`;
+                    fight_msg.embeds[0].fields[2].value = `\`${loser.username} fled the scene so ${winner.username} won the fight like a king!\``;
+                    fight_msg.embeds[0].description = `**Winner: ${winner}**\n\n${interaction.user} **VS** ${options.user}\n**Prize:** ${doubleprize_display}`;
+
+                    fight_msg.components[0].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+                    fight_msg.components[1].components.forEach((c) => {
+                        c.setDisabled();
+                    });
+
+                    fight_msg.edit({
+                        content: `${winner} is victorious!`,
+                        embeds: fight_msg.embeds,
+                        components: fight_msg.components,
+                    });
+
+                    if (quantity && itemData) {
+                        await removeItem(loser.id, itemData.item, quantity);
+                        await addItem(winner.id, itemData.item, quantity);
+                    } else if (quantity) {
+                        await removeCoins(loser.id, quantity);
+                        await addCoins(winner.id, quantity);
+                    }
+                    setFightingLock(options.user.user.id, false);
+                    setFightingLock(interaction.user.id, false);
+                    setProcessingLock(options.user.user.id, false);
+                    setProcessingLock(interaction.user.id, false);
+                } else if (button.customId === "heal") {
+                    const turn_current = turn;
+                    let health_added = Math.floor(Math.random() * 8);
+
+                    if (fightgame_status[turnraw].health + health_added > 100) {
+                        health_added = 100 - fightgame_status[turnraw].health;
+                    }
+
+                    fightgame_status[turnraw].health += health_added;
+
+                    if (turn.id === interaction.user.id) {
+                        turn = options.user.user;
+                        turnraw = "target";
+                        waitingraw = "local";
+                        fight_msg.embeds[0].fields[0] = {
+                            name: `${interaction.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.local.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.local.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.local.buff}%**`,
+                            inline: true,
+                        };
+                    } else {
+                        turn = interaction.user;
+                        turnraw = "local";
+                        waitingraw = "target";
+                        fight_msg.embeds[0].fields[1] = {
+                            name: `${options.user.user.username}`,
+                            value: `<:lifesaver:978754575098085426> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.health / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.health
+                            }%**\n<:shield:1013876234138177586> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.shield / 100) * 100
+                                )
+                            )} **${
+                                fightgame_status.target.shield
+                            }%**\n<:sword:1013883185337221151> ${bardisplay(
+                                Math.floor(
+                                    (fightgame_status.target.buff / 100) * 100
+                                )
+                            )} **${fightgame_status.target.buff}%**`,
+                            inline: true,
+                        };
+                    }
+
+                    fight_msg.embeds[0].author = {
+                        name: `${turn.tag}`,
+                        iconURL: turn.displayAvatarURL(),
+                    };
+
+                    fight_msg.embeds[0].description = `${
+                        interaction.user
+                    } **VS** ${
+                        options.user
+                    }\n**Prize:** ${doubleprize_display}\n**Turn Ends:** <t:${Math.floor(
+                        (Date.now() + 60 * 1000) / 1000
+                    )}:R>`;
+
+                    fight_msg.embeds[0].fields[2].value = `\`${turn_current.username} took out some magical bandages and healed their health by ${health_added}%\``;
+
+                    fight_msg.edit({
+                        content: `**Turn:** ${turn}`,
+                        embeds: fight_msg.embeds,
+                        components: fight_msg.components,
+                    });
                 }
             });
 

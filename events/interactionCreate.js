@@ -1,4 +1,4 @@
-const { Collection, MessageEmbed } = require("discord.js");
+const { Collection, MessageEmbed, Permissions } = require("discord.js");
 
 const { errorReply } = require("../utils/errorfunctions");
 const {
@@ -22,6 +22,33 @@ const { fetchActiveItems } = require("../utils/userfunctions");
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
+        let error_message;
+        const permissions_required = [
+            "ADD_REACTIONS",
+            "ATTACH_FILES",
+            "SEND_MESSAGES",
+            "SEND_MESSAGES_IN_THREADS",
+            "EMBED_LINKS",
+            "VIEW_CHANNEL",
+            "READ_MESSAGE_HISTORY",
+        ];
+        const permissions_stillrequired = [];
+
+        permissions_required.forEach((perm) => {
+            if (!interaction.guild.me.permissions.has(perm)) {
+                return permissions_stillrequired.push(perm);
+            }
+        });
+
+        if (permissions_stillrequired.length > 0) {
+            error_message = `**I am missing important some  permissions in this server/channel to function properly. Please contact a user/moderator/administrator who has the authority to change permissions to change permissions so you can continue using the bot.**\n\nOutstanding permisssions required:\n${permissions_stillrequired
+                .map((permission) => {
+                    return `\`${permission}\``;
+                })
+                .join("\n")}`;
+            return errorReply(interaction, error_message);
+        }
+
         const theme = {
             embed: {
                 color: await fetchEmbedColor(interaction),
@@ -33,7 +60,6 @@ module.exports = {
             const command = client.commands.get(commandname);
 
             if (!command) return;
-            let error_message;
             const user = interaction.user;
             let guildData;
             try {
@@ -109,7 +135,10 @@ module.exports = {
 
             executecmd();
         } else if (interaction.isButton()) {
-            return;
+            if (interaction.message.createdTimestamp + 21600000 < Date.now()) {
+                error_message = `This button has been created more than 6 hours ago, therefore it is no longer avaliable`;
+                return errorReply(interaction, error_message);
+            }
         }
     },
 };
