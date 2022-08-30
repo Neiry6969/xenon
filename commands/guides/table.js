@@ -363,7 +363,7 @@ module.exports = {
                     multi: 1,
                 },
                 {
-                    icon: "<:finetrophy:1014260401174761492>",
+                    icon: "<a:finetrophy:1014306025257574551>",
                     multi: 1.2,
                 },
                 {
@@ -390,7 +390,7 @@ module.exports = {
                     multi: 8,
                 },
                 {
-                    icon: "<:finetrophy:1014260401174761492>",
+                    icon: "<a:finetrophy:1014306025257574551>",
                     multi: 12,
                 },
                 {

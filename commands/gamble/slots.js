@@ -16,7 +16,7 @@ const winningicons = [
     "<:excalibur:966537260034043974>",
     "<:creatorscrown:965024171463688323>",
     "<:finecrown:1014267762941632723>",
-    "<:finetrophy:1014260401174761492>",
+    "<a:finetrophy:1014306025257574551>",
     "<:finemedal:1014260725016953012>",
     "<a:finecoin:1014272776737128469>",
 ];
@@ -31,7 +31,7 @@ const multiplieramount_2 = [
         multi: 1,
     },
     {
-        icon: "<:finetrophy:1014260401174761492>",
+        icon: "<a:finetrophy:1014306025257574551>",
         multi: 1.2,
     },
     {
@@ -58,7 +58,7 @@ const multiplieramount_3 = [
         multi: 8,
     },
     {
-        icon: "<:finetrophy:1014260401174761492>",
+        icon: "<a:finetrophy:1014306025257574551>",
         multi: 12,
     },
     {
@@ -98,7 +98,7 @@ function countElements(num, arr) {
 function slot(num) {
     const leftovericons = [
         "<:finecrown:1014267762941632723>",
-        "<:finetrophy:1014260401174761492>",
+        "<a:finetrophy:1014306025257574551>",
         "<:finemedal:1014260725016953012>",
         "<a:finecoin:1014272776737128469>",
         "<a:fineribbon:1014273403097710722>",
