@@ -620,12 +620,12 @@ module.exports = {
                     const attack_max =
                         Math.floor(
                             35 * (fightgame_status[turnraw].buff / 100)
-                        ) + 25;
+                        ) + 10;
                     const attack_amount =
                         Math.floor(Math.random() * attack_max) + attack_min;
                     let attack_final = Math.floor(
                         attack_amount -
-                            20 * (fightgame_status[waitingraw].shield / 100)
+                            25 * (fightgame_status[waitingraw].shield / 100)
                     );
 
                     if (attack_final < 0) {
