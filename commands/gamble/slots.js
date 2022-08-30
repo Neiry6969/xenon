@@ -15,7 +15,7 @@ const letternumbers = require("../../reference/letternumber");
 const winningicons = [
     "<:excalibur:966537260034043974>",
     "<:creatorscrown:965024171463688323>",
-    "<a:finecrown:1014264573362192424>",
+    "<:finecrown:1014267762941632723>",
     "<:finetrophy:1014260401174761492>",
     "<:finemedal:1014260725016953012>",
     "<a:finecoin:968650301546586193>",
@@ -35,7 +35,7 @@ const multiplieramount_2 = [
         multi: 1.2,
     },
     {
-        icon: "<a:finecrown:1014264573362192424>",
+        icon: "<:finecrown:1014267762941632723>",
         multi: 1.5,
     },
     {
@@ -62,7 +62,7 @@ const multiplieramount_3 = [
         multi: 12,
     },
     {
-        icon: "<a:finecrown:1014264573362192424>",
+        icon: "<:finecrown:1014267762941632723>",
         multi: 15,
     },
     {
@@ -97,7 +97,7 @@ function countElements(num, arr) {
 
 function slot(num) {
     const leftovericons = [
-        "<a:finecrown:1014264573362192424>",
+        "<:finecrown:1014267762941632723>",
         "<:finetrophy:1014260401174761492>",
         "<:finemedal:1014260725016953012>",
         "<a:finecoin:968650301546586193>",

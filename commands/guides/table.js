@@ -367,7 +367,7 @@ module.exports = {
                     multi: 1.2,
                 },
                 {
-                    icon: "<a:finecrown:1014264573362192424>",
+                    icon: "<:finecrown:1014267762941632723>",
                     multi: 1.5,
                 },
                 {
@@ -394,7 +394,7 @@ module.exports = {
                     multi: 12,
                 },
                 {
-                    icon: "<a:finecrown:1014264573362192424>",
+                    icon: "<:finecrown:1014267762941632723>",
                     multi: 15,
                 },
                 {
