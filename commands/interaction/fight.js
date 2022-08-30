@@ -828,6 +828,10 @@ module.exports = {
                             await removeCoins(loser.id, quantity);
                             await removeCoins(winner.id, quantity);
                         }
+                        setFightingLock(options.user.user.id, false);
+                        setFightingLock(interaction.user.id, false);
+                        setProcessingLock(options.user.user.id, false);
+                        setProcessingLock(interaction.user.id, false);
                     } else {
                         fight_msg.edit({
                             content: `**Turn:** ${turn}`,
