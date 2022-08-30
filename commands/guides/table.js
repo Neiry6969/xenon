@@ -359,15 +359,15 @@ module.exports = {
                     multi: 1,
                 },
                 {
-                    icon: "<a:finemedal:968654431484796979>",
+                    icon: "<:finemedal:1014260725016953012>",
                     multi: 1,
                 },
                 {
-                    icon: "<a:finetrophy:968660247977803787>",
+                    icon: "<:finetrophy:1014260401174761492>",
                     multi: 1.2,
                 },
                 {
-                    icon: "<a:finecrown:968688780615766047>",
+                    icon: "<a:finecrown:1014264573362192424>",
                     multi: 1.5,
                 },
                 {
@@ -386,15 +386,15 @@ module.exports = {
                     multi: 4,
                 },
                 {
-                    icon: "<a:finemedal:968654431484796979>",
+                    icon: "<:finemedal:1014260725016953012>",
                     multi: 8,
                 },
                 {
-                    icon: "<a:finetrophy:968660247977803787>",
+                    icon: "<:finetrophy:1014260401174761492>",
                     multi: 12,
                 },
                 {
-                    icon: "<a:finecrown:968688780615766047>",
+                    icon: "<a:finecrown:1014264573362192424>",
                     multi: 15,
                 },
                 {

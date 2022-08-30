@@ -6,7 +6,7 @@ const {
     fetchEconomyData,
     removeCoins,
     addCoins,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
@@ -15,9 +15,9 @@ const letternumbers = require("../../reference/letternumber");
 const winningicons = [
     "<:excalibur:966537260034043974>",
     "<:creatorscrown:965024171463688323>",
-    "<a:finecrown:968688780615766047>",
-    "<a:finetrophy:968660247977803787>",
-    "<a:finemedal:968654431484796979>",
+    "<a:finecrown:1014264573362192424>",
+    "<:finetrophy:1014260401174761492>",
+    "<:finemedal:1014260725016953012>",
     "<a:finecoin:968650301546586193>",
 ];
 
@@ -27,15 +27,15 @@ const multiplieramount_2 = [
         multi: 1,
     },
     {
-        icon: "<a:finemedal:968654431484796979>",
+        icon: "<:finemedal:1014260725016953012>",
         multi: 1,
     },
     {
-        icon: "<a:finetrophy:968660247977803787>",
+        icon: "<:finetrophy:1014260401174761492>",
         multi: 1.2,
     },
     {
-        icon: "<a:finecrown:968688780615766047>",
+        icon: "<a:finecrown:1014264573362192424>",
         multi: 1.5,
     },
     {
@@ -54,15 +54,15 @@ const multiplieramount_3 = [
         multi: 4,
     },
     {
-        icon: "<a:finemedal:968654431484796979>",
+        icon: "<:finemedal:1014260725016953012>",
         multi: 8,
     },
     {
-        icon: "<a:finetrophy:968660247977803787>",
+        icon: "<:finetrophy:1014260401174761492>",
         multi: 12,
     },
     {
-        icon: "<a:finecrown:968688780615766047>",
+        icon: "<a:finecrown:1014264573362192424>",
         multi: 15,
     },
     {
@@ -97,9 +97,9 @@ function countElements(num, arr) {
 
 function slot(num) {
     const leftovericons = [
-        "<a:finecrown:968688780615766047>",
-        "<a:finetrophy:968660247977803787>",
-        "<a:finemedal:968654431484796979>",
+        "<a:finecrown:1014264573362192424>",
+        "<:finetrophy:1014260401174761492>",
+        "<:finemedal:1014260725016953012>",
         "<a:finecoin:968650301546586193>",
         "<a:fionaskitten:994306306557104240>",
         "<:donut:965343121133162616>",
@@ -269,7 +269,7 @@ module.exports = {
             const newwallet = economyData.wallet + winningamount;
 
             await addCoins(economyData.userId, winningamount);
-            await addexperiencepoints(interaction.user.id, 1, 30)
+            await addexperiencepoints(interaction.user.id, 1, 30);
 
             slots_embed
                 .setColor(`#95ff87`)
