@@ -309,10 +309,10 @@ class Mainfunctions {
         const economyData = fetch_economyData.data;
         const statsData = fetch_statsData.data;
         const createdtimestamp = new Date(economyData.createdAt);
-        const readytimestamp = createdtimestamp.getTime() + 1209600000;
+        const readytimestamp = createdtimestamp.getTime() + 604800000;
         let newaccount = false;
 
-        if (Date.now() < readytimestamp || statsData.commands.all < 2000) {
+        if (Date.now() < readytimestamp || statsData.commands.all < 100) {
             newaccount = true;
         }
 
