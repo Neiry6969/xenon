@@ -641,16 +641,9 @@ module.exports = {
                                 winner = interaction.user;
                                 loser = options.user.user;
                             }
-
-                            console.log(
-                                fightgame_status[turnraw].health -
-                                    Math.abs(attack_final)
-                            );
                         }
-                        console.log(
-                            (fightgame_status[turnraw].health -=
-                                Math.abs(attack_final))
-                        );
+                        fightgame_status[turnraw].health -=
+                            Math.abs(attack_final);
                     } else {
                         if (
                             fightgame_status[waitingraw].health - attack_final <
