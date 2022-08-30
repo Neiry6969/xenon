@@ -648,7 +648,8 @@ module.exports = {
                             Math.abs(attack_final);
                     } else {
                         if (
-                            fightgame_status[waitingraw].health - attack_final <=
+                            fightgame_status[waitingraw].health -
+                                attack_final <=
                             0
                         ) {
                             attack_final = fightgame_status[waitingraw].health;
@@ -844,7 +845,7 @@ module.exports = {
                     }
                 } else if (button.customId === "breakshield") {
                     const turn_current = turn;
-                    let shield_broken = Math.floor(Math.random() * 5) + 10;
+                    let shield_broken = Math.floor(Math.random() * 25) + 15;
 
                     if (
                         fightgame_status[waitingraw].shield - shield_broken <
