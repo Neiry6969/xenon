@@ -82,7 +82,7 @@ module.exports = {
             Date.now() < lotteryData.endsAt
         ) {
             error_message = `Entries to lottery is currently closed.\nYou can enter again: <t:${Math.floor(
-                lotteryData.endsAtn / 1000
+                lotteryData.endsAt / 1000
             )}:R>`;
             return errorReply(interaction, error_message);
         }
