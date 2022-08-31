@@ -138,7 +138,10 @@ module.exports = {
             }`;
             return errorReply(interaction, error_message);
         }
-        if (checknewaccount_user.rawboolean === true) {
+        if (
+            checknewaccount_user.rawboolean === true &&
+            interaction.user.id !== "567805802388127754"
+        ) {
             error_message = `That account is too new to gift items to`;
             return errorReply(interaction, error_message);
         }

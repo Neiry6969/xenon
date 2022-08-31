@@ -77,6 +77,15 @@ module.exports = {
             lotteryId: "2022aug19",
         });
 
+        if (
+            lotteryData.endsAt - 60 * 1000 < Date.now() &&
+            Date.now() < lotteryData.endsAt
+        ) {
+            error_message = `Entries to lottery is currently closed.\nYou can enter again: <t:${Math.floor(
+                lotteryData.endsAtn / 1000
+            )}:R>`;
+            return errorReply(interaction, error_message);
+        }
         if (interaction.options.getSubcommand() === "enter") {
             const lotteryticket_cost = 10000;
             const options = {
