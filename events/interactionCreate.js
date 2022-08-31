@@ -133,7 +133,7 @@ module.exports = {
                                     "Mine",
                                     "👐",
                                     10,
-                                    "bottleofcola "
+                                    "bottleofcola"
                                 );
                             }
                         }
