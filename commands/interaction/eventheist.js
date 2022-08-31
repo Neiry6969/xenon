@@ -75,7 +75,7 @@ module.exports = {
                 error_message = `You have no coins in your bank to host an event-heist.\n\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``;
                 return errorReply(interaction, error_message);
             } else {
-                error_message = `You have no coins in your bank to host an event-heist, maybe deposit some?\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``;
+                error_message = `You have no coins in your bank to host an event-heist, maybe deposit some?\n\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``;
                 return errorReply(interaction, error_message);
             }
         }
@@ -110,10 +110,10 @@ module.exports = {
             return errorReply(interaction, error_message);
         } else if (amount > economyData.bank.coins) {
             if (amount < economyData.bank.coins + economyData.wallet) {
-                error_message = `You don't have that amount coins in your bank to host an event-heist, maybe deposit some?\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``;
+                error_message = `You don't have that amount coins in your bank to host an event-heist, maybe deposit some?\n\nNet Balance: \`❀ ${economyData_fetch.networth.toLocaleString()}\``;
                 return errorReply(interaction, error_message);
             } else {
-                error_message = `You don't have that amount coins in your bank or your wallet to host an event-heist.\nMinimum: \`❀ ${minreqcoins.toLocaleString()}\``;
+                error_message = `You don't have that amount coins in your bank or your wallet to host an event-heist.\n\nNet Balance: \`❀ ${economyData_fetch.networth.toLocaleString()}\``;
                 return errorReply(interaction, error_message);
             }
         }
