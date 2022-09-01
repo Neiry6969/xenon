@@ -348,6 +348,11 @@ class Currencyfunctions {
             lotteryData
         );
     }
+
+    static async calculatemultiplier(userId) {
+        const multipliers = [];
+        const mulltiplier_display = [];
+    }
 }
 
 module.exports = Currencyfunctions;

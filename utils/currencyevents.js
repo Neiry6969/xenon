@@ -210,7 +210,7 @@ class Currencyevents {
     }
 
     static async eventspawn_handler(interaction, theme) {
-        let spawnchance = 250;
+        let spawnchance = 100;
         const inventoryData_fetch = await fetchInventoryData(
             interaction.user.id
         );
@@ -230,7 +230,7 @@ class Currencyevents {
             const eventspawns = ["ancientscroll"];
             const choosenspawn =
                 eventspawns[Math.floor(Math.random() * eventspawns.length)];
-            await setEventCooldown(interaction.user.id, "eventspawn", 600);
+            await setEventCooldown(interaction.user.id, "eventspawn", 2400);
 
             if (choosenspawn === "ancientscroll") {
                 await es_fastestclick(
