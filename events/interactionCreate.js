@@ -9,6 +9,8 @@ const {
     checkProcessingLock,
     checkCooldown,
     checkAlert,
+    setEventCooldown,
+    checkEventCooldown,
 } = require("../utils/mainfunctions");
 const { fetchEmbedColor } = require("../utils/cosmeticsfunctions");
 const {
@@ -17,7 +19,6 @@ const {
 } = require("../utils/currencyfunctions");
 const GuildModel = require("../models/guildSchema");
 const { fetchItemData, fetchAllitemsData } = require("../utils/itemfunctions");
-const { fetchActiveItems } = require("../utils/userfunctions");
 const { mg_fastestclick } = require("../utils/minigamefunctions");
 
 module.exports = {
@@ -124,7 +125,20 @@ module.exports = {
                         ) {
                             await checkAlert(interaction);
                             await tips_handler(interaction, theme);
-                            if (Math.floor(Math.random() * 10000) < 1000) {
+                            if (
+                                Math.floor(Math.random() * 10000) < 10000 &&
+                                (
+                                    await checkEventCooldown(
+                                        button.user.id,
+                                        "eventspawn"
+                                    )
+                                ).status !== true
+                            ) {
+                                await setEventCooldown(
+                                    interaction.user.id,
+                                    "eventspawn",
+                                    600
+                                );
                                 await mg_fastestclick(
                                     interaction,
                                     "What is that liquid?",
@@ -133,7 +147,7 @@ module.exports = {
                                     "Mine",
                                     "👐",
                                     10,
-                                    "bottleofcola"
+                                    "bottleofxenon"
                                 );
                             }
                         }
