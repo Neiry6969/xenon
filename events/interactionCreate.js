@@ -124,7 +124,7 @@ module.exports = {
                         ) {
                             await checkAlert(interaction);
                             await tips_handler(interaction, theme);
-                            if (Math.floor(Math.random() * 10000) < 1000) {
+                            if (Math.floor(Math.random() * 10000) < 10000) {
                                 await mg_fastestclick(
                                     interaction,
                                     "Not ordinary paper, huh? It is old paper, ancient paper?",
