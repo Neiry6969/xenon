@@ -170,7 +170,7 @@ module.exports = {
                     interaction.user.id
                 }>, are you sure you want to gift \`${quantity.toLocaleString()}\` ${
                     itemData.icon
-                } **${itemData.item}** to <@${target.id}>?`
+                } \`${itemData.item}\` to <@${target.id}>?`
             );
 
         await interaction.reply({
