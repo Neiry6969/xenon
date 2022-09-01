@@ -233,6 +233,8 @@ module.exports = {
                     });
                 }
             });
+
+            return setCooldown(interaction, "prestige", 5, economyData);
         }
     },
 };
