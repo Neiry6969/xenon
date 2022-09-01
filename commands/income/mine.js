@@ -95,7 +95,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("mine")
         .setDescription("Go mining for exotic materials/substances."),
-    cooldown: 120,
+    cooldown: 50,
     cdmsg: "I am not going let you mine anymore, you need rest!",
     async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
@@ -144,6 +144,6 @@ module.exports = {
                 interaction.reply({ embeds: [mine_embed] });
             }
         }
-        return setCooldown(interaction, "mine", 120, economyData);
+        return setCooldown(interaction, "mine", 50, economyData);
     },
 };
