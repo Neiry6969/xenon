@@ -1,6 +1,7 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const fs = require("fs");
+const { disablecomponents } = require("../../utils/discordfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -265,10 +266,8 @@ module.exports = {
                 }
             });
 
-            collector.on("end", (collected) => {
-                help_msg.components[0].components.forEach((c) => {
-                    c.setDisabled();
-                });
+            collector.on("end", async (collected) => {
+                await disablecomponents(help_msg.components[0].components);
                 help_msg.edit({
                     components: help_msg.components,
                 });

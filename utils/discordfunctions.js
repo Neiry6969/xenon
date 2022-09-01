@@ -21,6 +21,12 @@ class Discordfunctions {
         });
         return true;
     }
+
+    static async disablecomponents(components) {
+        components.forEach((c, index) => {
+            c.setCustomId(`expiredcomponent${index}`).setDisabled(true);
+        });
+    }
 }
 
 module.exports = Discordfunctions;

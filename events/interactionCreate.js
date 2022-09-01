@@ -137,9 +137,9 @@ module.exports = {
 
             executecmd();
         } else if (interaction.isButton()) {
-            if (interaction.message.createdTimestamp + 21600000 < Date.now()) {
-                error_message = `This button has been created more than 6 hours ago, therefore it is no longer avaliable`;
-                return errorReply(interaction, error_message);
+            if (interaction.customId.includes("expiredcomponent")) {
+                error_message = `This component has expired, you can no longer interact with it.`;
+                errorReply(interaction, error_message);
             }
         }
     },

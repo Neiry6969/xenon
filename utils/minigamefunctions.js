@@ -67,7 +67,7 @@ class Minigamefunctions {
                     .setDescription(
                         `**Event Exipred:** <t:${Math.floor(
                             Date.now() / 1000
-                        )}:R>\n\n${embed_description}\n\`>\` n${winner} was the fastest and claimed a ${prize_display}`
+                        )}:R>\n\n${embed_description}\n\nResults:\n\`>\` ${winner} was the fastest and claimed a ${prize_display}`
                     );
 
                 mg_msg.edit({

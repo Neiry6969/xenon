@@ -5,6 +5,7 @@ const {
     fetchStatsData,
     fetchSettingsData,
     fetchUserData,
+    fetchInventoryData,
 } = require("./currencyfunctions");
 const EconomyModel = require("../models/economySchema");
 const InventoryModel = require("../models/inventorySchema");
@@ -209,8 +210,20 @@ class Currencyevents {
     }
 
     static async eventspawn_handler(interaction, theme) {
+        let spawnchance = 250;
+        const inventoryData_fetch = await fetchInventoryData(
+            interaction.user.id
+        );
+        const inventoryData = inventoryData_fetch.data;
         if (
-            Math.floor(Math.random() * 10000) < 10000 &&
+            inventoryData.inventory["finemedal"] &&
+            inventoryData.inventory["finemedal"] >= 1
+        ) {
+            spawnchance += 500;
+        }
+
+        if (
+            Math.floor(Math.random() * 10000) < spawnchance &&
             (await checkEventCooldown(interaction.user.id, "eventspawn"))
                 .status !== true
         ) {
