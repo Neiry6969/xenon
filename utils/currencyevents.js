@@ -14,6 +14,8 @@ const TipsModel = require("../models/tipsSchema");
 const { dmuser } = require("./discordfunctions");
 const { ri_watermelon } = require("./itemremove");
 const { fetchItemData } = require("./itemfunctions");
+const { checkEventCooldown, setEventCooldown } = require("./mainfunctions");
+const { es_fastestclick } = require("./minigamefunctions");
 
 class Currencyevents {
     static async death_handler(
@@ -204,6 +206,32 @@ class Currencyevents {
             });
 
         return interaction.followUp({ embeds: [tip_msg], ephemeral: true });
+    }
+
+    static async eventspawn_handler(interaction, theme) {
+        if (
+            Math.floor(Math.random() * 10000) < 10000 &&
+            (await checkEventCooldown(interaction.user.id, "eventspawn"))
+                .status !== true
+        ) {
+            const eventspawns = ["ancientscroll"];
+            const choosenspawn =
+                eventspawns[Math.floor(Math.random() * eventspawns.length)];
+            await setEventCooldown(interaction.user.id, "eventspawn", 600);
+
+            if (choosenspawn === "ancientscroll") {
+                await es_fastestclick(
+                    interaction,
+                    "Not ordinary paper, huh? It is old paper, ancient paper?",
+                    "Ew what is this? Coffee paper? Who wants it cause I definitely don't!",
+                    theme.embed.color,
+                    "Mine",
+                    "<a:ancientscroll:1014746011194904587>",
+                    25,
+                    "ancientscroll"
+                );
+            }
+        }
     }
 }
 

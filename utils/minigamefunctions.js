@@ -4,7 +4,7 @@ const { addItem } = require("./currencyfunctions");
 const { fetchItemData } = require("./itemfunctions");
 
 class Minigamefunctions {
-    static async mg_fastestclick(
+    static async es_fastestclick(
         interaction,
         embed_title,
         embed_description,
@@ -14,6 +14,7 @@ class Minigamefunctions {
         timelimit,
         item
     ) {
+        let winner;
         const endsAt = Date.now() + timelimit * 1000;
         const mg_embed = new MessageEmbed()
             .setColor(embed_color)
@@ -49,6 +50,7 @@ class Minigamefunctions {
         });
 
         collector.on("collect", async (button) => {
+            winner = button.user;
             collector.stop();
             button.deferUpdate();
 
@@ -56,40 +58,41 @@ class Minigamefunctions {
             mg_msg.edit({
                 components: [fastestclick_row],
             });
-            mg_embed
-                .setColor(`#95ff87`)
-                .setDescription(
-                    `**Event Exipred:** <t:${Math.floor(
-                        Date.now() / 1000
-                    )}:R>\n\n${embed_description}\n\n${
-                        button.user
-                    } was the fastest and claimed a ${prize_display}`
-                );
-
-            mg_msg.edit({
-                embeds: [mg_embed],
-            });
-            if (item) {
-                await addItem(button.user.id, item, 1);
-            }
         });
 
         collector.on("end", async (collected) => {
-            fastestclick_button.setDisabled(true).setStyle("SECONDARY");
-            mg_msg.edit({
-                components: [fastestclick_row],
-            });
-            mg_embed
-                .setColor(`#2c273d`)
-                .setDescription(
-                    `**Event Exipred:** <t:${Math.floor(
-                        Date.now() / 1000
-                    )}:R>\n\n${embed_description}\n\n*No one clicked the button so the prize for this event is lost*`
-                );
+            if (winner) {
+                mg_embed
+                    .setColor(`#95ff87`)
+                    .setDescription(
+                        `**Event Exipred:** <t:${Math.floor(
+                            Date.now() / 1000
+                        )}:R>\n\n${embed_description}\n\`>\` n${winner} was the fastest and claimed a ${prize_display}`
+                    );
 
-            mg_msg.edit({
-                embeds: [mg_embed],
-            });
+                mg_msg.edit({
+                    embeds: [mg_embed],
+                });
+                if (item) {
+                    await addItem(winner.id, item, 1);
+                }
+            } else {
+                fastestclick_button.setDisabled(true).setStyle("SECONDARY");
+                mg_msg.edit({
+                    components: [fastestclick_row],
+                });
+                mg_embed
+                    .setColor(`#2c273d`)
+                    .setDescription(
+                        `**Event Exipred:** <t:${Math.floor(
+                            Date.now() / 1000
+                        )}:R>\n\n${embed_description}\n\n*No one clicked the button so the prize for this event is lost*`
+                    );
+
+                mg_msg.edit({
+                    embeds: [mg_embed],
+                });
+            }
         });
     }
 }

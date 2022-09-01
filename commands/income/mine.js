@@ -95,7 +95,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("mine")
         .setDescription("Go mining for exotic materials/substances."),
-    cooldown: 120,
+    cooldown: 50,
     cdmsg: "I am not going let you mine anymore, you need rest!",
     async execute(interaction, client, theme) {
         const allItems = await fetchAllitemsData();
@@ -137,13 +137,13 @@ module.exports = {
                 await addexperiencepoints(interaction.user.id, 1, 40);
 
                 mine_embed.setDescription(
-                    `What is that? Oh you were actually able to find some things down in that ancient mine! Good for you, you got \`${1}\` ${
+                    `What is that? Oh you were actually able to find some things down in that ancient mine! Good for you, you got \`${amount.toLocaleString()}\` ${
                         item.icon
                     } \`${item.item}\``
                 );
                 interaction.reply({ embeds: [mine_embed] });
             }
         }
-        return setCooldown(interaction, "mine", 120, economyData);
+        return setCooldown(interaction, "mine", 50, economyData);
     },
 };

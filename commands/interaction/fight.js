@@ -1116,7 +1116,7 @@ module.exports = {
                     iconURL: options.user.user.displayAvatarURL(),
                 })
                 .setDescription(
-                    `${interaction.user} wants to fight ${singleprize_display} with you.\n**If you except, you will fight with ${singleprize_display}.**`
+                    `${interaction.user} wants to fight ${singleprize_display} with you.\n**If you accept, you will fight with ${singleprize_display}.**\n\n**Prize:** ${doubleprize_display}`
                 );
             confirm.setDisabled(false).setStyle("PRIMARY");
             cancel.setDisabled(false).setStyle("DANGER");

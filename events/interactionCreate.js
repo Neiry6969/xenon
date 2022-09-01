@@ -4,6 +4,7 @@ const { errorReply } = require("../utils/errorfunctions");
 const {
     backgroundupdates_handler,
     tips_handler,
+    eventspawn_handler,
 } = require("../utils/currencyevents");
 const {
     checkProcessingLock,
@@ -18,8 +19,6 @@ const {
     fetchUserData,
 } = require("../utils/currencyfunctions");
 const GuildModel = require("../models/guildSchema");
-const { fetchItemData, fetchAllitemsData } = require("../utils/itemfunctions");
-const { mg_fastestclick } = require("../utils/minigamefunctions");
 
 module.exports = {
     name: "interactionCreate",
@@ -125,31 +124,7 @@ module.exports = {
                         ) {
                             await checkAlert(interaction);
                             await tips_handler(interaction, theme);
-                            if (
-                                Math.floor(Math.random() * 10000) < 10000 &&
-                                (
-                                    await checkEventCooldown(
-                                        button.user.id,
-                                        "eventspawn"
-                                    )
-                                ).status !== true
-                            ) {
-                                await setEventCooldown(
-                                    interaction.user.id,
-                                    "eventspawn",
-                                    600
-                                );
-                                await mg_fastestclick(
-                                    interaction,
-                                    "What is that liquid?",
-                                    "I found some something suspicious, does anyone want it???",
-                                    theme.embed.color,
-                                    "Mine",
-                                    "👐",
-                                    10,
-                                    "bottleofxenon"
-                                );
-                            }
+                            await eventspawn_handler(interaction, theme);
                         }
                     }, 1000);
                 } catch (error) {
