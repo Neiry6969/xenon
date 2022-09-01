@@ -167,7 +167,7 @@ module.exports = {
                     .setColor(`#ff8f87`)
                     .setTitle(`Action Timed Out - Search`)
                     .setDescription(
-                        `\`So I am guessing your not going to search anywhere\``
+                        `\`So I am guessing you're not going to search anywhere\``
                     );
                 search_msg.components[0].components.forEach((c) => {
                     c.setDisabled();
