@@ -4,6 +4,7 @@ const {
     fetchItemData,
     fetchAllitemsData,
 } = require("../../utils/itemfunctions");
+const { fetchMultipliers } = require("../../utils/userfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -336,16 +337,21 @@ module.exports = {
 
             return interaction.reply({ embeds: [embed] });
         } else if (option === "gamble") {
-            const maxwinningmulti = 1.5;
-            const minwinningmulti = 0.5;
+            const multipliers_fetch = await fetchMultipliers(
+                interaction.user.id
+            );
+            const maxwinningmulti = 150;
+            const minwinningmulti = 50;
             const embed = {
                 color: theme.embed.color,
                 title: `Gamble Table`,
-                description: `**MAX WINNING MULTIPLIER**: **x${maxwinningmulti}** \`${
-                    maxwinningmulti * 100
-                }%\`\n**MIN WINNING MULTIPLIER**: **x${minwinningmulti}** \`${
-                    minwinningmulti * 100
-                }%\``,
+                description: `**Max Winning Multiplier**: \`${maxwinningmulti}%\` \`+ ${
+                    multipliers_fetch.multiplier
+                }%\` (\`${
+                    maxwinningmulti + multipliers_fetch.multiplier
+                }%\`)\n**Min Winning Multiplier**: \`${minwinningmulti}%\` \`+ ${
+                    multipliers_fetch.multiplier
+                }%\` (\`${minwinningmulti + multipliers_fetch.multiplier}%\`)`,
                 timestamp: new Date(),
             };
 
