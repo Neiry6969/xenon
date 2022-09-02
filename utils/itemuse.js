@@ -513,7 +513,7 @@ class Useitem {
                 .setDescription(
                     `You used \`${1}\` ${itemData.icon} \`${
                         itemData.item
-                    }\`\n\nYou survived and felt reallllyyyy goooddd...\nYou gained \`+ ${pill_multi}%\` multiplier for 12 hours!`
+                    }\`\n\nYou survived and felt reallllyyyy goooddd...\nYou gained \`+ ${pill_multi}%\` multiplier for 30 minutes!`
                 )
                 .setFooter({
                     text: `${(1).toLocaleString()}x ${itemData.item}`,
