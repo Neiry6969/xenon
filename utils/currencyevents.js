@@ -13,7 +13,11 @@ const UserModel = require("../models/userSchema");
 const StatsModel = require("../models/statsSchema");
 const TipsModel = require("../models/tipsSchema");
 const { dmuser } = require("./discordfunctions");
-const { ri_watermelon } = require("./itemremove");
+const {
+    ri_watermelon,
+    ri_prestigekey,
+    ri_pillofxenon,
+} = require("./itemremove");
 const { fetchItemData } = require("./itemfunctions");
 const { checkEventCooldown, setEventCooldown } = require("./mainfunctions");
 const { es_fastestclick } = require("./minigamefunctions");
@@ -142,20 +146,11 @@ class Currencyevents {
             Object.keys(userData.activeitems).forEach(async (activeitem) => {
                 if (userData.activeitems[activeitem].expirydate <= Date.now()) {
                     if (activeitem === "watermelon") {
-                        const item = await fetchItemData("watermelon");
-                        await ri_watermelon(interaction.user.id);
-                        await dmuser(
-                            client,
-                            interaction.user.id,
-                            new MessageEmbed()
-                                .setTitle(
-                                    `Item Expired <:brokenglass:1013198455356801076>`
-                                )
-                                .setColor(`#ff5e5e`)
-                                .setDescription(
-                                    `Item: ${item.icon} \`${item.item}\``
-                                )
-                        );
+                        await ri_watermelon(client, interaction.user.id);
+                    } else if (activeitem === "prestigekey") {
+                        await ri_prestigekey(client, interaction.user.id);
+                    } else if (activeitem === "pillofxenon") {
+                        await ri_pillofxenon(client, interaction.user.id);
                     }
                 }
             });
@@ -190,7 +185,7 @@ class Currencyevents {
             return;
         }
         const random_number = Math.floor(Math.random() * 100);
-        if (random_number > 20) {
+        if (random_number > 10) {
             return;
         }
 

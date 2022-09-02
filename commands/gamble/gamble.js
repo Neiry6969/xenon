@@ -6,11 +6,12 @@ const {
     fetchEconomyData,
     removeCoins,
     addCoins,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
 const letternumbers = require("../../reference/letternumber");
+const { fetchMultipliers } = require("../../utils/userfunctions");
 
 const dice = [
     {
@@ -62,11 +63,15 @@ module.exports = {
         const inventoryData_fetch = await fetchInventoryData(
             interaction.user.id
         );
+        const multipliersData_fetch = await fetchMultipliers(
+            interaction.user.id
+        );
         const economyData = economyData_fetch.data;
         const inventoryData = inventoryData_fetch.data;
 
-        const maxwinningmulti = 1.5;
-        const minwinningmulti = 0.5;
+        const maxwinningmulti = 1.5 + multipliersData_fetch.multiplier / 100;
+        const minwinningmulti = 0.5 + multipliersData_fetch.multiplier / 100;
+
         let maxwallet = 25000000;
 
         if (inventoryData.inventory["finecrown"] >= 1) {
@@ -191,18 +196,16 @@ module.exports = {
 
             gamble_msg.edit({ embeds: [gamble_embed] });
         } else {
-            const dicedifference = userdice_total - xenondice_total;
-            const maxwinmulti = maxwinningmulti - (0.1 * dicedifference - 0.1);
-
             const multipliercalc =
-                Math.random() * maxwinmulti + minwinningmulti;
+                Math.random() * (maxwinningmulti - minwinningmulti) +
+                minwinningmulti;
             const multiplier = multipliercalc.toFixed(2);
 
-            const winningamount = Math.floor(multiplier * amount);
+            const winningamount = Math.floor(parseFloat(multiplier) * amount);
             const newwallet = economyData.wallet + winningamount;
 
             await addCoins(economyData.userId, winningamount);
-            await addexperiencepoints(interaction.user.id, 1, 25)
+            await addexperiencepoints(interaction.user.id, 1, 25);
 
             gamble_embed
                 .setColor(`#95ff87`)

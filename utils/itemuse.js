@@ -10,8 +10,13 @@ const interactionproccesses = require("../interactionproccesses.json");
 const { setProcessingLock } = require("../utils/mainfunctions");
 const { errorReply } = require("../utils/errorfunctions");
 const { fetchEmbedColor } = require("./cosmeticsfunctions");
-const { fetchUserData, removeItem } = require("./currencyfunctions");
+const {
+    fetchUserData,
+    removeItem,
+    fetchStatsData,
+} = require("./currencyfunctions");
 const { addActiveItem } = require("./userfunctions");
+const { death_handler } = require("./currencyevents");
 
 class Useitem {
     static async bankmessage(
@@ -459,6 +464,88 @@ class Useitem {
             });
 
         return interaction.reply({ embeds: [embed] });
+    }
+
+    static async prestigekey(interaction, itemData) {
+        await removeItem(interaction.user.id, itemData.item, 1);
+        await addActiveItem(interaction.user.id, "prestigekey", 43200, null);
+
+        const embed = new MessageEmbed()
+            .setTitle(`${interaction.user.username}'s ${itemData.name}`)
+            .setColor(await fetchEmbedColor(interaction))
+            .setThumbnail(itemData.imageUrl)
+            .setDescription(
+                `You used \`${1}\` ${itemData.icon} \`${
+                    itemData.item
+                }\`\n\nYou gained \`+ 150%\` multiplier for 12 hours!`
+            )
+            .setFooter({
+                text: `${(1).toLocaleString()}x ${itemData.item}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            });
+
+        return interaction.reply({ embeds: [embed] });
+    }
+
+    static async pillofxenon(
+        interaction,
+        client,
+        economyData,
+        inventoryData,
+        itemData
+    ) {
+        const fetch_statsData = await fetchStatsData(interaction.user.id);
+        const statsData = fetch_statsData.data;
+        await removeItem(interaction.user.id, itemData.item, 1);
+        if (Math.floor(Math.random() * 5) !== 1) {
+            const pill_multi = Math.floor(Math.random() * 21) + 5;
+            await addActiveItem(
+                interaction.user.id,
+                "pillofxenon",
+                1800,
+                pill_multi
+            );
+
+            const embed = new MessageEmbed()
+                .setTitle(`${interaction.user.username}'s ${itemData.name}`)
+                .setColor(await fetchEmbedColor(interaction))
+                .setThumbnail(itemData.imageUrl)
+                .setDescription(
+                    `You used \`${1}\` ${itemData.icon} \`${
+                        itemData.item
+                    }\`\n\nYou survived and felt reallllyyyy goooddd...\nYou gained \`+ ${pill_multi}%\` multiplier for 12 hours!`
+                )
+                .setFooter({
+                    text: `${(1).toLocaleString()}x ${itemData.item}`,
+                    iconURL: interaction.user.displayAvatarURL(),
+                });
+
+            return interaction.reply({ embeds: [embed] });
+        } else {
+            const embed = new MessageEmbed()
+                .setTitle(`${interaction.user.username}'s ${itemData.name}`)
+                .setColor(await fetchEmbedColor(interaction))
+                .setThumbnail(itemData.imageUrl)
+                .setDescription(
+                    `You used \`${1}\` ${itemData.icon} \`${
+                        itemData.item
+                    }\`\n\nYou got realy high that even the doctors couldn't save you, so you died! Shame, why are you doing drugs?`
+                )
+                .setFooter({
+                    text: `${(1).toLocaleString()}x ${itemData.item}`,
+                    iconURL: interaction.user.displayAvatarURL(),
+                });
+
+            await death_handler(
+                client,
+                interaction.user.id,
+                economyData,
+                inventoryData,
+                statsData,
+                "pillofxenon"
+            );
+            return interaction.reply({ embeds: [embed] });
+        }
     }
 }
 

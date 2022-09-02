@@ -28,7 +28,6 @@ module.exports = {
             "ADD_REACTIONS",
             "ATTACH_FILES",
             "SEND_MESSAGES",
-            "SEND_MESSAGES_IN_THREADS",
             "EMBED_LINKS",
             "VIEW_CHANNEL",
             "READ_MESSAGE_HISTORY",
@@ -36,13 +35,13 @@ module.exports = {
         const permissions_stillrequired = [];
 
         permissions_required.forEach((perm) => {
-            if (!interaction.guild.me.permissions.has(perm)) {
+            if (!interaction.channel.permissionsFor(client.user.id).has(perm)) {
                 return permissions_stillrequired.push(perm);
             }
         });
 
         if (permissions_stillrequired.length > 0) {
-            error_message = `**I am missing important some  permissions in this server/channel to function properly. Please contact a user/moderator/administrator who has the authority to change permissions to change permissions so you can continue using the bot.**\n\nOutstanding permisssions required:\n${permissions_stillrequired
+            error_message = `**I am missing some important permissions in this server/channel to function properly. Please contact a user/moderator/administrator who has the authority to change permissions to change permissions so you can continue using the bot.**\n\nOutstanding permisssions required:\n${permissions_stillrequired
                 .map((permission) => {
                     return `\`${permission}\``;
                 })

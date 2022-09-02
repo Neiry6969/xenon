@@ -11,7 +11,11 @@ const {
 } = require("../../utils/itemfunctions");
 const { errorReply } = require("../../utils/errorfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
-const { ri_watermelon } = require("../../utils/itemremove");
+const {
+    ri_watermelon,
+    ri_prestigekey,
+    ri_pillofxenon,
+} = require("../../utils/itemremove");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -47,16 +51,16 @@ module.exports = {
             if (Object.keys(userData.activeitems).length === 0) {
                 activeitems_map = `\`currently no active items\``;
             } else {
-                activeitems_map = Object.keys(userData.activeitems).map(
-                    (key) => {
+                activeitems_map = Object.keys(userData.activeitems)
+                    .map((key) => {
                         const item = allItems.find(({ item }) => item === key);
                         return `${item.icon} \`${
                             item.item
                         }\` expires: <t:${Math.floor(
                             userData.activeitems[key].expirydate / 1000
                         )}:R>`;
-                    }
-                );
+                    })
+                    .join("\n");
             }
             return interaction.reply({
                 embeds: [
@@ -87,7 +91,39 @@ module.exports = {
             }
 
             if (itemData.item === "watermelon") {
-                await ri_watermelon(interaction.user.id);
+                await ri_watermelon(client, interaction.user.id);
+                interaction.reply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setTitle(`Action Executed - Active Item Remove`)
+                            .setAuthor({
+                                name: `${interaction.user.tag}`,
+                                iconURL: interaction.user.displayAvatarURL(),
+                            })
+                            .setColor(`#95ff87`)
+                            .setDescription(
+                                `Item: ${itemData.icon} \`${itemData.item}\``
+                            ),
+                    ],
+                });
+            } else if (itemData.item === "prestigekey") {
+                await ri_prestigekey(client, interaction.user.id);
+                interaction.reply({
+                    embeds: [
+                        new MessageEmbed()
+                            .setTitle(`Action Executed - Active Item Remove`)
+                            .setAuthor({
+                                name: `${interaction.user.tag}`,
+                                iconURL: interaction.user.displayAvatarURL(),
+                            })
+                            .setColor(`#95ff87`)
+                            .setDescription(
+                                `Item: ${itemData.icon} \`${itemData.item}\``
+                            ),
+                    ],
+                });
+            } else if (itemData.item === "pillofxenon") {
+                await ri_pillofxenon(client, interaction.user.id);
                 interaction.reply({
                     embeds: [
                         new MessageEmbed()

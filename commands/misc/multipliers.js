@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -7,68 +7,49 @@ const {
     fetchStatsData,
 } = require("../../utils/currencyfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
-const { fetchAllitemsData } = require("../../utils/itemfunctions");
+const { fetchMultipliers } = require("../../utils/userfunctions");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("shop")
-        .setDescription("See what items are being sold in the xenon shop."),
-    cooldown: 5,
+        .setName("multipliers")
+        .setDescription(
+            "Check what multipliers you have for gambling coin win increase."
+        ),
+    cooldown: 3,
     async execute(interaction, client, theme) {
-        const allItems = await fetchAllitemsData();
-        const inventoryData_fetch = await fetchInventoryData(
-            interaction.user.id
-        );
-        const inventoryData = inventoryData_fetch.data;
-
-        const shopmaparray = allItems
-            .map((value) => {
-                if (value.price === "unable to be bought") {
-                    return;
-                } else {
-                    return {
-                        price: value.price,
-                        icon: value.icon,
-                        name: value.name,
-                        item: value.item,
-                    };
-                }
+        const multipliers_fetch = await fetchMultipliers(interaction.user.id);
+        const multipliers_display = multipliers_fetch.data
+            .map((multiplier) => {
+                return `\`+ ${multiplier.multiplier}%\` ➜ ${multiplier.description}`;
             })
-            .filter(Boolean)
             .sort(function (a, b) {
-                return a.price - b.price;
+                return a.multiplier - b.multiplier;
             });
 
-        const shopList = shopmaparray
-            .map((value) => {
-                return `${value.icon} **${
-                    value.name
-                }**    **───**   \`❀ ${value.price.toLocaleString()}\` (${
-                    inventoryData.inventory[value.item]
-                        ? inventoryData.inventory[value.item].toLocaleString()
-                        : 0
-                })\nItem ID: \`${value.item}\``;
-            })
-            .filter(Boolean);
-
-        const shop = Object.values(shopList).filter(Boolean);
-        const shoplength = shop.length;
-        const itemsperpage = 6;
+        const multipliers = multipliers_fetch.data;
+        const itemsperpage = 8;
 
         let lastpage;
-        if (shoplength % itemsperpage > 0) {
-            lastpage = Math.floor(shoplength / itemsperpage) + 1;
+        if (multipliers.length % itemsperpage > 0) {
+            lastpage = Math.floor(multipliers.length / itemsperpage) + 1;
         } else {
-            lastpage = shoplength / itemsperpage;
+            lastpage = multipliers.length / itemsperpage;
         }
 
         let page = 1;
         let display_start = (page - 1) * itemsperpage;
         let display_end = page * itemsperpage;
 
-        const shop_embed = new MessageEmbed()
+        const multipliers_embed = new MessageEmbed()
             .setColor(theme.embed.color)
-            .setTitle(`Xenon Shop™`);
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL(),
+            })
+            .setTitle(`Multipliers`)
+            .setFooter({
+                text: `Max Multiplier: ${multipliers_fetch.maxmultiplier}%`,
+            });
 
         if (lastpage === 1) {
             let pagebutton = new MessageButton()
@@ -107,14 +88,16 @@ module.exports = {
                 rightbutton,
                 rightfarbutton
             );
-            shop_embed.setDescription(
-                `\`/item\` - View details of an item\n\n${shopList
+            multipliers_embed.setDescription(
+                `Total Multiplier: \`${
+                    multipliers_fetch.multiplier
+                }%\`\n${multipliers_display
                     .slice(display_start, display_end)
-                    .join("\n\n")}`
+                    .join("\n")}`
             );
 
             return interaction.reply({
-                embeds: [shop_embed],
+                embeds: [multipliers_embed],
                 components: [row],
             });
         } else {
@@ -153,20 +136,22 @@ module.exports = {
                 rightfarbutton
             );
 
-            shop_embed.setDescription(
-                `\`/item\` - View details of an item\n\n${shopList
+            multipliers_embed.setDescription(
+                `Total Multiplier: \`${
+                    multipliers_fetch.multiplier
+                }%\`\n\n${multipliers_display
                     .slice(display_start, display_end)
-                    .join("\n\n")}`
+                    .join("\n")}`
             );
 
             interaction.reply({
-                embeds: [shop_embed],
+                embeds: [multipliers_embed],
                 components: [row],
             });
 
-            const shop_msg = await interaction.fetchReply();
+            const multipliers_msg = await interaction.fetchReply();
 
-            const collector = shop_msg.createMessageComponentCollector({
+            const collector = multipliers_msg.createMessageComponentCollector({
                 idle: 20 * 1000,
             });
 
@@ -192,14 +177,16 @@ module.exports = {
                         rightbutton.setDisabled();
                         rightfarbutton.setDisabled();
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
 
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     } else {
@@ -208,13 +195,15 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     }
@@ -230,14 +219,16 @@ module.exports = {
                         rightbutton.setDisabled();
                         rightfarbutton.setDisabled();
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
 
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     } else {
@@ -246,13 +237,15 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     }
@@ -268,14 +261,15 @@ module.exports = {
                         leftbutton.setDisabled();
                         leftfarbutton.setDisabled();
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
-
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     } else {
@@ -284,14 +278,16 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
 
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     }
@@ -307,14 +303,16 @@ module.exports = {
                         leftbutton.setDisabled();
                         leftfarbutton.setDisabled();
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
 
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     } else {
@@ -323,14 +321,16 @@ module.exports = {
                         rightfarbutton.setDisabled(false);
                         leftfarbutton.setDisabled(false);
 
-                        shop_embed.setDescription(
-                            `\`/item\` - View details of an item\n\n${shopList
+                        multipliers_embed.setDescription(
+                            `Total Multiplier: \`${
+                                multipliers_fetch.multiplier
+                            }%\`\n\n${multipliers_display
                                 .slice(display_start, display_end)
-                                .join("\n\n")}`
+                                .join("\n")}`
                         );
 
-                        await shop_msg.edit({
-                            embeds: [shop_embed],
+                        await multipliers_msg.edit({
+                            embeds: [multipliers_embed],
                             components: [row],
                         });
                     }
@@ -338,13 +338,15 @@ module.exports = {
             });
 
             collector.on("end", (collected) => {
-                shop_msg.components[0].components.forEach((c) => {
+                multipliers_msg.components[0].components.forEach((c) => {
                     c.setDisabled();
                 });
-                shop_msg.edit({
-                    components: shop_msg.components,
+                multipliers_msg.edit({
+                    components: multipliers_msg.components,
                 });
             });
         }
+
+        console.log(multipliers_display);
     },
 };

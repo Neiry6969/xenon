@@ -211,8 +211,8 @@ module.exports = {
                 if (Object.keys(userData.activeitems).length === 0) {
                     activeitems_map = `\`currently no active items\``;
                 } else {
-                    activeitems_map = Object.keys(userData.activeitems).map(
-                        (key) => {
+                    activeitems_map = Object.keys(userData.activeitems)
+                        .map((key) => {
                             const item = allItems.find(
                                 ({ item }) => item === key
                             );
@@ -221,8 +221,8 @@ module.exports = {
                             }\` expires: <t:${Math.floor(
                                 userData.activeitems[key].expirydate / 1000
                             )}:R>`;
-                        }
-                    );
+                        })
+                        .join("\n");
                 }
                 return button.reply({
                     embeds: [

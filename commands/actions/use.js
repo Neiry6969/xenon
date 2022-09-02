@@ -21,6 +21,8 @@ const {
     preniumcard,
     bankmessage,
     watermelon,
+    prestigekey,
+    pillofxenon,
 } = require("../../utils/itemuse");
 const letternumbers = require("../../reference/letternumber");
 
@@ -138,6 +140,16 @@ module.exports = {
             return lootbox(interaction, inventoryData, itemData, quantity);
         } else if (itemData.item === "watermelon") {
             return watermelon(interaction, itemData);
+        } else if (itemData.item === "prestigekey") {
+            return prestigekey(interaction, itemData);
+        } else if (itemData.item === "pillofxenon") {
+            return pillofxenon(
+                interaction,
+                client,
+                economyData,
+                inventoryData,
+                itemData
+            );
         }
 
         error_message = `That item isn't usable sorry not sorry.\n\nItem: ${itemData.icon} \`${itemData.item}\``;
