@@ -341,11 +341,9 @@ module.exports = {
             const embed = {
                 color: theme.embed.color,
                 title: `Gamble Table`,
-                description: `**MAX WINNING MULTIPLIER**: **x${
-                    maxwinningmulti + minwinningmulti
-                }** \`${
-                    (maxwinningmulti + minwinningmulti) * 100
-                }%\` (-0.1 x dice difference)\n**MIN WINNING MULTIPLIER**: **x${minwinningmulti}** \`${
+                description: `**MAX WINNING MULTIPLIER**: **x${maxwinningmulti}** \`${
+                    maxwinningmulti * 100
+                }%\`\n**MIN WINNING MULTIPLIER**: **x${minwinningmulti}** \`${
                     minwinningmulti * 100
                 }%\``,
                 timestamp: new Date(),
