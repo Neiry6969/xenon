@@ -342,16 +342,31 @@ module.exports = {
             );
             const maxwinningmulti = 150;
             const minwinningmulti = 50;
+            let addedmaxwinningmulti;
+            let addedminwinningmulti;
+
+            if (multipliersData_fetch.multiplier >= 245) {
+                addedmaxwinningmulti = 300;
+                addedminwinningmulti = 120;
+            } else if (multipliersData_fetch.multiplier >= 200) {
+                addedmaxwinningmulti = 250;
+                addedminwinningmulti = 100;
+            } else if (multipliersData_fetch.multiplier >= 150) {
+                addedmaxwinningmulti = 250;
+                addedminwinningmulti = 100;
+            } else if (multipliersData_fetch.multiplier >= 150) {
+                addedmaxwinningmulti = 200;
+                addedminwinningmulti = 80;
+            }
+
             const embed = {
                 color: theme.embed.color,
                 title: `Gamble Table`,
-                description: `**Max Winning Multiplier**: \`${maxwinningmulti}%\` \`+ ${
-                    multipliers_fetch.multiplier
-                }%\` (\`${
-                    maxwinningmulti + multipliers_fetch.multiplier
-                }%\`)\n**Min Winning Multiplier**: \`${minwinningmulti}%\` \`+ ${
-                    multipliers_fetch.multiplier
-                }%\` (\`${minwinningmulti + multipliers_fetch.multiplier}%\`)`,
+                description: `**Max Winning Multiplier**: \`${maxwinningmulti}%\` \`+ ${addedmaxwinningmulti}%\` (\`${
+                    maxwinningmulti + addedmaxwinningmulti
+                }%\`)\n**Min Winning Multiplier**: \`${minwinningmulti}%\` \`+ ${addedminwinningmulti}%\` (\`${
+                    minwinningmulti + addedminwinningmulti
+                }%\`)`,
                 timestamp: new Date(),
             };
 

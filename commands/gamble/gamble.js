@@ -69,8 +69,22 @@ module.exports = {
         const economyData = economyData_fetch.data;
         const inventoryData = inventoryData_fetch.data;
 
-        const maxwinningmulti = 1.5 + multipliersData_fetch.multiplier / 100;
-        const minwinningmulti = 0.5 + multipliersData_fetch.multiplier / 100;
+        let maxwinningmulti = 1.5;
+        let minwinningmulti = 0.5;
+
+        if (multipliersData_fetch.multiplier >= 245) {
+            maxwinningmulti = 3;
+            minwinningmulti = 1.2;
+        } else if (multipliersData_fetch.multiplier >= 200) {
+            maxwinningmulti = 2.5;
+            minwinningmulti = 1;
+        } else if (multipliersData_fetch.multiplier >= 150) {
+            maxwinningmulti = 2.5;
+            minwinningmulti = 1;
+        } else if (multipliersData_fetch.multiplier >= 150) {
+            maxwinningmulti = 2;
+            minwinningmulti = 0.8;
+        }
 
         let maxwallet = 25000000;
 
