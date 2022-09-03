@@ -57,10 +57,10 @@ class Userfunctions {
             inventoryData.inventory["finetrophy"] &&
             inventoryData.inventory["finetrophy"] > 0
         ) {
-            multipliers_total += 25;
+            multipliers_total += 15;
             multipliers.push({
                 description: "Fine Trophy",
-                multiplier: 25,
+                multiplier: 15,
             });
         }
 
@@ -73,10 +73,10 @@ class Userfunctions {
         }
 
         if (statsData.streaks.daily.strk >= 25) {
-            if (statsData.streaks.daily.strk >= 500) {
+            if (statsData.streaks.daily.strk >= 1000) {
                 multipliers_total += 30;
                 multipliers.push({
-                    description: "Daily streak of 500+",
+                    description: "Daily streak of 1000+",
                     multiplier: 25,
                 });
             } else if (statsData.streaks.daily.strk >= 100) {
@@ -100,6 +100,22 @@ class Userfunctions {
             }
         }
 
+        if (economyData.level >= 1000) {
+            multipliers_total += 5;
+            multipliers.push({
+                description: "Level 1000+",
+                multiplier: 5,
+            });
+        }
+
+        if (economyData.premium.rank >= 1) {
+            multipliers_total += 5;
+            multipliers.push({
+                description: "Prenium Rank 1+",
+                multiplier: 5,
+            });
+        }
+
         if (Object.keys(userData.activeitems).includes("pillofxenon")) {
             multipliers_total += userData.activeitems["pillofxenon"].data;
             multipliers.push({
@@ -119,7 +135,7 @@ class Userfunctions {
         if (economyData.badges.length > 0) {
             let multipliers_badges = 0;
             economyData.badges.forEach((badge) => {
-                multipliers_badges += 5;
+                multipliers_badges += 2;
             });
             multipliers_total += multipliers_badges;
             multipliers.push({
@@ -130,21 +146,30 @@ class Userfunctions {
 
         if (economyData.prestige > 0) {
             let multipliers_prestige = economyData.prestige * 5;
-            multipliers_total += multipliers_prestige;
-            multipliers.push({
-                description: `Prestige ${economyData.prestige}`,
-                multiplier: multipliers_prestige,
-            });
+            if (economyData.prestige > 10) {
+                multipliers_prestige = 50;
+                multipliers_total += multipliers_prestige;
+                multipliers.push({
+                    description: `Prestige 10+`,
+                    multiplier: multipliers_prestige,
+                });
+            } else {
+                multipliers_total += multipliers_prestige;
+                multipliers.push({
+                    description: `Prestige ${economyData.prestige}`,
+                    multiplier: multipliers_prestige,
+                });
+            }
         }
 
         if (
             userData.eventcooldowns["vote_topgg"] &&
             Date.now() < userData.eventcooldowns["vote_topgg"] + 43200000
         ) {
-            multipliers_total += 15;
+            multipliers_total += 5;
             multipliers.push({
                 description: `Voted on Top.gg`,
-                multiplier: 15,
+                multiplier: 5,
             });
         }
 
@@ -153,10 +178,10 @@ class Userfunctions {
         }
 
         if (settingsData.settings.tips.status === true) {
-            multipliers_total += 5;
+            multipliers_total += 2;
             multipliers.push({
                 description: `Tips Enabled`,
-                multiplier: 5,
+                multiplier: 2,
             });
         }
 

@@ -18,13 +18,20 @@ module.exports = {
     cooldown: 3,
     async execute(interaction, client, theme) {
         const multipliers_fetch = await fetchMultipliers(interaction.user.id);
-        const multipliers_display = multipliers_fetch.data
+        const multipliers_map = multipliers_fetch.data
             .map((multiplier) => {
-                return `\`+ ${multiplier.multiplier}%\` ➜ ${multiplier.description}`;
+                return {
+                    multiplier: multiplier.multiplier,
+                    display: `\`+ ${multiplier.multiplier}%\` ➜ ${multiplier.description}`,
+                };
             })
             .sort(function (a, b) {
-                return a.multiplier - b.multiplier;
+                return b.multiplier - a.multiplier;
             });
+
+        const multipliers_display = multipliers_map.map((multiplier) => {
+            return multiplier.display;
+        });
 
         const multipliers = multipliers_fetch.data;
         const itemsperpage = 8;
