@@ -73,17 +73,17 @@ module.exports = {
         let minwinningmulti = 0.5;
 
         if (multipliersData_fetch.multiplier >= 245) {
-            maxwinningmulti = 3;
-            minwinningmulti = 1.2;
+            maxwinningmulti = 250;
+            minwinningmulti = 120;
         } else if (multipliersData_fetch.multiplier >= 200) {
-            maxwinningmulti = 2.5;
-            minwinningmulti = 1;
+            minwinningmulti = 225;
+            addedminwinningmulti = 100;
         } else if (multipliersData_fetch.multiplier >= 150) {
-            maxwinningmulti = 2.5;
-            minwinningmulti = 1;
+            maxwinningmulti = 200;
+            minwinningmulti = 100;
         } else if (multipliersData_fetch.multiplier >= 150) {
-            maxwinningmulti = 2;
-            minwinningmulti = 0.8;
+            maxwinningmulti = 175;
+            minwinningmulti = 80;
         }
 
         let maxwallet = 25000000;

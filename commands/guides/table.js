@@ -345,17 +345,17 @@ module.exports = {
             let addedmaxwinningmulti;
             let addedminwinningmulti;
 
-            if (multipliersData_fetch.multiplier >= 245) {
-                addedmaxwinningmulti = 300;
+            if (multipliers_fetch.multiplier >= 245) {
+                addedmaxwinningmulti = 250;
                 addedminwinningmulti = 120;
-            } else if (multipliersData_fetch.multiplier >= 200) {
-                addedmaxwinningmulti = 250;
+            } else if (multipliers_fetch.multiplier >= 200) {
+                addedmaxwinningmulti = 225;
                 addedminwinningmulti = 100;
-            } else if (multipliersData_fetch.multiplier >= 150) {
-                addedmaxwinningmulti = 250;
-                addedminwinningmulti = 100;
-            } else if (multipliersData_fetch.multiplier >= 150) {
+            } else if (multipliers_fetch.multiplier >= 150) {
                 addedmaxwinningmulti = 200;
+                addedminwinningmulti = 100;
+            } else if (multipliers_fetch.multiplier >= 150) {
+                addedmaxwinningmulti = 175;
                 addedminwinningmulti = 80;
             }
 
