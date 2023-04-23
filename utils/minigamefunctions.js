@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
+const { EmbedBuilder, MessageActionRow, MessageButton } = require("discord.js");
 
 const { addItem } = require("./currencyfunctions");
 const { fetchItemData } = require("./itemfunctions");
@@ -16,7 +16,7 @@ class Minigamefunctions {
     ) {
         let winner;
         const endsAt = Date.now() + timelimit * 1000;
-        const mg_embed = new MessageEmbed()
+        const mg_embed = new EmbedBuilder()
             .setColor(embed_color)
             .setTitle(`**\`Event:\`** ${embed_title}`)
             .setDescription(

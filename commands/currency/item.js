@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -121,7 +121,7 @@ module.exports = {
                 .join("\n");
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setTitle(
                 `**${itemData.icon} ${itemData.name}** (${
@@ -174,10 +174,10 @@ module.exports = {
             });
         }
 
-        let row = new MessageActionRow();
+        let row = new ActionRowBuilder();
 
         if (lootboxitems) {
-            let itemsbutton = new MessageButton()
+            let itemsbutton = new ButtonBuilder()
                 .setCustomId("itemsbutton")
                 .setLabel("Possible Items")
                 .setStyle("PRIMARY");
@@ -186,7 +186,7 @@ module.exports = {
         }
 
         if (drophistory) {
-            let drophistorybutton = new MessageButton()
+            let drophistorybutton = new ButtonBuilder()
                 .setCustomId("drophistorybutton")
                 .setLabel("Drop History")
                 .setStyle("SUCCESS")
@@ -203,11 +203,11 @@ module.exports = {
         const item_msg = await interaction.fetchReply();
 
         if (lootboxitems || drophistory) {
-            const ephemerallootboxitems_embed = new MessageEmbed()
+            const ephemerallootboxitems_embed = new EmbedBuilder()
                 .setTitle(`**Possible Items** [Possible Quantities]`)
                 .setDescription(lootboxitems);
 
-            const ephemeraldrophistory_embed = new MessageEmbed()
+            const ephemeraldrophistory_embed = new EmbedBuilder()
                 .setTitle(`**Drop History**`)
                 .setDescription(drophistory);
 

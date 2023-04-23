@@ -1,9 +1,9 @@
 const {
     Collection,
-    MessageActionRow,
-    MessageSelectMenu,
-    MessageEmbed,
-    MessageButton,
+    ActionRowBuilder,
+    StringSelectMenuOptionBuilder,
+    EmbedBuilder,
+    ButtonBuilder,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
@@ -49,7 +49,7 @@ module.exports = {
             },
         };
         const settings_keys = Object.keys(settings);
-        const settings_embed = new MessageEmbed()
+        const settings_embed = new EmbedBuilder()
             .setTitle(`User Settings`)
             .setDescription(
                 `**${settings[settings_keys[0]].title}**\n${
@@ -73,10 +73,10 @@ module.exports = {
             return option_data;
         });
         let components = [];
-        let row = new MessageActionRow();
-        let row0 = new MessageActionRow();
-        let row1 = new MessageActionRow();
-        let enablebutton = new MessageButton()
+        let row = new ActionRowBuilder();
+        let row0 = new ActionRowBuilder();
+        let row1 = new ActionRowBuilder();
+        let enablebutton = new ButtonBuilder()
             .setCustomId("enablebutton")
             .setLabel(`Enable`)
             .setStyle("SUCCESS")
@@ -85,7 +85,7 @@ module.exports = {
                     ? true
                     : false
             );
-        let disablebutton = new MessageButton()
+        let disablebutton = new ButtonBuilder()
             .setCustomId("disablebutton")
             .setLabel(`Disable`)
             .setStyle("DANGER")
@@ -94,13 +94,13 @@ module.exports = {
                     ? false
                     : true
             );
-        let settingsmenu = new MessageSelectMenu()
+        let settingsmenu = new StringSelectMenuOptionBuilder()
             .setCustomId(`settingsmenu`)
             .setOptions(settings_options);
         row.setComponents(settingsmenu);
         row0.setComponents(enablebutton, disablebutton);
         row1.setComponents(
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId("endinteraction")
                 .setLabel("End Interaction")
                 .setStyle("SECONDARY")

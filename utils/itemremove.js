@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
+const { EmbedBuilder, MessageButton, MessageActionRow } = require("discord.js");
 const fs = require("fs");
 
 const EconomyModel = require("../models/economySchema");
@@ -25,7 +25,7 @@ class Removeitem {
         await dmuser(
             client,
             userId,
-            new MessageEmbed()
+            new EmbedBuilder()
                 .setTitle(`Item Expired <:brokenglass:1013198455356801076>`)
                 .setColor(`#ff5e5e`)
                 .setDescription(`Item: ${item.icon} \`${item.item}\``)
@@ -38,7 +38,7 @@ class Removeitem {
         await dmuser(
             client,
             userId,
-            new MessageEmbed()
+            new EmbedBuilder()
                 .setTitle(`Item Expired <:brokenglass:1013198455356801076>`)
                 .setColor(`#ff5e5e`)
                 .setDescription(`Item: ${item.icon} \`${item.item}\``)
@@ -51,7 +51,7 @@ class Removeitem {
         await dmuser(
             client,
             userId,
-            new MessageEmbed()
+            new EmbedBuilder()
                 .setTitle(`Item Expired <:brokenglass:1013198455356801076>`)
                 .setColor(`#ff5e5e`)
                 .setDescription(`Item: ${item.icon} \`${item.item}\``)

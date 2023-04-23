@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -209,19 +209,19 @@ module.exports = {
             ).toLocaleString()}\``;
         }
 
-        let confirm = new MessageButton()
+        let confirm = new ButtonBuilder()
             .setCustomId("confirm")
             .setLabel("Confirm")
             .setStyle("PRIMARY");
 
-        let cancel = new MessageButton()
+        let cancel = new ButtonBuilder()
             .setCustomId("cancel")
             .setLabel("Cancel")
             .setStyle("DANGER");
 
-        let row = new MessageActionRow().addComponents(confirm, cancel);
+        let row = new ActionRowBuilder().addComponents(confirm, cancel);
 
-        const confirmfight_embed = new MessageEmbed()
+        const confirmfight_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -276,7 +276,7 @@ module.exports = {
                 waitingraw = "target";
             }
 
-            const fight_embed = new MessageEmbed()
+            const fight_embed = new EmbedBuilder()
                 .setColor(theme.embed.color)
                 .setAuthor({
                     name: `${turn.tag}`,
@@ -344,22 +344,22 @@ module.exports = {
                 );
 
             const fight_components = [];
-            const row0 = new MessageActionRow();
-            const row1 = new MessageActionRow();
+            const row0 = new ActionRowBuilder();
+            const row1 = new ActionRowBuilder();
 
-            let shield = new MessageButton()
+            let shield = new ButtonBuilder()
                 .setCustomId("shield")
                 .setLabel("Shield")
                 .setStyle("SECONDARY")
                 .setEmoji("<:shield:1013876234138177586>");
 
-            let buff = new MessageButton()
+            let buff = new ButtonBuilder()
                 .setCustomId("buff")
                 .setLabel("Buff")
                 .setStyle("SECONDARY")
                 .setEmoji("<:sword:1013883185337221151>");
 
-            let heal = new MessageButton()
+            let heal = new ButtonBuilder()
                 .setCustomId("heal")
                 .setLabel("Heal")
                 .setStyle("SECONDARY")
@@ -367,29 +367,29 @@ module.exports = {
 
             row0.setComponents(shield, buff, heal);
 
-            let counterattack = new MessageButton()
+            let counterattack = new ButtonBuilder()
                 .setCustomId("counterattck")
                 .setLabel("Counterattack")
                 .setStyle("SECONDARY")
                 .setDisabled(true);
 
-            let block = new MessageButton()
+            let block = new ButtonBuilder()
                 .setCustomId("block")
                 .setLabel("Block Attack")
                 .setStyle("SECONDARY")
                 .setDisabled(true);
 
-            let attack = new MessageButton()
+            let attack = new ButtonBuilder()
                 .setCustomId("attack")
                 .setLabel("Attack")
                 .setStyle("SECONDARY");
 
-            let breakshield = new MessageButton()
+            let breakshield = new ButtonBuilder()
                 .setCustomId("breakshield")
                 .setLabel("Break Shield")
                 .setStyle("SECONDARY");
 
-            let flee = new MessageButton()
+            let flee = new ButtonBuilder()
                 .setCustomId("flee")
                 .setLabel("Flee")
                 .setStyle("DANGER")
@@ -1108,7 +1108,7 @@ module.exports = {
         }
 
         async function target_confirmation() {
-            const confirmfight_embed_target = new MessageEmbed()
+            const confirmfight_embed_target = new EmbedBuilder()
                 .setTitle(`Action Confirmation - Fight`)
                 .setColor(theme.embed.color)
                 .setAuthor({

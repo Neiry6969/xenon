@@ -7,6 +7,8 @@ const {
     Intents,
     Client,
     MessageEmbed,
+    GatewayIntentBits,
+    Partials,
 } = require("discord.js");
 const fs = require("fs");
 
@@ -25,7 +27,13 @@ mongoose
     });
 
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS],
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+    ],
+    partials: [Partials.Channel],
 });
 client.commands = new Collection();
 

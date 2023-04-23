@@ -1,8 +1,8 @@
 const {
-    MessageEmbed,
-    MessageSelectMenu,
-    MessageActionRow,
-    MessageButton,
+    EmbedBuilder,
+    StringSelectMenuOptionBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
@@ -83,7 +83,7 @@ module.exports = {
             })
             .join("\n");
 
-        const prestige_embed = new MessageEmbed()
+        const prestige_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -114,17 +114,17 @@ module.exports = {
                 }`
             );
 
-        const endinteraction_button = new MessageButton()
+        const endinteraction_button = new ButtonBuilder()
             .setCustomId("endinteraction")
             .setStyle("SECONDARY")
             .setLabel(`End Interaction`);
-        const prestige_button = new MessageButton()
+        const prestige_button = new ButtonBuilder()
             .setCustomId("prestigebutton")
             .setEmoji(`<:prestigekey:1014977553695526954>`)
             .setStyle("SECONDARY")
             .setLabel(`Prestige`)
             .setDisabled();
-        const prestige_row = new MessageActionRow().setComponents(
+        const prestige_row = new ActionRowBuilder().setComponents(
             prestige_button
         );
 

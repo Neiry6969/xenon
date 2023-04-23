@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -211,7 +211,7 @@ module.exports = {
         const slots3 = slot(slot3_num);
         const resultslots = [slots1, slots2, slots3];
 
-        const slots_embed = new MessageEmbed()
+        const slots_embed = new EmbedBuilder()
             .setTitle(`Slots Machine`)
             .setDescription(`\` [>\`${resultslots.join(" ")} \`<]\``);
 

@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -64,7 +64,7 @@ module.exports = {
             }
             return interaction.reply({
                 embeds: [
-                    new MessageEmbed()
+                    new EmbedBuilder()
                         .setColor(theme.embed.color)
                         .setAuthor({
                             name: `${interaction.user.tag}`,
@@ -94,7 +94,7 @@ module.exports = {
                 await ri_watermelon(client, interaction.user.id);
                 interaction.reply({
                     embeds: [
-                        new MessageEmbed()
+                        new EmbedBuilder()
                             .setTitle(`Action Executed - Active Item Remove`)
                             .setAuthor({
                                 name: `${interaction.user.tag}`,
@@ -110,7 +110,7 @@ module.exports = {
                 await ri_prestigekey(client, interaction.user.id);
                 interaction.reply({
                     embeds: [
-                        new MessageEmbed()
+                        new EmbedBuilder()
                             .setTitle(`Action Executed - Active Item Remove`)
                             .setAuthor({
                                 name: `${interaction.user.tag}`,
@@ -126,7 +126,7 @@ module.exports = {
                 await ri_pillofxenon(client, interaction.user.id);
                 interaction.reply({
                     embeds: [
-                        new MessageEmbed()
+                        new EmbedBuilder()
                             .setTitle(`Action Executed - Active Item Remove`)
                             .setAuthor({
                                 name: `${interaction.user.tag}`,

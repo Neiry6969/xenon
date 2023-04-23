@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -119,7 +119,7 @@ module.exports = {
 
         let user = options.user || interaction.user;
 
-        const level_embed = new MessageEmbed()
+        const level_embed = new EmbedBuilder()
             .setTitle("Level")
             .setColor(theme.embed.color);
 
@@ -187,8 +187,8 @@ module.exports = {
         interaction.reply({
             embeds: [level_embed],
             components: [
-                new MessageActionRow().setComponents(
-                    new MessageButton()
+                new ActionRowBuilder().setComponents(
+                    new ButtonBuilder()
                         .setCustomId(`fetch_activeitems`)
                         .setEmoji("<a:Hamster_Spin:1006783336011808838>")
                         .setLabel("Active Items")
@@ -226,7 +226,7 @@ module.exports = {
                 }
                 return button.reply({
                     embeds: [
-                        new MessageEmbed()
+                        new EmbedBuilder()
                             .setColor(theme.embed.color)
                             .setAuthor({
                                 name: `${user.tag}`,

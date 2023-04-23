@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const {
     fetchEconomyData,
@@ -33,7 +33,7 @@ class Currencyevents {
     ) {
         statsData.deaths += 1;
         const lostcoins = economyData.wallet;
-        const dmdeathembed = new MessageEmbed().setColor("#FFA500");
+        const dmdeathembed = new EmbedBuilder().setColor("#FFA500");
         let hasLife;
 
         if (inventoryData.inventory !== {}) {
@@ -115,7 +115,7 @@ class Currencyevents {
                 const hasdmed = await dmuser(
                     client,
                     interaction.user.id,
-                    new MessageEmbed()
+                    new EmbedBuilder()
                         .setColor(`#ffa159`)
                         .setTitle(
                             `Level Up! <a:streakflame:1008505222747922503>`
@@ -129,7 +129,7 @@ class Currencyevents {
                 if (hasdmed !== true) {
                     interaction.channel.send({
                         embeds: [
-                            new MessageEmbed()
+                            new EmbedBuilder()
                                 .setColor(`#ffa159`)
                                 .setDescription(
                                     `**<@${
@@ -192,7 +192,7 @@ class Currencyevents {
         const tipsData_choosen =
             tipsData[Math.floor(Math.random() * tipsData.length)];
 
-        const tip_msg = new MessageEmbed()
+        const tip_msg = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setDescription(
                 `<a:think_lightup:1013128619004018709> **\`TIP:\`** ${tipsData_choosen.description}`

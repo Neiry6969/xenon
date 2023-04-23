@@ -1,8 +1,8 @@
 const {
-    MessageEmbed,
-    MessageSelectMenu,
-    MessageActionRow,
-    MessageButton,
+    EmbedBuilder,
+    StringSelectMenuOptionBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
 } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
@@ -114,44 +114,44 @@ module.exports = {
             };
         });
 
-        let endinteractionbutton = new MessageButton()
+        let endinteractionbutton = new ButtonBuilder()
             .setCustomId("endinteraction")
             .setLabel("End Interaction")
             .setStyle("SECONDARY");
 
-        let dropmenu = new MessageSelectMenu()
+        let dropmenu = new StringSelectMenuOptionBuilder()
             .setCustomId("dropmenu")
             .setMinValues(0)
             .setMaxValues(1)
             .setPlaceholder("Select a drop to view")
             .addOptions(mappedDropOptions);
 
-        let buydropbutton = new MessageButton()
+        let buydropbutton = new ButtonBuilder()
             .setCustomId("buydropbutton")
             .setLabel("Buy Drop")
             .setStyle("PRIMARY");
-        let addbutton = new MessageButton()
+        let addbutton = new ButtonBuilder()
             .setCustomId("addbutton")
             .setLabel("+")
             .setStyle("SECONDARY");
 
-        let minusbutton = new MessageButton()
+        let minusbutton = new ButtonBuilder()
             .setCustomId("minusbutton")
             .setLabel("-")
             .setStyle("SECONDARY");
-        let backbutton = new MessageButton()
+        let backbutton = new ButtonBuilder()
             .setCustomId("backbutton")
             .setLabel("Back")
             .setStyle("SECONDARY");
-        let setmaxbutton = new MessageButton()
+        let setmaxbutton = new ButtonBuilder()
             .setCustomId("setmaxbutton")
             .setLabel("Set Max")
             .setStyle("SECONDARY");
 
-        let row = new MessageActionRow().setComponents(dropmenu);
-        let row2 = new MessageActionRow().setComponents(endinteractionbutton);
+        let row = new ActionRowBuilder().setComponents(dropmenu);
+        let row2 = new ActionRowBuilder().setComponents(endinteractionbutton);
 
-        const drops_embed = new MessageEmbed()
+        const drops_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setDescription(mappedData);
 

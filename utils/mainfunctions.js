@@ -1,4 +1,4 @@
-const { MessageEmbed, DataResolver } = require("discord.js");
+const { EmbedBuilder, DataResolver } = require("discord.js");
 const fs = require("fs");
 
 const { fetchEmbedColor } = require("./cosmeticsfunctions");
@@ -189,7 +189,7 @@ class Mainfunctions {
             const timeleft_human = time_split(
                 Math.floor((timeleft - Date.now()) / 1000)
             );
-            const cooldownembed = new MessageEmbed()
+            const cooldownembed = new EmbedBuilder()
                 .setTitle("You are on cooldown")
                 .setColor(await fetchEmbedColor(interaction));
 
@@ -265,7 +265,7 @@ class Mainfunctions {
         if (hasunread === true) {
             return interaction.followUp({
                 embeds: [
-                    new MessageEmbed()
+                    new EmbedBuilder()
                         .setColor(await fetchEmbedColor(interaction))
                         .setDescription(
                             `${interaction.user}, you have an unread alert! To check the alert, run \`/alert\``

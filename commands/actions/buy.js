@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -109,19 +109,19 @@ module.exports = {
         }
 
         if (totalprice >= 100000) {
-            let confirm = new MessageButton()
+            let confirm = new ButtonBuilder()
                 .setCustomId("confirm")
                 .setLabel("Confirm")
                 .setStyle("PRIMARY");
 
-            let cancel = new MessageButton()
+            let cancel = new ButtonBuilder()
                 .setCustomId("cancel")
                 .setLabel("Cancel")
                 .setStyle("DANGER");
 
-            let row = new MessageActionRow().addComponents(confirm, cancel);
+            let row = new ActionRowBuilder().addComponents(confirm, cancel);
 
-            const buy_embed = new MessageEmbed()
+            const buy_embed = new EmbedBuilder()
                 .setColor(theme.embed.color)
                 .setAuthor({
                     name: `${interaction.user.tag}`,
@@ -226,7 +226,7 @@ module.exports = {
             await removeCoins(economyData.userId, totalprice);
             const newquantityowned =
                 inventoryData.inventory[itemData.item] + quantity || quantity;
-            const buy_embed = new MessageEmbed()
+            const buy_embed = new EmbedBuilder()
                 .setColor(`#95ff87`)
                 .setTitle(`Receipt - Purchase`)
                 .setDescription(

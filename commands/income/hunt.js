@@ -1,10 +1,10 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
     fetchEconomyData,
     addItem,
-    addexperiencepoints
+    addexperiencepoints,
 } = require("../../utils/currencyfunctions");
 const {
     fetchItemData,
@@ -64,7 +64,7 @@ module.exports = {
             (val) => val.item.toLowerCase() === "rifle"
         );
 
-        const hunt_embed = new MessageEmbed()
+        const hunt_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,
@@ -92,7 +92,7 @@ module.exports = {
                 );
 
                 await addItem(interaction.user.id, item.item, 1);
-                await addexperiencepoints(interaction.user.id, 1, 20)
+                await addexperiencepoints(interaction.user.id, 1, 20);
 
                 hunt_embed.setDescription(
                     `And that is a wrap, you actually can shoot! Now you got some raw meat to deal with! You got \`${1}\` ${

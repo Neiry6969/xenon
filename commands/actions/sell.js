@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -123,19 +123,19 @@ module.exports = {
         const saleprice = quantity * itemData.sell;
 
         if (saleprice >= 10000) {
-            let confirm = new MessageButton()
+            let confirm = new ButtonBuilder()
                 .setCustomId("confirm")
                 .setLabel("Confirm")
                 .setStyle("PRIMARY");
 
-            let cancel = new MessageButton()
+            let cancel = new ButtonBuilder()
                 .setCustomId("cancel")
                 .setLabel("Cancel")
                 .setStyle("DANGER");
 
-            let row = new MessageActionRow().addComponents(confirm, cancel);
+            let row = new ActionRowBuilder().addComponents(confirm, cancel);
 
-            const sell_embed = new MessageEmbed()
+            const sell_embed = new EmbedBuilder()
                 .setColor(theme.embed.color)
                 .setTitle(`Action Confirmation  - Sell`)
                 .setDescription(
@@ -240,7 +240,7 @@ module.exports = {
             await addCoins(economyData.userId, saleprice);
             const newquantityowned =
                 inventoryData.inventory[itemData.item] - quantity || quantity;
-            const sell_embed = new MessageEmbed()
+            const sell_embed = new EmbedBuilder()
                 .setColor(`#95ff87`)
                 .setTitle(`Receipt - Sell`)
                 .setDescription(

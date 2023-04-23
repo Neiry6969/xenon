@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
@@ -52,28 +52,28 @@ module.exports = {
         const economyData = economyData_fetch.data;
         const displayedplaces = getRandom(search_data, 3);
 
-        let display_1 = new MessageButton()
+        let display_1 = new ButtonBuilder()
             .setCustomId(displayedplaces[0].place)
             .setLabel(displayedplaces[0].place)
             .setStyle("PRIMARY");
 
-        let display_2 = new MessageButton()
+        let display_2 = new ButtonBuilder()
             .setCustomId(displayedplaces[1].place)
             .setLabel(displayedplaces[1].place)
             .setStyle("PRIMARY");
 
-        let display_3 = new MessageButton()
+        let display_3 = new ButtonBuilder()
             .setCustomId(displayedplaces[2].place)
             .setLabel(displayedplaces[2].place)
             .setStyle("PRIMARY");
 
-        let row = new MessageActionRow().addComponents(
+        let row = new ActionRowBuilder().addComponents(
             display_1,
             display_2,
             display_3
         );
 
-        const search_embed = new MessageEmbed()
+        const search_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,

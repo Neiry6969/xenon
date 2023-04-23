@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
+const { EmbedBuilder, MessageButton, MessageActionRow } = require("discord.js");
 const fs = require("fs");
 
 const EconomyModel = require("../models/economySchema");
@@ -45,7 +45,7 @@ class Useitem {
             economyData.bank.otherbankspace;
         const averageexpansion = Math.floor(expandedspace / useamount);
 
-        const confirmembed = new MessageEmbed()
+        const confirmembed = new EmbedBuilder()
             .setColor(await fetchEmbedColor(interaction))
             .setDescription(
                 `Are you sure you want to use ${item.icon} \`${
@@ -214,7 +214,7 @@ class Useitem {
             return errorReply(interaction, error_message);
         }
 
-        const confirmembed = new MessageEmbed()
+        const confirmembed = new EmbedBuilder()
             .setColor(await fetchEmbedColor(interaction))
             .setDescription(
                 `Are you sure you want to use ${item.icon} \`${
@@ -411,7 +411,7 @@ class Useitem {
             .sort()
             .join("\n");
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(`${interaction.user.username}'s ${item.name}`)
             .setColor(await fetchEmbedColor(interaction))
             .setThumbnail(item.imageUrl)
@@ -449,7 +449,7 @@ class Useitem {
         );
         await addActiveItem(interaction.user.id, "watermelon", 7889238, colors);
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(`${interaction.user.username}'s ${itemData.name}`)
             .setColor(await fetchEmbedColor(interaction))
             .setThumbnail(itemData.imageUrl)
@@ -470,7 +470,7 @@ class Useitem {
         await removeItem(interaction.user.id, itemData.item, 1);
         await addActiveItem(interaction.user.id, "prestigekey", 43200, null);
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(`${interaction.user.username}'s ${itemData.name}`)
             .setColor(await fetchEmbedColor(interaction))
             .setThumbnail(itemData.imageUrl)
@@ -506,7 +506,7 @@ class Useitem {
                 pill_multi
             );
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle(`${interaction.user.username}'s ${itemData.name}`)
                 .setColor(await fetchEmbedColor(interaction))
                 .setThumbnail(itemData.imageUrl)
@@ -522,7 +522,7 @@ class Useitem {
 
             return interaction.reply({ embeds: [embed] });
         } else {
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle(`${interaction.user.username}'s ${itemData.name}`)
                 .setColor(await fetchEmbedColor(interaction))
                 .setThumbnail(itemData.imageUrl)

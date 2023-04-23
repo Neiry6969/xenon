@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const {
     fetchInventoryData,
@@ -109,7 +109,7 @@ module.exports = {
             (val) => val.item.toLowerCase() === "pickaxe"
         );
 
-        const mine_embed = new MessageEmbed()
+        const mine_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,

@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -146,19 +146,19 @@ module.exports = {
             return errorReply(interaction, error_message);
         }
 
-        let confirm = new MessageButton()
+        let confirm = new ButtonBuilder()
             .setCustomId("confirm")
             .setLabel("Confirm")
             .setStyle("PRIMARY");
 
-        let cancel = new MessageButton()
+        let cancel = new ButtonBuilder()
             .setCustomId("cancel")
             .setLabel("Cancel")
             .setStyle("DANGER");
 
-        let row = new MessageActionRow().addComponents(confirm, cancel);
+        let row = new ActionRowBuilder().addComponents(confirm, cancel);
 
-        const gift_embed = new MessageEmbed()
+        const gift_embed = new EmbedBuilder()
             .setColor(theme.embed.color)
             .setAuthor({
                 name: `${interaction.user.tag}`,

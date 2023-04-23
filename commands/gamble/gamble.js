@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("@discordjs/builders");
 
 const {
@@ -161,7 +161,7 @@ module.exports = {
         const xenondice1 = dice.find((val) => val.value === xenondice1_random);
         const xenondice2 = dice.find((val) => val.value === xenondice2_random);
 
-        const gamble_embed = new MessageEmbed()
+        const gamble_embed = new EmbedBuilder()
             .setTitle(`Gamble Game`)
             .setAuthor({
                 name: `${interaction.user.tag}`,

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageActionRow, MessageButton } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder } = require("discord.js");
 const { fetchEconomyData } = require("../../utils/currencyfunctions");
 const { setCooldown } = require("../../utils/mainfunctions");
 
@@ -12,8 +12,8 @@ module.exports = {
         const economyData_fetch = await fetchEconomyData(interaction.user.id);
         const economyData = economyData_fetch.data;
 
-        const row = new MessageActionRow().addComponents(
-            new MessageButton()
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
                 .setLabel("Click To Invite")
                 .setStyle("LINK")
                 .setURL(
