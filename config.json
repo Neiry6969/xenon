@@ -1,5 +1,5 @@
 {
     "prefix": "xe ",
-    "mongodb_srv": "mongodb+srv://neriy:AaCUjxeOA5PTTOD5@xenon.meq0z.mongodb.net/XenonBotDB?retryWrites=true&w=majority",
-    "discord_token": "ODQ3NTI4OTg3ODMxMzA0MTky.GhuqOS.11fSqpRpkXFT1Qs8S1npShjuvZZYDkEJeL0k7E"
+    "mongodb_srv": "token",
+    "discord_token": "token"
 }
